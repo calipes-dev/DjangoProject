@@ -1,77 +1,93 @@
+{% extends "base.html" %}
 {% load static %}
-{% include "partials/header.html" %}
 
+{% block content %}
 <style>
-  .color-green{
-        background-color: rgb(35, 103, 51) !important;
-    }
+  .bg-gradient-success {
+    background: linear-gradient(135deg, rgb(35, 103, 51), rgba(35, 103, 51, 0.6));
+  }
   body {
     background-color: #111827 !important;
   }
-
   .card {
     background-color: #1f2937;
   }
-
   .action-card:hover {
     transform: scale(1.05);
     transition: 0.2s ease;
   }
-
   h5, h6, p {
     color: white;
   }
+  .btn-close-white {
+    filter: invert(1);
+  }
   .border-dashed {
-  border-style: dashed !important;
-}
-.btn-close-white {
-  filter: invert(1);
-}
-
-#previewContainer {
-  background-color: #0f172a;
-  overflow: hidden;
-}
-#previewImage {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-}
+    border-style: dashed !important;
+  }
 
 
+  @media (max-width: 768px) {
+    .card .position-absolute {
+      position: static !important;
+      margin: 10px auto 0;
+      display: inline-flex;
+    }
+    .card .card-body {
+      text-align: center;
+      padding-top: 1rem !important;
+    }
+  }
 </style>
 
-<body class="g-sidenav-show  text-white" style = "background-color: #273149">
-  <div class="min-height-300  position-absolute w-100"></div>
+<div class="g-sidenav-show text-white">
+  <div class="min-height-300 position-absolute w-100"></div>
 
-  {% include "partials/sidebar.html" %} <!-- Sidebar -->
+  {% include "partials/sidebar.html" %}
 
   <main class="main-content position-relative border-radius-lg">
-    <!-- Navbar -->
-  
-    <!-- End Navbar -->
+    {% include "partials/navbar.html" %}
 
     <div class="container-fluid p-5">
 
       <!-- Welcome Section -->
-      <div class="card bg-success text-white border-0 mb-4 rounded-4 shadow-sm">
-        <div class="card-body py-4">
-          <h3 class="fw-bold text-white">Welcome back, {{user.first_name}}!</h3>
-         <h6 class="text-white small">Empower your students today and help them build the skills for tomorrow.</h6>
+      <div class="card text-white border-0 rounded-4 shadow-sm position-relative mx-auto"
+        style="background: linear-gradient(135deg, #198754, #74c69d);
+               margin-top: -0.75rem;
+               margin-bottom: 0.75rem;
+               min-height: 130px;
+               display: flex;
+               align-items: flex-start;
+               justify-content: flex-start;">
+        <div class="position-absolute top-0 end-0 mt-2 me-4 bg-white d-flex align-items-center px-3 py-1 rounded-pill shadow-sm"
+          style="border: 2px solid #D68022;">
+          <img src="{% static 'img/teacherwand.png' %}" alt="Teacher Hat"
+            style="width: 3.5vh; height: 3.5vh;" class="me-2">
+          <span style="background: linear-gradient(90deg, #324254 35%, #8e500f);
+                       -webkit-background-clip: text;
+                       -webkit-text-fill-color: transparent;
+                       font-weight: bold;">
+            Teacher
+          </span>
+        </div>
 
+        <div class="d-flex flex-column justify-content-start text-start px-3 py-3 ms-4" style="height: 100%; margin-top: 10px;">
+          <h3 class="fw-bold text-white mb-2">Welcome back, {{ user.first_name }}!</h3>
+          <h6 class="text-white small m-0">Empower your students today and help them build the skills for tomorrow.</h6>
         </div>
       </div>
 
       <!-- Quick Actions -->
-      <h5 class="fw-bold mb-3">Quick Actions</h5>
-      <div class="row g-3 mb-5">
-
+      <h5 class="fw-bold mt-4 mb-2">⚡ Quick Actions</h5>
+      <div class="row g-3 mb-4">
+        <!-- 4 action cards -->
         <div class="col-md-3">
-          <div class="card text-center bg-success text-white border-0 rounded-4 shadow-sm action-card h-100" data-bs-toggle="modal" data-bs-target="#createClassModal">
+          <div class="card text-center bg-success text-white border-0 rounded-4 shadow-sm action-card h-100"
+               data-bs-toggle="modal" data-bs-target="#createClassModal">
             <div class="card-body">
-              <h1 class="display-5 mb-2" style = "color: white;">+</h1>
+              <h1 class="display-5 mb-2" style="color: white;">+</h1>
               <h6 class="fw-bold">Create New Class</h6>
-              <p class="text-light small mb-0">Enter class code</p>
+              <p class="text-light small mb-0">Start a new class</p>
             </div>
           </div>
         </div>
@@ -79,7 +95,7 @@
         <div class="col-md-3">
           <div class="card text-center button-gray text-white border-0 rounded-4 shadow-sm h-100 action-card">
             <div class="card-body">
-              <h1 class="display-6 mb-2" style = "color: skyblue">&lt;/&gt;</h1>
+              <h1 class="display-6 mb-2" style="color: skyblue;">&lt;/&gt;</h1>
               <h6 class="fw-bold">Practice Coding</h6>
               <p class="text-light small mb-0">Code Playground</p>
             </div>
@@ -91,7 +107,7 @@
             <div class="card-body">
               <img src="{% static 'img/progressIcon.png' %}" alt="progress" width="40" height="40" class="mb-2">
               <h6 class="fw-bold">View Progress</h6>
-              <p class="text-light small mb-0">Track your Students</p>
+              <p class="text-light small mb-0">Track your students</p>
             </div>
           </div>
         </div>
@@ -100,176 +116,216 @@
           <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card">
             <div class="card-body">
               <img src="{% static 'img/PendingIC.png' %}" alt="pendingIcon" width="40" height="40" class="mb-2">
-              <h6 class="fw-bold">Pending Task</h6>
-              <p class="text-light small mb-0">View task</p>
+              <h6 class="fw-bold">Pending Tasks</h6>
+              <p class="text-light small mb-0">View student task</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Recent Classes -->
-      <h5 class="fw-bold mb-3">Recent Classes</h5>
-        <div class="row g-3">
-          {% if classes %}
-            {% for class in classes %}
-              <div class="col-md-3">
-                <div class="card text-center border-0 rounded-4 shadow-sm h-100 text-white {% cycle 'color-green' 'bg-dark' %} action-card">
-                  <div class="card-body">
-                    <img src="{{ class.upload_icon.url|default:'/media/class_icons/defaultClassIcon.png' }}" 
-                        alt="Class Icon" width="100" height="100" class="mb-2 rounded">
-                    <h6 class="fw-bold">{{ class.title }}</h6>
-                    <p class="small text-light mb-0">{{ class.class_code }}</p>
+     <!-- 🏆 Leaderboard -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="fw-bold mb-0">🏆 Leaderboard</h5>
+      <a href="#" 
+        class="badge border-green d-flex align-items-center gap-1 text-decoration-none px-3 py-2"
+        style="border-radius: 8px; font-weight: 600;">
+        <span style="color: #00ff9d;">View All Rank</span>
+        <i class="fa fa-arrow-right" style="color: #00ff9d; font-size: 0.9rem;"></i>
+      </a>
+    </div>
+
+      <div class="row g-4 justify-content-start mb-4">
+        {% if top_scorers %}
+          {% for entry in top_scorers %}
+            {% if forloop.counter <= 4 %}
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+                <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative {% cycle 'border-green' 'border-dark' %}"
+                     style="background-color: rgb(34, 36, 55); border-width: 2.5px; border-style: dashed; min-height: 100%;">
+                  <div class="card-body position-relative d-flex flex-column align-items-center">
+                    <!-- Class Title Badge -->
+                    <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-1 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
+                         style="border: 1.5px solid #D68022; transform: scale(0.9); white-space: nowrap; width: fit-content;">
+                      <h6 style="background: linear-gradient(90deg, #324254 35%, #8e500f);
+                                 -webkit-text-fill-color: transparent;
+                                 -webkit-background-clip: text;
+                                 font-weight: bold;
+                                 font-size: 1rem;
+                                 margin: 0;">
+                        {{ entry.class.title }}
+                      </h6>
+                    </div>
+
+                    <img src="{% static 'img/1stCup.svg' %}" alt="cup" width="180" height="180" class="mt-4 rounded img-fluid">
+
+                    <div class="d-flex align-items-center justify-content-center mt-2 mb-2">
+                      <img src="{% static 'img/star.png' %}" alt="star" style="width: 22px; height: 22px; margin-right: 6px;">
+                      <h5 class="mb-0 fw-bold" style="background: linear-gradient(90deg, #FFD700, #FFB700, #FFA500);
+                            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                            text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);">
+                        1st Placer
+                      </h5>
+                    </div>
+
+                    {% if entry.top_scorer %}
+                      <span class="badge px-3 py-2 rounded-3 shadow-sm {% cycle 'border-green' 'border-dark' %}"
+                            style="border: 1px solid currentColor !important; white-space: nowrap;">
+                        {{ entry.top_scorer.student_id__first_name }} {{ entry.top_scorer.student_id__last_name }}
+                      </span>
+                    {% else %}
+                      <p class="small text-secondary mb-0 fst-italic">No scorer data available</p>
+                    {% endif %}
                   </div>
                 </div>
               </div>
-            {% endfor %}
-          {% else %}
-            <p class="text-muted">No classes created yet.</p>
-          {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <p class="text-muted text-center">No leaderboard data available.</p>
+        {% endif %}
+      </div>
+
+      <!-- 🔰 Recent Classes -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="fw-bold mb-0">🔰 Recent Classes</h5>
+      <a href="{% url 'MyClasses' %}" 
+        class="badge border-green d-flex align-items-center gap-1 text-decoration-none px-3 py-2"
+        style="border-radius: 8px; font-weight: 600;">
+        <span style="color: #00ff9d;">View All Classes</span>
+        <i class="fa fa-arrow-right" style="color: #00ff9d; font-size: 0.9rem;"></i>
+      </a>
+    </div>
+
+    <div class="row g-3 mb-4 justify-content-start">
+  {% if classes %}
+    {% for class in classes %}
+      {% if forloop.counter <= 6 %}
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2 d-flex justify-content-center">
+          <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative {% cycle 'border-green' 'border-dark' %}"
+               style="background-color: rgb(1, 45, 35); border-width: 2.5px; border-style: dashed; min-height: 180px; width: 100%;">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center position-relative p-3">
+
+              <!-- 🏷️ Class Code Badge -->
+              <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-2 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
+                   style="border: 1.5px solid #D68022; transform: scale(0.85); white-space: nowrap; width: fit-content;">
+                <h6 style="background: linear-gradient(90deg, #324254 35%, #8e500f);
+                          -webkit-text-fill-color: transparent;
+                          -webkit-background-clip: text;
+                          font-weight: bold;
+                          font-size: 0.85rem;
+                          margin: 0;">
+                  {{ class.class_code }}
+                </h6>
+              </div>
+
+              <!-- 🖼️ Class Icon -->
+              {% if class.upload_icon %}
+                <img src="{{ class.upload_icon.url }}" 
+                     alt="Class Icon" class="mb-2 rounded mt-4" style="width: 80px; height: 80px; object-fit: cover;">
+              {% else %}
+                <img src="{% static 'img/classroom.png' %}" 
+                     alt="Default Class Icon" class="mb-2 rounded mt-4" style="width: 80px; height: 80px; object-fit: cover;">
+              {% endif %}
+
+              <!-- 📘 Class Title Badge (Flexible & Responsive) -->
+              <span class="badge px-2 py-1 rounded-3 shadow-sm text-truncate {% cycle 'border-green' 'border-dark' %}"
+                    style="border: 1px solid currentColor !important; max-width: 100%; font-size: clamp(0.7rem, 2vw, 0.85rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block;">
+                {{ class.title }}
+              </span>
+
+            </div>
+          </div>
         </div>
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    <p class="text-muted">No classes created yet.</p>
+  {% endif %}
+</div>
+
+
 
 
       {% include "partials/footer.html" %}
     </div>
-  </main>
 
- 
+      <!-- CREATE CLASS MODAL -->
+  <div class="modal fade" id="createClassModal" tabindex="-1" aria-labelledby="createClassLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+      <div class="modal-content shadow-lg border-0" style="background-color: #1E2835; color: #fff; border-radius: 16px;">
+        <div class="modal-header border-0 pb-1">
+          <h5 class="modal-title fw-bold text-success" id="createClassLabel">
+            <i class="fa fa-layer-group"></i> Create New Class
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
 
+        <div class="modal-body pt-0">
+          <p class="text-muted small mb-4">
+            Fill in the details below to set up your new class environment.
+          </p>
 
+          <form id="createClassForm" method="POST" enctype="multipart/form-data" action="{% url 'create_class' %}">
+            {% csrf_token %}
 
-
-    <!-- CREATE CLASS MODAL -->
-    <div class="modal fade" id="createClassModal" tabindex="-1" aria-labelledby="createClassLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-md">
-        <div class="modal-content shadow-lg border-0" style="background-color: #1E2835; color: #fff; border-radius: 16px;">
-          <div class="modal-header border-0 pb-1">
-            <h5 class="modal-title fw-bold text-success" id="createClassLabel">
-              <i class="fa fa-layer-group"></i> Create New Class
-            </h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-
-          <div class="modal-body pt-0">
-            <p class="text-muted small mb-4">
-              Fill in the details below to set up your new class environment.
-            </p>
-
-            <form id="createClassForm" method="POST" enctype="multipart/form-data" action="{% url 'create_class' %}">
-              {% csrf_token %}
-
-              <!-- Upload Section -->
-              <div class="mb-4">
-                <label class="form-label fw-bold">Class Thumbnail</label>
-                <div class="upload-box border border-2 border-dashed rounded d-flex align-items-center justify-content-center position-relative overflow-hidden" 
-                    style="width: 120px; height: 120px; background-color: #101826; cursor: pointer;">
-                  <input type="file" id="uploadIcon" name="upload_icon" accept="image/*" class="position-absolute w-100 h-100 opacity-0" style="cursor: pointer;">
-                  <div class="text-center" id="uploadPlaceholder">
-                    <i class="fa fa-camera mb-2 text-muted" style="font-size: 28px;"></i>
-                    <p class="small text-muted mb-0">Upload</p>
-                  </div>
-                  <img id="previewImage" src="#" alt="Preview" class="d-none position-absolute top-0 start-0 w-100 h-100 rounded" style="object-fit: cover;">
+            <!-- Upload Section -->
+            <div class="mb-4">
+              <label class="form-label fw-bold">Class Thumbnail</label>
+              <div class="upload-box border border-2 border-dashed rounded d-flex align-items-center justify-content-center position-relative overflow-hidden" 
+                  style="width: 120px; height: 120px; background-color: #101826; cursor: pointer;">
+                <input type="file" id="uploadIcon" name="upload_icon" accept="image/*" class="position-absolute w-100 h-100 opacity-0" style="cursor: pointer;">
+                <div class="text-center" id="uploadPlaceholder">
+                  <i class="fa fa-camera mb-2 text-muted" style="font-size: 28px;"></i>
+                  <p class="small text-muted mb-0">Upload</p>
                 </div>
-                <p class="text-muted small mt-2 mb-0">Recommended size: <strong>400×400px</strong> (JPG, PNG)</p>
+                <img id="previewImage" src="#" alt="Preview" class="d-none position-absolute top-0 start-0 w-100 h-100 rounded" style="object-fit: cover;">
               </div>
+              <p class="text-muted small mt-2 mb-0">Recommended size: <strong>400×400px</strong> (JPG, PNG)</p>
+            </div>
 
-              <!-- Class Code -->
-              <div class="mb-3">
-                <label class="form-label fw-bold">Class Code</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-success border-0 text-white fw-bold">#</span>
-                  <input type="text" name="class_code" class="form-control text-white p-2"
-                        placeholder="Enter unique class code (e.g., APPDEV3)"
-                        style="background-color: #101826; border: 1px solid #4CD964; border-radius: 0 8px 8px 0;">
-                </div>
+            <!-- Class Code -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Class Code</label>
+              <div class="input-group">
+                <span class="input-group-text bg-success border-0 text-white fw-bold">#</span>
+                <input type="text" name="class_code" class="form-control text-white p-2"
+                      placeholder="Enter unique class code (e.g., APPDEV3)"
+                      style="background-color: #101826; border: 1px solid #4CD964; border-radius: 0 8px 8px 0;">
               </div>
+            </div>
 
-              <!-- Class Title -->
-              <div class="mb-3">
-                <label class="form-label fw-bold">Class Title</label>
-                <input type="text" name="title" class="form-control text-white"
-                      placeholder="Enter class title (e.g., Application Development)"
-                      style="background-color: #101826; border: 1px solid #555; border-radius: 8px;">
-              </div>
+            <!-- Class Title -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Class Title</label>
+              <input type="text" name="title" class="form-control text-white"
+                    placeholder="Enter class title (e.g., Application Development)"
+                    style="background-color: #101826; border: 1px solid #555; border-radius: 8px;">
+            </div>
 
-              <!-- Description -->
-              <div class="mb-4">
-                <label class="form-label fw-bold">Class Description</label>
-                <textarea name="description" rows="3" class="form-control text-white"
-                          placeholder="Enter class description..."
-                          style="background-color: #101826; border: 1px solid #555; border-radius: 8px;"></textarea>
-              </div>
+            <!-- Description -->
+            <div class="mb-4">
+              <label class="form-label fw-bold">Class Description</label>
+              <textarea name="description" rows="3" class="form-control text-white"
+                        placeholder="Enter class description..."
+                        style="background-color: #101826; border: 1px solid #555; border-radius: 8px;"></textarea>
+            </div>
 
-              <!-- Buttons -->
-              <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-outline-secondary btn-sm me-2 px-3" data-bs-dismiss="modal">
-                  <i class="fa fa-times me-1"></i> Cancel
-                </button>
-                <button type="submit" class="btn btn-success btn-sm px-3">
-                  <i class="fa fa-plus me-1"></i> Create Class
-                </button>
-              </div>
-            </form>
-          </div>
+            <!-- Buttons -->
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-outline-secondary btn-sm me-2 px-3" data-bs-dismiss="modal">
+                <i class="fa fa-times me-1"></i> Cancel
+              </button>
+              <button type="submit" class="btn btn-success btn-sm px-3">
+                <i class="fa fa-plus me-1"></i> Create Class
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
- {% include "partials/scripts.html" %}
+  </div>
 
-  <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const uploadInput = document.getElementById("uploadIcon");
-  const previewImage = document.getElementById("previewImage");
-  const uploadIcon = document.getElementById("uploadIconIcon");
-  const uploadText = document.getElementById("uploadIconText");
-
-  if (!uploadInput) return; // safety check
-
-  uploadInput.addEventListener("change", function (event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        previewImage.src = e.target.result;
-        previewImage.classList.remove("d-none");
-        uploadIcon.style.display = "none";
-        uploadText.style.display = "none";
-      };
-      reader.readAsDataURL(file);
-    } else {
-      previewImage.src = "#";
-      previewImage.classList.add("d-none");
-      uploadIcon.style.display = "block";
-      uploadText.style.display = "block";
-    }
-  });
-});
-</script>
-
-<!-- Thumbnail Preview Script -->
-<script>
-document.getElementById("uploadIcon").addEventListener("change", function (event) {
-  const file = event.target.files[0];
-  const preview = document.getElementById("previewImage");
-  const placeholder = document.getElementById("uploadPlaceholder");
-
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      preview.src = e.target.result;
-      preview.classList.remove("d-none");
-      placeholder.style.display = "none";
-    };
-    reader.readAsDataURL(file);
-  } else {
-    preview.src = "#";
-    preview.classList.add("d-none");
-    placeholder.style.display = "block";
-  }
-});
-</script>
-</body>
-
-
-</html>
-
-
+  </main>
+  
+  {% include "partials/scripts.html" %}
+</div>
+{% endblock %}

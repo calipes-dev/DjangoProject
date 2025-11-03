@@ -102,5 +102,35 @@ class Submission(models.Model):
     submitted_at = models.DateTimeField(auto_now_add=True)
     score = models.IntegerField(default=0)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['problem_id', 'student_id'],
+                name='unique_submission_per_student'
+            )
+        ]
+
     def __str__(self):
         return f"Submission by {self.student_id.first_name} for {self.problem_id.problem_title}"
+    
+# ---------- CHAT HISTORY MODEL ----------
+class ChatHistory(models.Model):
+    """Stores private AI chat history for each user"""
+    chat_id = models.AutoField(primary_key=True)
+    school_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chat_history')
+    sender = models.CharField(
+        max_length=10,
+        choices=[('user', 'User'), ('ai', 'AI')],
+        verbose_name="Message Sender"
+    )
+    message = models.TextField(verbose_name="Message Content")
+    timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Sent At")
+
+    class Meta:
+        ordering = ['timestamp']
+        indexes = [
+            models.Index(fields=['school_id', 'timestamp']),
+        ]
+
+    def __str__(self):
+        return f"{self.school_id.first_name} - {self.sender} at {self.timestamp}"

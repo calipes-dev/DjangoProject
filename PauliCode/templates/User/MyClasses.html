@@ -1,97 +1,82 @@
+{% extends "base.html" %}
 {% load static %}
-{% include "partials/header.html" %}
 
-<body class="g-sidenav-show text-white" style="background-color: #273149">
-  <div class="min-height-300 position-absolute w-100"></div>
+{% block title %}My Classes{% endblock %}
+
+{% block content %}
+<div>
   {% include "partials/sidebar.html" %}
 
-  <main class="main-content position-relative border-radius-lg p-4">
-    
-   <!-- HEADER ROW -->
-    <div class="d-flex justify-content-between align-items-start flex-wrap p-3">
+  <main class="main-content position-relative p-4">
+    {% include "partials/navbar.html" %}
 
-      <!-- Left: Title -->
-      <h4 class="fw-bold text-white mb-md-0">My Classes</h4>
-      <!-- Right: Search and Create Button -->
-      <div class="d-flex flex-column align-items-end">
-        <!-- Search Bar -->
-        <form class="d-flex mb-2" method="GET">
-          <input 
-            class="form-control form-control-sm bg-dark text-white border-0 shadow-sm"
-            style="width: 40vh; height: 5vh; border-radius: 0.25rem;"
-            type="search" 
-            name="q" 
-            placeholder="Search classes..." 
-            aria-label="Search"
-            value="{{ request.GET.q|default:'' }}">
-          <button class="btn btn-outline-success btn-sm ms-2 px-3 align-items-center" type="submit">
-            <i class="fa fa-search me-1"></i> Search
-          </button>
-        </form>
-        
-    <!-- Create Class Button -->
-        
-       </div>
-       <button class="btn btn-success text-white fw-bold shadow-sm" 
-                data-bs-toggle="modal" data-bs-target="#createClassModal">
-          <i class="fa fa-plus me-2"></i> Create Class
-         </button>
-      </div>
+    <div class="ms-3">
+      
 
+  <!-- CLASSES GRID -->
+<div class="container-fluid py-3">
+  <div class="row g-4 justify-content-start">
+    {% if classes %}
+      {% for cls in classes %}
+        {% if not request.GET.q or request.GET.q|lower in cls.title|lower or request.GET.q|lower in cls.class_code|lower %}
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-center">
+            <a href="{% url 'classDetails' cls.class_id %}" class="text-decoration-none text-white w-100">
+              <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative {% cycle 'border-green' 'border-dark' %} cls-card"
+                   style="background-color: rgb(1, 45, 35); border-width: 2.5px; border-style: dashed;">   
 
+                <!-- 🏷️ Class Code Badge -->
+                <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-2 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
+                     style="border: 1.5px solid #D68022; transform: scale(0.85); white-space: nowrap; width: fit-content;">
+                  <h6 style="background: linear-gradient(90deg, #324254 35%, #8e500f);
+                            -webkit-text-fill-color: transparent;
+                            -webkit-background-clip: text;
+                            font-weight: bold;
+                            font-size: 0.85rem;
+                            margin: 0;">
+                    {{ cls.class_code }}
+                  </h6>
+                </div>
 
+                <div class="card-body d-flex flex-column align-items-center justify-content-center position-relative p-3">
+                  {% if cls.upload_icon %}
+                    <img src="{{ cls.upload_icon.url }}" alt="Class Icon" class="rounded mb-3 cls-img">
+                  {% else %}
+                    <img src="{% static 'img/classroom.png' %}" alt="Default Class Icon" class="rounded mb-3 cls-img">
+                  {% endif %}
 
-    <!-- CLASSES GRID -->
-    <div class="row g-3 p-3 mb-4">
-      {% if classes %}
-        {% for cls in classes %}
-          {% if not request.GET.q or request.GET.q|lower in cls.title|lower or request.GET.q|lower in cls.class_code|lower %}
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-        <a href="{% url 'classDetails' cls.class_id %}" class="text-decoration-none text-white">
-          <div class="card text-center border-0 rounded-4 shadow-sm {% cycle 'color-green' 'bg-dark' %} position-relative cls-card">
+                  <span class="badge px-2 py-1 rounded-3 shadow-sm text-truncate {% cycle 'border-green' 'border-dark' %}"
+                        style="border: 1px solid currentColor !important; max-width: 100%; font-size: clamp(0.7rem, 2vw, 0.85rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block;">
+                    {{ cls.title }}
+                  </span>
 
-            <!-- Delete Button (form instead of <a>) -->
-            <form action="{% url 'delete_class' cls.class_id %}" method="post"
-                  class="position-absolute top-0 end-0 m-2"
-                  onsubmit="return confirm('Are you sure you want to delete this class?');">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-danger delete-btn">Delete</button>
-            </form>
-
-            <div class="card-body d-flex flex-column justify-content-center align-items-center p-2">
-              <img src="{{ cls.upload_icon.url|default:'/media/class_icons/defaultClassIcon.png' }}" 
-                  alt="Class Icon" 
-                  class="rounded mb-2 cls-img">
-              <h6 class="fw-bold mt-1 text-white">{{ cls.title }}</h6>
-              <p class="small text-light mb-0">{{ cls.class_code }}</p>
-            </div>
+                </div>
+              </div>
+            </a>
           </div>
-        </a>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <div class="col-12 text-center text-muted py-4">
+        You haven’t created any classes yet.
       </div>
+    {% endif %}
+  </div>
+</div>
 
 
-          {% endif %}
-        {% endfor %}
-      {% else %}
-        <p class="text-muted">No classes created yet.</p>
-      {% endif %}
+
     </div>
-
-
-
   </main>
 
   {% include "partials/footer.html" %}
-  {% include "partials/scripts.html" %}
+  
 
   <!-- CREATE CLASS MODAL -->
   <div class="modal fade" id="createClassModal" tabindex="-1" aria-labelledby="createClassLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
       <div class="modal-content shadow-lg border-0" style="background-color: #1E2835; color: white; border-radius: 16px;">
         <div class="modal-header border-0">
-          <h5 class="modal-title fw-bold text-success" id="createClassLabel">
-            Create New Class
-          </h5>
+          <h5 class="modal-title fw-bold text-success" id="createClassLabel">Create New Class</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
@@ -155,61 +140,53 @@
     </div>
   </div>
 
-  <!-- Thumbnail Preview Script -->
-  <script>
-  document.getElementById("uploadIcon").addEventListener("change", function (event) {
-    const file = event.target.files[0];
-    const preview = document.getElementById("previewImage");
-    const placeholder = document.getElementById("uploadPlaceholder");
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        preview.src = e.target.result;
-        preview.classList.remove("d-none");
-        placeholder.style.display = "none";
-      };
-      reader.readAsDataURL(file);
-    } else {
-      preview.src = "#";
-      preview.classList.add("d-none");
-      placeholder.style.display = "block";
-    }
-  });
-  </script>
+
+
+  <!-- Thumbnail Preview Script -->
 
   <style>
+  .cls-card {
+    width: 100%;
+    min-height: 200px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 1rem;
+    margin: 0 auto;
+  }
+
+  .cls-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .cls-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+  }
+
+ 
+  .bg-gradient-success {
+    background: linear-gradient(135deg, rgb(35, 103, 51), rgba(35, 103, 51, 0.7));
+  }
+
+  @media (max-width: 576px) {
     .cls-card {
-      width: 200px;
-      height: 200px;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .cls-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
-    }
-    .delete-btn {
-      display: none;
-    }
-    .cls-card:hover .delete-btn {
-      display: block;
+      min-height: 180px;
     }
     .cls-img {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
+      width: 70px;
+      height: 70px;
     }
-    input[name="q"]:focus {
-      border-color: #198754;
-      box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-    }
-    .color-green{
-        background-color: rgb(35, 103, 51) !important;
-    }
-    
+  }
 
-   
+  @media (min-width: 1400px) {
+    .cls-card {
+      max-width: 230px;
+    }
+  }
 
   </style>
-</body>
-</html>
+  {% include "partials/scripts.html" %}
+</div>
+{% endblock %}

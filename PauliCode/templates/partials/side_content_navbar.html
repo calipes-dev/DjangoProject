@@ -1,0 +1,182 @@
+{% load static %}
+
+<style>
+  /* Playground Navbar Styling */
+  .playground-navbar {
+    position: sticky !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    background-color: transparent !important;
+    min-height: 50px !important;
+    border: none !important;
+    margin-top: -10px !important;
+    transform: translateY(-10px);
+    margin-bottom: -10px !important;
+    transform: translateX(-10px);
+  }
+
+  /* Add offset to content when navbar is fixed */
+  body.playground-active main,
+  body.playground-active .main-content {
+    padding-top: 80px !important;
+  }
+
+  .playground-breadcrumb {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .playground-breadcrumb li,
+  .playground-breadcrumb h6 {
+    font-size: 0.9rem !important;
+    color: #fff !important;
+  }
+
+  /* Compact Time Card for Playground */
+  .pcard {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0 !important;
+    border-radius: 8px;
+    border: 1px solid #2b3a55 !important;
+    padding: 0.3rem 0.8rem !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .pcard-header {
+    background: none !important;
+    color: #00cc66 !important;
+    font-weight: bold !important;
+    font-size: 0.8rem !important;
+    text-align: center;
+    padding: 0.2rem 0 !important;
+  }
+
+  .pcard h4 {
+    font-size: 1.2rem !important;
+    margin: 0 !important;
+  }
+
+  @media (max-width: 768px) {
+    .pcard {
+      width: 100%;
+      margin-top: 0.5rem !important;
+    }
+  }
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-main navbar-expand-lg shadow-none border-radius-xl mt-0 mb-3"
+     id="navbarBlur"
+     data-scroll="false">
+
+  {% if nav == 'student_class_details' or nav == 'classDetails' %}
+  <!-- Student Class Details and Teacher Class Details -->
+  <div class="container-fluid py-2 px-0">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ul class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-5">
+        <li class="breadcrumb-item text-sm">
+          <a class="opacity-5 text-white" href="javascript:;">Pages</a>
+        </li>
+        <li class="breadcrumb-item text-sm text-white active">My Classes</li>
+        <li class="breadcrumb-item text-sm text-white active" aria-current="page">Class Details</li>
+      </ul>
+      <h6 class="font-weight-bolder text-white mb-0">Class Details</h6>
+    </nav>
+
+    <div class="collapse navbar-collapse mt-2 justify-content-md-end" id="navbar">
+      <div class="d-flex flex-wrap justify-content-between align-items-center w-100">
+        <ul class="navbar-nav ms-auto d-flex align-items-center gap-3"></ul>
+
+        <!-- ✅ Navbar toggler moved to the END -->
+        <ul class="navbar-nav d-flex align-items-center ms-3">
+          <li class="nav-item d-xl-none d-flex align-items-center">
+            <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
+              <div class="sidenav-toggler-inner">
+                <i class="sidenav-toggler-line bg-white"></i>
+                <i class="sidenav-toggler-line bg-white"></i>
+                <i class="sidenav-toggler-line bg-white"></i>
+              </div>
+            </a>
+          </li>
+        </ul>
+        <!-- ✅ End toggler placement -->
+      </div>
+    </div>
+  </div>
+
+  {% elif nav == 'StudentPlayground' %}
+  <!-- Student Playground Navbar -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.body.classList.add("playground-active");
+    });
+  </script>
+
+  <div class="container-fluid d-flex justify-content-between align-items-center flex-wrap playground-navbar mt-0 mb-2 p-0">
+    <!-- Breadcrumb Left -->
+    <div class="d-flex align-items-center">
+      <nav aria-label="breadcrumb">
+        <ul class="breadcrumb playground-breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-3">
+          <li class="breadcrumb-item text-sm">
+            <a class="opacity-5 text-white" href="javascript:;">Pages</a>
+          </li>
+          <li class="breadcrumb-item text-sm text-white active">Playground</li>
+        </ul>
+        <h6 class="font-weight-bolder text-white mb-0">Playground</h6>
+      </nav>
+    </div>
+
+    <!-- Time Remaining Card (Right side) -->
+    <div class="pcard text-center" style="margin-right: -26px !important;">
+      <div class="pcard-header border-0">⏰ Time Remaining</div>
+      <h4 id="timerDisplay" class="text-warning fw-bold mb-0">--:--</h4>
+    </div>
+
+    <!-- Timer metadata (for JS) -->
+    <div id="problemTimer" data-timelimit="{{ problem.time_limit }}" style="display:none;"></div>
+  </div>
+
+
+  {% elif nav == 'Playground' %}
+    <div class="container-fluid py-2 px-0">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ul class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-5">
+        <li class="breadcrumb-item text-sm">
+          <a class="opacity-5 text-white" href="javascript:;">Pages</a>
+        </li>
+        <li class="breadcrumb-item text-sm text-white active" aria-current="page">Playground</li>
+      </ul>
+      <h6 class="font-weight-bolder text-white mb-0">Playground</h6>
+    </nav>
+
+    <div class="collapse navbar-collapse mt-2 justify-content-md-end" id="navbar">
+      <div class="d-flex flex-wrap justify-content-between align-items-center w-100">
+        <ul class="navbar-nav ms-auto d-flex align-items-center gap-3"></ul>
+
+        <!-- ✅ Navbar toggler moved to the END -->
+        <ul class="navbar-nav d-flex align-items-center ms-3">
+          <li class="nav-item d-xl-none d-flex align-items-center">
+            <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
+              <div class="sidenav-toggler-inner">
+                <i class="sidenav-toggler-line bg-white"></i>
+                <i class="sidenav-toggler-line bg-white"></i>
+                <i class="sidenav-toggler-line bg-white"></i>
+              </div>
+            </a>
+          </li>
+        </ul>
+        <!-- ✅ End toggler placement -->
+      </div>
+    </div>
+  </div>
+
+    {% endif %}
+
+</nav>

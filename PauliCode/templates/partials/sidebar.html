@@ -1,113 +1,171 @@
 {% load static %}
 
+<!-- Teacher Sidebar -->
 <style>
-  /* Make sidebar smaller */
+  /* Sidebar Base */
   #sidenav-main {
-    width: 180px !important; /* smaller width */
+    width: 180px !important;
     background-color: #434343 !important;
+    color: white !important;
   }
 
-  /* Adjust the sidebar inner elements */
+  /* Brand Text */
   #sidenav-main .navbar-brand span {
     font-size: 14px;
   }
 
+  /* Nav Text */
   #sidenav-main .nav-link-text {
     font-size: 13px;
+    transition: color 0.3s ease;
   }
 
-  #sidenav-main .icon {
-    min-width: 30px;
-    height: 30px;
-  }
-
-  #sidenav-main,
-  #sidenav-main * {
-    color: white !important;
-  }
-
+  /* Nav Links */
   #sidenav-main a.nav-link {
+    display: flex;
+    align-items: center;
     padding: 6px 12px;
+    color: #e0e0e0 !important;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
   }
 
+  /* Hover Effect (not white) */
   #sidenav-main a.nav-link:hover {
-    color: #ddd !important;
+    color: #D68022 !important;
+    background: linear-gradient(90deg, #505050, #3a3a3a);
   }
 
-  /* Make the main content adjust to smaller sidebar */
+  /* Active Link */
+  #sidenav-main a.nav-link.active {
+    color: #D68022 !important;
+    font-weight: bold;
+    background: linear-gradient(90deg, #383838, #2f2f2f);
+  }
+
+  /* Profile Image */
+  .profile-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+  }
+
+  /* Logout Button (Centered + Small) */
+  .logout-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto; /* Centers button */
+  }
+
+  .logout-btn:hover {
+    background-color: #b02a37;
+    transform: scale(1.05);
+  }
+
+  .logout-btn img {
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+  }
+
+  /* Footer Centering */
+  .sidenav-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Main Content Spacing */
   .main-content {
-    margin-left: 200px !important; /* adjust based on sidebar width */
+    margin-left: 200px !important;
   }
 </style>
 
-
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4" id="sidenav-main">
   <div class="sidenav-header text-center align-items-center">
-   
-   <a class="navbar-brand m-0" href="{{ request.path }}">
-  <img src="{% static 'img/PCodeLogo.svg' %}" width="26px" height="26px" class="navbar-brand-img h-100" alt="main_logo">
-  <span class="ms-1 font-weight-bold">PauliCode</span>
-  </a>
-
+    <a class="navbar-brand m-0" href="{% url 'dashboard' %}">
+      <img src="{% static 'img/PCodeLogo.svg' %}" width="35" height="35" class="navbar-brand-img h-100" alt="main_logo">
+      <span class="ms-1 font-weight-bold text-white">PauliCode</span>
+    </a>
   </div>
+
   <hr class="horizontal dark mt-0">
 
-
-
-
   <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
-
     <ul class="navbar-nav">
 
-      <!-- Profile Pic and Username -->
-      <li class="nav-item mb-4">
-          <a href="#" class="d-flex flex-column align-items-center text-decoration-none text-white">
-              <div class="profile-pic border-radius-md overflow-hidden mb-2">
-                  <img src="{% if user.user_image and user.user_image.url %}{{ user.user_image.url }}{% else %}{% static 'img/default.png' %}{% endif %}" 
-                      alt="Profile Picture" 
-                      class="img-fluid rounded-circle profile-img">
-              </div>
-              <span class="fw-bold username">
-                  {{ user.first_name }} {{ user.last_name }}
-              </span>
-              <span class="nav-link-text text-muted small">
-                  School ID: {{ user.school_id }}
-              </span>
-          </a>
+      <!-- Profile Section -->
+      <li class="nav-item mb-4 text-center">
+        <div class="profile-pic border-radius-md overflow-hidden mb-2">
+          <img src="{% if user.user_image and user.user_image.url %}{{ user.user_image.url }}{% else %}{% static 'img/image.png' %}{% endif %}"
+               alt="Profile Picture"
+               class="img-fluid rounded-circle profile-img">
+        </div>
+        <span class="fw-bold username d-block">{{ user.first_name }} {{ user.last_name }}</span>
+        <span class="text-muted small">School ID: {{ user.school_id }}</span>
       </li>
 
-
+      <!-- Dashboard -->
       <li class="nav-item mb-2">
         <a class="nav-link {% if currentpage == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
-          <div class="border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <img src="{% static 'img/dashboardIcon.png' %}" alt="icon" style = "height: 20px; width: 20px;">
+          <div class="me-2 d-flex align-items-center justify-content-center">
+            <img src="{% static 'img/dashboardIcon.png' %}" alt="Dashboard Icon" style="height: 20px; width: 20px;">
           </div>
-          <span class="nav-link-text ms-1">Dashboard</span>
+          <span class="nav-link-text">Dashboard</span>
         </a>
       </li>
 
-       <li class="nav-item">
+      <!-- Classes -->
+      <li class="nav-item mb-2">
         <a class="nav-link {% if currentpage == 'MyClasses' %}active{% endif %}" href="{% url 'MyClasses' %}">
-          <div class="border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <img src="{% static 'img/blackboardIcon.png' %}" alt="icon" style = "height: 20px; width: 20px;">
+          <div class="me-2 d-flex align-items-center justify-content-center">
+            <img src="{% static 'img/blackboardIcon.png' %}" alt="Classes Icon" style="height: 20px; width: 20px;">
           </div>
-          <span class="nav-link-text ms-1">Classes</span>
+          <span class="nav-link-text">Classes</span>
         </a>
       </li>
 
-       <li class="nav-item mb-2">
+      <!-- Report -->
+      <li class="nav-item">
         <a class="nav-link {% if currentpage == 'report' %}active{% endif %}" href="{% url 'report' %}">
-          <div class="border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <img src="{% static 'img/reportIcon.png' %}" alt="icon" style="height: 20px; width: 20px;">
+          <div class="me-2 d-flex align-items-center justify-content-center">
+            <img src="{% static 'img/reportIcon.png' %}" alt="Report Icon" style="height: 20px; width: 20px;">
           </div>
-          <span class="nav-link-text ms-1">Report</span>
+          <span class="nav-link-text">Report</span>
         </a>
       </li>
       
-  
+      <!-- Playground -->
+        <li class="nav-item">
+        <a class="nav-link {% if currentpage == 'Playground' %}active{% endif %}" href="{% url 'code_testing_playground' %}">
+          <div class="me-2 d-flex align-items-center justify-content-center" style="height: 20px; width: 20px;">
+            <span style="font-size: 14px; color: rgb(50, 184, 81);">&lt;/&gt;</span>
+          </div>
+          <span class="nav-link-text">Playground</span>
+        </a>
+      </li>
+
     </ul>
   </div>
+
+  <!-- Logout Button -->
   <div class="sidenav-footer px-3" style="padding-top: 25vh;">
-    <a class="btn btn-danger btn-sm mb-0 w-100" href="{% url 'logout' %}" type="button">Logout</a>
+    <a href="{% url 'logout' %}">
+      <button class="logout-btn">
+        <img src="{% static 'img/out.png' %}" alt="Logout Icon">
+        Logout
+      </button>
+    </a>
   </div>
 </aside>

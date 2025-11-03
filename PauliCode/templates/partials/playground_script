@@ -1,0 +1,356 @@
+<!--Playground-->
+<script>
+// Initialize ACE Editor
+let editor = ace.edit("codeEditor");
+editor.setTheme("ace/theme/dracula");
+editor.session.setMode("ace/mode/python");
+editor.setOptions({
+  enableBasicAutocompletion: true,
+  enableLiveAutocompletion: true,
+  fontSize: "14px",
+  showPrintMargin: false,
+  highlightActiveLine: true,
+  tabSize: 4,
+  useSoftTabs: true
+});
+
+// Language modes mapping
+const languageModes = {
+  python: "ace/mode/python",
+  c: "ace/mode/c_cpp",
+  cpp: "ace/mode/c_cpp",
+  java: "ace/mode/java"
+};
+
+// Language change handler
+document.getElementById("language").addEventListener("change", e => {
+  editor.session.setMode(languageModes[e.target.value]);
+  
+  const templates = {
+    python: '# Array input example:\nsize = int(input("Enter size of the Array: "))\narr = []\nfor i in range(size):\n    val = int(input(f"Enter num{i+1}: "))\n    arr.append(val)\n    \nprint("Array values:")\nfor val in arr:\n    print(val)',
+    c: '#include <stdio.h>\n\nint main() {\n    int n, i;\n    printf("Enter size: ");\n    scanf("%d", &n);\n    int arr[n];\n    for(i = 0; i < n; i++) {\n        printf("Enter num%d: ", i+1);\n        scanf("%d", &arr[i]);\n    }\n    printf("Array values:\\n");\n    for(i = 0; i < n; i++) {\n        printf("%d\\n", arr[i]);\n    }\n    return 0;\n}',
+    cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cout << "Enter size: ";\n    cin >> n;\n    int arr[n];\n    for(int i = 0; i < n; i++) {\n        cout << "Enter num" << i+1 << ": ";\n        cin >> arr[i];\n    }\n    cout << "Array values:" << endl;\n    for(int i = 0; i < n; i++) {\n        cout << arr[i] << endl;\n    }\n    return 0;\n}',
+    java: 'import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.print("Enter size: ");\n        int n = sc.nextInt();\n        int[] arr = new int[n];\n        for(int i = 0; i < n; i++) {\n            System.out.print("Enter num" + (i+1) + ": ");\n            arr[i] = sc.nextInt();\n        }\n        System.out.println("Array values:");\n        for(int i = 0; i < n; i++) {\n            System.out.println(arr[i]);\n        }\n        sc.close();\n    }\n}'
+  };
+  
+  editor.setValue(templates[e.target.value] || '', -1);
+});
+
+function getCode() { 
+  return editor.getValue(); 
+}
+
+// Console state
+let consoleState = {
+  code: '',
+  language: '',
+  inputs: [],
+  isWaitingForInput: false,
+  isFinished: false
+};
+
+// Append text to console output
+function appendToConsole(text, inline = false) {
+  const consoleOutput = document.getElementById('consoleOutput');
+  
+  if (inline) {
+    const span = document.createElement('span');
+    span.className = 'prompt-line';
+    span.textContent = text;
+    consoleOutput.appendChild(span);
+  } else {
+    const textNode = document.createTextNode(text);
+    consoleOutput.appendChild(textNode);
+  }
+  
+  consoleOutput.scrollTop = consoleOutput.scrollHeight;
+}
+
+// Clear console
+function clearConsole() {
+  document.getElementById('consoleOutput').innerHTML = '';
+}
+
+// Update help text
+function updateHelpText(text) {
+  document.getElementById('inputHelp').textContent = text;
+}
+
+// Extract prompt from code (first input call)
+function extractFirstPrompt(code, language) {
+  if (language === 'python') {
+    const match = code.match(/input\s*\(\s*["']([^"']*)["']\s*\)/);
+    return match ? match[1] : 'Enter value:';
+  } else if (language === 'c' || language === 'cpp') {
+    const match = code.match(/printf\s*\(\s*["']([^"']*)["']/);
+    return match ? match[1].replace(/\\n/g, '').trim() : 'Enter value:';
+  } else if (language === 'java') {
+    const match = code.match(/System\.out\.print\s*\(\s*["']([^"']*)["']/);
+    return match ? match[1].trim() : 'Enter value:';
+  }
+  return 'Enter value:';
+}
+
+// Split concatenated prompts - the backend returns all prompts on one line
+function splitPrompts(concatenatedPrompts) {
+  // Split by looking for patterns like "text: " followed by capital letter or "Enter"
+  // Example: "Enter size: Enter num1: " becomes ["Enter size:", "Enter num1:"]
+  const prompts = [];
+  
+  // Use regex to find all prompts ending with ":"
+  const regex = /([^:]+:)/g;
+  let match;
+  
+  while ((match = regex.exec(concatenatedPrompts)) !== null) {
+    const prompt = match[1].trim();
+    // Only add if it looks like an actual INPUT prompt (not output like "Array values:")
+    // Input prompts contain specific keywords that ask for user input
+    const lowerPrompt = prompt.toLowerCase();
+    if (prompt && (
+        lowerPrompt.includes('enter') || 
+        lowerPrompt.includes('input') ||
+        prompt.match(/num\d+:/) ||
+        (lowerPrompt.includes('size') && lowerPrompt.includes('enter'))
+    )) {
+      // Exclude output headers like "Array values:" "Results:" etc
+      if (!lowerPrompt.includes('values') && 
+          !lowerPrompt.includes('result') && 
+          !lowerPrompt.includes('output')) {
+        prompts.push(prompt);
+      }
+    }
+  }
+  
+  return prompts;
+}
+
+// Extract all prompts from the output (before the actual program output)
+function extractPromptsFromOutput(output) {
+  // The output format is: "prompt1: prompt2: prompt3: Actual Output\nlines"
+  // We need to find where the actual output starts
+  
+  const lines = output.split('\n');
+  const firstLine = lines[0]; // All prompts are on the first line
+  
+  // Split the concatenated prompts
+  const prompts = splitPrompts(firstLine);
+  
+  return prompts;
+}
+
+// Handle Enter key
+document.getElementById('consoleInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter' && !consoleState.isFinished && consoleState.isWaitingForInput) {
+    e.preventDefault();
+    submitInput();
+  }
+});
+
+// Submit input
+function submitInput() {
+  if (consoleState.isFinished || !consoleState.isWaitingForInput) {
+    return;
+  }
+  
+  const input = document.getElementById('consoleInput');
+  const value = input.value;
+  
+  // Display the input value in cyan (inline with prompt)
+  const span = document.createElement('span');
+  span.className = 'input-value';
+  span.textContent = value + '\n';
+  document.getElementById('consoleOutput').appendChild(span);
+  document.getElementById('consoleOutput').scrollTop = document.getElementById('consoleOutput').scrollHeight;
+  
+  // Store input
+  consoleState.inputs.push(value);
+  
+  // Clear input field
+  input.value = '';
+  
+  // Disable input temporarily
+  consoleState.isWaitingForInput = false;
+  input.disabled = true;
+  updateHelpText('Processing...');
+  
+  // Continue execution
+  setTimeout(() => {
+    executeNextStep();
+  }, 100);
+}
+
+// Execute code step by step
+async function executeNextStep() {
+  const stdin = consoleState.inputs.join('\n');
+  
+  try {
+    const response = await fetch("{% url 'run_test_code' %}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}"
+      },
+      body: JSON.stringify({
+        code: consoleState.code,
+        language: consoleState.language,
+        stdin: stdin
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      const output = data.output || '';
+      const stderr = data.stderr || '';
+      const compileError = data.compile_error || '';
+      
+      // Check for compile error first
+      if (compileError) {
+        appendToConsole('\n\n--- Compile Error ---\n');
+        appendToConsole(compileError);
+        finishExecution();
+        return;
+      }
+      
+      // Check for EOF error (needs more input)
+      if (stderr.includes('EOFError') || stderr.includes('EOF when reading a line')) {
+        // Extract all prompts from the concatenated output
+        const allPrompts = extractPromptsFromOutput(output);
+        
+        // The next prompt to show is at index = number of inputs we have
+        if (consoleState.inputs.length < allPrompts.length) {
+          const nextPrompt = allPrompts[consoleState.inputs.length];
+          appendToConsole(nextPrompt + ' ', true);
+        }
+        
+        // Enable input for next value
+        consoleState.isWaitingForInput = true;
+        const input = document.getElementById('consoleInput');
+        input.disabled = false;
+        input.focus();
+        updateHelpText('Enter value and press Enter...');
+        
+      } else if (stderr && !stderr.includes('EOFError')) {
+        // Other runtime error
+        appendToConsole('\n\n--- Runtime Error ---\n');
+        appendToConsole(stderr);
+        finishExecution();
+        
+      } else {
+        // Program completed successfully
+        console.log('=== FINAL OUTPUT DEBUG ===');
+        console.log('Full output:', output);
+        console.log('Output lines:', output.split('\n'));
+        
+        // The output format is: "prompt1: prompt2: ... RestOfFirstLine\nActualOutputLines"
+        const lines = output.split('\n');
+        
+        // Extract input prompts from first line
+        const firstLine = lines[0];
+        console.log('First line:', firstLine);
+        
+        const inputPrompts = splitPrompts(firstLine);
+        console.log('Input prompts extracted:', inputPrompts);
+        
+        // Now remove the input prompts from the first line to get remaining content
+        let remainingFirstLine = firstLine;
+        for (let prompt of inputPrompts) {
+          remainingFirstLine = remainingFirstLine.replace(prompt, '').trim();
+        }
+        console.log('Remaining first line after removing prompts:', remainingFirstLine);
+        
+        // Build the final output: remaining first line content + rest of lines
+        const outputParts = [];
+        if (remainingFirstLine) {
+          outputParts.push(remainingFirstLine);
+        }
+        
+        // Add all subsequent lines
+        for (let i = 1; i < lines.length; i++) {
+          outputParts.push(lines[i]);
+        }
+        
+        console.log('Output parts:', outputParts);
+        
+        const finalOutput = outputParts.join('\n').trim();
+        console.log('Final output to display:', finalOutput);
+        console.log('=========================');
+        
+        if (finalOutput) {
+          appendToConsole('\n' + finalOutput + '\n');
+        }
+        
+        appendToConsole('\n✓ Program completed successfully\n');
+        finishExecution();
+      }
+      
+    } else {
+      appendToConsole('\n⚠️ Error: ' + (data.error || 'Unknown error') + '\n');
+      finishExecution();
+    }
+    
+  } catch (error) {
+    appendToConsole('\n⚠️ Connection error: ' + error.message + '\n');
+    finishExecution();
+  }
+}
+
+// Finish execution
+function finishExecution() {
+  consoleState.isFinished = true;
+  consoleState.isWaitingForInput = false;
+  document.getElementById('consoleInput').disabled = true;
+  updateHelpText('Execution finished. Close console or run again.');
+}
+
+// Main run function
+function runCode() {
+  const code = getCode();
+  const language = document.getElementById('language').value;
+  
+  if (!code.trim()) {
+    alert('⚠️ Code cannot be empty!');
+    return;
+  }
+  
+  // Reset state
+  consoleState = {
+    code: code,
+    language: language,
+    inputs: [],
+    isWaitingForInput: true,
+    isFinished: false
+  };
+  
+  // Open modal
+  const modal = new bootstrap.Modal(document.getElementById('consoleModal'));
+  modal.show();
+  
+  // Initialize console
+  clearConsole();
+  
+  // Extract and show first prompt
+  const firstPrompt = extractFirstPrompt(code, language);
+  appendToConsole(firstPrompt + ' ', true);
+  
+  // Enable input
+  const input = document.getElementById('consoleInput');
+  input.disabled = false;
+  input.value = '';
+  input.focus();
+  updateHelpText('Enter value and press Enter to start...');
+}
+
+// Close console
+function closeConsole() {
+  const modal = bootstrap.Modal.getInstance(document.getElementById('consoleModal'));
+  if (modal) {
+    modal.hide();
+  }
+}
+
+// Auto-focus when modal opens
+document.getElementById('consoleModal').addEventListener('shown.bs.modal', function() {
+  document.getElementById('consoleInput').focus();
+});
+</script>

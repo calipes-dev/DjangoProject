@@ -1,12 +1,12 @@
+<!--StudentPlayground-->
+
+{%extends "base.html"%}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Playground - {{ problem.problem_title }}</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<link rel="icon" type="image/png" href="{% static 'img/favicon.ico' %}">
+
+
+{% block content %}
+
+
 <style>
 body { background-color: #1E2835; color: #e0e0e0; }
 .card { background-color: #212529; color: #e0e0e0; border-radius: 8px; border: 1px solid #2b3a55; margin-bottom: 15px; }
@@ -15,8 +15,195 @@ body { background-color: #1E2835; color: #e0e0e0; }
 .language-select { position: absolute; top: 10px; right: 10px; width: 120px; font-size: 0.85rem; z-index: 10; }
 .test-case-box { background: #12181f; color: #00ff99; padding: 10px; border-radius: 6px; font-family: monospace; margin-bottom: 10px; border: 1px solid #2b3a55; }
 #codeEditor { height: 100%; width: 100%; font-size: 14px; }
-textarea#userInput { width: 100%; background: #12181f; color: #00ff99; border: 1px solid #2b3a55; border-radius: 6px; font-family: monospace; padding: 8px; margin-bottom: 10px; }
-/* Add this CSS for loading spinner */
+
+/* Console Modal Styles */
+.console-modal .modal-dialog {
+  max-width: 900px;
+}
+
+.console-modal .modal-content {
+  background-color: #0a0e1a;
+  color: #00ff99;
+  border: 2px solid #00cc66;
+  border-radius: 8px;
+}
+
+.console-modal .modal-header {
+  background-color: #12181f;
+  border-bottom: 2px solid #00cc66;
+}
+
+.console-modal .modal-title {
+  color: #00ff99;
+  font-family: monospace;
+  font-size: 1.1rem;
+}
+
+.console-container {
+  display: flex;
+  flex-direction: column;
+  height: 550px;
+}
+
+.console-output {
+  background-color: #000000;
+  color: #00ff99;
+  font-family: 'Courier New', monospace;
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid #00cc66;
+  border-radius: 4px 4px 0 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.console-output::-webkit-scrollbar {
+  width: 8px;
+}
+
+.console-output::-webkit-scrollbar-track {
+  background: #12181f;
+}
+
+.console-output::-webkit-scrollbar-thumb {
+  background: #00cc66;
+  border-radius: 4px;
+}
+
+.console-input-area {
+  background-color: #12181f;
+  padding: 15px;
+  border: 1px solid #00cc66;
+  border-top: 2px solid #ffcc00;
+  border-radius: 0 0 4px 4px;
+}
+
+.console-input-area.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.input-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  position: relative;
+}
+
+.console-input-area textarea,
+.console-input-area input {
+  background-color: #000000;
+  color: #00ccff;
+  border: 1px solid #00cc66;
+  font-family: 'Courier New', monospace;
+  padding: 10px;
+  flex: 1;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.console-input-area textarea {
+  resize: vertical;
+  min-height: 40px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.console-input-area textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.console-input-area textarea::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.console-input-area textarea::-webkit-scrollbar-thumb {
+  background: #00cc66;
+  border-radius: 3px;
+}
+
+.console-input-area textarea:focus,
+.console-input-area input:focus {
+  outline: none;
+  border-color: #00ff99;
+  box-shadow: 0 0 10px rgba(0, 255, 153, 0.3);
+}
+
+.console-input-area textarea:disabled,
+.console-input-area input:disabled {
+  background-color: #1a1a1a;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.console-output .prompt-line {
+  color: #ffcc00;
+  display: inline;
+}
+
+.console-output .input-value {
+  color: #00ccff;
+  font-weight: bold;
+  display: inline;
+}
+
+.console-output .output-text {
+  color: #00ff99;
+}
+
+.console-output .error {
+  color: #ff6b6b;
+}
+
+.console-output .info {
+  color: #888;
+}
+
+.btn-console {
+  background-color: #00cc66;
+  color: #000;
+  border: none;
+  font-weight: bold;
+  font-family: monospace;
+  padding: 10px 20px;
+  white-space: nowrap;
+}
+
+.btn-console:hover:not(:disabled) {
+  background-color: #00ff99;
+  color: #000;
+}
+
+.btn-console:disabled {
+  background-color: #2b3a55;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.btn-console-danger {
+  background-color: #ff6b6b;
+  color: #fff;
+  border: none;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+.btn-console-danger:hover {
+  background-color: #ff4444;
+  color: #fff;
+}
+
+.input-help-text {
+  font-size: 11px;
+  color: #888;
+  margin-top: 8px;
+  font-family: monospace;
+}
+
+/* Loading animation for check modal */
 .loading-spinner {
   display: flex;
   align-items: center;
@@ -29,9 +216,9 @@ textarea#userInput { width: 100%; background: #12181f; color: #00ff99; border: 1
   color: #28a745;
 }
 </style>
-</head>
-<body>
+
 <div class="container-fluid mt-4">
+  {% include "partials/side_content_navbar.html" %}
   <div class="row">
     <!-- Problem Details -->
     <div class="col-md-3">
@@ -48,13 +235,12 @@ textarea#userInput { width: 100%; background: #12181f; color: #00ff99; border: 1
                style="display:none;"></div>
         </div>
       </div>
-     
     </div>
 
     <!-- Code Editor -->
     <div class="col-md-6">
       <div class="card editor-container">
-        <select id="language" class="form-select language-select bg-dark text-white">
+        <select id="language" class="form-select language-select text-white" style="background-color: black;">
           <option value="python">Python</option>
           <option value="c">C</option>
           <option value="cpp">C++</option>
@@ -62,18 +248,16 @@ textarea#userInput { width: 100%; background: #12181f; color: #00ff99; border: 1
         </select>
         <div id="codeEditor"># Write your code here</div>
       </div>
-      <textarea id="userInput" placeholder="Enter input for input() calls here..."></textarea>
       <div class="d-flex justify-content-between mt-2">
-        <button class="btn btn-success" onclick="runCode(false)" data-bs-toggle="modal" data-bs-target="#terminalModal">▶ Run Code</button>
-        <button class="btn btn-primary" onclick="runCode(true)" data-bs-toggle="modal" data-bs-target="#checkModal">🧩 Check Code</button>
+        <button class="btn btn-success" onclick="runCode()">▶ Run Code</button>
+        <button class="btn btn-primary" onclick="checkCode()" data-bs-toggle="modal" data-bs-target="#checkModal">🧩 Check Code</button>
       </div>
     </div>
 
     <!-- Expected Output -->
     <div class="col-md-3">
-
       <!--Input-->
-       <div class="card">
+      <div class="card">
         <div class="card-header">Test Cases</div>
         <div class="card-body">
           {% for tc in problem.problemtestcase_set.all %}
@@ -88,57 +272,87 @@ textarea#userInput { width: 100%; background: #12181f; color: #00ff99; border: 1
         </div>
       </div>
 
-  <div class="card">
-    <div class="card-header">Expected Output</div>
-    <div class="card-body">
-      {% for tc in problem.problemtestcase_set.all %}
-        <div class="test-case-box">
-          {% if forloop.counter == 3 %}
-            <!-- Hidden: show status badge only -->
-            <span id="tcStatus{{ forloop.counter }}" class="badge bg-secondary">Hidden</span>
-          {% else %}
-            {{ tc.expected_output|linebreaksbr }}
-            <span id="tcStatus{{ forloop.counter }}" class="badge bg-secondary ms-2">Pending</span>
-          {% endif %}
+      <div class="card">
+        <div class="card-header">Expected Output</div>
+        <div class="card-body">
+          {% with total=problem.problemtestcase_set.all|length %}
+          {% for tc in problem.problemtestcase_set.all %}
+            <div class="test-case-box">
+              {% if forloop.counter == total %}
+                <!-- Hidden: show status badge only -->
+                <span id="tcStatus{{ forloop.counter }}" class="badge bg-secondary">Hidden</span>
+              {% else %}
+                {{ tc.expected_output|linebreaksbr }}
+                <span id="tcStatus{{ forloop.counter }}" class="badge bg-secondary ms-2">Pending</span>
+              {% endif %}
+            </div>
+          {% empty %}
+            <div>No expected outputs available.</div>
+          {% endfor %}
+          {% endwith %}
+          <div class="mt-3">
+            <span id="studentScoreBadge" class="badge bg-info text-dark" style="font-size:1rem;">
+              Score: <span id="studentScoreValue">0</span>/<span id="studentScoreTotal">{{ problem.total_score }}</span>
+            </span>
+          </div>
         </div>
-      {% empty %}
-        <div>No expected outputs available.</div>
-      {% endfor %}
-      <div class="mt-3">
-        <span id="studentScoreBadge" class="badge bg-info text-dark" style="font-size:1rem;">
-          Score: <span id="studentScoreValue">0</span>/<span id="studentScoreTotal">{{ problem.total_score }}</span>
-        </span>
       </div>
     </div>
   </div>
-
-   <!-- Time Remaining Card -->
-<div class="card mt-3">
-  <div class="card-header">⏰ Time Remaining</div>
-  <div class="card-body text-center">
-    <h4 id="timerDisplay" class="text-warning fw-bold">--:--</h4>
-  </div>
 </div>
 
-<!-- Timer metadata (for JS) -->
-<div id="problemTimer" data-timelimit="{{ problem.time_limit }}" style="display:none;"></div>
-
-
-</div>
-
-  </div>
-</div>
-
-<!-- Terminal Modal -->
-<div class="modal fade" id="terminalModal" tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content" style="background-color:#12181f; color:white;">
+<!-- Interactive Console Modal (for Run Code) -->
+<div class="modal fade console-modal" id="consoleModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Terminal Output</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <h5 class="modal-title">
+          <i class="fas fa-terminal"></i> Interactive Console
+        </h5>
+        <button type="button" class="btn-close btn-close-white" onclick="closeConsole()" id="closeConsoleBtn"></button>
       </div>
-      <div class="modal-body">
-        <pre id="terminalOutput" style="white-space: pre-wrap; font-family: monospace; color:#00ff99;">Waiting for code execution...</pre>
+      <div class="modal-body p-0">
+        <div class="console-container">
+          <div class="console-output" id="consoleOutput">
+            <span class="info">Ready to execute...</span>
+          </div>
+          
+          <div class="console-input-area" id="consoleInputArea">
+            <div class="input-line" style="position: relative;">
+              <textarea 
+                id="consoleInput" 
+                class="form-control" 
+                placeholder="Type your input..."
+                autocomplete="off"
+                style="resize: vertical; min-height: 40px; max-height: 200px; padding-right: 35px;"
+              ></textarea>
+              <i class="fas fa-paper-plane" 
+                 onclick="submitInput()"
+                 id="submitInputIcon"
+                 style="position: absolute; right: 12px; top: 12px; color: #00ff99; cursor: pointer; transition: all 0.2s; font-size: 1rem;"
+                 onmouseover="this.style.color='#00ff00'; this.style.transform='scale(1.15)'"
+                 onmouseout="this.style.color='#00ff99'; this.style.transform='scale(1)'"></i>
+            </div>
+            <div class="input-help-text" id="inputHelp">
+              Waiting to start...
+            </div>
+            
+            <!-- Info box for C/C++ -->
+            <div id="batchInputInfo" style="display: none; margin-top: 10px; padding: 8px; background-color: rgba(0, 204, 102, 0.1); border: 1px solid #00cc66; border-radius: 4px;">
+              <div style="font-size: 11px; color: #00ff99; font-family: monospace;">
+                <i class="fas fa-info-circle"></i> <strong>Batch Input Mode:</strong> Enter values separated by spaces (e.g., 3 1 2 3) or one per line
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="background-color: #12181f; border-top: 2px solid #00cc66;">
+        <button type="button" class="btn btn-console" onclick="rerunCode()" id="rerunBtn" style="margin-right: auto;">
+          <i class="fas fa-redo"></i> Rerun
+        </button>
+        <button type="button" class="btn btn-console-danger" onclick="closeConsole()">
+          <i class="fas fa-times"></i> Close Console
+        </button>
       </div>
     </div>
   </div>
@@ -170,331 +384,7 @@ textarea#userInput { width: 100%; background: #12181f; color: #00ff99; border: 1
   </div>
 </div>
 
-<!-- Ace Editor -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.2/ace.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.2/ext-language_tools.js"></script>
-<script>
-let editor = ace.edit("codeEditor");
-editor.setTheme("ace/theme/dracula");
-editor.session.setMode("ace/mode/python");
-editor.setOptions({
-  enableBasicAutocompletion: true,
-  enableLiveAutocompletion: true,
-  fontSize: "14px",
-  showPrintMargin: false,
-  highlightActiveLine: true,
-  tabSize: 4,
-  useSoftTabs: true
-});
-
-const languageModes = {
-  python: "ace/mode/python",
-  c: "ace/mode/c_cpp",
-  cpp: "ace/mode/c_cpp",
-  java: "ace/mode/java"
-};
-document.getElementById("language").addEventListener("change", e => {
-  editor.session.setMode(languageModes[e.target.value]);
-});
-
-function getCode() { return editor.getValue(); }
-
-function getProblemTestCount() {
-  const meta = document.getElementById('problemMeta');
-  return parseInt(meta?.dataset?.testCount || '0', 10);
-}
-function getProblemTotalScore() {
-  const meta = document.getElementById('problemMeta');
-  return parseInt(meta?.dataset?.totalScore || '0', 10);
-}
-
-function animateTestUpdates(testResults) {
-  const totalPoints = getProblemTestCount() * 10;
-  let runningScore = 0;
-
-  testResults.forEach((res, idx) => {
-    const delay = idx * 350;
-    setTimeout(() => {
-      const id = `tcStatus${idx+1}`;
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (res === true) {
-        el.className = 'badge bg-success';
-        el.textContent = `PASSED`;
-        runningScore += 10;
-      } else if (res === false) {
-        el.className = 'badge bg-danger';
-        el.textContent = `FAILED`;
-      } else {
-        el.className = 'badge bg-secondary';
-        el.textContent = `Hidden`;
-      }
-      document.getElementById('studentScoreValue').textContent = runningScore;
-      document.getElementById('studentScoreTotal').textContent = totalPoints;
-    }, delay);
-  });
-}
-
-function parseResultSummary(resultSummary) {
-  const lines = (resultSummary || '').split('\n');
-  const testCount = getProblemTestCount();
-  const results = new Array(testCount).fill(null);
-  lines.forEach(line => {
-    const m = line.match(/Test\s*(\d+):\s*(Passed|Failed|Error)/i);
-    if (m) {
-      const idx = parseInt(m[1], 10) - 1;
-      const status = m[2].toLowerCase();
-      if (status === 'passed') results[idx] = true;
-      else results[idx] = false;
-    }
-  });
-  return results;
-}
-
-async function runCode(checkMode=false) {
-  const modalOutput = checkMode ? document.getElementById('checkResult') : document.getElementById('terminalOutput');
-  const checkLoading = document.getElementById('checkLoading');
-
-  if (checkMode) {
-    modalOutput.textContent = "";
-    checkLoading.style.display = "flex";
-  } else {
-    modalOutput.textContent = "Running...";
-  }
-
-  try {
-    const code = getCode();
-    const lang = document.getElementById('language').value;
-    const problemId = "{{ problem.problem_id }}";
-    const stdinData = document.getElementById('userInput').value;
-    const url = "{% url 'run_playground_code' %}";
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": "{{ csrf_token }}"
-      },
-      body: JSON.stringify({
-        code: code,
-        language: lang,
-        check_mode: checkMode,
-        problem_id: problemId,
-        stdin: stdinData
-      })
-    });
-
-    const data = await response.json();
-
-    if (checkMode) {
-      checkLoading.style.display = "none";
-      if (data.error) { modalOutput.textContent = "⚠️ " + data.error; return; }
-
-      const testResults = parseResultSummary(data.result_summary);
-      animateTestUpdates(testResults);
-      modalOutput.innerHTML = `<pre style="color:#28a745;">${data.result_summary}</pre>`;
-      document.getElementById('submitBtn').style.display = 'inline-block';
-    } else {
-      modalOutput.textContent = data.output || "No output.";
-    }
-
-  } catch (err) {
-    if (checkMode) checkLoading.style.display = "none";
-    modalOutput.textContent = "⚠️ Failed to connect to server: " + err.message;
-    console.error(err);
-  }
-}
-
-let hasSubmitted = false;
-
-// Named beforeunload handler so we can remove it when needed
-function beforeUnloadHandler(e) {
-  if (!hasSubmitted) {
-    e.preventDefault();
-    e.returnValue = "Are you sure you want to leave? Your work will be submitted automatically.";
-    autoSubmitOnTimeout();
-    hasSubmitted = true;
-  }
-}
-window.addEventListener("beforeunload", beforeUnloadHandler);
-
-async function submitCode() {
-  const checkResultDiv = document.getElementById('checkResult');
-  const checkLoading = document.getElementById('checkLoading');
-
-  checkResultDiv.textContent = "";
-  checkLoading.style.display = "flex";
-
-  try {
-    const code = getCode();
-    const problemId = "{{ problem.problem_id }}";
-    const lang = document.getElementById('language').value;
-
-    const response = await fetch(`/submit_problem/${problemId}/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": "{{ csrf_token }}"
-      },
-      body: JSON.stringify({
-        problem_id: problemId,
-        code: code,
-        language: lang
-      })
-    });
-
-    const data = await response.json();
-    checkLoading.style.display = "none";
-
-    if (data.success) {
-      const testResults = parseResultSummary(data.result_summary);
-      animateTestUpdates(testResults);
-
-      const finalScore = data.score ?? (testResults.filter(Boolean).length * 10);
-      document.getElementById('studentScoreValue').textContent = finalScore;
-      document.getElementById('studentScoreTotal').textContent = (getProblemTestCount() * 10);
-
-      checkResultDiv.innerHTML = `<pre style="color:#28a745;">${data.result_summary}</pre>`;
-
-      // ✅ Disable unload prompt after manual submit
-      hasSubmitted = true;
-      window.removeEventListener("beforeunload", beforeUnloadHandler);
-
-      localStorage.removeItem(`problem_timer_{{ problem.problem_id }}`);
-      setTimeout(() => {
-        window.location.href = data.redirect_url || "{% url 'StudentClass' %}";
-      }, 1500);
-    } else {
-      checkResultDiv.textContent = "⚠️ " + (data.message || "Submission failed.");
-    }
-  } catch (error) {
-    checkLoading.style.display = "none";
-    checkResultDiv.textContent = "⚠️ Submission failed: " + error.message;
-    console.error(error);
-  }
-}
-
-// =============================
-//  COUNTDOWN TIMER (Persistent)
-// =============================
-(function startPersistentCountdown() {
-  const timerMeta = document.getElementById('problemTimer');
-  if (!timerMeta) return;
-
-  const problemId = "{{ problem.problem_id }}";
-  const storageKey = `problem_timer_${problemId}`;
-  const timeLimitMinutes = parseInt(timerMeta.dataset.timelimit || '0', 10);
-  if (isNaN(timeLimitMinutes) || timeLimitMinutes <= 0) return;
-
-  const timerDisplay = document.getElementById('timerDisplay');
-  let deadline;
-
-  const savedData = localStorage.getItem(storageKey);
-  if (savedData) {
-    const parsed = JSON.parse(savedData);
-    deadline = new Date(parsed.deadline);
-  } else {
-    const now = new Date();
-    deadline = new Date(now.getTime() + timeLimitMinutes * 60 * 1000);
-    localStorage.setItem(storageKey, JSON.stringify({ deadline: deadline.toISOString() }));
-  }
-
-  const tick = setInterval(() => {
-    const now = new Date();
-    const remaining = Math.floor((deadline - now) / 1000);
-
-    if (remaining <= 0) {
-      clearInterval(tick);
-      timerDisplay.textContent = "⏱️ Time’s up!";
-      timerDisplay.classList.remove('text-warning');
-      timerDisplay.classList.add('text-danger');
-      localStorage.removeItem(storageKey);
-      alert("Time is up! Your code will be submitted automatically.");
-      autoSubmitOnTimeout();
-      return;
-    }
-
-    const m = Math.floor(remaining / 60);
-    const s = remaining % 60;
-    timerDisplay.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  }, 1000);
-})();
-
-// =============================
-// AUTO SUBMIT ON TIMEOUT
-// =============================
-async function autoSubmitOnTimeout() {
-  const checkResultDiv = document.getElementById('checkResult');
-  const checkLoading = document.getElementById('checkLoading');
-
-  checkResultDiv.textContent = "";
-  checkLoading.style.display = "flex";
-
-  try {
-    const code = getCode();
-    const problemId = "{{ problem.problem_id }}";
-    const lang = document.getElementById('language').value;
-
-    const response = await fetch(`/submit_problem/${problemId}/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": "{{ csrf_token }}"
-      },
-      body: JSON.stringify({
-        problem_id: problemId,
-        code: code,
-        language: lang
-      })
-    });
-
-    const data = await response.json();
-    checkLoading.style.display = "none";
-    localStorage.removeItem(`problem_timer_${problemId}`);
-
-    // ✅ Disable unload handler after auto-submit
-    hasSubmitted = true;
-    window.removeEventListener("beforeunload", beforeUnloadHandler);
-
-    if (data.success) {
-      alert("✅ Time’s up! Your code has been submitted automatically.");
-      window.location.href = data.redirect_url;
-    } else {
-      alert("⚠️ Auto-submit failed. Redirecting...");
-      window.location.href = "{% url 'student_class_details' problem.class_id.class_id %}";
-    }
-  } catch (error) {
-    checkLoading.style.display = "none";
-    console.error(error);
-    alert("⚠️ Error during auto submission. Redirecting...");
-    window.location.href = "{% url 'student_class_details' problem.class_id.class_id %}";
-  }
-}
-
-// =============================
-//  PREVENT BACK NAVIGATION
-// =============================
-(function preventBackNavigation() {
-  history.pushState(null, null, location.href);
-  window.onpopstate = function () {
-    history.pushState(null, null, location.href);
-    alert("🚫 You cannot go back during the problem session.");
-  };
-})();
-
-// =============================
-//  DETECT TAB SWITCH OR PAGE CLOSE
-// =============================
-window.addEventListener("blur", () => {
-  if (!hasSubmitted) {
-    alert("🚫 You switched tabs! Your session will end for security.");
-    autoSubmitOnTimeout();
-    hasSubmitted = true;
-  }
-});
-</script>
+{% include "partials/scripts.html" %}
 
 
-
-</body>
-</html>
+{% endblock %}

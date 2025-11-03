@@ -1,0 +1,1374 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* Add Highlight.js for syntax highlighting */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css');
+
+.typing-cursor{
+    display:inline-block;
+    width:1px;
+    background-color:#00ff99;
+    animation: blink 1s step-start infinite;
+    margin-left:1px;
+}
+@keyframes blink{
+    50%{background-color:transparent;}
+}
+
+body { 
+  background-color: #1E2835; 
+  color: #e0e0e0; 
+}
+
+.card { 
+  background-color: #212529; 
+  color: #e0e0e0; 
+  border-radius: 8px; 
+  border: 1px solid #2b3a55; 
+  margin-bottom: 15px; 
+}
+
+.card-header { 
+  background-color: #1E2835; 
+  color: #00cc66; 
+  font-weight: bold; 
+}
+
+.editor-container { 
+  height: 600px; 
+  position: relative; 
+}
+
+.language-select { 
+  position: absolute; 
+  top: 10px; 
+  right: 10px; 
+  width: 120px; 
+  font-size: 0.85rem; 
+  z-index: 10; 
+}
+
+#codeEditor { 
+  height: 100%; 
+  width: 100%; 
+  font-size: 14px; 
+}
+
+.info-box {
+  background: #2b3a55;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+/* Enhanced Message Styles */
+.message-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-content {
+  padding: 12px 16px;
+  border-radius: 12px;
+  max-width: 85%;
+  word-wrap: break-word;
+  position: relative;
+  line-height: 1.6;
+}
+
+.user-message .message-content {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  margin-left: auto;
+}
+
+.ai-message .message-content {
+  align-self: flex-start;
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border: 1px solid #4a5568;
+}
+
+/* Message Controls */
+.message-controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  padding: 0 4px;
+}
+
+.user-message .message-controls {
+  justify-content: flex-end;
+}
+
+.ai-message .message-controls {
+  justify-content: flex-start;
+}
+
+.control-btn {
+  background: none;
+  border: none;
+  color: #a0aec0;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  border-radius: 4px;
+}
+
+.control-btn:hover {
+  color: #00ff99;
+  background-color: rgba(0, 255, 153, 0.1);
+}
+
+.control-btn i {
+  margin-right: 4px;
+}
+
+/* Code Block Styling */
+.ai-message pre {
+  background-color: #0d1117 !important;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 0;
+  margin: 12px 0;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+.code-header {
+  background-color: #161b22;
+  padding: 6px 12px;
+  border-bottom: 1px solid #30363d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 32px;
+}
+
+.code-language {
+  color: #58a6ff;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+}
+
+.code-copy-btn {
+  background-color: transparent;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.6rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: monospace;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  line-height: 1;
+}
+
+.code-copy-btn i {
+  font-size: 0.65rem;
+}
+
+.code-copy-btn:hover {
+  background-color: #238636;
+  border-color: #238636;
+  color: #fff;
+}
+
+.code-copy-btn.copied {
+  background-color: #1a7f37;
+  border-color: #1a7f37;
+  color: #fff;
+}
+
+.ai-message pre code {
+  display: block;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: #e6edf3;
+}
+
+/* Enhanced syntax highlighting colors for better readability */
+.ai-message pre code .hljs-keyword,
+.ai-message pre code .hljs-selector-tag,
+.ai-message pre code .hljs-literal,
+.ai-message pre code .hljs-section,
+.ai-message pre code .hljs-link {
+  color: #ff7b72;
+  font-weight: 500;
+}
+
+.ai-message pre code .hljs-string,
+.ai-message pre code .hljs-attr {
+  color: #a5d6ff;
+}
+
+.ai-message pre code .hljs-number,
+.ai-message pre code .hljs-built_in,
+.ai-message pre code .hljs-builtin-name {
+  color: #79c0ff;
+  font-weight: 500;
+}
+
+.ai-message pre code .hljs-function,
+.ai-message pre code .hljs-title {
+  color: #d2a8ff;
+  font-weight: 600;
+}
+
+.ai-message pre code .hljs-comment,
+.ai-message pre code .hljs-quote {
+  color: #8b949e;
+  font-style: italic;
+}
+
+.ai-message pre code .hljs-variable,
+.ai-message pre code .hljs-template-variable {
+  color: #ffa657;
+}
+
+.ai-message pre code .hljs-type,
+.ai-message pre code .hljs-class .hljs-title {
+  color: #f69d50;
+  font-weight: 500;
+}
+
+.ai-message pre code .hljs-params {
+  color: #e6edf3;
+}
+
+.ai-message pre code .hljs-meta {
+  color: #79c0ff;
+}
+
+.ai-message pre code .hljs-operator {
+  color: #ff7b72;
+}
+
+.ai-message pre code .hljs-name {
+  color: #7ee787;
+}
+
+.ai-message pre code .hljs-punctuation {
+  color: #c9d1d9;
+}
+
+/* Inline code */
+.ai-message code:not(pre code) {
+  background-color: #1a202c;
+  color: #00ff99;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+  border: 1px solid #4a5568;
+}
+
+/* Markdown Styling */
+.ai-message h2, .ai-message h3 {
+  color: #00ff99;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.ai-message strong {
+  color: #ffd700;
+  font-weight: 600;
+}
+
+.ai-message ul, .ai-message ol {
+  margin: 8px 0;
+  padding-left: 24px;
+}
+
+.ai-message li {
+  margin: 4px 0;
+}
+
+.ai-message blockquote {
+  border-left: 3px solid #00cc66;
+  padding-left: 12px;
+  margin: 12px 0;
+  color: #cbd5e0;
+  font-style: italic;
+}
+
+/* Console Modal Styles */
+.console-modal .modal-dialog {
+  max-width: 900px;
+}
+
+.console-modal .modal-content {
+  background-color: #0a0e1a;
+  color: #00ff99;
+  border: 2px solid #00cc66;
+  border-radius: 8px;
+}
+
+.console-modal .modal-header {
+  background-color: #12181f;
+  border-bottom: 2px solid #00cc66;
+}
+
+.console-modal .modal-title {
+  color: #00ff99;
+  font-family: monospace;
+  font-size: 1.1rem;
+}
+
+.console-container {
+  display: flex;
+  flex-direction: column;
+  height: 550px;
+}
+
+.console-output {
+  background-color: #000000;
+  color: #00ff99;
+  font-family: 'Courier New', monospace;
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid #00cc66;
+  border-radius: 4px 4px 0 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.console-output::-webkit-scrollbar {
+  width: 8px;
+}
+
+.console-output::-webkit-scrollbar-track {
+  background: #12181f;
+}
+
+.console-output::-webkit-scrollbar-thumb {
+  background: #00cc66;
+  border-radius: 4px;
+}
+
+.console-input-area {
+  background-color: #12181f;
+  padding: 15px;
+  border: 1px solid #00cc66;
+  border-top: 2px solid #ffcc00;
+  border-radius: 0 0 4px 4px;
+}
+
+.console-input-area.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.input-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  position: relative;
+}
+
+.console-input-area textarea,
+.console-input-area input {
+  background-color: #000000;
+  color: #00ccff;
+  border: 1px solid #00cc66;
+  font-family: 'Courier New', monospace;
+  padding: 10px;
+  flex: 1;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.console-input-area textarea {
+  resize: vertical;
+  min-height: 40px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.console-input-area textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.console-input-area textarea::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.console-input-area textarea::-webkit-scrollbar-thumb {
+  background: #00cc66;
+  border-radius: 3px;
+}
+
+.console-input-area textarea:focus,
+.console-input-area input:focus {
+  outline: none;
+  border-color: #00ff99;
+  box-shadow: 0 0 10px rgba(0, 255, 153, 0.3);
+}
+
+.console-input-area textarea:disabled,
+.console-input-area input:disabled {
+  background-color: #1a1a1a;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.console-output .prompt-line {
+  color: #ffcc00;
+  display: inline;
+}
+
+.console-output .input-value {
+  color: #00ccff;
+  font-weight: bold;
+  display: inline;
+}
+
+.console-output .output-text {
+  color: #00ff99;
+}
+
+.console-output .error {
+  color: #ff6b6b;
+}
+
+.console-output .info {
+  color: #888;
+}
+
+.btn-console {
+  background-color: #00cc66;
+  color: #000;
+  border: none;
+  font-weight: bold;
+  font-family: monospace;
+  padding: 10px 20px;
+  white-space: nowrap;
+}
+
+.btn-console:hover:not(:disabled) {
+  background-color: #00ff99;
+  color: #000;
+}
+
+.btn-console:disabled {
+  background-color: #2b3a55;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.btn-console-danger {
+  background-color: #ff6b6b;
+  color: #fff;
+  border: none;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+.btn-console-danger:hover {
+  background-color: #ff4444;
+  color: #fff;
+}
+
+.input-help-text {
+  font-size: 11px;
+  color: #888;
+  margin-top: 8px;
+  font-family: monospace;
+}
+
+#userMessage::-webkit-scrollbar {
+  display: none;
+}
+
+/* Loading animation */
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background-color: #00ff99;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+</style>
+
+<div class="g-sidenav-show text-white">
+  <div class="min-height-300 position-absolute w-100"></div>
+
+  {% if sidebar == 'teacher' %}
+    {% include 'partials/sidebar.html' %}
+  {% else %}
+      {% include 'partials/StudentSidebar.html' %}
+  {% endif %}
+
+
+  <main class="main-content position-relative border-radius-lg">
+    {% include "partials/side_content_navbar.html" %}
+
+    <div class="container-fluid mb-5">
+      <div class="row">
+
+        <!-- Code Editor Panel -->
+        <div class="col-md-8">
+          <div class="card" style="max-height: 800px; overflow: hidden;">
+            <div class="card-header p-2">
+              <i class="fas fa-edit"></i> Code Editor
+              <select id="language" class="form-select language-select text-white mb-2" style="background-color: black; height: 40px; font-size: 0.9rem;">
+                  <option value="python">Python</option>
+                  <option value="c">C</option>
+                  <option value="cpp">C++</option>
+                  <option value="java">Java</option>
+                </select>
+            </div>
+            <div class="card-body p-1">
+              <div class="editor-container" style="height: 490px; overflow-y: auto;">
+                
+                <div id="codeEditor" style="height: 490px; font-size: 0.9rem;">
+# Write your Python code below
+
+def main():
+    # Your code here
+    pass
+
+if __name__ == "__main__":
+    main()
+
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-start mt-3 mb-1 ms-3">
+              <button class="btn btn-success btn-md" onclick="runCode()" style="min-width: 150px;">
+                <i class="fas fa-play me-2"></i> Run Code
+              </button>
+            </div>
+          </div>
+        </div>
+
+      <!-- AI Chat Panel - Enhanced with Dynamic Rate Limits -->
+        <div class="col-md-4">
+          <div class="card" style="height: 619px; display: flex; flex-direction: column;">
+
+            <!-- Enhanced Header with Dynamic Stats -->
+            <div class="card-header p-3" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%); border-bottom: 2px solid #00ff99;">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                  <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #00ff99 0%, #00cc66 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-robot" style="color: #000; font-size: 1.2rem;"></i>
+                  </div>
+                  <div>
+                    <div style="font-size: 1.1rem; font-weight: 600; color: #fff; letter-spacing: 0.3px;">Paulibot</div>
+                    <!-- ✅ Enhanced usage stats display -->
+                    <div id="usageStats" 
+                        style="font-size: 0.65rem; color: #a0aec0; margin-top: -2px; cursor: help; transition: all 0.2s;"
+                        onmouseover="this.style.transform='scale(1.05)'"
+                        onmouseout="this.style.transform='scale(1)'">
+                      Loading stats...
+                    </div>
+                  </div>
+                </div>
+                <button class="btn btn-sm" onclick="startNewChat()" style="background-color: rgba(0, 255, 153, 0.1); color: #00ff99; border: 1px solid #00ff99; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; transition: all 0.2s;">
+                  <i class="fas fa-plus me-1"></i>New Chat
+                </button>
+              </div>
+              
+              <!-- ✅ NEW: Quick Stats Bar -->
+              <div id="quickStatsBar" style="margin-top: 8px; padding: 6px 8px; background: rgba(0, 0, 0, 0.2); border-radius: 4px; display: none;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #cbd5e0;">
+                  <span>Daily: <strong id="dailyUsage">-/-</strong></span>
+                  <span>RPM: <strong id="rpmUsage">-/-</strong></span>
+                  <span>Users: <strong id="totalUsers">-</strong></span>
+                </div>
+                <div style="margin-top: 4px; height: 3px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden;">
+                  <div id="usageProgressBar" style="height: 100%; background: linear-gradient(90deg, #00ff99, #00cc66); width: 0%; transition: width 0.3s;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat messages container -->
+            <div id="aiChatContainer" class="card-body flex-grow-1 overflow-auto" style="background-color: #111827; color: #fff; font-size: 0.9rem;">
+              <div id="chatMessages" style="display: flex; flex-direction: column; gap: 8px; padding: 8px;">
+                <div class="text-center" style="padding: 20px; color: #718096;">
+                  <i class="fas fa-robot" style="font-size: 3rem; color: #00ff99; margin-bottom: 12px;"></i>
+                  <div style="font-size: 1.1rem; font-weight: bold; color: #00ff99;">Welcome to Paulibot! 🤖</div>
+                  <div style="font-size: 0.85rem; margin-top: 8px;">Your AI coding assistant is ready to help</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Input box -->
+            <div class="card-footer p-2" style="gap: 5px; display: flex;">
+              <div style="position: relative; flex-grow: 1;">
+                <textarea id="userMessage" class="form-control" placeholder="Ask Paulibot anything..." 
+                          style="width: 100%; background-color: #1f2937; color: #fff; border-radius: 0.375rem; border: 1px solid #4a5568; font-size: 0.85rem; height: 50px; padding: 4px 30px 4px 8px; resize: none; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;"
+                          maxlength="500"></textarea>
+                <!-- ✅ Character counter -->
+                <div id="charCounter" style="position: absolute; left: 8px; bottom: 4px; font-size: 0.65rem; color: #718096;">
+                  0/500
+                </div>
+                <i class="fas fa-paper-plane" 
+                  id="sendButton"
+                  style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #00ff99; cursor: pointer; transition: all 0.2s;"
+                  onclick="sendMessage()"
+                  onmouseover="this.style.color='#00ff00'; this.style.transform='translateY(-50%) scale(1.1)'"
+                  onmouseout="this.style.color='#00ff99'; this.style.transform='translateY(-50%) scale(1)'"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <!-- Interactive Console Modal -->
+    <div class="modal fade console-modal" id="consoleModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="fas fa-terminal"></i> Interactive Console
+            </h5>
+            <button type="button" class="btn-close btn-close-white" onclick="closeConsole()" id="closeConsoleBtn"></button>
+          </div>
+          <div class="modal-body p-0">
+            <div class="console-container">
+              <div class="console-output" id="consoleOutput">
+                <span class="info">Ready to execute...</span>
+              </div>
+              
+              <div class="console-input-area" id="consoleInputArea">
+                <div class="input-line" style="position: relative;">
+                  <textarea 
+                    id="consoleInput" 
+                    class="form-control" 
+                    placeholder="Type your input..."
+                    autocomplete="off"
+                    style="resize: vertical; min-height: 40px; max-height: 200px; padding-right: 35px;"
+                  ></textarea>
+                  <i class="fas fa-paper-plane" 
+                     onclick="submitInput()"
+                     id="submitInputIcon"
+                     style="position: absolute; right: 12px; top: 12px; color: #00ff99; cursor: pointer; transition: all 0.2s; font-size: 1rem;"
+                     onmouseover="this.style.color='#00ff00'; this.style.transform='scale(1.15)'"
+                     onmouseout="this.style.color='#00ff99'; this.style.transform='scale(1)'"></i>
+                </div>
+                <div class="input-help-text" id="inputHelp">
+                  Waiting to start...
+                </div>
+                
+                <!-- Info box for C/C++ -->
+                <div id="batchInputInfo" style="display: none; margin-top: 10px; padding: 8px; background-color: rgba(0, 204, 102, 0.1); border: 1px solid #00cc66; border-radius: 4px;">
+                  <div style="font-size: 11px; color: #00ff99; font-family: monospace;">
+                    <i class="fas fa-info-circle"></i> <strong>Batch Input Mode:</strong> Enter values separated by spaces (e.g., 3 1 2 3) or one per line
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" style="background-color: #12181f; border-top: 2px solid #00cc66;">
+            <button type="button" class="btn btn-console" onclick="rerunCode()" id="rerunBtn" style="margin-right: auto;">
+              <i class="fas fa-redo"></i> Rerun
+            </button>
+            <button type="button" class="btn btn-console-danger" onclick="closeConsole()">
+              <i class="fas fa-times"></i> Close Console
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+  {% include "partials/footer.html" %}
+</div>
+
+<!-- Highlight.js for syntax highlighting -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/c.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
+
+<script>
+const chatMessages = document.getElementById("chatMessages");
+const userMessage = document.getElementById("userMessage");
+
+let currentTyping = null;
+let editingState = null;
+
+// Configure marked for better markdown rendering
+marked.setOptions({
+  highlight: function(code, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(code, { language: lang }).value;
+      } catch (e) {
+        console.error('Highlight error:', e);
+      }
+    }
+    return hljs.highlightAuto(code).value;
+  },
+  breaks: true,
+  gfm: true
+});
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function stopTyping() {
+  if (currentTyping && currentTyping.interval) {
+    clearInterval(currentTyping.interval);
+    if (currentTyping.cursor) currentTyping.cursor.remove();
+    currentTyping = null;
+  }
+}
+
+function renderMarkdownWithCode(text) {
+  let html = marked.parse(text);
+  
+  html = html.replace(/<pre><code class="language-(\w+)">([\s\S]*?)<\/code><\/pre>/g, 
+    function(match, lang, code) {
+      const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
+      return `
+        <pre>
+          <div class="code-header text-center align-items-center justify-content-between d-flex">
+            <span class="code-language">${lang}</span>
+            <button class="code-copy-btn" onclick="copyCode('${codeId}', this)">
+              <i class="fas fa-copy"></i> <span>Copy</span>
+            </button>
+          </div>
+          <code id="${codeId}" class="language-${lang} hljs">${code}</code>
+        </pre>
+      `;
+    }
+  );
+  
+  html = html.replace(/<pre><code>([\s\S]*?)<\/code><\/pre>/g, 
+    function(match, code) {
+      const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
+      const highlighted = hljs.highlightAuto(code);
+      return `
+        <pre>
+          <div class="code-header">
+            <span class="code-language">${highlighted.language || 'text'}</span>
+            <button class="code-copy-btn" onclick="copyCode('${codeId}', this)">
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <code id="${codeId}" class="hljs">${highlighted.value}</code>
+        </pre>
+      `;
+    }
+  );
+  
+  return html;
+}
+
+function copyCode(codeId, btn) {
+  const codeElement = document.getElementById(codeId);
+  const code = codeElement.textContent;
+  
+  navigator.clipboard.writeText(code).then(() => {
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check"></i>';
+    btn.classList.add('copied');
+    
+    setTimeout(() => {
+      btn.innerHTML = originalHTML;
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ✅ Simple notification system
+function showNotification(message, type = 'info') {
+  // Remove any existing notifications
+  const existing = document.querySelector('.custom-notification');
+  if (existing) existing.remove();
+  
+  const notification = document.createElement('div');
+  notification.className = 'custom-notification';
+  notification.style.cssText = `
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    padding: 14px 20px;
+    background: ${type === 'warning' ? '#ffa500' : type === 'success' ? '#00cc66' : type === 'error' ? '#ff6b6b' : '#3b82f6'};
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 9999;
+    font-size: 0.9rem;
+    font-weight: 500;
+    animation: slideInRight 0.3s ease-out;
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  `;
+  
+  const icon = type === 'warning' ? '⚠️' : type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+  notification.innerHTML = `<span style="font-size: 1.2rem;">${icon}</span><span>${message}</span>`;
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideOutRight 0.3s ease-in';
+    setTimeout(() => notification.remove(), 300);
+  }, 4000);
+}
+
+// ✅ Enhanced welcome message with dynamic stats
+async function showEnhancedWelcome() {
+  try {
+    const response = await fetch("{% url 'get_usage_stats' %}");
+    const stats = await response.json();
+    
+    if (response.ok) {
+      chatMessages.innerHTML = `
+        <div class="text-center" style="padding: 20px; color: #718096;">
+          <i class="fas fa-robot" style="font-size: 3rem; color: #00ff99; margin-bottom: 12px;"></i>
+          <div style="font-size: 1.1rem; font-weight: bold; color: #00ff99;">Welcome to Paulibot! 🤖</div>
+          <div style="font-size: 0.85rem; margin-top: 8px;">Your AI coding assistant is ready to help</div>
+          
+          <div style="margin-top: 20px; padding: 15px; background: rgba(0, 255, 153, 0.05); border: 1px solid rgba(0, 255, 153, 0.2); border-radius: 8px; text-align: left;">
+            <div style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 8px;">
+              <strong style="color: #00ff99;">📊 Your Daily Quota:</strong>
+            </div>
+            <div style="font-size: 0.75rem; color: #cbd5e0; line-height: 1.8;">
+              💬 Requests: <strong style="color: #00ff99;">${stats.daily_remaining}/${stats.daily_limit}</strong> remaining<br>
+              ⚡ Rate: <strong style="color: #00ff99;">${stats.minute_limit} per minute</strong><br>
+              🔤 Tokens: <strong style="color: #00ff99;">${(stats.tokens_per_minute_limit / 1000).toFixed(1)}K/min</strong><br>
+              👥 Sharing with: <strong style="color: #ffa500;">${stats.total_users} users</strong>
+            </div>
+            <div style="font-size: 0.68rem; color: #718096; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-style: italic;">
+              💡 Tip: API limits are divided equally. More users = lower per-user quota.
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      // Fallback welcome
+      chatMessages.innerHTML = `
+        <div class="text-center" style="padding: 20px; color: #718096;">
+          <i class="fas fa-robot" style="font-size: 3rem; color: #00ff99; margin-bottom: 12px;"></i>
+          <div style="font-size: 1.1rem; font-weight: bold; color: #00ff99;">Welcome to Paulibot! 🤖</div>
+          <div style="font-size: 0.85rem; margin-top: 8px;">Your AI coding assistant is ready to help</div>
+        </div>
+      `;
+    }
+  } catch (error) {
+    console.error("Error loading welcome:", error);
+    // Fallback welcome
+    chatMessages.innerHTML = `
+      <div class="text-center" style="padding: 20px; color: #718096;">
+        <i class="fas fa-robot" style="font-size: 3rem; color: #00ff99; margin-bottom: 12px;"></i>
+        <div style="font-size: 1.1rem; font-weight: bold; color: #00ff99;">Welcome to Paulibot! 🤖</div>
+        <div style="font-size: 0.85rem; margin-top: 8px;">Your AI coding assistant is ready to help</div>
+      </div>
+    `;
+  }
+}
+
+// ✅ Enhanced clear chat with better feedback
+async function startNewChat() {
+  if (confirm('Start a new chat? This will clear your conversation history from the database.')) {
+    stopTyping();
+    
+    try {
+      const response = await fetch("{% url 'clear_chat_history' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken")
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        showNotification(`Chat cleared! ${data.message}`, 'success');
+        await showEnhancedWelcome();
+        userMessage.value = "";
+        editingState = null;
+        updateUsageStats(); // Refresh stats
+      } else {
+        showNotification("Failed to clear chat: " + (data.error || "Unknown error"), 'error');
+      }
+    } catch (error) {
+      console.error("Error clearing chat:", error);
+      showNotification("Failed to clear chat history. Please try again.", 'error');
+    }
+  }
+}
+
+function addMessage(text = "", sender = "user", isComplete = false) {
+  const wrapper = document.createElement("div");
+  wrapper.className = `message-wrapper ${sender}-message`;
+  
+  const content = document.createElement("div");
+  content.className = "message-content";
+  
+  if (sender === "ai") {
+    if (isComplete) {
+      content.innerHTML = renderMarkdownWithCode(text);
+    } else {
+      content.textContent = text;
+    }
+  } else {
+    content.textContent = text;
+  }
+  
+  wrapper.appendChild(content);
+  
+  const controls = document.createElement("div");
+  controls.className = "message-controls";
+  
+  if (sender === "user") {
+    // Users can only send new messages (no edit)
+  } else {
+    if (!isComplete) {
+      const stopBtn = document.createElement("button");
+      stopBtn.className = "control-btn";
+      stopBtn.innerHTML = '<i class="fas fa-stop-circle"></i>Stop';
+      stopBtn.onclick = () => stopTyping();
+      controls.appendChild(stopBtn);
+    }
+    
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "control-btn";
+    copyBtn.innerHTML = '<i class="fas fa-copy"></i>Copy';
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerHTML = '<i class="fas fa-check"></i>Copied!';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<i class="fas fa-copy"></i>Copy';
+        }, 2000);
+      });
+    };
+    controls.appendChild(copyBtn);
+  }
+  
+  wrapper.appendChild(controls);
+  chatMessages.appendChild(wrapper);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  
+  return { wrapper, content };
+}
+
+// ✅ Updated sendMessage with rate limit handling
+function sendMessage() {
+  const message = userMessage.value.trim();
+  if (!message) return;
+  
+  // Check message length
+  if (message.length > 500) {
+    showNotification('Message too long! Please keep it under 500 characters.', 'warning');
+    return;
+  }
+  
+  stopTyping();
+  
+  // Display user message immediately
+  addMessage(message, "user", true);
+  userMessage.value = "";
+  
+  // Reset character counter
+  if (document.getElementById('charCounter')) {
+    document.getElementById('charCounter').textContent = '0/500';
+    document.getElementById('charCounter').style.color = '#718096';
+  }
+  
+  // Start AI response
+  const aiMsg = addMessage("", "ai", false);
+  typeAI(aiMsg, message);
+  
+  // Update usage stats after sending
+  setTimeout(updateUsageStats, 1000);
+}
+
+// ✅ Updated typeAI with enhanced error handling
+function typeAI(msgObj, message) {
+  const { wrapper, content } = msgObj;
+  
+  let buffer = "";
+  let displayedText = "";
+  let index = 0;
+  let isComplete = false;
+  
+  currentTyping = { interval: null, wrapper };
+  
+  fetch("{% url 'ai_chat_stream' %}", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie("csrftoken")
+    },
+    body: JSON.stringify({
+      message: message
+    })
+  }).then(res => {
+    // ✅ Enhanced rate limit error handling
+    if (res.status === 429) {
+      return res.json().then(data => {
+        const errorMsg = data.error || "Rate limit exceeded";
+        const helpText = data.wait_seconds > 0 
+          ? `Please wait ${data.wait_seconds} seconds before trying again.`
+          : 'Your daily quota has been reached. Try again tomorrow.';
+        
+        content.innerHTML = `
+          <div style="padding: 12px; background: rgba(255, 165, 0, 0.1); border-left: 3px solid #ffa500; border-radius: 4px;">
+            <strong style="color: #ffa500;">⚠️ Rate Limit Reached</strong><br>
+            <span style="font-size: 0.9rem; color: #cbd5e0;">${errorMsg}</span><br>
+            <span style="font-size: 0.85rem; color: #a0aec0; font-style: italic;">${helpText}</span>
+          </div>
+        `;
+        
+        clearInterval(currentTyping.interval);
+        currentTyping = null;
+        updateUsageStats(); // Update stats to show limit
+        
+        // Show notification
+        showNotification(errorMsg, 'warning');
+        
+        // Auto-retry countdown if wait_seconds is provided
+        if (data.wait_seconds > 0 && data.wait_seconds <= 60) {
+          let countdown = data.wait_seconds;
+          const countdownInterval = setInterval(() => {
+            countdown--;
+            if (countdown <= 0) {
+              clearInterval(countdownInterval);
+              showNotification('You can send messages again!', 'success');
+              updateUsageStats();
+            }
+          }, 1000);
+        }
+        
+        throw new Error("Rate limited");
+      });
+    }
+    
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    
+    function readChunk() {
+      reader.read().then(({ done, value }) => {
+        if (done) {
+          isComplete = true;
+          return;
+        }
+        const chunk = decoder.decode(value, { stream: true });
+        chunk.split("\n").forEach(line => {
+          if (!line.trim()) return;
+          try {
+            const data = JSON.parse(line);
+            if (data.ai_message_partial) {
+              buffer += data.ai_message_partial;
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        });
+        readChunk();
+      });
+    }
+    readChunk();
+    
+    currentTyping.interval = setInterval(() => {
+      if (index < buffer.length) {
+        displayedText += buffer[index];
+        content.textContent = displayedText;
+        index++;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      } else if (isComplete) {
+        clearInterval(currentTyping.interval);
+        
+        content.innerHTML = renderMarkdownWithCode(displayedText);
+        
+        const controls = wrapper.querySelector('.message-controls');
+        controls.innerHTML = '';
+        
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "control-btn";
+        copyBtn.innerHTML = '<i class="fas fa-copy"></i>Copy';
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(displayedText).then(() => {
+            copyBtn.innerHTML = '<i class="fas fa-check"></i>Copied!';
+            setTimeout(() => {
+              copyBtn.innerHTML = '<i class="fas fa-copy"></i>Copy';
+            }, 2000);
+          });
+        };
+        controls.appendChild(copyBtn);
+        
+        currentTyping = null;
+        updateUsageStats(); // Update after response complete
+      }
+    }, 15);
+  }).catch(err => {
+    if (err.message !== "Rate limited") {
+      content.innerHTML = `
+        <div style="padding: 12px; background: rgba(255, 107, 107, 0.1); border-left: 3px solid #ff6b6b; border-radius: 4px;">
+          <strong style="color: #ff6b6b;">❌ Error</strong><br>
+          <span style="font-size: 0.9rem; color: #cbd5e0;">${err.message}</span>
+        </div>
+      `;
+      showNotification('An error occurred. Please try again.', 'error');
+    }
+    if (currentTyping && currentTyping.interval) {
+      clearInterval(currentTyping.interval);
+    }
+    currentTyping = null;
+  });
+}
+
+// ✅ Load chat history from database
+async function loadChatHistory() {
+  try {
+    const response = await fetch("{% url 'load_chat_history' %}");
+    const data = await response.json();
+    
+    if (data.messages && data.messages.length > 0) {
+      chatMessages.innerHTML = ""; // Clear welcome message
+      data.messages.forEach(msg => {
+        addMessage(msg.text, msg.sender, true);
+      });
+    } else {
+      await showEnhancedWelcome();
+    }
+  } catch (error) {
+    console.error("Error loading chat history:", error);
+    await showEnhancedWelcome();
+  }
+}
+
+// ✅ Enhanced usage stats with dynamic limits
+async function updateUsageStats() {
+  try {
+    const response = await fetch("{% url 'get_usage_stats' %}");
+    const stats = await response.json();
+    
+    if (!response.ok) {
+      document.getElementById('usageStats').textContent = 'Stats unavailable';
+      return;
+    }
+    
+    // ✅ Display dynamic per-user limits with total users
+    const statsText = `${stats.requests_today}/${stats.daily_limit} today • ${stats.minute_remaining}/${stats.minute_limit} RPM • ${stats.total_users} users`;
+    document.getElementById('usageStats').textContent = statsText;
+    
+    // Update color based on usage
+    const dailyPercent = (stats.requests_today / stats.daily_limit) * 100;
+    const minutePercent = ((stats.minute_limit - stats.minute_remaining) / stats.minute_limit) * 100;
+    const statsElement = document.getElementById('usageStats');
+    
+    // Use the higher percentage for color coding
+    const usagePercent = Math.max(dailyPercent, minutePercent);
+    
+    if (usagePercent > 90) {
+      statsElement.style.color = '#ff6b6b'; // Red when near limit
+      statsElement.style.fontWeight = 'bold';
+    } else if (usagePercent > 70) {
+      statsElement.style.color = '#ffa500'; // Orange at 70%
+      statsElement.style.fontWeight = '600';
+    } else {
+      statsElement.style.color = '#a0aec0'; // Normal gray
+      statsElement.style.fontWeight = 'normal';
+    }
+    
+    // ✅ Enhanced tooltip with all details
+    statsElement.title = 
+      `📊 Your Current Quota:\n\n` +
+      `Daily Requests: ${stats.requests_today}/${stats.daily_limit} (${stats.daily_remaining} remaining)\n` +
+      `Per Minute: ${stats.minute_limit - stats.minute_remaining}/${stats.minute_limit} requests\n` +
+      `Token Limit: ${stats.tokens_per_minute_limit.toLocaleString()} TPM\n\n` +
+      `👥 Platform Info:\n` +
+      `Total Users: ${stats.total_users}\n` +
+      `Your Share: ${(100 / stats.total_users).toFixed(1)}% of total API quota\n\n` +
+      `🔧 API Limits (Total for all users):\n` +
+      `${stats.api_limits.rpm} RPM | ${stats.api_limits.rpd} RPD | ${stats.api_limits.tpm.toLocaleString()} TPM\n\n` +
+      `💡 Limits are divided equally among all ${stats.total_users} registered users`;
+    
+    // ✅ Show warning if approaching limits (only once per session)
+    if (dailyPercent >= 85 && !sessionStorage.getItem('limit_warning_shown_today')) {
+      showNotification(`⚠️ You've used ${dailyPercent.toFixed(0)}% of your daily quota!`, 'warning');
+      sessionStorage.setItem('limit_warning_shown_today', 'true');
+    }
+    
+  } catch (error) {
+    console.error('Error fetching usage stats:', error);
+    document.getElementById('usageStats').textContent = 'Stats error';
+  }
+}
+
+// ✅ Character counter for message input
+if (document.getElementById('userMessage')) {
+  const userMessageInput = document.getElementById('userMessage');
+  const charCounter = document.getElementById('charCounter');
+  
+  if (charCounter) {
+    userMessageInput.addEventListener('input', function() {
+      const length = this.value.length;
+      charCounter.textContent = `${length}/500`;
+      
+      if (length > 450) {
+        charCounter.style.color = '#ff6b6b';
+        charCounter.style.fontWeight = 'bold';
+      } else if (length > 400) {
+        charCounter.style.color = '#ffa500';
+        charCounter.style.fontWeight = '600';
+      } else {
+        charCounter.style.color = '#718096';
+        charCounter.style.fontWeight = 'normal';
+      }
+    });
+  }
+}
+
+// ✅ Enter key handler
+userMessage.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + "=")) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+// ✅ Page load initialization
+window.addEventListener("DOMContentLoaded", async () => {
+  // Load chat history
+  await loadChatHistory();
+  
+  // Update stats immediately
+  await updateUsageStats();
+  
+  // Update stats every 30 seconds
+  setInterval(updateUsageStats, 30000);
+  
+  // Reset warning flag daily
+  const today = new Date().toDateString();
+  if (sessionStorage.getItem('last_date') !== today) {
+    sessionStorage.setItem('last_date', today);
+    sessionStorage.removeItem('limit_warning_shown_today');
+  }
+  
+  // Check and warn if approaching limits every minute
+  setInterval(async () => {
+    try {
+      const response = await fetch("{% url 'get_usage_stats' %}");
+      const stats = await response.json();
+      
+      if (response.ok) {
+        const dailyPercent = (stats.requests_today / stats.daily_limit) * 100;
+        
+        // Warn at 90% and 95%
+        if (dailyPercent >= 95 && !sessionStorage.getItem('limit_warning_95')) {
+          showNotification(`🚨 Critical: ${dailyPercent.toFixed(0)}% of daily quota used!`, 'error');
+          sessionStorage.setItem('limit_warning_95', 'true');
+        } else if (dailyPercent >= 90 && !sessionStorage.getItem('limit_warning_90')) {
+          showNotification(`⚠️ Warning: ${dailyPercent.toFixed(0)}% of daily quota used!`, 'warning');
+          sessionStorage.setItem('limit_warning_90', 'true');
+        }
+      }
+    } catch (error) {
+      console.error('Error checking limits:', error);
+    }
+  }, 60000); // Check every minute
+});
+
+// ✅ Add notification animation styles
+const notificationStyles = document.createElement('style');
+notificationStyles.textContent = `
+  @keyframes slideInRight {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+  }
+`;
+document.head.appendChild(notificationStyles);
+
+</script>
+
+{% include "partials/scripts.html" %}
+{% include "partials/playground_script.html" %}
+
+{% endblock %}

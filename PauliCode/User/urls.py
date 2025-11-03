@@ -20,8 +20,10 @@ urlpatterns = [
     path("problem/<int:problem_id>/edit/", views.edit_problem, name="edit_problem"),
     path("problem/<int:problem_id>/delete/", views.delete_problem, name="delete_problem"),
     path('report/', views.report, name='report'),  # Reports dashboard
-    path('delete_student/<str:school_id>/', views.delete_student, name='delete_student'),
+    path('delete_student/<str:school_id>/<int:class_id>/', views.delete_student, name='delete_student'),
     path('delete_submission/<int:submission_id>/', views.delete_submission, name='delete_submission'),
+    path('submission/view/<int:submission_id>/', views.view_submission_code, name='view_submission_code'),
+
    
 
 
@@ -39,6 +41,18 @@ urlpatterns = [
     path('playground/<int:problem_id>/', views.playground, name='playground'),
     path('run_playground_code/', views.run_playground_code, name='run_playground_code'),
     path('submit_problem/<int:problem_id>/', views.submit_problem, name='submit_problem'),
+
+
+    #--------------Universal Playground---------------#
+    path('code-playground/', views.code_testing_playground, name='code_testing_playground'),
+    path('run-test-code/', views.run_test_code, name='run_test_code'),
+
+
+    #--------------AI----------------------------------#
+   path('ai-chat-stream/', views.ai_chat_stream, name='ai_chat_stream'),
+   path('load-chat-history/', views.load_chat_history, name='load_chat_history'),
+   path('clear-chat-history/', views.clear_chat_history, name='clear_chat_history'),
+   path('get-usage-stats/', views.get_usage_stats, name='get_usage_stats'),
 
 
 

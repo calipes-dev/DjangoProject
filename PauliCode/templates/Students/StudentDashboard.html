@@ -1,12 +1,15 @@
+{% extends "base.html" %}
 {% load static %}
-{% include "partials/header.html" %}
+
+{% block content %}
+
 
 <style>
   body {
     background-color: #111827 !important;
   }
 
-  .color-green{
+  .color-green {
     background-color: rgb(35, 103, 51) !important;
   }
 
@@ -26,28 +29,109 @@
   .btn-close-white {
     filter: invert(1);
   }
+
+    @media (max-width: 768px) {
+    .card .position-absolute {
+      position: static !important;
+      margin: 10px auto 0;
+      display: inline-flex;
+    }
+    .card .card-body {
+      text-align: center;
+      padding-top: 1rem !important;
+    }
+  }
+  /* 🌿 Green family (first card) */
+.border-green {
+  background-color: #1f2937;
+  color: #00ff9d;
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  border: 1px dashed #00ff9d;
+  border-width: 1px !important; /* ✅ only width is important */
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 8px rgba(0, 255, 157, 0.3);
+  transition: all 0.3s ease;
+}
+
+
+/* 💙 Blue (Bootstrap primary family, second card) */
+.border-dark {
+  background-color: #1f2937;
+  color: rgb(137, 216, 255);
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  border: 1px dashed rgb(180, 230, 255);
+  border-width: 1px !important; /* ✅ only the width is forced */
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 8px rgba(13, 110, 253, 0.3);
+  transition: all 0.3s ease;
+}
+
+
+/* Optional: subtle hover glow */
+.border-green:hover,
+.border-dark:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 15px currentColor;
+}
+
+
+
+
 </style>
 
-<body class="g-sidenav-show text-white">
+<div class="g-sidenav-show text-white">
   <div class="min-height-300 position-absolute w-100"></div>
+ 
 
-  {% include "partials/StudentSidebar.html" %} <!-- Sidebar -->
+  {% include "partials/StudentSidebar.html" %}
 
   <main class="main-content position-relative border-radius-lg">
+    {% include "partials/navbar.html" %}
     <div class="container-fluid p-5">
+     
 
-      <!-- Welcome Section -->
-      <div class="card bg-success text-white border-0 mb-4 rounded-4 shadow-sm">
-        <div class="card-body py-4">
-          <h3 class="fw-bold text-white">Welcome back, {{ user.first_name }}!</h3>
-          <h6 class="text-white small">Explore your classes and start learning today.</h6>
+  <!-- Welcome Section -->
+    <div class="card text-white border-0 rounded-4 shadow-sm position-relative mx-auto"  
+          style="background: linear-gradient(135deg, #198754, #74c69d);
+                  margin-top: -0.75rem; 
+                  margin-bottom: 0.75rem; 
+                  min-height: 130px; 
+                  display: flex; 
+                  align-items: flex-start; 
+                  justify-content: flex-start;">
+
+        <!-- Badge -->
+        <div class="position-absolute top-0 end-0 mt-2 me-4 bg-white d-flex align-items-center px-3 py-1 rounded-pill shadow-sm"
+            style="border: 2px solid #D68022;">
+          <img src="{% static 'img/studenthaticon.png' %}" 
+              alt="Student Hat" 
+              style="width: 3.5vh; height: 3.5vh;" 
+              class="me-2">
+          <span style="background: linear-gradient(90deg, #324254 35%, #8e500f);
+                      -webkit-background-clip: text;
+                      -webkit-text-fill-color: transparent;
+                      font-weight: bold;">
+            Student
+          </span>
         </div>
+
+        <!-- Welcome Text aligned at start -->
+        <div class="d-flex flex-column justify-content-start text-start px-3 py-3 ms-4" style="height: 100%; margin-top: 10px;">
+          <h3 class="fw-bold text-white mb-2">Welcome back, {{ user.first_name }}!</h3>
+          <h6 class="text-white small m-0">Explore your classes and start learning today.</h6>
+        </div>
+
       </div>
 
-      <!-- Quick Actions -->
-      <h5 class="fw-bold mb-3">Quick Actions</h5>
-      <div class="row g-3 mb-5">
 
+
+
+
+      <!-- Quick Actions -->
+      <h5 class="fw-bold mb-3 mt-4">Quick Actions</h5>
+      <div class="row g-3 mb-4">
         <div class="col-md-3">
           <div class="card text-center bg-success text-white border-0 rounded-4 shadow-sm action-card h-100" data-bs-toggle="modal" data-bs-target="#joinClassModal">
             <div class="card-body">
@@ -87,37 +171,166 @@
             </div>
           </div>
         </div>
-
       </div>
 
-      <!-- Joined Classes -->
-      <h5 class="fw-bold mb-3">Joined Classes</h5>
-      <div class="row g-3">
-        {% if classes %}
-          {% for class in classes %}
-            <div class="col-md-3">
-              <div class="card text-center border-0 rounded-4 shadow-sm h-100 text-white {% cycle 'color-green' 'bg-dark' %} action-card">
-                <div class="card-body">
-                  <img src="{{ class.upload_icon.url|default:'/media/class_icons/defaultClassIcon.png' }}" 
-                       alt="Class Icon" width="100" height="100" class="mb-2 rounded">
-                  <h6 class="fw-bold">{{ class.title }}</h6>
-                  <p class="small text-light mb-0">{{ class.class_code }}</p>
-                </div>
-              </div>
+       <!-- 🏆 Leaderboard -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="fw-bold mb-0">🏆 Leaderboard</h5>
+      <a href="#" 
+        class="badge border-green d-flex align-items-center gap-1 text-decoration-none px-3 py-2"
+        style="border-radius: 8px; font-weight: 600;">
+        <span style="color: #00ff9d;">View All Rank</span>
+        <i class="fa fa-arrow-right" style="color: #00ff9d; font-size: 0.9rem;"></i>
+      </a>
+    </div>
+<div class="row g-4 justify-content-start">
+  {% if top_scorers %}
+    {% for entry in top_scorers %}
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+        <div 
+          class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative {% cycle 'border-green' 'border-dark' %}"
+          style="
+            background-color: rgb(34, 36, 55);
+            border-width: 2.5px;
+            border-style: dashed;
+            min-height: 100%;
+          "
+        >
+          <div class="card-body position-relative d-flex flex-column align-items-center">
+
+            <!-- 🏷️ Class Title Badge -->
+            <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-1 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
+              style="
+                border: 1.5px solid #D68022;
+                transform: scale(0.9);
+                white-space: nowrap;
+                width: fit-content;
+                flex-shrink: 0;
+              ">
+              <h6 style="
+                background: linear-gradient(90deg, #324254 35%, #8e500f);
+                -webkit-text-fill-color: transparent;
+                -webkit-background-clip: text;
+                font-weight: bold;
+                font-size: 1rem;
+                margin: 0;
+              ">
+                {{ entry.class.title }}
+              </h6>
             </div>
-          {% endfor %}
-        {% else %}
-          <p class="text-muted">You have not joined any classes yet.</p>
-        {% endif %}
+
+            <!-- 🏆 Trophy Image -->
+            <img src="{% static 'img/1stCup.svg' %}" 
+                alt="cup" width="180" height="180" class="mt-4 rounded img-fluid">
+
+            <!-- ⭐ Star + Label -->
+            <div class="d-flex align-items-center justify-content-center mt-2 mb-2">
+              <img 
+                src="{% static 'img/star.png' %}" 
+                alt="star" 
+                style="width: 22px; height: 22px; margin-right: 6px;"
+              >
+              <h5 
+                class="mb-0 fw-bold"
+                style="
+                  background: linear-gradient(90deg, #FFD700, #FFB700, #FFA500); 
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+                  font-weight: 800;
+                  letter-spacing: 1px;
+                ">
+                1st Placer
+              </h5>
+            </div>
+
+            <!-- 👤 Top Scorer Name -->
+            {% if entry.top_scorer %}
+              <span 
+                class="badge px-3 py-2 rounded-3 shadow-sm {% cycle 'border-green' 'border-dark' %}" 
+                style="border: 1px solid currentColor !important; white-space: nowrap;">
+                {{ entry.top_scorer.student_id__first_name }} {{ entry.top_scorer.student_id__last_name }}
+              </span>
+            {% else %}
+              <p class="small text-secondary mb-0 fst-italic">No scorer data available</p>
+            {% endif %}
+
+          </div>
+        </div>
       </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-muted text-center">You have not joined any classes yet.</p>
+  {% endif %}
+</div>
+
+     <!-- 🔰 Recent Classes -->
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+      <h5 class="fw-bold mb-0">🔰 Recent Classes</h5>
+      <a href="{% url 'StudentClass' %}" 
+        class="badge border-green d-flex align-items-center gap-1 text-decoration-none px-3 py-2"
+        style="border-radius: 8px; font-weight: 600;">
+        <span style="color: #00ff9d;">View All Classes</span>
+        <i class="fa fa-arrow-right" style="color: #00ff9d; font-size: 0.9rem;"></i>
+      </a>
+    </div>
+
+    <div class="row g-3 mb-4 justify-content-start">
+  {% if classes %}
+    {% for class in classes %}
+      {% if forloop.counter <= 6 %}
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2 d-flex justify-content-center">
+          <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative {% cycle 'border-green' 'border-dark' %}"
+               style="background-color: rgb(1, 45, 35); border-width: 2.5px; border-style: dashed; min-height: 180px; width: 100%;">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center position-relative p-3">
+
+              <!-- 🏷️ Class Code Badge -->
+              <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-2 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
+                   style="border: 1.5px solid #D68022; transform: scale(0.85); white-space: nowrap; width: fit-content;">
+                <h6 style="background: linear-gradient(90deg, #324254 35%, #8e500f);
+                          -webkit-text-fill-color: transparent;
+                          -webkit-background-clip: text;
+                          font-weight: bold;
+                          font-size: 0.85rem;
+                          margin: 0;">
+                  {{ class.class_code }}
+                </h6>
+              </div>
+
+              <!-- 🖼️ Class Icon -->
+              {% if class.upload_icon %}
+                <img src="{{ class.upload_icon.url }}" 
+                     alt="Class Icon" class="mb-2 rounded mt-4" style="width: 80px; height: 80px; object-fit: cover;">
+              {% else %}
+                <img src="{% static 'img/classroom.png' %}" 
+                     alt="Default Class Icon" class="mb-2 rounded mt-4" style="width: 80px; height: 80px; object-fit: cover;">
+              {% endif %}
+
+              <!-- 📘 Class Title Badge (Flexible & Responsive) -->
+              <span class="badge px-2 py-1 rounded-3 shadow-sm text-truncate {% cycle 'border-green' 'border-dark' %}"
+                    style="border: 1px solid currentColor !important; max-width: 100%; font-size: clamp(0.7rem, 2vw, 0.85rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block;">
+                {{ class.title }}
+              </span>
+
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    <p class="text-muted">No classes created yet.</p>
+  {% endif %}
+</div>
+
+
+
 
       {% include "partials/footer.html" %}
     </div>
   </main>
 
   {% include "partials/scripts.html" %}
-
-  <div class="modal fade" id="joinClassModal" tabindex="-1" aria-labelledby="joinClassLabel" aria-hidden="true">
+    <div class="modal fade" id="joinClassModal" tabindex="-1" aria-labelledby="joinClassLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
       <div class="modal-content shadow-lg border-0" style="background-color: #1E2835; color: white; border-radius: 16px;">
         <div class="modal-header border-0">
@@ -152,5 +365,6 @@
       </div>
     </div>
   </div>
-</body>
-</html>
+
+</div>
+{% endblock %}
