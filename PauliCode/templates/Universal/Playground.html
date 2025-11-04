@@ -361,20 +361,24 @@ body {
   white-space: pre-wrap;
   word-wrap: break-word;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.8;
 }
 
 .console-output::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 .console-output::-webkit-scrollbar-track {
-  background: #12181f;
+   background: #12181f;
+  border-radius: 5px;
 }
 
 .console-output::-webkit-scrollbar-thumb {
-  background: #00cc66;
-  border-radius: 4px;
+  background: linear-gradient(180deg, #00ff99, #00cc66);
+  border-radius: 5px;
+}
+.console-output::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #00ffcc, #00ff99);
 }
 
 .console-input-area {
@@ -389,7 +393,30 @@ body {
   opacity: 0.5;
   pointer-events: none;
 }
-
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.console-output > * {
+  animation: fadeIn 0.2s ease-out;
+}
+.console-output > span + span {
+  display: inline;
+}
+.section-header {
+  color: #ffcc00;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 12px 0 8px 0;
+  display: block;
+}
 .input-line {
   display: flex;
   align-items: flex-start;
@@ -444,14 +471,19 @@ body {
 }
 
 .console-output .prompt-line {
-  color: #ffcc00;
+  color: #00ccff;
+  font-weight: bold;
   display: inline;
 }
 
 .console-output .input-value {
-  color: #00ccff;
+  color: #00ff99;
   font-weight: bold;
   display: inline;
+  background-color: rgba(0, 255, 153, 0.15);
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-left: 4px;
 }
 
 .console-output .output-text {
@@ -460,14 +492,20 @@ body {
 
 .console-output .error {
   color: #ff6b6b;
+  background-color: rgba(255, 107, 107, 0.1);
+  padding: 8px;
+  border-left: 3px solid #ff6b6b;
+  display: block;
+  margin: 8px 0;
 }
 
 .console-output .info {
-  color: #888;
+  color: #ffa500;
+  font-weight: 500;
 }
 
 .btn-console {
-  background-color: #00cc66;
+  background-color: #00aacc;
   color: #000;
   border: none;
   font-weight: bold;
@@ -480,7 +518,10 @@ body {
   background-color: #00ff99;
   color: #000;
 }
-
+.console-output .success {
+  color: #00ff99;
+  font-weight: 600;
+}
 .btn-console:disabled {
   background-color: #2b3a55;
   color: #666;

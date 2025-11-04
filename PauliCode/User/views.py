@@ -1229,8 +1229,7 @@ def code_testing_playground(request):
 @csrf_exempt
 def run_test_code(request):
     """
-    Execute code in the testing playgrounds
-    No test cases, just run the code with user input
+    Execute code in the testing playgrounds with proper input/output formatting
     """
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=400)
@@ -1244,32 +1243,30 @@ def run_test_code(request):
         if not code:
             return JsonResponse({"error": "Code cannot be empty."}, status=400)
         
+        # Parse input values
+        input_values = []
+        if stdin_data:
+            if '\n' in stdin_data:
+                input_values = [v.strip() for v in stdin_data.split('\n') if v.strip()]
+            else:
+                input_values = [v.strip() for v in stdin_data.split() if v.strip()]
+        
         # ✅ BULLETPROOF FIX: For Java, force rename public class to Main
         if language == "java":
-            # Split code into lines for processing
             lines = code.split('\n')
             modified_lines = []
             
             for line in lines:
-                # Check if this line contains "public class" followed by a word
                 if 'public class' in line and '{' in line:
-                    # Extract everything before "public class"
                     before = line.split('public class')[0]
-                    # Extract everything after the class name
                     after_parts = line.split('public class')[1].split('{', 1)
                     if len(after_parts) == 2:
-                        # Force it to be "Main"
                         new_line = before + 'public class Main {' + after_parts[1]
                         modified_lines.append(new_line)
-                        print(f"[JAVA FIX] Changed: {line.strip()}")
-                        print(f"[JAVA FIX] To:      {new_line.strip()}")
                         continue
-                
-                # Keep the line as is
                 modified_lines.append(line)
             
             code = '\n'.join(modified_lines)
-            print("[JAVA FIX] Code transformation complete")
         
         # Map language to Piston format
         lang_config = {
@@ -1293,8 +1290,7 @@ def run_test_code(request):
             "run_memory_limit": -1
         }
         
-        print(f"[PISTON] Sending {config['file']} with {len(stdin_data)} bytes of stdin")
-        
+        PISTON_URL = "https://emkc.org/api/v2/piston/execute"
         response = requests.post(PISTON_URL, json=payload, timeout=15)
         
         if "application/json" not in response.headers.get("Content-Type", ""):
@@ -1312,9 +1308,13 @@ def run_test_code(request):
         run_data = result.get("run", {})
         compile_data = result.get("compile", {})
         
+        # ✅ Format output with prompts and input values
+        raw_output = run_data.get("stdout", "")
+        formatted_output = format_output_with_inputs(raw_output, input_values, language)
+        
         return JsonResponse({
             "success": True,
-            "output": run_data.get("stdout", ""),
+            "output": formatted_output,
             "stderr": run_data.get("stderr", ""),
             "compile_error": compile_data.get("stderr", ""),
             "exit_code": run_data.get("code", 0)
@@ -1331,6 +1331,159 @@ def run_test_code(request):
         print(f"[ERROR] {str(e)}")
         print(traceback.format_exc())
         return JsonResponse({"error": f"Server error: {str(e)}"}, status=500)
+
+
+def extract_prompts(code, language):
+    """Extract input prompts from code for all supported languages"""
+    prompts = []
+    lines = code.split('\n')
+    
+    if language == 'python':
+        for i, line in enumerate(lines):
+            if 'input(' in line:
+                # Try to extract prompt from input()
+                match = re.search(r'input\s*\(\s*["\']([^"\']*)["\']', line)
+                if match:
+                    prompt = match.group(1).strip()
+                    # Remove f-string formatting
+                    prompt = re.sub(r'\{[^}]+\}', '', prompt).strip()
+                    prompts.append(prompt if prompt else f"Value {len(prompts) + 1}:")
+                else:
+                    prompts.append(f"Value {len(prompts) + 1}:")
+    
+    elif language == 'c':
+        for i, line in enumerate(lines):
+            if 'scanf' in line:
+                # Look for printf before scanf
+                found = False
+                for j in range(max(0, i - 5), i):
+                    match = re.search(r'printf\s*\(\s*"([^"]*)"', lines[j])
+                    if match:
+                        prompt = match.group(1).strip()
+                        # Remove format specifiers
+                        prompt = re.sub(r'%[dfscilfg]', '', prompt).strip()
+                        if prompt:
+                            prompts.append(prompt)
+                            found = True
+                            break
+                if not found:
+                    prompts.append(f"Value {len(prompts) + 1}:")
+    
+    elif language == 'cpp':
+        for i, line in enumerate(lines):
+            if 'cin >>' in line:
+                # Look for cout before cin
+                found = False
+                for j in range(max(0, i - 5), i):
+                    match = re.search(r'cout\s*<<\s*"([^"]*)"', lines[j])
+                    if match:
+                        prompt = match.group(1).strip()
+                        if prompt:
+                            prompts.append(prompt)
+                            found = True
+                            break
+                if not found:
+                    prompts.append(f"Value {len(prompts) + 1}:")
+    
+    elif language == 'java':
+        for i, line in enumerate(lines):
+            if re.search(r'\.next(Int|Line|Double|Float|Boolean|Long)\s*\(', line):
+                # Look for System.out.print before scanner
+                found = False
+                for j in range(max(0, i - 5), i):
+                    match = re.search(r'System\.out\.print\w*\s*\(\s*"([^"]*)"', lines[j])
+                    if match:
+                        prompt = match.group(1).strip()
+                        if prompt:
+                            prompts.append(prompt)
+                            found = True
+                            break
+                if not found:
+                    prompts.append(f"Value {len(prompts) + 1}:")
+    
+    return prompts
+
+
+def format_output_with_inputs(raw_output, input_values, language):
+    """
+    Format the output to show prompts with their corresponding input values.
+    This handles prompt lines followed by empty input lines.
+    """
+    if not input_values:
+        return raw_output
+    
+    # Split output into lines
+    output_lines = raw_output.split('\n')
+    formatted_lines = []
+    input_index = 0
+    
+    i = 0
+    while i < len(output_lines):
+        line = output_lines[i]
+        
+        # Check if this line looks like a prompt (contains : or ends with common prompt patterns)
+        is_prompt_line = False
+        
+        # Common prompt patterns
+        if line.strip():
+            # Check for patterns like "Enter num1:" or "Enter value:" etc.
+            if ':' in line or line.strip().endswith('?'):
+                is_prompt_line = True
+            # Check for patterns like "printf" output without newline
+            elif language in ['c', 'cpp'] and any(keyword in line.lower() for keyword in ['enter', 'input', 'value', 'number']):
+                is_prompt_line = True
+        
+        # If it's a prompt line and we have input values left
+        if is_prompt_line and input_index < len(input_values):
+            # Add the prompt line with the input value
+            formatted_lines.append(f"{line} {input_values[input_index]}")
+            input_index += 1
+        else:
+            # Regular line, keep as is
+            formatted_lines.append(line)
+        
+        i += 1
+    
+    # If we still have unused input values, it means they were on separate lines
+    # Let's do a second pass to handle cases where input was on the next line
+    if input_index < len(input_values):
+        final_lines = []
+        input_index = 0
+        skip_next = False
+        
+        for i, line in enumerate(formatted_lines):
+            if skip_next:
+                skip_next = False
+                continue
+            
+            # Check if this is a prompt line
+            is_prompt = ':' in line or line.strip().endswith('?') or any(
+                keyword in line.lower() for keyword in ['enter', 'input', 'value', 'number']
+            )
+            
+            if is_prompt and input_index < len(input_values):
+                # Check if next line is empty or just whitespace
+                if i + 1 < len(formatted_lines):
+                    next_line = formatted_lines[i + 1].strip()
+                    if not next_line or next_line == input_values[input_index]:
+                        # Merge the prompt with input value
+                        final_lines.append(f"{line} {input_values[input_index]}")
+                        input_index += 1
+                        skip_next = True
+                        continue
+                
+                # If input value isn't already in the line
+                if input_values[input_index] not in line:
+                    final_lines.append(f"{line} {input_values[input_index]}")
+                    input_index += 1
+                else:
+                    final_lines.append(line)
+            else:
+                final_lines.append(line)
+        
+        formatted_lines = final_lines
+    
+    return '\n'.join(formatted_lines)
 
 
 #---------------------------AI-----------------------------------------# Initialize client
@@ -1482,8 +1635,8 @@ def ai_chat_stream(request):
     Uses Gemini 2.5 Flash-Lite: 15 RPM, 250K TPM, 1000 RPD
     Limits are divided equally among all registered users
     """
-    from .models import User, ChatHistory
-    from google import genai
+  #  from .models import User, ChatHistory
+   # from google import genai
     
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request"}, status=400)
@@ -1608,7 +1761,7 @@ def get_usage_stats(request):
     """
     API endpoint to get current user's usage statistics with dynamic limits
     """
-    from .models import User
+   # from .models import User
     
     school_id = request.session.get('school_id')
     if not school_id:
@@ -1624,7 +1777,7 @@ def get_usage_stats(request):
 
 def load_chat_history(request):
     """Load user's private chat history from database"""
-    from .models import User, ChatHistory
+   # from .models import User, ChatHistory
     
     school_id_value = request.session.get('school_id')
     if not school_id_value:
@@ -1658,7 +1811,7 @@ def load_chat_history(request):
 
 def clear_chat_history(request):
     """Clear user's private chat history"""
-    from .models import User, ChatHistory
+    #from .models import User, ChatHistory
     
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=400)
