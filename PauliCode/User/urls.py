@@ -41,6 +41,7 @@ urlpatterns = [
     path('playground/<int:problem_id>/', views.playground, name='playground'),
     path('run_playground_code/', views.run_playground_code, name='run_playground_code'),
     path('submit_problem/<int:problem_id>/', views.submit_problem, name='submit_problem'),
+    path('run-student-console/', views.run_student_console, name='run_student_console'),
 
 
     #--------------Universal Playground---------------#

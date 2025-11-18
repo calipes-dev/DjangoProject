@@ -19,6 +19,7 @@ from google import genai
 import re, time
 
 
+
 # ---------------- LOGIN & DASHBOARD ---------------- #
 
 def index(request):
@@ -827,6 +828,7 @@ def unenroll_class(request, class_id):
     return redirect('StudentClass')
 
 # External code runner API
+# External code runner API
 PISTON_URL = "https://emkc.org/api/v2/piston/execute"
 
 # ---------------- PLAYGROUND PAGE ---------------- #
@@ -847,31 +849,25 @@ def playground(request, problem_id):
         return redirect('student_class_details', problem.class_id.class_id)
 
     # ✅ Clear sessionStorage flag on fresh access (allows retake if teacher deleted submission)
-    # This will be rendered in the template
     context = {
         'user': student,
         'problem': problem,
         'nav': 'StudentPlayground',
-        'clear_session_flag': True,  # Signal to clear sessionStorage
+        'clear_session_flag': True,
     }
 
     return render(request, 'Students/StudentPlayGround.html', context)
 
 
 # ---------------- SUBMIT CODE (UNIFIED) ---------------- #
-import logging
-
 logger = logging.getLogger(__name__)
 
-@csrf_exempt  # We'll handle CSRF manually for sendBeacon
+@csrf_exempt
 def submit_problem(request, problem_id):
-    """
-    Handles BOTH manual and auto-submit with proper duplicate prevention
-    """
+    """Handles BOTH manual and auto-submit with proper duplicate prevention"""
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=400)
 
-    # Log the request for debugging
     logger.info(f"Submission attempt for problem {problem_id}")
     logger.info(f"Content-Type: {request.headers.get('Content-Type', 'Not set')}")
     
@@ -904,7 +900,6 @@ def submit_problem(request, problem_id):
 
     # Parse request body
     try:
-        # Handle both regular JSON and sendBeacon blob
         content_type = request.headers.get('Content-Type', '')
         body_content = request.body.decode('utf-8')
         logger.info(f"Request body preview: {body_content[:200]}")
@@ -927,7 +922,6 @@ def submit_problem(request, problem_id):
 
     # Validate code
     if not code:
-        # For auto-submit with empty code, still create submission with 0 score
         if is_auto_submit:
             Submission.objects.create(
                 problem_id=problem,
@@ -1019,7 +1013,6 @@ def submit_problem(request, problem_id):
         )
         
         if not created:
-            # Submission already exists (race condition)
             return JsonResponse({
                 "success": False,
                 "error": "Submission already exists (detected race condition)",
@@ -1034,7 +1027,6 @@ def submit_problem(request, problem_id):
             "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id])
         }, status=500)
 
-    # Success response
     submit_type = "Auto-submitted" if is_auto_submit else "Submitted"
     return JsonResponse({
         "success": True,
@@ -1094,7 +1086,6 @@ def run_playground_code(request):
 
                 output = (exec_res.get("stdout") or "").strip()
 
-                # ✅ Hidden test case logic
                 is_hidden = (
                     (total_cases == 1) or
                     (total_cases == 2 and i == 2) or
@@ -1137,9 +1128,8 @@ def run_playground_code(request):
             shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
-# Helper function remains the same
 def execute_source(language, source_path, stdin_data="", timeout_sec=5):
-    """Executes code safely via Piston API and always returns JSON-safe output."""
+    """Executes code safely via Piston API"""
     PISTON_URL = "https://emkc.org/api/v2/piston/execute"
 
     with open(source_path, "r", encoding="utf-8") as f:
@@ -1199,40 +1189,17 @@ def execute_source(language, source_path, stdin_data="", timeout_sec=5):
     except Exception as e:
         return {"stdout": "", "stderr": "", "compile_error": "", "error": f"⚠️ Unexpected: {e}"}
 
-#----------------------Universal Playground--------------------------#
 
-# ---------------- CODE TESTING PLAYGROUND (NO SECURITY) ---------------- #
-def code_testing_playground(request):
-    school_id = request.session.get('school_id')
-    if not school_id:
-        messages.warning(request, "Please log in first.")
-        return redirect('index')
-
-    user = get_object_or_404(User, school_id=school_id)
-
-    # ✅ Different template or logic based on user type
-    context = {
-        'user': user,
-        'nav': 'Playground',
-        'currentpage': 'Playground',
-    }
-
-    # If you want to render the same HTML but load the correct sidebar dynamically:
-    if user.user_type.lower() == 'teacher':
-        return render(request, 'Universal/Playground.html', {**context, 'sidebar': 'teacher'})
-    else:
-        return render(request, 'Universal/Playground.html', {**context, 'sidebar': 'student'})
-
-
-
-# ---------------- RUN CODE IN TESTING PLAYGROUND ---------------- #
+# ---------------- STUDENT CONSOLE (NEW) ---------------- #
 @csrf_exempt
-def run_test_code(request):
-    """
-    Execute code in the testing playgrounds with proper input/output formatting
-    """
+def run_student_console(request):
+    """Execute code in student playground console"""
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=400)
+    
+    school_id = request.session.get('school_id')
+    if not school_id:
+        return JsonResponse({"error": "Please log in first."}, status=401)
     
     try:
         data = json.loads(request.body)
@@ -1251,34 +1218,30 @@ def run_test_code(request):
             else:
                 input_values = [v.strip() for v in stdin_data.split() if v.strip()]
         
-        # ✅ BULLETPROOF FIX: For Java, force rename public class to Main
+        # Fix Java class name
         if language == "java":
             lines = code.split('\n')
             modified_lines = []
-            
             for line in lines:
                 if 'public class' in line and '{' in line:
                     before = line.split('public class')[0]
                     after_parts = line.split('public class')[1].split('{', 1)
                     if len(after_parts) == 2:
-                        new_line = before + 'public class Main {' + after_parts[1]
-                        modified_lines.append(new_line)
+                        modified_lines.append(before + 'public class Main {' + after_parts[1])
                         continue
                 modified_lines.append(line)
-            
             code = '\n'.join(modified_lines)
         
-        # Map language to Piston format
+        # Language configurations
         lang_config = {
             "python": {"lang": "python", "version": "3.10.0", "file": "main.py"},
             "c": {"lang": "c", "version": "10.2.0", "file": "main.c"},
             "cpp": {"lang": "c++", "version": "10.2.0", "file": "main.cpp"},
             "java": {"lang": "java", "version": "15.0.2", "file": "Main.java"},
         }
-        
         config = lang_config.get(language, lang_config["python"])
         
-        # Execute code via Piston API
+        # Execute code
         payload = {
             "language": config["lang"],
             "version": config["version"],
@@ -1286,11 +1249,264 @@ def run_test_code(request):
             "stdin": stdin_data,
             "compile_timeout": 10000,
             "run_timeout": 3000,
+        }
+        
+        response = requests.post(PISTON_URL, json=payload, timeout=15)
+        
+        if "application/json" not in response.headers.get("Content-Type", ""):
+            return JsonResponse({
+                "error": f"Non-JSON response ({response.status_code})"
+            }, status=500)
+        
+        result = response.json()
+        if response.status_code != 200:
+            return JsonResponse({
+                "error": f"Execution error: {result}"
+            }, status=500)
+        
+        run_data = result.get("run", {})
+        compile_data = result.get("compile", {})
+        
+        # Get output and format with inputs
+        raw_output = run_data.get("stdout", "")
+        formatted_output = format_output_with_inputs(raw_output, input_values)
+        
+        return JsonResponse({
+            "success": True,
+            "output": formatted_output,
+            "stderr": run_data.get("stderr", ""),
+            "compile_error": compile_data.get("stderr", ""),
+            "exit_code": run_data.get("code", 0)
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON data in request."}, status=400)
+    except requests.Timeout:
+        return JsonResponse({"error": "Code execution timed out."}, status=408)
+    except requests.RequestException as e:
+        return JsonResponse({"error": f"Network error: {str(e)}"}, status=500)
+    except Exception as e:
+        import traceback
+        print(f"[ERROR] User {school_id} - {str(e)}")
+        print(traceback.format_exc())
+        return JsonResponse({"error": f"Server error: {str(e)}"}, status=500)
+
+
+#----------------------Universal Playground--------------------------#
+
+def code_testing_playground(request):
+    school_id = request.session.get('school_id')
+    if not school_id:
+        messages.warning(request, "Please log in first.")
+        return redirect('index')
+
+    user = get_object_or_404(User, school_id=school_id)
+
+    context = {
+        'user': user,
+        'nav': 'Playground',
+        'currentpage': 'Playground',
+    }
+
+    if user.user_type.lower() == 'teacher':
+        return render(request, 'Universal/Playground.html', {**context, 'sidebar': 'teacher'})
+    else:
+        return render(request, 'Universal/Playground.html', {**context, 'sidebar': 'student'})
+
+def format_output_with_inputs(raw_output, input_values):
+    """
+    Simple formatter: Add input values next to lines that end with : or ?
+    The program already runs sequentially, we just display inputs where they were entered.  
+    """
+    if not input_values:
+        return raw_output
+    
+    lines = raw_output.split('\n')
+    result = []
+    input_index = 0
+    
+    for line in lines:
+        # If line ends with : or ? and we have inputs left, append the input
+        if input_index < len(input_values) and (line.rstrip().endswith(':') or line.rstrip().endswith('?')):
+            result.append(f"{line} {input_values[input_index]}")
+            input_index += 1
+        else:
+            result.append(line)
+    
+    return '\n'.join(result)
+
+
+def extract_prompts(code, language):
+    """Extract input prompts from code - IMPROVED VERSION"""
+    prompts = []
+    lines = code.split('\n')
+    
+    if language == 'python':
+        for i, line in enumerate(lines):
+            if 'input(' in line:
+                # Try to find the prompt in the input() call
+                match = re.search(r'input\s*\(\s*["\']([^"\']*)["\']', line)
+                if match:
+                    prompt = match.group(1).strip()
+                    # Remove f-string formatting
+                    prompt = re.sub(r'\{[^}]+\}', '', prompt).strip()
+                    prompts.append(prompt if prompt else f"Value {len(prompts) + 1}")
+                else:
+                    # Check if there's a print statement before this input
+                    found_print = False
+                    for j in range(i - 1, max(-1, i - 3), -1):
+                        if 'print(' in lines[j]:
+                            match = re.search(r'print\s*\(\s*f?["\']([^"\']*)["\']', lines[j])
+                            if match:
+                                prompt = match.group(1).strip()
+                                prompt = re.sub(r'\{[^}]+\}', '', prompt).strip()
+                                if prompt and prompt not in prompts:
+                                    prompts.append(prompt)
+                                    found_print = True
+                                    break
+                    if not found_print:
+                        prompts.append(f"Value {len(prompts) + 1}")
+    
+    elif language == 'c':
+        # Find all scanf lines
+        scanf_lines = []
+        for i, line in enumerate(lines):
+            if 'scanf' in line:
+                scanf_lines.append(i)
+        
+        # For each scanf, look for printf before it
+        for scanf_line in scanf_lines:
+            found = False
+            for j in range(scanf_line - 1, max(-1, scanf_line - 5), -1):
+                if 'printf' in lines[j]:
+                    match = re.search(r'printf\s*\(\s*"([^"]*)"', lines[j])
+                    if match:
+                        prompt = match.group(1).strip()
+                        # Remove format specifiers and newlines
+                        prompt = re.sub(r'%[dfscilfg]', '', prompt)
+                        prompt = prompt.replace('\\n', '').strip()
+                        if prompt:
+                            prompts.append(prompt)
+                            found = True
+                            break
+            
+            if not found:
+                prompts.append(f"Value {len(prompts) + 1}")
+    
+    elif language == 'cpp':
+        # Find all cin lines and count >> operators
+        cin_lines = []
+        for i, line in enumerate(lines):
+            if 'cin' in line and '>>' in line:
+                var_count = line.count('>>')
+                cin_lines.append({'line': i, 'count': var_count})
+        
+        # For each cin operation, look for cout before it
+        for cin_info in cin_lines:
+            cin_line = cin_info['line']
+            var_count = cin_info['count']
+            
+            for v in range(var_count):
+                found = False
+                for j in range(cin_line - 1, max(-1, cin_line - 5), -1):
+                    if 'cout' in lines[j] and '<<' in lines[j]:
+                        match = re.search(r'cout\s*<<\s*"([^"]*)"', lines[j])
+                        if match:
+                            prompt = match.group(1).strip()
+                            prompt = prompt.replace('\\n', '').strip()
+                            if prompt and prompt not in prompts:
+                                prompts.append(prompt)
+                                found = True
+                                break
+                
+                if not found:
+                    prompts.append(f"Value {len(prompts) + 1}")
+    
+    elif language == 'java':
+        # Find all Scanner input calls
+        scanner_lines = []
+        for i, line in enumerate(lines):
+            if re.search(r'\.next(Int|Line|Double|Float|Boolean|Long)\s*\(', line):
+                scanner_lines.append(i)
+        
+        # For each Scanner call, look for System.out.print before it
+        for scanner_line in scanner_lines:
+            found = False
+            for j in range(scanner_line - 1, max(-1, scanner_line - 5), -1):
+                if 'System.out.print' in lines[j]:
+                    match = re.search(r'System\.out\.print\w*\s*\(\s*"([^"]*)"', lines[j])
+                    if match:
+                        prompt = match.group(1).strip()
+                        if prompt:
+                            prompts.append(prompt)
+                            found = True
+                            break
+            
+            if not found:
+                prompts.append(f"Value {len(prompts) + 1}")
+    
+    return prompts
+
+
+# Update the run_test_code view to use the fixed formatting
+@csrf_exempt  
+def run_test_code(request):
+    """Execute code - the Piston API handles sequential execution"""
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method."}, status=400)
+    
+    try:
+        data = json.loads(request.body)
+        code = data.get("code", "").strip()
+        language = (data.get("language", "python") or "python").lower()
+        stdin_data = data.get("stdin", "")
+        
+        if not code:
+            return JsonResponse({"error": "Code cannot be empty."}, status=400)
+        
+        # Parse input values (space or newline separated)
+        input_values = []
+        if stdin_data:
+            if '\n' in stdin_data:
+                input_values = [v.strip() for v in stdin_data.split('\n') if v.strip()]
+            else:
+                input_values = [v.strip() for v in stdin_data.split() if v.strip()]
+        
+        # Fix Java class name if needed
+        if language == "java":
+            lines = code.split('\n')
+            modified_lines = []
+            for line in lines:
+                if 'public class' in line and '{' in line:
+                    before = line.split('public class')[0]
+                    after_parts = line.split('public class')[1].split('{', 1)
+                    if len(after_parts) == 2:
+                        modified_lines.append(before + 'public class Main {' + after_parts[1])
+                        continue
+                modified_lines.append(line)
+            code = '\n'.join(modified_lines)
+        
+        # Language configurations
+        lang_config = {
+            "python": {"lang": "python", "version": "3.10.0", "file": "main.py"},
+            "c": {"lang": "c", "version": "10.2.0", "file": "main.c"},
+            "cpp": {"lang": "c++", "version": "10.2.0", "file": "main.cpp"},
+            "java": {"lang": "java", "version": "15.0.2", "file": "Main.java"},
+        }
+        config = lang_config.get(language, lang_config["python"])
+        
+        # Execute via Piston API - it runs the code sequentially
+        payload = {
+            "language": config["lang"],
+            "version": config["version"],
+            "files": [{"name": config["file"], "content": code}],
+            "stdin": stdin_data,  # Pass all inputs, Piston handles them sequentially
+            "compile_timeout": 10000,
+            "run_timeout": 3000,
             "compile_memory_limit": -1,
             "run_memory_limit": -1
         }
         
-        PISTON_URL = "https://emkc.org/api/v2/piston/execute"
         response = requests.post(PISTON_URL, json=payload, timeout=15)
         
         if "application/json" not in response.headers.get("Content-Type", ""):
@@ -1299,7 +1515,6 @@ def run_test_code(request):
             }, status=500)
         
         result = response.json()
-        
         if response.status_code != 200:
             return JsonResponse({
                 "error": f"Execution service error: {result}"
@@ -1308,9 +1523,11 @@ def run_test_code(request):
         run_data = result.get("run", {})
         compile_data = result.get("compile", {})
         
-        # ✅ Format output with prompts and input values
+        # Get the raw output - Piston already executed everything in order
         raw_output = run_data.get("stdout", "")
-        formatted_output = format_output_with_inputs(raw_output, input_values, language)
+        
+        # Just add input values next to prompts for display
+        formatted_output = format_output_with_inputs(raw_output, input_values)
         
         return JsonResponse({
             "success": True,
@@ -1332,158 +1549,7 @@ def run_test_code(request):
         print(traceback.format_exc())
         return JsonResponse({"error": f"Server error: {str(e)}"}, status=500)
 
-
-def extract_prompts(code, language):
-    """Extract input prompts from code for all supported languages"""
-    prompts = []
-    lines = code.split('\n')
-    
-    if language == 'python':
-        for i, line in enumerate(lines):
-            if 'input(' in line:
-                # Try to extract prompt from input()
-                match = re.search(r'input\s*\(\s*["\']([^"\']*)["\']', line)
-                if match:
-                    prompt = match.group(1).strip()
-                    # Remove f-string formatting
-                    prompt = re.sub(r'\{[^}]+\}', '', prompt).strip()
-                    prompts.append(prompt if prompt else f"Value {len(prompts) + 1}:")
-                else:
-                    prompts.append(f"Value {len(prompts) + 1}:")
-    
-    elif language == 'c':
-        for i, line in enumerate(lines):
-            if 'scanf' in line:
-                # Look for printf before scanf
-                found = False
-                for j in range(max(0, i - 5), i):
-                    match = re.search(r'printf\s*\(\s*"([^"]*)"', lines[j])
-                    if match:
-                        prompt = match.group(1).strip()
-                        # Remove format specifiers
-                        prompt = re.sub(r'%[dfscilfg]', '', prompt).strip()
-                        if prompt:
-                            prompts.append(prompt)
-                            found = True
-                            break
-                if not found:
-                    prompts.append(f"Value {len(prompts) + 1}:")
-    
-    elif language == 'cpp':
-        for i, line in enumerate(lines):
-            if 'cin >>' in line:
-                # Look for cout before cin
-                found = False
-                for j in range(max(0, i - 5), i):
-                    match = re.search(r'cout\s*<<\s*"([^"]*)"', lines[j])
-                    if match:
-                        prompt = match.group(1).strip()
-                        if prompt:
-                            prompts.append(prompt)
-                            found = True
-                            break
-                if not found:
-                    prompts.append(f"Value {len(prompts) + 1}:")
-    
-    elif language == 'java':
-        for i, line in enumerate(lines):
-            if re.search(r'\.next(Int|Line|Double|Float|Boolean|Long)\s*\(', line):
-                # Look for System.out.print before scanner
-                found = False
-                for j in range(max(0, i - 5), i):
-                    match = re.search(r'System\.out\.print\w*\s*\(\s*"([^"]*)"', lines[j])
-                    if match:
-                        prompt = match.group(1).strip()
-                        if prompt:
-                            prompts.append(prompt)
-                            found = True
-                            break
-                if not found:
-                    prompts.append(f"Value {len(prompts) + 1}:")
-    
-    return prompts
-
-
-def format_output_with_inputs(raw_output, input_values, language):
-    """
-    Format the output to show prompts with their corresponding input values.
-    This handles prompt lines followed by empty input lines.
-    """
-    if not input_values:
-        return raw_output
-    
-    # Split output into lines
-    output_lines = raw_output.split('\n')
-    formatted_lines = []
-    input_index = 0
-    
-    i = 0
-    while i < len(output_lines):
-        line = output_lines[i]
-        
-        # Check if this line looks like a prompt (contains : or ends with common prompt patterns)
-        is_prompt_line = False
-        
-        # Common prompt patterns
-        if line.strip():
-            # Check for patterns like "Enter num1:" or "Enter value:" etc.
-            if ':' in line or line.strip().endswith('?'):
-                is_prompt_line = True
-            # Check for patterns like "printf" output without newline
-            elif language in ['c', 'cpp'] and any(keyword in line.lower() for keyword in ['enter', 'input', 'value', 'number']):
-                is_prompt_line = True
-        
-        # If it's a prompt line and we have input values left
-        if is_prompt_line and input_index < len(input_values):
-            # Add the prompt line with the input value
-            formatted_lines.append(f"{line} {input_values[input_index]}")
-            input_index += 1
-        else:
-            # Regular line, keep as is
-            formatted_lines.append(line)
-        
-        i += 1
-    
-    # If we still have unused input values, it means they were on separate lines
-    # Let's do a second pass to handle cases where input was on the next line
-    if input_index < len(input_values):
-        final_lines = []
-        input_index = 0
-        skip_next = False
-        
-        for i, line in enumerate(formatted_lines):
-            if skip_next:
-                skip_next = False
-                continue
-            
-            # Check if this is a prompt line
-            is_prompt = ':' in line or line.strip().endswith('?') or any(
-                keyword in line.lower() for keyword in ['enter', 'input', 'value', 'number']
-            )
-            
-            if is_prompt and input_index < len(input_values):
-                # Check if next line is empty or just whitespace
-                if i + 1 < len(formatted_lines):
-                    next_line = formatted_lines[i + 1].strip()
-                    if not next_line or next_line == input_values[input_index]:
-                        # Merge the prompt with input value
-                        final_lines.append(f"{line} {input_values[input_index]}")
-                        input_index += 1
-                        skip_next = True
-                        continue
-                
-                # If input value isn't already in the line
-                if input_values[input_index] not in line:
-                    final_lines.append(f"{line} {input_values[input_index]}")
-                    input_index += 1
-                else:
-                    final_lines.append(line)
-            else:
-                final_lines.append(line)
-        
-        formatted_lines = final_lines
-    
-    return '\n'.join(formatted_lines)
+#---------------END OF CONSOLE CODE------------------------------------#
 
 
 #---------------------------AI-----------------------------------------# Initialize client

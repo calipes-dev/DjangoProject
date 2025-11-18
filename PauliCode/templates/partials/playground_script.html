@@ -61,6 +61,7 @@ let consoleState = {
 };
 
 // ==================== UNIVERSAL BATCH INPUT HANDLER ====================
+// ==================== IMPROVED UNIVERSAL BATCH INPUT HANDLER ====================
 const UniversalHandler = {
   needsInput(code, language) {
     switch(language) {
@@ -89,8 +90,14 @@ const UniversalHandler = {
         count = cMatches ? cMatches.length : 0;
         break;
       case 'cpp':
-        const cppMatches = code.match(/cin\s*>>/g);
-        count = cppMatches ? cppMatches.length : 0;
+        // Count all >> operators in cin statements
+        const lines = code.split('\n');
+        for (let line of lines) {
+          if (line.includes('cin') && line.includes('>>')) {
+            const matches = line.match(/>>/g);
+            count += matches ? matches.length : 0;
+          }
+        }
         break;
       case 'java':
         const javaMatches = code.match(/\.next(Int|Line|Double|Float|Boolean|Long)\s*\(/g);
@@ -113,23 +120,33 @@ const UniversalHandler = {
               let prompt = match[1]
                 .replace(/\{[^}]+\}/g, '')
                 .trim();
-              prompts.push(prompt || `Enter value ${prompts.length + 1}:`);
+              prompts.push(prompt || `Value ${prompts.length + 1}`);
             } else {
-              prompts.push(`Enter value ${prompts.length + 1}:`);
+              prompts.push(`Value ${prompts.length + 1}`);
             }
           }
         }
         break;
         
       case 'c':
+        // Find all scanf lines
+        const scanfLines = [];
         for (let i = 0; i < lines.length; i++) {
           if (lines[i].includes('scanf')) {
-            let found = false;
-            for (let j = i - 1; j >= Math.max(0, i - 5); j--) {
+            scanfLines.push(i);
+          }
+        }
+        
+        // For each scanf, look for printf before it
+        for (let scanfLine of scanfLines) {
+          let found = false;
+          for (let j = scanfLine - 1; j >= Math.max(0, scanfLine - 5); j--) {
+            if (lines[j].includes('printf')) {
               const match = lines[j].match(/printf\s*\(\s*["']([^"']*)["']/);
               if (match) {
                 let prompt = match[1]
                   .replace(/%d|%s|%f|%c|%lf|%i/g, '')
+                  .replace(/\\n/g, '')
                   .trim();
                 if (prompt) {
                   prompts.push(prompt);
@@ -138,40 +155,63 @@ const UniversalHandler = {
                 }
               }
             }
-            if (!found) {
-              prompts.push(`Enter value ${prompts.length + 1}:`);
-            }
+          }
+          if (!found) {
+            prompts.push(`Value ${prompts.length + 1}`);
           }
         }
         break;
         
       case 'cpp':
+        // Find all cin lines and count >> operators
+        const cinLines = [];
         for (let i = 0; i < lines.length; i++) {
-          if (lines[i].includes('cin >>')) {
+          if (lines[i].includes('cin') && lines[i].includes('>>')) {
+            const varCount = (lines[i].match(/>>/g) || []).length;
+            cinLines.push({line: i, count: varCount});
+          }
+        }
+        
+        // For each cin operation, look for cout before it
+        for (let {line: cinLine, count: varCount} of cinLines) {
+          for (let v = 0; v < varCount; v++) {
             let found = false;
-            for (let j = i - 1; j >= Math.max(0, i - 5); j--) {
-              const match = lines[j].match(/cout\s*<<\s*["']([^"']*)["']/);
-              if (match) {
-                let prompt = match[1].trim();
-                if (prompt) {
-                  prompts.push(prompt);
-                  found = true;
-                  break;
+            for (let j = cinLine - 1; j >= Math.max(0, cinLine - 5); j--) {
+              if (lines[j].includes('cout') && lines[j].includes('<<')) {
+                const match = lines[j].match(/cout\s*<<\s*["']([^"']*)["']/);
+                if (match) {
+                  let prompt = match[1]
+                    .replace(/\\n/g, '')
+                    .trim();
+                  if (prompt && !prompts.includes(prompt)) {
+                    prompts.push(prompt);
+                    found = true;
+                    break;
+                  }
                 }
               }
             }
             if (!found) {
-              prompts.push(`Enter value ${prompts.length + 1}:`);
+              prompts.push(`Value ${prompts.length + 1}`);
             }
           }
         }
         break;
         
       case 'java':
+        // Find all Scanner input calls
+        const scannerLines = [];
         for (let i = 0; i < lines.length; i++) {
           if (lines[i].match(/\.next(Int|Line|Double|Float|Boolean|Long)\s*\(/)) {
-            let found = false;
-            for (let j = i - 1; j >= Math.max(0, i - 5); j--) {
+            scannerLines.push(i);
+          }
+        }
+        
+        // For each Scanner call, look for System.out.print before it
+        for (let scannerLine of scannerLines) {
+          let found = false;
+          for (let j = scannerLine - 1; j >= Math.max(0, scannerLine - 5); j--) {
+            if (lines[j].includes('System.out.print')) {
               const match = lines[j].match(/System\.out\.print\w*\s*\(\s*["']([^"']*)["']/);
               if (match) {
                 let prompt = match[1].trim();
@@ -182,9 +222,9 @@ const UniversalHandler = {
                 }
               }
             }
-            if (!found) {
-              prompts.push(`Enter value ${prompts.length + 1}:`);
-            }
+          }
+          if (!found) {
+            prompts.push(`Value ${prompts.length + 1}`);
           }
         }
         break;

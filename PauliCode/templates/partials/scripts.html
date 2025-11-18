@@ -243,6 +243,13 @@ document.querySelectorAll('.problem-card').forEach(card => {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/mode-java.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/theme-dracula.js"></script>
 
+<!-- Ace Editor -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/mode-python.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/mode-c_cpp.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/mode-java.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/theme-dracula.js"></script>
+
 <script>
 // ==================== ACE EDITOR SETUP ====================
 let editor = ace.edit("codeEditor");
@@ -290,242 +297,205 @@ let consoleState = {
   isWaitingForInput: false,
   isFinished: false,
   needsInput: false,
-  isBatchInput: false
+  prompts: []
 };
 
-// ==================== LANGUAGE HANDLERS ====================
-const PythonHandler = {
-  needsInput(code) {
-    return /input\s*\(/.test(code);
-  },
-  
-  isBatchMode() {
-    return false;
-  },
-  
-  getFirstPrompt(code) {
-    const match = code.match(/input\s*\(\s*["'`f]([^"'`]*)["'`]/);
-    return match ? match[1].replace(/\{[^}]+\}/g, '').trim() : 'Enter value:';
-  },
-  
-  extractNextPrompt(output) {
-    const lines = output.split('\n');
-    for (let i = lines.length - 1; i >= 0; i--) {
-      const line = lines[i].trim();
-      if (line && (line.endsWith(':') || /enter|input/i.test(line))) {
-        return line;
-      }
+// ==================== IMPROVED UNIVERSAL BATCH INPUT HANDLER ====================
+const UniversalHandler = {
+  needsInput(code, language) {
+    switch(language) {
+      case 'python':
+        return /input\s*\(/.test(code);
+      case 'c':
+        return /scanf\s*\(/.test(code);
+      case 'cpp':
+        return /cin\s*>>/.test(code);
+      case 'java':
+        return /Scanner/.test(code) && /\.next(Int|Line|Double|Float|Boolean|Long)\s*\(/.test(code);
+      default:
+        return false;
     }
-    return 'Enter value:';
   },
   
-  needsMoreInput(stderr) {
-    return stderr.includes('EOFError') || stderr.includes('EOF when reading');
-  },
-  
-  cleanOutput(output) {
-    const lines = output.split('\n');
-    const result = [];
-    
-    for (let line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
-      if (trimmed.endsWith(':') && /enter|input/i.test(trimmed)) {
-        continue;
-      }
-      result.push(line);
+  countInputs(code, language) {
+    let count = 0;
+    switch(language) {
+      case 'python':
+        const pythonMatches = code.match(/input\s*\(/g);
+        count = pythonMatches ? pythonMatches.length : 0;
+        break;
+      case 'c':
+        const cMatches = code.match(/scanf/g);
+        count = cMatches ? cMatches.length : 0;
+        break;
+      case 'cpp':
+        // Count all >> operators in cin statements
+        const lines = code.split('\n');
+        for (let line of lines) {
+          if (line.includes('cin') && line.includes('>>')) {
+            const matches = line.match(/>>/g);
+            count += matches ? matches.length : 0;
+          }
+        }
+        break;
+      case 'java':
+        const javaMatches = code.match(/\.next(Int|Line|Double|Float|Boolean|Long)\s*\(/g);
+        count = javaMatches ? javaMatches.length : 0;
+        break;
     }
-    
-    return result.join('\n').trim();
-  }
-};
-
-const CHandler = {
-  needsInput(code) {
-    return /scanf\s*\(/.test(code);
+    return count;
   },
   
-  isBatchMode() {
-    return true;
-  },
-  
-  countInputs(code) {
-    const scanfMatches = code.match(/scanf/g);
-    return scanfMatches ? scanfMatches.length : 0;
-  },
-  
-  getInputPrompt(code) {
-    return `Enter all value(s) needed in your code (space-separated or one per line):`;
-  },
-  
-  extractPrompts(code) {
+  extractPrompts(code, language) {
     const prompts = [];
     const lines = code.split('\n');
     
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes('scanf')) {
-        for (let j = i - 1; j >= Math.max(0, i - 5); j--) {
-          const match = lines[j].match(/printf\s*\(\s*["']([^"']*)["']/);
-          if (match) {
-            let prompt = match[1].replace(/\\n/g, '').replace(/%d|%s|%f|%c/g, '').trim();
-            if (prompt) prompts.push(prompt);
-            break;
+    switch(language) {
+      case 'python':
+        for (let i = 0; i < lines.length; i++) {
+          if (lines[i].includes('input(')) {
+            const match = lines[i].match(/input\s*\(\s*["'`f]([^"'`]*)["'`]/);
+            if (match) {
+              let prompt = match[1]
+                .replace(/\{[^}]+\}/g, '')
+                .trim();
+              prompts.push(prompt || `Value ${prompts.length + 1}`);
+            } else {
+              prompts.push(`Value ${prompts.length + 1}`);
+            }
           }
         }
-      }
-    }
-    
-    return prompts.length > 0 ? prompts : [];
-  },
-  
-  cleanOutput(output) {
-    let cleaned = output;
-    cleaned = cleaned.replace(/Enter [^:\n]*:\s*/gi, '');
-    cleaned = cleaned.replace(/Input [^:\n]*:\s*/gi, '');
-    
-    const lines = cleaned.split('\n');
-    const result = [];
-    
-    for (let line of lines) {
-      const trimmed = line.trim();
-      if (trimmed && !trimmed.match(/^(Enter|Input|enter|input)/i)) {
-        result.push(trimmed);
-      }
-    }
-    
-    return result.join('\n');
-  }
-};
-
-const CppHandler = {
-  needsInput(code) {
-    return /cin\s*>>/.test(code);
-  },
-  
-  isBatchMode() {
-    return true;
-  },
-  
-  countInputs(code) {
-    const cinMatches = code.match(/cin\s*>>/g);
-    return cinMatches ? cinMatches.length : 0;
-  },
-  
-  getInputPrompt(code) {
-    const count = this.countInputs(code);
-    return `Enter all ${count} value(s) (space-separated or one per line):`;
-  },
-  
-  extractPrompts(code) {
-    const prompts = [];
-    const lines = code.split('\n');
-    
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes('cin >>')) {
-        for (let j = i - 1; j >= Math.max(0, i - 5); j--) {
-          const match = lines[j].match(/cout\s*<<\s*["']([^"']*)["']/);
-          if (match) {
-            let prompt = match[1].trim();
-            if (prompt) prompts.push(prompt);
-            break;
+        break;
+        
+      case 'c':
+        // Find all scanf lines
+        const scanfLines = [];
+        for (let i = 0; i < lines.length; i++) {
+          if (lines[i].includes('scanf')) {
+            scanfLines.push(i);
           }
         }
-      }
+        
+        // For each scanf, look for printf before it
+        for (let scanfLine of scanfLines) {
+          let found = false;
+          for (let j = scanfLine - 1; j >= Math.max(0, scanfLine - 5); j--) {
+            if (lines[j].includes('printf')) {
+              const match = lines[j].match(/printf\s*\(\s*["']([^"']*)["']/);
+              if (match) {
+                let prompt = match[1]
+                  .replace(/%d|%s|%f|%c|%lf|%i/g, '')
+                  .replace(/\\n/g, '')
+                  .trim();
+                if (prompt) {
+                  prompts.push(prompt);
+                  found = true;
+                  break;
+                }
+              }
+            }
+          }
+          if (!found) {
+            prompts.push(`Value ${prompts.length + 1}`);
+          }
+        }
+        break;
+        
+      case 'cpp':
+        // Find all cin lines and count >> operators
+        const cinLines = [];
+        for (let i = 0; i < lines.length; i++) {
+          if (lines[i].includes('cin') && lines[i].includes('>>')) {
+            const varCount = (lines[i].match(/>>/g) || []).length;
+            cinLines.push({line: i, count: varCount});
+          }
+        }
+        
+        // For each cin operation, look for cout before it
+        for (let {line: cinLine, count: varCount} of cinLines) {
+          for (let v = 0; v < varCount; v++) {
+            let found = false;
+            for (let j = cinLine - 1; j >= Math.max(0, cinLine - 5); j--) {
+              if (lines[j].includes('cout') && lines[j].includes('<<')) {
+                const match = lines[j].match(/cout\s*<<\s*["']([^"']*)["']/);
+                if (match) {
+                  let prompt = match[1]
+                    .replace(/\\n/g, '')
+                    .trim();
+                  if (prompt && !prompts.includes(prompt)) {
+                    prompts.push(prompt);
+                    found = true;
+                    break;
+                  }
+                }
+              }
+            }
+            if (!found) {
+              prompts.push(`Value ${prompts.length + 1}`);
+            }
+          }
+        }
+        break;
+        
+      case 'java':
+        // Find all Scanner input calls
+        const scannerLines = [];
+        for (let i = 0; i < lines.length; i++) {
+          if (lines[i].match(/\.next(Int|Line|Double|Float|Boolean|Long)\s*\(/)) {
+            scannerLines.push(i);
+          }
+        }
+        
+        // For each Scanner call, look for System.out.print before it
+        for (let scannerLine of scannerLines) {
+          let found = false;
+          for (let j = scannerLine - 1; j >= Math.max(0, scannerLine - 5); j--) {
+            if (lines[j].includes('System.out.print')) {
+              const match = lines[j].match(/System\.out\.print\w*\s*\(\s*["']([^"']*)["']/);
+              if (match) {
+                let prompt = match[1].trim();
+                if (prompt) {
+                  prompts.push(prompt);
+                  found = true;
+                  break;
+                }
+              }
+            }
+          }
+          if (!found) {
+            prompts.push(`Value ${prompts.length + 1}`);
+          }
+        }
+        break;
     }
     
-    return prompts.length > 0 ? prompts : [];
+    return prompts;
   },
   
-  cleanOutput(output) {
-    let cleaned = output;
-    cleaned = cleaned.replace(/Enter [^:\n]*:\s*/gi, '');
-    cleaned = cleaned.replace(/Input [^:\n]*:\s*/gi, '');
-    
-    const lines = cleaned.split('\n');
-    const result = [];
-    
-    for (let line of lines) {
-      const trimmed = line.trim();
-      if (trimmed && !trimmed.match(/^(Enter|Input|enter|input)/i)) {
-        result.push(trimmed);
-      }
-    }
-    
-    return result.join('\n');
+  getInputPrompt(code, language) {
+    const count = this.countInputs(code, language);
+    return count > 0 
+      ? `Enter all ${count} value(s) (space-separated or one per line):`
+      : 'Enter values:';
   }
 };
-
-const JavaHandler = {
-  needsInput(code) {
-    return /Scanner/.test(code) && /\.next(Int|Line|Double|Float|Boolean|Long)\s*\(/.test(code);
-  },
-  
-  isBatchMode() {
-    return false;
-  },
-  
-  getFirstPrompt(code) {
-    const match = code.match(/System\.out\.print\w*\s*\(\s*["']([^"']*)["']/);
-    return match ? match[1].trim() : 'Enter value:';
-  },
-  
-  extractNextPrompt(output) {
-    const lines = output.split('\n');
-    for (let i = lines.length - 1; i >= 0; i--) {
-      const line = lines[i].trim();
-      if (line && (line.endsWith(':') || /enter|input/i.test(line))) {
-        return line;
-      }
-    }
-    return 'Enter value:';
-  },
-  
-  needsMoreInput(stderr) {
-    return stderr.includes('NoSuchElementException') || 
-           stderr.includes('java.util.NoSuchElementException');
-  },
-  
-  cleanOutput(output) {
-    const lines = output.split('\n');
-    const result = [];
-    
-    for (let line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
-      if (trimmed.endsWith(':') && trimmed.length < 100) {
-        continue;
-      }
-      if (/^(Enter|Input|enter|input)\s/i.test(trimmed) && trimmed.endsWith(':')) {
-        continue;
-      }
-      result.push(line);
-    }
-    
-    return result.join('\n').trim();
-  }
-};
-
-function getLanguageHandler() {
-  switch(consoleState.language) {
-    case 'python': return PythonHandler;
-    case 'c': return CHandler;
-    case 'cpp': return CppHandler;
-    case 'java': return JavaHandler;
-    default: return PythonHandler;
-  }
-}
 
 // ==================== CONSOLE UI FUNCTIONS ====================
 function appendToConsole(text, inline = false, className = '') {
   const consoleOutput = document.getElementById('consoleOutput');
   
+  const processedText = text
+    .replace(/\\n/g, '\n')
+    .replace(/\\t/g, '\t')
+    .replace(/\\r/g, '\r');
+  
   if (inline) {
     const span = document.createElement('span');
     span.className = className || 'prompt-line';
-    span.textContent = text;
+    span.textContent = processedText;
     consoleOutput.appendChild(span);
   } else {
-    const textNode = document.createTextNode(text);
+    const textNode = document.createTextNode(processedText);
     consoleOutput.appendChild(textNode);
   }
   
@@ -543,16 +513,9 @@ function updateHelpText(text) {
 // ==================== INPUT HANDLING ====================
 document.getElementById('consoleInput').addEventListener('keydown', function(e) {
   if (!consoleState.isFinished && consoleState.isWaitingForInput) {
-    if (consoleState.isBatchInput) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        submitInput();
-      }
-    } else {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        submitInput();
-      }
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitInput();
     }
   }
 });
@@ -563,42 +526,41 @@ function submitInput() {
   }
   
   const input = document.getElementById('consoleInput');
-  const handler = getLanguageHandler();
+  const inputText = input.value.trim();
   
-  if (consoleState.isBatchInput) {
-    const inputText = input.value.trim();
-    let values = [];
-    
-    if (inputText.includes('\n')) {
-      values = inputText.split('\n').map(v => v.trim()).filter(v => v);
-    } else {
-      values = inputText.split(/\s+/).filter(v => v);
-    }
-    
-    const prompts = handler.extractPrompts(consoleState.code);
-    
-    appendToConsole('\n');
-    for (let i = 0; i < values.length && i < prompts.length; i++) {
-      appendToConsole(prompts[i] + ' ', true, 'prompt-line');
-      appendToConsole(values[i] + '\n', true, 'input-value');
-    }
-    
-    for (let i = prompts.length; i < values.length; i++) {
-      appendToConsole(values[i] + '\n', true, 'input-value');
-    }
-    
-    appendToConsole('\n');
-    
-    consoleState.allInputs = values.join('\n');
-    consoleState.inputs = values;
-    
-  } else {
-    const value = input.value;
-    appendToConsole(value + '\n', true, 'input-value');
-    consoleState.inputs.push(value);
-    consoleState.allInputs = consoleState.inputs.join('\n');
+  if (!inputText) {
+    return;
   }
   
+  let values = [];
+  
+  // Parse input values (space-separated or newline-separated)
+  if (inputText.includes('\n')) {
+    values = inputText.split('\n').map(v => v.trim()).filter(v => v);
+  } else {
+    values = inputText.split(/\s+/).filter(v => v);
+  }
+  
+  // ✅ Display what user entered with prompts
+  appendToConsole('\n╔════════════════════════════════════════╗\n', false, 'info');
+  appendToConsole('║          Input Provided               ║\n', false, 'info');
+  appendToConsole('╚════════════════════════════════════════╝\n\n', false, 'info');
+  
+  for (let i = 0; i < values.length; i++) {
+    const prompt = consoleState.prompts[i] || `Value ${i + 1}`;
+    const cleanPrompt = prompt.replace(/:?\s*$/, '');
+    appendToConsole(`${cleanPrompt}: `, true, 'prompt-line');
+    appendToConsole(`${values[i]}\n`, true, 'input-value');
+  }
+  
+  appendToConsole('\n╔════════════════════════════════════════╗\n', false, 'info');
+  appendToConsole('║         Program Output                ║\n', false, 'info');
+  appendToConsole('╚════════════════════════════════════════╝\n\n', false, 'info');
+  
+  consoleState.allInputs = values.join('\n');
+  consoleState.inputs = values;
+  
+  // Clear and disable input
   input.value = '';
   input.disabled = true;
   document.getElementById('submitInputIcon').style.display = 'none';
@@ -617,7 +579,7 @@ async function executeCode() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": "{{ csrf_token }}"
+        "X-CSRFToken": getCookie("csrftoken")
       },
       body: JSON.stringify({
         code: consoleState.code,
@@ -627,7 +589,6 @@ async function executeCode() {
     });
     
     const data = await response.json();
-    const handler = getLanguageHandler();
     
     if (data.success) {
       const output = data.output || '';
@@ -635,52 +596,35 @@ async function executeCode() {
       const compileError = data.compile_error || '';
       
       if (compileError) {
-        appendToConsole('\n--- Compile Error ---\n');
+        appendToConsole('\n--- Compile Error ---\n', false, 'error');
         appendToConsole(compileError);
         finishExecution();
         return;
       }
       
-      if (!handler.isBatchMode()) {
-        const needsMore = handler.needsMoreInput(stderr);
-        
-        if (needsMore && consoleState.needsInput) {
-          const prompt = handler.extractNextPrompt(output);
-          appendToConsole(prompt + ' ', true);
-          
-          consoleState.isWaitingForInput = true;
-          const input = document.getElementById('consoleInput');
-          input.disabled = false;
-          input.focus();
-          document.getElementById('submitInputIcon').style.display = 'block';
-          updateHelpText('Enter value and press Enter...');
-          return;
-        }
-      }
-      
-      if (stderr && !handler.needsMoreInput(stderr)) {
-        appendToConsole('\n--- Runtime Error ---\n');
+      if (stderr) {
+        appendToConsole('\n--- Runtime Error ---\n', false, 'error');
         appendToConsole(stderr);
         finishExecution();
         return;
       }
       
-      const cleaned = handler.cleanOutput(output);
-      
-      if (cleaned) {
-        appendToConsole('\n' + cleaned + '\n');
+      if (output) {
+        appendToConsole(output);
+      } else {
+        appendToConsole('(No output)\n', false, 'info');
       }
       
-      appendToConsole('\n✓ Program completed successfully\n');
+      appendToConsole('\n\n✓ Program completed successfully\n', false, 'info');
       finishExecution();
       
     } else {
-      appendToConsole('\n⚠️ Error: ' + (data.error || 'Unknown error') + '\n');
+      appendToConsole('\n⚠️ Error: ' + (data.error || 'Unknown error') + '\n', false, 'error');
       finishExecution();
     }
     
   } catch (error) {
-    appendToConsole('\n⚠️ Connection error: ' + error.message + '\n');
+    appendToConsole('\n⚠️ Connection error: ' + error.message + '\n', false, 'error');
     finishExecution();
   }
 }
@@ -695,6 +639,7 @@ function finishExecution() {
   document.getElementById('rerunBtn').disabled = false;
 }
 
+// ==================== RERUN CODE ====================
 function rerunCode() {
   const code = getCode();
   const language = document.getElementById('language').value;
@@ -704,9 +649,8 @@ function rerunCode() {
     return;
   }
   
-  const handler = getLanguageHandler();
-  const needsInput = handler.needsInput(code);
-  const isBatchInput = handler.isBatchMode();
+  const needsInput = UniversalHandler.needsInput(code, language);
+  const prompts = UniversalHandler.extractPrompts(code, language);
   
   consoleState = {
     code: code,
@@ -716,7 +660,7 @@ function rerunCode() {
     isWaitingForInput: needsInput,
     isFinished: false,
     needsInput: needsInput,
-    isBatchInput: isBatchInput
+    prompts: prompts
   };
   
   document.getElementById('rerunBtn').disabled = true;
@@ -729,28 +673,20 @@ function rerunCode() {
     input.value = '';
     submitIcon.style.display = 'block';
     
-    if (isBatchInput) {
-      const prompt = handler.getInputPrompt(code);
-      appendToConsole('╔════════════════════════════════════════╗\n', false, 'info');
-      appendToConsole('║  C/C++ Batch Input Mode                ║\n', false, 'info');
-      appendToConsole('╚════════════════════════════════════════╝\n', false, 'info');
-      appendToConsole('\n' + prompt + '\n\n', true, 'prompt-line');
-      
-      document.getElementById('batchInputInfo').style.display = 'block';
-      input.setAttribute('rows', '2');
-      input.style.height = 'auto';
-      input.style.minHeight = '60px';
-      updateHelpText('Enter values separated by spaces or one per line, then press Enter');
-    } else {
-      const firstPrompt = handler.getFirstPrompt(code);
-      appendToConsole(firstPrompt + ' ', true);
-      updateHelpText('Enter value and press Enter...');
-      
-      document.getElementById('batchInputInfo').style.display = 'none';
-      input.removeAttribute('rows');
-      input.style.height = '';
-      input.style.minHeight = '';
-    }
+    const prompt = UniversalHandler.getInputPrompt(code, language);
+    const count = UniversalHandler.countInputs(code, language);
+    
+    appendToConsole('╔════════════════════════════════════════╗\n', false, 'info');
+    appendToConsole(`║  Batch Input Mode (${language.toUpperCase()})${' '.repeat(Math.max(0, 23 - language.length))}║\n`, false, 'info');
+    appendToConsole('╚════════════════════════════════════════╝\n', false, 'info');
+    appendToConsole(`\nDetected ${count} input operation(s)\n\n`, false, 'info');
+    appendToConsole(prompt + '\n\n', true, 'prompt-line');
+    
+    document.getElementById('batchInputInfo').style.display = 'block';
+    input.setAttribute('rows', '3');
+    input.style.height = 'auto';
+    input.style.minHeight = '70px';
+    updateHelpText('Enter values separated by spaces or one per line, then press Enter');
     
     input.focus();
   } else {
@@ -763,7 +699,7 @@ function rerunCode() {
     input.style.minHeight = '';
     document.getElementById('batchInputInfo').style.display = 'none';
     updateHelpText('Executing code (no input required)...');
-    appendToConsole('Running program...\n');
+    appendToConsole('Running program...\n\n--- Program Output ---\n\n', false, 'info');
     
     setTimeout(() => {
       executeCode();
@@ -771,6 +707,7 @@ function rerunCode() {
   }
 }
 
+// ==================== RUN CODE (OPENS CONSOLE) ====================
 function runCode() {
   const code = getCode();
   const language = document.getElementById('language').value;
@@ -780,9 +717,8 @@ function runCode() {
     return;
   }
   
-  const handler = getLanguageHandler();
-  const needsInput = handler.needsInput(code);
-  const isBatchInput = handler.isBatchMode();
+  const needsInput = UniversalHandler.needsInput(code, language);
+  const prompts = UniversalHandler.extractPrompts(code, language);
   
   consoleState = {
     code: code,
@@ -792,7 +728,7 @@ function runCode() {
     isWaitingForInput: needsInput,
     isFinished: false,
     needsInput: needsInput,
-    isBatchInput: isBatchInput
+    prompts: prompts
   };
   
   const modal = new bootstrap.Modal(document.getElementById('consoleModal'));
@@ -808,28 +744,20 @@ function runCode() {
     input.value = '';
     submitIcon.style.display = 'block';
     
-    if (isBatchInput) {
-      const prompt = handler.getInputPrompt(code);
-      appendToConsole('╔════════════════════════════════════════╗\n', false, 'info');
-      appendToConsole('║  C/C++ Batch Input Mode                ║\n', false, 'info');
-      appendToConsole('╚════════════════════════════════════════╝\n', false, 'info');
-      appendToConsole('\n' + prompt + '\n\n', true, 'prompt-line');
-      
-      document.getElementById('batchInputInfo').style.display = 'block';
-      input.setAttribute('rows', '2');
-      input.style.height = 'auto';
-      input.style.minHeight = '60px';
-      updateHelpText('Enter values separated by spaces or one per line, then press Enter');
-    } else {
-      const firstPrompt = handler.getFirstPrompt(code);
-      appendToConsole(firstPrompt + ' ', true);
-      updateHelpText('Enter value and press Enter...');
-      
-      document.getElementById('batchInputInfo').style.display = 'none';
-      input.removeAttribute('rows');
-      input.style.height = '';
-      input.style.minHeight = '';
-    }
+    const prompt = UniversalHandler.getInputPrompt(code, language);
+    const count = UniversalHandler.countInputs(code, language);
+    
+    appendToConsole('╔════════════════════════════════════════╗\n', false, 'info');
+    appendToConsole(`║  Batch Input Mode (${language.toUpperCase()})${' '.repeat(Math.max(0, 23 - language.length))}║\n`, false, 'info');
+    appendToConsole('╚════════════════════════════════════════╝\n', false, 'info');
+    appendToConsole(`\nDetected ${count} input operation(s)\n\n`, false, 'info');
+    appendToConsole(prompt + '\n\n', true, 'prompt-line');
+    
+    document.getElementById('batchInputInfo').style.display = 'block';
+    input.setAttribute('rows', '3');
+    input.style.height = 'auto';
+    input.style.minHeight = '70px';
+    updateHelpText('Enter values separated by spaces or one per line, then press Enter');
     
     input.focus();
   } else {
@@ -842,7 +770,7 @@ function runCode() {
     input.style.minHeight = '';
     document.getElementById('batchInputInfo').style.display = 'none';
     updateHelpText('Executing code (no input required)...');
-    appendToConsole('Running program...\n');
+    appendToConsole('Running program...\n\n--- Program Output ---\n\n', false, 'info');
     
     setTimeout(() => {
       executeCode();
@@ -857,6 +785,7 @@ function closeConsole() {
   }
 }
 
+// Auto-focus when modal opens
 document.getElementById('consoleModal').addEventListener('shown.bs.modal', function() {
   if (consoleState.needsInput && !consoleState.isFinished) {
     setTimeout(() => {
@@ -931,7 +860,7 @@ async function checkCode() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": "{{ csrf_token }}"
+        "X-CSRFToken": getCookie("csrftoken")
       },
       body: JSON.stringify({
         code: code,
@@ -1245,7 +1174,7 @@ async function submitCode() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": "{{ csrf_token }}"
+        "X-CSRFToken": getCookie("csrftoken")
       },
       body: JSON.stringify({
         problem_id: problemId,
@@ -1509,6 +1438,9 @@ document.addEventListener("keydown", function(e) {
   setTimeout(updateIndicator, 500);
 })();
 
+// =============================
+// CSRF TOKEN HELPER
+// =============================
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== "") {
