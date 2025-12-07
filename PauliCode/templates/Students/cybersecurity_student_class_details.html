@@ -1,0 +1,1272 @@
+{% extends "base.html" %}
+{% load static %}
+<!--cybersecurity_student_class_details.html (Student View) - FIXED-->
+{% block content %}
+
+<body class="g-sidenav-show text-white" style="background-color: #111827; margin-left: 90px; padding-right: 90px;">
+  <div class="min-height-300 position-absolute w-100"></div>
+
+  <main class="main-content position-relative border-radius-lg p-4" style="max-width: 100%; width: 100%;">
+    
+    <!-- CLASS HEADER -->
+    <div class="cyber-header card border-0 shadow-lg rounded-4 p-4 mb-4" 
+         style="margin-top: -5px;  background: linear-gradient(135deg, #462323 0%, rgba(134, 5, 5, 0.15) 100%); border-left: 4px solid #fb7185 !important; border-right: 1px solid #f87171 !important;">
+      <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
+        <div class="flex-grow-1">
+          <div class="d-flex align-items-center mb-2">
+            <i class="fa fa-shield-alt text-white me-2" style="font-size: 1.5rem;"></i>
+            <h3 class="fw-bold text-white mb-0">{{ class.title }}</h3>
+          </div>
+          <p class="text-white small mb-0 ms-5 opacity-75">{{ class.description }}</p>
+        </div>
+
+        <div class="mt-2 mt-md-0 unenroll-btn-container">
+          <a href="{% url 'unenroll_class' class.class_id %}" 
+             class="btn btn-outline-light fw-bold d-flex align-items-center"
+             onclick="return confirm('Are you sure you want to unenroll from this class?');">
+            <i class="fa fa-sign-out-alt me-2"></i>
+            <span class="btn-text">Unenroll</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 flex-wrap mt-3">
+        <span class="badge px-3 py-2" style="background-color: rgba(255, 255, 255, 0.2);">
+          <i class="fa fa-key me-1"></i>{{ class.class_code }}
+        </span>
+        <span class="badge bg-dark px-3 py-2">
+          <i class="fa fa-user-shield me-1"></i>{{ class.teacher }}
+        </span>
+        <span class="badge bg-white px-3 py-2" style="color: #be123c;">
+          <i class="fa fa-lock me-1"></i>Cybersecurity Class
+        </span>
+      </div>
+    </div>
+
+    <!-- RESOURCES SECTION -->
+    <div class="card border-0 shadow-sm text-white rounded-4 p-4 mt-4" style="background-color: #1f2937;">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-white d-flex align-items-center mb-0">
+          <i class="fa fa-folder-open me-2" style="color: #f87171;"></i>
+          Class Resources
+        </h5>
+        <span class="badge px-3 py-2" style="background-color: rgba(248, 113, 113, 0.2); color: #fb7185;">
+          <i class="fa fa-file me-1"></i>{{ resources|length }} Resources
+        </span>
+      </div>
+
+      <!-- Resources Search -->
+      <div class="mb-3">
+        <input type="text" id="resourceSearch" 
+              class="form-control text-white"
+              placeholder="🔍 Search resources..."
+              style="background-color: #111827; border: 1px solid #f87171; height: 44px;">
+      </div>
+
+      <!-- Resources Grid -->
+      <div class="resources-container rounded-3 p-3" style="background-color: #111827; min-height: 200px; max-height: 400px; overflow-y: auto;">
+        {% if resources %}
+          <div class="row g-3" id="resourcesGrid">
+            {% for resource_group in resources %}
+              <div class="col-12 col-md-6 col-lg-4 resource-item" 
+                  data-title="{{ resource_group.title|lower }}" 
+                  data-description="{{ resource_group.description|lower }}">
+                <div class="resource-card card text-white rounded-3 p-3 h-100 resource-card-clickable"
+                  style="background: linear-gradient(135deg, #2d1818 0%, rgba(139, 0, 0, 0.15) 100%); 
+                          border: 1px solid #f87171; 
+                          transition: all 0.3s ease; 
+                          cursor: pointer;"
+                  data-resource-title="{{ resource_group.title|escapejs }}"
+                  data-resource-files='{{ resource_group.files|safe }}'>
+
+                  <div class="d-flex align-items-start mb-2">
+                    <!-- Multiple files indicator -->
+                    <div class="flex-shrink-0 me-3 position-relative">
+                      {% if resource_group.files|length > 1 %}
+                        <div class="file-stack">
+                          <i class="fa fa-file fa-2x" style="color: #f87171;"></i>
+                          <span class="badge position-absolute top-0 start-100 translate-middle rounded-pill" style="background-color: #be123c;">
+                          {{ resource_group.file_count }}
+                          </span>
+                        </div>
+                      {% else %}
+                        {% with resource=resource_group.files.0 %}
+                          {% if resource.file_extension == 'pdf' %}
+                            <i class="fa fa-file-pdf fa-2x text-danger"></i>
+                          {% elif resource.file_extension in 'png,jpg,jpeg' %}
+                            <i class="fa fa-file-image fa-2x text-info"></i>
+                          {% elif resource.file_extension in 'docx,doc' %}
+                            <i class="fa fa-file-word fa-2x text-primary"></i>
+                          {% elif resource.file_extension in 'pptx,ppt' %}
+                            <i class="fa fa-file-powerpoint fa-2x text-warning"></i>
+                          {% elif resource.file_extension == 'zip' %}
+                            <i class="fa fa-file-archive fa-2x text-secondary"></i>
+                          {% elif resource.file_extension == 'txt' %}
+                            <i class="fa fa-file-alt fa-2x text-muted"></i>
+                          {% elif resource.file_extension in 'mp4,mov,avi' %}
+                            <i class="fa fa-file-video fa-2x text-danger"></i>
+                          {% elif resource.file_extension in 'mp3,wav' %}
+                            <i class="fa fa-file-audio fa-2x text-info"></i>
+                          {% elif resource.file_extension in 'xls,xlsx' %}
+                            <i class="fa fa-file-excel fa-2x text-success"></i>
+                          {% else %}
+                            <i class="fa fa-file fa-2x" style="color: #f87171;"></i>
+                          {% endif %}
+                        {% endwith %}
+                      {% endif %}
+                    </div>
+
+                    <div class="flex-grow-1 overflow-hidden">
+                      <h6 class="fw-bold mb-1 text-white text-truncate" title="{{ resource_group.title }}">
+                        {{ resource_group.title }}
+                      </h6>
+                      <small class="text-white-50 d-block mb-1" title="{{ resource_group.description|default:'No description' }}">
+                        {{ resource_group.description|default:'No description'|truncatewords:3 }}
+                      </small>
+                      <div class="d-flex gap-2">
+                        <span class="badge small" style="background-color: rgba(248, 113, 113, 0.3);">
+                          <i class="fa fa-copy me-1"></i>{{ resource_group.file_count }} file{{ resource_group.file_count|pluralize }}
+                        </span>
+                        <span class="badge small" style="background-color: rgba(248, 113, 113, 0.3);">
+                          <i class="far fa-calendar me-1"></i>{{ resource_group.uploaded_at|date:"M d, Y" }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="d-flex gap-2 mt-2">
+                    <button type="button" class="btn btn-sm btn-outline-rose flex-grow-1" onclick="event.stopPropagation(); downloadResourceGroup('{{ resource_group.title|escapejs }}', {{ resource_group.files|safe }})">
+                      <i class="fa fa-download me-1"></i>Download All
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-info flex-grow-1" onclick="event.stopPropagation(); viewResourceGroupDetails('{{ resource_group.title|escapejs }}', {{ resource_group.files|safe }})">
+                      <i class="fa fa-eye me-1"></i>View Files
+                    </button>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center text-muted p-5 rounded-3" style="border: 1px dashed #f87171;">
+            <i class="fa fa-folder-open fa-3x mb-3 opacity-50" style="color: #f87171;"></i>
+            <p class="mb-0">No resources uploaded yet.</p>
+            <small class="text-muted">Your teacher will upload resources here.</small>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="row g-4 mt-2">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm text-white rounded-4 p-4" 
+             style="background-color: #1f2937;">
+
+          <!-- FIXED: Search and Filter in Same Line with Title -->
+          <form method="GET" class="mb-4">
+            <div class="row g-3 align-items-center">
+              
+              <!-- Title -->
+              <div class="col-12 col-md-auto">
+                <h5 class="fw-bold text-white mb-0 d-flex align-items-center">
+                  <i class="fa fa-flag me-2" style="color: #f87171;"></i>
+                  Security Challenges
+                </h5>
+              </div>
+
+              <!-- Search Bar -->
+              <div class="col-12 col-md">
+                <input type="text" name="q" value="{{ query }}"
+                       class="form-control text-white w-100"
+                       placeholder="🔍 Search challenges..."
+                       style="background-color: #111827; border: 1px solid #f87171; height: 42px;">
+              </div>
+
+              <!-- Filter Label (Desktop only) -->
+              <div class="col-auto d-none d-lg-block">
+                <span class="text-white fw-semibold">Filter:</span>
+              </div>
+
+              <!-- Filter Buttons -->
+              <div class="col-12 col-md-auto">
+                <div class="d-flex gap-2 flex-wrap justify-content-md-end">
+                  <button type="submit" name="filter" value="Assignment"
+                          class="btn fw-bold {% if filter_type == 'Assignment' %}btn-rose{% else %}btn-outline-rose{% endif %}"
+                          style="height: 42px; padding: 0 1rem;">
+                    <i class="fa fa-flag me-1"></i>
+                    <span class="d-none d-sm-inline">CTF</span>
+                  </button>
+                  
+                  <button type="submit" name="filter" value="Quiz"
+                          class="btn fw-bold {% if filter_type == 'Quiz' %}btn-rose{% else %}btn-outline-rose{% endif %}"
+                          style="height: 42px; padding: 0 1rem;">
+                    <i class="fa fa-clipboard-check me-1"></i>
+                    <span class="d-none d-sm-inline">Tests</span>
+                  </button>
+                  
+                  <button type="submit" name="filter" value=""
+                          class="btn fw-bold {% if not filter_type %}btn-rose{% else %}btn-outline-rose{% endif %}"
+                          style="height: 42px; padding: 0 1rem;">
+                    <i class="fa fa-list me-1"></i>
+                    <span class="d-none d-sm-inline">All</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <!-- Challenges List -->
+          {% if problems %}
+          <div class="row g-3">
+            {% for problem in problems %}
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+              <div class="cyber-challenge-card card text-white rounded-3 p-3 shadow-sm h-100 problem-card"
+                   data-problem-id="{{ problem.problem.problem_id }}"
+                   style="cursor: pointer; 
+                          background: linear-gradient(135deg, #2d1818 0%, rgba(139, 0, 0, 0.15) 100%); 
+                          position: relative; 
+                          transition: all 0.3s ease; 
+                          border: 1px solid #f87171;">
+                
+                <!-- Score Badge -->
+                {% if problem.score is not None %}
+                <div class="position-absolute top-0 end-0 mt-2 me-2">
+                  {% if problem.score >= problem.half_score %}
+                  <span class="badge px-2 py-1" style="background-color: #198754;">
+                    <i class="fa fa-check-circle me-1"></i>{{ problem.score }}/{{ problem.problem.total_score }}
+                  </span>
+                  {% else %}
+                  <span class="badge px-2 py-1" style="background-color: #be123c;">
+                    <i class="fa fa-exclamation-circle me-1"></i>{{ problem.score }}/{{ problem.problem.total_score }}
+                  </span>
+                  {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Challenge Info -->
+                <div class="mb-3">
+                  <div class="d-flex align-items-center mb-2">
+                    <i class="fa fa-skull me-2" style="color: #f87171;"></i>
+                    <h6 class="fw-bold mb-0 text-white text-truncate">{{ problem.problem.problem_title }}</h6>
+                  </div>
+                </div>
+
+                <!-- Challenge Meta -->
+                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 flex-wrap gap-2" 
+                     style="border-top: 1px solid rgba(248, 113, 113, 0.3);">
+                  <span class="badge small" style="{% if problem.problem.problem_type == 'Quiz' %}background-color: #be123c;{% else %}background-color: #17a2b8;{% endif %}">
+                    <i class="fa fa-clock me-1"></i>{{ problem.problem.due_date|date:"M d, H:i" }}
+                  </span>
+                  <span class="badge bg-dark small">
+                    <i class="fa fa-star me-1"></i>{{ problem.problem.total_score }} pts
+                  </span>
+                </div>
+
+                <!-- Completion Status -->
+                {% if problem.answered %}
+                <div class="mt-2">
+                  <span class="badge text-white small w-100" style="background-color: #198754;">
+                    <i class="fa fa-check-double me-1"></i>Submitted
+                  </span>
+                </div>
+                {% else %}
+                <div class="mt-2">
+                  <span class="badge small w-100" style="background-color: #be123c; color: white;">
+                    <i class="fa fa-hourglass-half me-1"></i>Not Submitted
+                  </span>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="text-center text-muted p-5 rounded-3" style="background-color: #111827; border: 1px dashed #f87171;">
+            <i class="fa fa-shield-alt fa-3x mb-3 opacity-50" style="color: #f87171;"></i>
+            <p class="mb-0">No security challenges available yet.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    
+
+    <!-- RESOURCE GROUP DETAILS MODAL -->
+    <div class="modal fade" id="resourceGroupDetailsModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content text-white" style="background-color: #1f2937; border: 2px solid #f87171; border-radius: 15px;">
+          <div class="modal-header" style="border-bottom: 1px solid rgba(248, 113, 113, 0.3); background: linear-gradient(135deg, rgba(190, 18, 60, 0.2), rgba(139, 0, 0, 0.1));">
+            <h4 class="fw-bold text-white d-flex align-items-center">
+              <i class="fa fa-folder-open me-2" style="color: #f87171;"></i>
+              <span id="resourceGroupTitle"></span>
+            </h4>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body px-4">
+            <div class="resource-group-info mb-4">
+              <h5 class="text-white mb-3">Files in this resource group:</h5>
+              <div id="resourceGroupFilesList" class="files-list">
+                <!-- Files will be populated here -->
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer" style="border-top: 1px solid rgba(248, 113, 113, 0.3);">
+            <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-rose px-4" onclick="downloadAllFilesInGroup()">
+              <i class="fa fa-download me-2"></i>Download All Files
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </main>
+
+  <!-- CHALLENGE DETAILS & SUBMIT MODAL -->
+  <div class="modal fade" id="problemDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content text-white" 
+           style="background-color: #1f2937; border: 2px solid #f87171; border-radius: 15px;">
+        
+        <div class="modal-header" style="border-bottom: 1px solid rgba(248, 113, 113, 0.3); background: linear-gradient(135deg, rgba(190, 18, 60, 0.2), rgba(139, 0, 0, 0.1));">
+          <div class="w-100">
+            <div class="d-flex align-items-center mb-2">
+              <i class="fa fa-skull me-2" style="color: #f87171;"></i>
+              <h4 class="fw-bold text-white mb-0" id="problem_title"></h4>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              <span class="badge" style="background-color: #be123c;" id="problem_type"></span>
+              <span class="badge bg-secondary" id="due_date"></span>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body px-4">
+          <div class="container-fluid">
+            
+            <!-- Challenge Brief -->
+            <div class="row g-3 mb-3">
+              <div class="col-12">
+                <label class="fw-semibold mb-2 text-white">
+                  <i class="fa fa-file-alt me-1"></i>Challenge Brief
+                </label>
+                <div id="problem_description" 
+                     class="p-3 rounded text-white" 
+                     style="background-color: #111827; border: 1px solid #f87171; min-height: 120px; white-space: pre-line; font-size: 0.9rem;"></div>
+              </div>
+            </div>
+
+            <!-- Points and File Display -->
+            <div class="row g-3 mb-3">
+              <div class="col-12 col-md-6">
+                <label class="fw-semibold mb-2 text-white">
+                  <i class="fa fa-star me-1"></i>Points
+                </label>
+                <div id="total_score" class="p-2 rounded text-white" style="background-color: #111827; border: 1px solid #f87171;"></div>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="fw-semibold mb-2 text-white">
+                  <i class="fa fa-file me-1"></i>Challenge File
+                </label>
+                <div id="challenge_file_container" class="p-2 rounded text-white" style="background-color: #111827; border: 1px solid #f87171;"></div>
+              </div>
+            </div>
+
+            <!-- Answer Submission Form -->
+            <div id="submission_form" class="row g-3 mt-3">
+              <div class="col-12">
+                <label class="fw-semibold mb-2 text-white">
+                  <i class="fa fa-pencil-alt me-1"></i>Your Answer
+                </label>
+                <textarea id="answer_text" 
+                         class="form-control text-white" 
+                         rows="2"
+                         placeholder="Write your answer here..."
+                         style="background-color: #111827; border: 1px solid #f87171;"></textarea>
+              </div>
+              
+              <!-- Feedback Card -->
+              <div class="col-12">
+                <div id="feedback_card" class="alert d-none" role="alert" style="border-radius: 8px;">
+                  <div class="d-flex align-items-center">
+                    <i id="feedback_icon" class="fa me-2" style="font-size: 1.2rem;"></i>
+                    <span id="feedback_message" class="fw-semibold"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="border-top: 1px solid rgba(248, 113, 113, 0.3);">
+          <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">
+            <i class="fa fa-times me-2"></i>Cancel
+          </button>
+          <button type="button" class="btn btn-rose px-4 fw-bold" id="submitButton">
+            <i class="fa fa-paper-plane me-2"></i>Submit Answer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include "partials/scripts.html" %}
+
+  <script>
+// ============================================
+// EXISTING SCRIPTS FROM YOUR FILE
+// ============================================
+
+// Global variables for cybersecurity challenges
+let currentProblemId = null;
+const successMessages = [
+  "🎉 All right!",
+  "✨ You got it!",
+  "🎊 Congratulations, you cracked it!",
+  "🌟 Perfect! Well done!",
+  "🏆 Excellent work!",
+  "💯 Spot on!",
+  "🎯 Bullseye!",
+  "⭐ Amazing job!",
+  "🔥 You nailed it!",
+  "👍 Outstanding!"
+];
+
+function getRandomSuccessMessage() {
+  return successMessages[Math.floor(Math.random() * successMessages.length)];
+}
+
+// Challenge card click handler
+document.querySelectorAll('.problem-card').forEach(card => {
+  card.addEventListener('click', function() {
+    currentProblemId = this.dataset.problemId;
+
+    fetch(`/problem/${currentProblemId}/details/`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('problem_title').textContent = data.title;
+        document.getElementById('problem_description').textContent = data.description;
+        document.getElementById('problem_type').textContent = data.type;
+        document.getElementById('total_score').textContent = data.score + ' points';
+        document.getElementById('due_date').textContent = 'Due: ' + data.due_date;
+
+        const fileContainer = document.getElementById('challenge_file_container');
+        if (data.challenge_file) {
+          fileContainer.innerHTML = `<a href="${data.challenge_file}" target="_blank" class="text-white"><i class="fa fa-download me-1"></i>Download File</a>`;
+        } else {
+          fileContainer.innerHTML = '<span class="text-white opacity-75">No file uploaded</span>';
+        }
+
+        document.getElementById('answer_text').value = '';
+        document.getElementById('feedback_card').classList.add('d-none');
+
+        const answerField = document.getElementById('answer_text');
+        const submitButton = document.getElementById('submitButton');
+        
+        if (data.answered) {
+          answerField.disabled = true;
+          answerField.placeholder = 'You have already solved this challenge correctly!';
+          answerField.style.cursor = 'not-allowed';
+          submitButton.disabled = true;
+          submitButton.classList.add('opacity-50');
+          submitButton.style.cursor = 'not-allowed';
+        } else {
+          answerField.disabled = false;
+          answerField.placeholder = 'Write your answer here...';
+          answerField.style.cursor = 'text';
+          submitButton.disabled = false;
+          submitButton.classList.remove('opacity-50');
+          submitButton.style.cursor = 'pointer';
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById('problemDetailsModal'));
+        modal.show();
+      })
+      .catch(err => console.error('Error loading challenge:', err));
+  });
+});
+
+// Submit answer handler
+document.getElementById('submitButton').addEventListener('click', function() {
+  const answerText = document.getElementById('answer_text').value.trim();
+  const feedbackCard = document.getElementById('feedback_card');
+  const feedbackIcon = document.getElementById('feedback_icon');
+  const feedbackMessage = document.getElementById('feedback_message');
+
+  if (!answerText) {
+    feedbackCard.className = 'alert alert-warning d-flex align-items-center';
+    feedbackIcon.className = 'fa fa-exclamation-triangle me-2';
+    feedbackMessage.textContent = 'Please provide an answer before submitting.';
+    feedbackCard.classList.remove('d-none');
+    return;
+  }
+
+  fetch(`/cybersecurity/submit/${currentProblemId}/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token }}'
+    },
+    body: JSON.stringify({
+      answer: answerText
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      if (data.is_correct) {
+        feedbackCard.className = 'alert d-flex align-items-center';
+        feedbackCard.style.backgroundColor = '#198754';
+        feedbackCard.style.border = '1px solid #4CD964';
+        feedbackIcon.className = 'fa fa-check-circle me-2';
+        feedbackMessage.textContent = `${getRandomSuccessMessage()} Your score: ${data.score}/${data.total_score}`;
+        
+        const answerField = document.getElementById('answer_text');
+        const submitButton = document.getElementById('submitButton');
+        answerField.disabled = true;
+        answerField.placeholder = 'You have already solved this challenge correctly!';
+        answerField.style.cursor = 'not-allowed';
+        submitButton.disabled = true;
+        submitButton.classList.add('opacity-50');
+        submitButton.style.cursor = 'not-allowed';
+      } else {
+        feedbackCard.className = 'alert d-flex align-items-center';
+        feedbackCard.style.backgroundColor = '#be123c';
+        feedbackCard.style.border = '1px solid #fb7185';
+        feedbackIcon.className = 'fa fa-times-circle me-2';
+        feedbackMessage.textContent = `Incorrect. Your score: ${data.score}/${data.total_score}. Try again!`;
+      }
+      
+      feedbackCard.classList.remove('d-none');
+      
+      if (!data.is_correct) {
+        document.getElementById('answer_text').value = '';
+      }
+      
+      setTimeout(() => location.reload(), 2000);
+    } else {
+      feedbackCard.className = 'alert alert-danger d-flex align-items-center';
+      feedbackIcon.className = 'fa fa-exclamation-circle me-2';
+      feedbackMessage.textContent = 'Error: ' + (data.error || 'Failed to submit answer');
+      feedbackCard.classList.remove('d-none');
+    }
+  })
+  .catch(err => {
+    console.error('Submission error:', err);
+    feedbackCard.className = 'alert alert-danger d-flex align-items-center';
+    feedbackIcon.className = 'fa fa-exclamation-circle me-2';
+    feedbackMessage.textContent = 'An error occurred while submitting your answer.';
+    feedbackCard.classList.remove('d-none');
+  });
+});
+
+// ============================================
+// RESOURCES JS (New)
+// ============================================
+
+// Global variable for resources
+let currentResourceGroup = null;
+
+// View Resource Group Details
+function viewResourceGroupDetails(title, files) {
+  try {
+    currentResourceGroup = { title, files };
+    
+    document.getElementById('resourceGroupTitle').textContent = title;
+    
+    const filesList = document.getElementById('resourceGroupFilesList');
+    if (!filesList) {
+      console.error('Files list container not found!');
+      return;
+    }
+    
+    filesList.innerHTML = '';
+    
+    if (!files || !Array.isArray(files) || files.length === 0) {
+      filesList.innerHTML = '<div class="text-white-50 text-center p-4">No files available</div>';
+    } else {
+      files.forEach(file => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item d-flex align-items-center justify-content-between p-3 rounded-2 mb-2';
+        fileItem.style.backgroundColor = '#111827';
+        
+        const ext = file.file_extension || '';
+        const iconMap = {
+          'pdf': 'fa-file-pdf text-danger',
+          'png': 'fa-file-image text-info',
+          'jpg': 'fa-file-image text-info',
+          'jpeg': 'fa-file-image text-info',
+          'docx': 'fa-file-word text-primary',
+          'doc': 'fa-file-word text-primary',
+          'pptx': 'fa-file-powerpoint text-warning',
+          'ppt': 'fa-file-powerpoint text-warning',
+          'zip': 'fa-file-archive text-secondary',
+          'txt': 'fa-file-alt text-muted',
+          'mp4': 'fa-file-video text-danger',
+          'mp3': 'fa-file-audio text-info',
+          'xls': 'fa-file-excel text-success',
+          'xlsx': 'fa-file-excel text-success'
+        };
+        
+        const iconClass = iconMap[ext] || 'fa-file';
+        
+        fileItem.innerHTML = `
+          <div class="d-flex align-items-center gap-3">
+            <i class="fa ${iconClass} fa-lg"></i>
+            <div>
+              <div class="text-white fw-semibold">${file.original_filename || 'Unknown file'}</div>
+              <small class="text-white-50">${file.file_size || 'Unknown size'} • ${file.uploaded_at || 'Unknown date'}</small>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="${file.file_url || '#'}" target="_blank" class="btn btn-sm btn-outline-rose" download title="Download">
+              <i class="fa fa-download"></i>
+            </a>
+            <a href="${file.file_url || '#'}" target="_blank" class="btn btn-sm btn-outline-info" title="View">
+              <i class="fa fa-eye"></i>
+            </a>
+          </div>
+        `;
+        
+        filesList.appendChild(fileItem);
+      });
+    }
+    
+    const modalElement = document.getElementById('resourceGroupDetailsModal');
+    if (!modalElement) {
+      console.error('Modal element not found!');
+      return;
+    }
+    
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+    
+  } catch (error) {
+    console.error('Error in viewResourceGroupDetails:', error);
+    alert('Error opening resource details: ' + error.message);
+  }
+}
+
+// Download all files
+function downloadAllFilesInGroup() {
+  if (!currentResourceGroup || !currentResourceGroup.files) return;
+  
+  currentResourceGroup.files.forEach((file, index) => {
+    setTimeout(() => {
+      const link = document.createElement('a');
+      link.href = file.file_url;
+      link.download = file.original_filename;
+      link.target = '_blank';
+      link.click();
+    }, index * 500);
+  });
+}
+
+// Resource Search
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('resourceSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const resourceItems = document.querySelectorAll('.resource-item');
+      
+      resourceItems.forEach(item => {
+        const title = item.dataset.title;
+        const description = item.dataset.description;
+        
+        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  // Handle resource card clicks
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.resource-card-clickable');
+    if (card) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      try {
+        const title = card.dataset.resourceTitle;
+        const filesJson = card.dataset.resourceFiles;
+        
+        if (!filesJson || filesJson === '') {
+          alert('No files available for this resource');
+          return;
+        }
+        
+        let files;
+        try {
+          files = JSON.parse(filesJson);
+        } catch (parseError) {
+          console.error('JSON parse error:', parseError);
+          alert('Error loading resource files');
+          return;
+        }
+        
+        viewResourceGroupDetails(title, files);
+        
+      } catch (error) {
+        console.error('Resource click error:', error);
+        alert('Error opening resource: ' + error.message);
+      }
+    }
+  });
+});
+  </script>
+
+  <style>
+    .btn-rose {
+      background-color: #be123c;
+      border: none;
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .btn-rose:hover {
+      background-color: #9f1239;
+      color: white;
+    }
+
+    .btn-rose:disabled {
+      background-color: #be123c;
+      cursor: not-allowed !important;
+    }
+
+    .btn-outline-rose {
+      border-color: #f87171;
+      color: #f87171;
+      background-color: transparent;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-rose:hover {
+      background-color: #be123c;
+      border-color: #be123c;
+      color: white;
+    }
+
+    .cyber-challenge-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(248, 113, 113, 0.4);
+      border-color: #fb7185 !important;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    textarea:disabled {
+      cursor: not-allowed !important;
+      opacity: 0.6;
+    }
+
+    .text-truncate {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Ultra Small Devices (less than 360px - small phones) */
+    @media (max-width: 359.98px) {
+      body {
+        font-size: 13px;
+        margin-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
+      .main-content {
+        padding: 0.25rem !important;
+        max-width: 100% !important;
+      }
+
+      .cyber-header {
+        padding: 0.75rem !important;
+        margin-top: 0 !important;
+      }
+
+      .cyber-header h3 {
+        font-size: 0.85rem !important;
+      }
+
+      .cyber-header p {
+        font-size: 0.7rem !important;
+        margin-left: 0 !important;
+      }
+
+      .cyber-header .badge {
+        font-size: 0.55rem;
+        padding: 0.2rem 0.35rem !important;
+      }
+
+      .unenroll-btn-container .btn {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.7rem;
+      }
+
+      .card {
+        padding: 0.5rem !important;
+      }
+
+      h5 {
+        font-size: 0.85rem !important;
+      }
+
+      .form-control {
+        font-size: 0.75rem;
+        height: 36px !important;
+      }
+
+      .btn {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.5rem !important;
+        height: 36px !important;
+      }
+
+      .cyber-challenge-card {
+        padding: 0.5rem !important;
+        min-height: auto !important;
+      }
+
+      .cyber-challenge-card h6 {
+        font-size: 0.75rem;
+      }
+
+      .cyber-challenge-card .badge {
+        font-size: 0.55rem;
+        padding: 0.15rem 0.3rem !important;
+      }
+
+      .modal-dialog {
+        margin: 0.125rem !important;
+        max-width: calc(100% - 0.25rem) !important;
+      }
+
+      .modal-header h4 {
+        font-size: 0.85rem;
+      }
+
+      .modal-body {
+        padding: 0.75rem !important;
+      }
+
+      .modal-body label {
+        font-size: 0.75rem;
+      }
+
+      .modal-body textarea,
+      .modal-body input {
+        font-size: 0.75rem;
+      }
+
+      .modal-footer .btn {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.7rem !important;
+      }
+
+      .col-12 {
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+      }
+    }
+
+    /* Extra Small Devices (360px to 575px - most phones) */
+    @media (min-width: 360px) and (max-width: 575.98px) {
+      body {
+        margin-left: 0 !important;
+        padding-right: 0 !important;
+      }
+      
+      .main-content {
+        padding: 0.5rem !important;
+        max-width: 100% !important;
+      }
+
+      .cyber-header {
+        padding: 0.85rem !important;
+        margin-top: 0 !important;
+      }
+
+      .cyber-header h3 {
+        font-size: 0.95rem !important;
+      }
+
+      .cyber-header p {
+        font-size: 0.75rem !important;
+        margin-left: 0 !important;
+      }
+
+      .unenroll-btn-container {
+        width: 100%;
+      }
+
+      .unenroll-btn-container .btn {
+        width: 100%;
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem;
+      }
+
+      .cyber-header .badge {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.5rem !important;
+      }
+
+      .form-control {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+      }
+
+      .btn {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem !important;
+      }
+
+      .cyber-challenge-card {
+        padding: 0.75rem !important;
+        min-height: auto !important;
+      }
+
+      .cyber-challenge-card h6 {
+        font-size: 0.85rem;
+      }
+
+      .cyber-challenge-card .badge {
+        font-size: 0.65rem;
+      }
+
+      .modal-dialog {
+        margin: 0.25rem !important;
+        max-width: calc(100% - 0.5rem) !important;
+      }
+
+      .modal-content {
+        border-radius: 10px !important;
+      }
+
+      .modal-header h4 {
+        font-size: 0.95rem;
+      }
+
+      .modal-body {
+        padding: 1rem !important;
+      }
+
+      .modal-body label {
+        font-size: 0.85rem;
+      }
+
+      .modal-body textarea,
+      .modal-body input {
+        font-size: 0.85rem;
+      }
+
+      .modal-footer {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .modal-footer .btn {
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem !important;
+        width: 100%;
+      }
+
+      .row.g-3 {
+        gap: 0.75rem !important;
+      }
+    }
+
+    /* Small Devices (576px to 767px - large phones, small tablets) */
+    @media (min-width: 576px) and (max-width: 767.98px) {
+      body {
+        margin-left: 0 !important;
+        padding-right: 0 !important;
+      }
+      
+      .main-content {
+        padding: 1rem !important;
+        max-width: 100% !important;
+      }
+
+      .cyber-header {
+        padding: 1.25rem !important;
+      }
+
+      .cyber-header h3 {
+        font-size: 1.05rem;
+      }
+
+      .cyber-challenge-card {
+        padding: 0.9rem !important;
+        min-height: auto !important;
+      }
+
+      .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+      }
+
+      .modal-body {
+        padding: 1.5rem !important;
+      }
+
+      .modal-footer .btn {
+        width: 48%;
+      }
+    }
+
+    /* Medium Devices (768px to 991px - tablets) */
+    @media (min-width: 768px) and (max-width: 991.98px) {
+      .main-content {
+        padding: 1.5rem !important;
+        max-width: 100%;
+      }
+    }
+
+      .cyber-header h3 {
+        font-size: 1.15rem;
+      }
+
+      .cyber-challenge-card {
+        min-height: 160px;
+      }
+
+      .modal-dialog {
+        max-width: 85%;
+      }
+
+      .modal-footer .btn {
+        width: auto;
+      }
+    }
+
+    /* Large Devices (992px to 1199px - small desktops) */
+    @media (min-width: 992px) and (max-width: 1199.98px) {
+      .cyber-challenge-card {
+        min-height: 180px;
+      }
+
+      .modal-dialog {
+        max-width: 750px;
+      }
+      
+      .main-content {
+        max-width: 100%;
+      }
+    }
+
+    /* Extra Large Devices (1200px to 1399px - desktops) */
+    @media (min-width: 1200px) and (max-width: 1399.98px) {
+      .modal-dialog {
+        max-width: 850px;
+      }
+
+      .cyber-challenge-card {
+        min-height: 180px;
+      }
+      
+      .main-content {
+        max-width: 100%;
+        padding-left: 2rem;
+        padding-right: 2rem;
+      }
+    }
+
+    /* XXL Devices (1400px and up - large desktops) */
+    @media (min-width: 1400px) {
+      .modal-dialog {
+        max-width: 950px;
+      }
+
+      .main-content {
+        max-width: 100%;
+        padding-left: 3rem;
+        padding-right: 3rem;
+      }
+    }
+
+    /* Landscape Orientation - Very Short Screens */
+    @media (max-height: 450px) and (orientation: landscape) {
+      .modal-dialog {
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .modal-body {
+        max-height: 55vh;
+        overflow-y: auto;
+      }
+
+      .cyber-header {
+        padding: 0.6rem !important;
+      }
+
+      .cyber-header h3 {
+        font-size: 0.85rem !important;
+      }
+    }
+
+    @media (min-height: 450px) and (max-height: 600px) and (orientation: landscape) {
+      .modal-dialog {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .modal-body {
+        max-height: 65vh;
+        overflow-y: auto;
+      }
+
+      .cyber-header {
+        padding: 0.85rem !important;
+      }
+    }
+
+    /* Touch Device Optimizations */
+    @media (hover: none) and (pointer: coarse) {
+      .cyber-challenge-card {
+        padding: 0.9rem !important;
+      }
+
+      .btn {
+        min-height: 44px;
+        padding: 0.75rem 1rem !important;
+      }
+
+      .form-control {
+        min-height: 44px;
+        font-size: 16px !important;
+      }
+
+      input, select, textarea, button {
+        font-size: 16px !important;
+      }
+    }
+
+    /* Foldable Phones - Unfolded */
+    @media (min-width: 768px) and (max-width: 884px) and (orientation: portrait) {
+      .cyber-challenge-card {
+        min-height: 150px;
+      }
+    }
+
+    /* High DPI / Retina Displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .cyber-challenge-card {
+        box-shadow: 0 2px 8px rgba(248, 113, 113, 0.2);
+      }
+    }
+
+    /* Prevent horizontal scroll and ensure proper spacing */
+    * {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .row {
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
+    }
+
+    .container-fluid {
+      padding-left: 0;
+      padding-right: 0;
+      width: 100%;
+    }
+
+    /* Ensure cards don't overflow */
+    .col-12, .col-sm-6, .col-md-6, .col-lg-4 {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    /* Make sure long text wraps properly */
+    h6, .text-truncate {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    /* Ensure badges wrap on small screens */
+    .badge {
+      display: inline-block;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    /* Resource Styles for Cybersecurity Theme */
+.resource-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(248, 113, 113, 0.4);
+  border-color: #fb7185 !important;
+}
+
+.btn-outline-rose {
+  border-color: #f87171;
+  color: #f87171;
+  background-color: transparent;
+}
+
+.btn-outline-rose:hover {
+  background-color: #be123c;
+  border-color: #be123c;
+  color: white;
+}
+
+.file-stack {
+  position: relative;
+  display: inline-block;
+}
+
+.file-stack .badge {
+  font-size: 0.7rem;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-item {
+  transition: all 0.2s ease;
+}
+
+.file-item:hover {
+  background-color: #1f2937 !important;
+}
+
+.files-list::-webkit-scrollbar,
+.resources-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.files-list::-webkit-scrollbar-track,
+.resources-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.files-list::-webkit-scrollbar-thumb,
+.resources-container::-webkit-scrollbar-thumb {
+  background: rgba(248, 113, 113, 0.3);
+  border-radius: 3px;
+}
+
+.files-list::-webkit-scrollbar-thumb:hover,
+.resources-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(248, 113, 113, 0.5);
+}
+  </style>
+
+</body>
+{% endblock %}

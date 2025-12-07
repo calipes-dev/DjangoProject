@@ -5,7 +5,6 @@
 {% block content %}
 
 <style>
-/* Add Highlight.js for syntax highlighting */
 @import url('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css');
 
 .typing-cursor{
@@ -215,7 +214,7 @@ body {
   color: #e6edf3;
 }
 
-/* Enhanced syntax highlighting colors for better readability */
+/* Enhanced syntax highlighting colors */
 .ai-message pre code .hljs-keyword,
 .ai-message pre code .hljs-selector-tag,
 .ai-message pre code .hljs-literal,
@@ -321,232 +320,171 @@ body {
   font-style: italic;
 }
 
-/* Console Modal Styles */
+/* Console Modal Styles - Clean CodeChum Style */
 .console-modal .modal-dialog {
   max-width: 900px;
 }
 
 .console-modal .modal-content {
-  background-color: #0a0e1a;
-  color: #00ff99;
-  border: 2px solid #00cc66;
-  border-radius: 8px;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  border: 1px solid #333;
+  border-radius: 6px;
 }
 
 .console-modal .modal-header {
-  background-color: #12181f;
-  border-bottom: 2px solid #00cc66;
+  background-color: #252526;
+  border-bottom: 1px solid #333;
+  padding: 12px 20px;
 }
 
 .console-modal .modal-title {
-  color: #00ff99;
-  font-family: monospace;
-  font-size: 1.1rem;
+  color: #cccccc;
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
 .console-container {
   display: flex;
   flex-direction: column;
-  height: 550px;
+  height: 500px;
 }
 
 .console-output {
-  background-color: #000000;
-  color: #00ff99;
-  font-family: 'Courier New', monospace;
-  padding: 20px;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  font-family: 'Consolas', 'Courier New', monospace;
+  padding: 16px;
   flex: 1;
   overflow-y: auto;
-  border: 1px solid #00cc66;
-  border-radius: 4px 4px 0 0;
   white-space: pre-wrap;
   word-wrap: break-word;
-  font-size: 14px;
-  line-height: 1.8;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .console-output::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 .console-output::-webkit-scrollbar-track {
-   background: #12181f;
-  border-radius: 5px;
+  background: #1e1e1e;
 }
 
 .console-output::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #00ff99, #00cc66);
-  border-radius: 5px;
+  background: #424242;
+  border-radius: 4px;
 }
+
 .console-output::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #00ffcc, #00ff99);
+  background: #4e4e4e;
 }
 
 .console-input-area {
-  background-color: #12181f;
-  padding: 15px;
-  border: 1px solid #00cc66;
-  border-top: 2px solid #ffcc00;
-  border-radius: 0 0 4px 4px;
-}
-
-.console-input-area.disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.console-output > * {
-  animation: fadeIn 0.2s ease-out;
-}
-.console-output > span + span {
-  display: inline;
-}
-.section-header {
-  color: #ffcc00;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 12px 0 8px 0;
-  display: block;
-}
-.input-line {
+  background-color: #252526;
+  padding: 12px 16px;
+  border-top: 1px solid #333;
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  position: relative;
+  align-items: center;
+  gap: 8px;
 }
 
-.console-input-area textarea,
 .console-input-area input {
-  background-color: #000000;
-  color: #00ccff;
-  border: 1px solid #00cc66;
-  font-family: 'Courier New', monospace;
-  padding: 10px;
-  flex: 1;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.console-input-area textarea {
-  resize: vertical;
-  min-height: 40px;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.console-input-area textarea::-webkit-scrollbar {
-  width: 6px;
-}
-
-.console-input-area textarea::-webkit-scrollbar-track {
-  background: #1a1a1a;
-}
-
-.console-input-area textarea::-webkit-scrollbar-thumb {
-  background: #00cc66;
+  background-color: #3c3c3c;
+  color: #cccccc;
+  border: 1px solid #555;
   border-radius: 3px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  padding: 6px 10px;
+  flex: 1;
+  font-size: 13px;
 }
 
-.console-input-area textarea:focus,
 .console-input-area input:focus {
   outline: none;
-  border-color: #00ff99;
-  box-shadow: 0 0 10px rgba(0, 255, 153, 0.3);
+  border-color: #007acc;
+  background-color: #2d2d30;
 }
 
-.console-input-area textarea:disabled,
 .console-input-area input:disabled {
-  background-color: #1a1a1a;
-  color: #666;
+  background-color: #2d2d30;
+  color: #858585;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .console-output .prompt-line {
-  color: #00ccff;
-  font-weight: bold;
-  display: inline;
+  color: #4ec9b0;
 }
 
 .console-output .input-value {
-  color: #00ff99;
-  font-weight: bold;
-  display: inline;
-  background-color: rgba(0, 255, 153, 0.15);
-  padding: 2px 6px;
-  border-radius: 3px;
-  margin-left: 4px;
-}
-
-.console-output .output-text {
-  color: #00ff99;
+  color: #9cdcfe;
 }
 
 .console-output .error {
-  color: #ff6b6b;
-  background-color: rgba(255, 107, 107, 0.1);
-  padding: 8px;
-  border-left: 3px solid #ff6b6b;
-  display: block;
-  margin: 8px 0;
+  color: #f48771;
 }
 
 .console-output .info {
-  color: #ffa500;
-  font-weight: 500;
+  color: #858585;
+}
+
+.console-output .success {
+  color: #4ec9b0;
 }
 
 .btn-console {
-  background-color: #00aacc;
-  color: #000;
+  background-color: #0e639c;
+  color: #fff;
   border: none;
-  font-weight: bold;
-  font-family: monospace;
-  padding: 10px 20px;
-  white-space: nowrap;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  border-radius: 3px;
+  transition: background-color 0.2s;
 }
 
 .btn-console:hover:not(:disabled) {
-  background-color: #00ff99;
-  color: #000;
+  background-color: #1177bb;
+  color: #fff;
 }
-.console-output .success {
-  color: #00ff99;
-  font-weight: 600;
-}
+
 .btn-console:disabled {
-  background-color: #2b3a55;
-  color: #666;
+  background-color: #2d2d30;
+  color: #858585;
   cursor: not-allowed;
 }
 
-.btn-console-danger {
-  background-color: #ff6b6b;
+.btn-console-secondary {
+  background-color: #3c3c3c;
+  color: #cccccc;
+  border: 1px solid #555;
+}
+
+.btn-console-secondary:hover {
+  background-color: #505050;
+  color: #fff;
+}
+
+.btn-send-input {
+  background-color: #0e639c;
   color: #fff;
   border: none;
-  font-weight: bold;
-  font-family: monospace;
+  padding: 6px 12px;
+  border-radius: 3px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
-.btn-console-danger:hover {
-  background-color: #ff4444;
-  color: #fff;
+.btn-send-input:hover:not(:disabled) {
+  background-color: #1177bb;
 }
 
-.input-help-text {
-  font-size: 11px;
-  color: #888;
-  margin-top: 8px;
-  font-family: monospace;
+.btn-send-input:disabled {
+  background-color: #2d2d30;
+  color: #858585;
+  cursor: not-allowed;
 }
 
 #userMessage::-webkit-scrollbar {
@@ -575,26 +513,360 @@ body {
   0%, 80%, 100% { transform: scale(0); }
   40% { transform: scale(1); }
 }
+
+/* ========== FLOATING AI CHAT STYLES ========== */
+
+/* Floating AI Chat Button */
+.ai-chat-fab {
+  position: fixed;
+  bottom: 50px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #00ff99 0%, #00cc66 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 255, 153, 0.4);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  border: 3px solid #1a202c;
+}
+
+.ai-chat-fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(0, 255, 153, 0.6);
+}
+
+.ai-chat-fab i {
+  font-size: 1.8rem;
+  color: #000;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Notification Badge */
+.ai-chat-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ff4444;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #1a202c;
+}
+
+/* Floating Chat Window */
+.ai-chat-window {
+  position: fixed;
+  bottom: 50px;
+  right: 100px;
+  width: 400px;
+  height: 600px;
+  background: #1a202c;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  border: 2px solid #2d3748;
+  animation: slideInFromRight 0.3s ease-out;
+}
+
+.ai-chat-window.active {
+  display: flex;
+}
+
+/* Chat bubble tail pointing to the icon */
+.ai-chat-window::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  bottom: 15px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 25px 0 25px 30px;
+  border-color: transparent transparent transparent #2d3748;
+  z-index: 2;
+}
+
+.ai-chat-window::before {
+  content: '';
+  position: absolute;
+  right: -26px;
+  bottom: 18px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 22px 0 22px 26px;
+  border-color: transparent transparent transparent #1a202c;
+  z-index: 3;
+}
+
+/* Connector line from tail to icon */
+.ai-chat-connector {
+  position: fixed;
+  bottom: 65px;
+  right: 60px;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, #2d3748 0%, rgba(45, 55, 72, 0.3) 100%);
+  z-index: 998;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ai-chat-connector.active {
+  display: block;
+  opacity: 1;
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Chat Header */
+.ai-chat-header {
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+  padding: 16px;
+  border-bottom: 2px solid #00ff99;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ai-chat-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ai-chat-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #00ff99 0%, #00cc66 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-chat-avatar i {
+  color: #000;
+  font-size: 1.3rem;
+}
+
+.ai-chat-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-chat-title h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.ai-chat-status {
+  font-size: 0.7rem;
+  color: #00ff99;
+  margin-top: 2px;
+}
+
+.ai-chat-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.ai-chat-btn {
+  background: rgba(0, 255, 153, 0.1);
+  border: 1px solid #00ff99;
+  color: #00ff99;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.ai-chat-btn:hover {
+  background: rgba(0, 255, 153, 0.2);
+  transform: scale(1.05);
+}
+
+.ai-chat-close {
+  background: transparent;
+  border: none;
+  color: #a0aec0;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  transition: all 0.2s;
+}
+
+.ai-chat-close:hover {
+  color: #ff6b6b;
+  transform: rotate(90deg);
+}
+
+/* Chat Messages Container */
+.ai-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  background: #111827;
+}
+
+.ai-chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ai-chat-messages::-webkit-scrollbar-track {
+  background: #1a202c;
+}
+
+.ai-chat-messages::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  border-radius: 3px;
+}
+
+/* Chat Input */
+.ai-chat-input-container {
+  padding: 12px;
+  background: #1a202c;
+  border-top: 1px solid #2d3748;
+}
+
+.ai-chat-input-wrapper {
+  position: relative;
+  display: flex;
+  gap: 8px;
+}
+
+.ai-chat-textarea {
+  flex: 1;
+  background: #1f2937;
+  color: #fff;
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  padding: 10px 40px 10px 12px;
+  font-size: 0.85rem;
+  resize: none;
+  height: 50px;
+  font-family: inherit;
+}
+
+.ai-chat-textarea:focus {
+  outline: none;
+  border-color: #00ff99;
+}
+
+.ai-chat-char-count {
+  position: absolute;
+  left: 12px;
+  bottom: 4px;
+  font-size: 0.65rem;
+  color: #718096;
+}
+
+.ai-chat-send-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #00ff99;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  transition: all 0.2s;
+}
+
+.ai-chat-send-btn:hover {
+  color: #00ff00;
+  transform: translateY(-50%) scale(1.15);
+}
+
+.ai-chat-send-btn:disabled {
+  color: #4a5568;
+  cursor: not-allowed;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .ai-chat-window {
+    width: calc(100% - 100px);
+    height: calc(100vh - 150px);
+    right: 90px;
+    bottom: 40px;
+  }
+  
+  .ai-chat-fab {
+    bottom: 40px;
+    right: 20px;
+  }
+}
+
+/* Notification Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+}
 </style>
 
 <div class="g-sidenav-show text-white">
   <div class="min-height-300 position-absolute w-100"></div>
 
-  {% if sidebar == 'teacher' %}
-    {% include 'partials/sidebar.html' %}
-  {% else %}
-      {% include 'partials/StudentSidebar.html' %}
-  {% endif %}
-
-
   <main class="main-content position-relative border-radius-lg">
-    {% include "partials/side_content_navbar.html" %}
+   
 
     <div class="container-fluid mb-5">
       <div class="row">
 
-        <!-- Code Editor Panel -->
-        <div class="col-md-8">
+        <!-- Code Editor Panel (Full Width) -->
+        <div class="col-md-12">
           <div class="card" style="max-height: 800px; overflow: hidden;">
             <div class="card-header p-2">
               <i class="fas fa-edit"></i> Code Editor
@@ -607,7 +879,6 @@ body {
             </div>
             <div class="card-body p-1">
               <div class="editor-container" style="height: 490px; overflow-y: auto;">
-                
                 <div id="codeEditor" style="height: 490px; font-size: 0.9rem;">
 # Write your Python code below
 
@@ -617,7 +888,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
                 </div>
               </div>
             </div>
@@ -629,141 +899,110 @@ if __name__ == "__main__":
           </div>
         </div>
 
-      <!-- AI Chat Panel - Enhanced with Dynamic Rate Limits -->
-        <div class="col-md-4">
-          <div class="card" style="height: 619px; display: flex; flex-direction: column;">
-
-            <!-- Enhanced Header with Dynamic Stats -->
-            <div class="card-header p-3" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%); border-bottom: 2px solid #00ff99;">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center gap-2">
-                  <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #00ff99 0%, #00cc66 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-robot" style="color: #000; font-size: 1.2rem;"></i>
-                  </div>
-                  <div>
-                    <div style="font-size: 1.1rem; font-weight: 600; color: #fff; letter-spacing: 0.3px;">Paulibot</div>
-                    <!-- ✅ Enhanced usage stats display -->
-                    <div id="usageStats" 
-                        style="font-size: 0.65rem; color: #a0aec0; margin-top: -2px; cursor: help; transition: all 0.2s;"
-                        onmouseover="this.style.transform='scale(1.05)'"
-                        onmouseout="this.style.transform='scale(1)'">
-                      Loading stats...
-                    </div>
-                  </div>
-                </div>
-                <button class="btn btn-sm" onclick="startNewChat()" style="background-color: rgba(0, 255, 153, 0.1); color: #00ff99; border: 1px solid #00ff99; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; transition: all 0.2s;">
-                  <i class="fas fa-plus me-1"></i>New Chat
-                </button>
-              </div>
-              
-              <!-- ✅ NEW: Quick Stats Bar -->
-              <div id="quickStatsBar" style="margin-top: 8px; padding: 6px 8px; background: rgba(0, 0, 0, 0.2); border-radius: 4px; display: none;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #cbd5e0;">
-                  <span>Daily: <strong id="dailyUsage">-/-</strong></span>
-                  <span>RPM: <strong id="rpmUsage">-/-</strong></span>
-                  <span>Users: <strong id="totalUsers">-</strong></span>
-                </div>
-                <div style="margin-top: 4px; height: 3px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden;">
-                  <div id="usageProgressBar" style="height: 100%; background: linear-gradient(90deg, #00ff99, #00cc66); width: 0%; transition: width 0.3s;"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Chat messages container -->
-            <div id="aiChatContainer" class="card-body flex-grow-1 overflow-auto" style="background-color: #111827; color: #fff; font-size: 0.9rem;">
-              <div id="chatMessages" style="display: flex; flex-direction: column; gap: 8px; padding: 8px;">
-                <div class="text-center" style="padding: 20px; color: #718096;">
-                  <i class="fas fa-robot" style="font-size: 3rem; color: #00ff99; margin-bottom: 12px;"></i>
-                  <div style="font-size: 1.1rem; font-weight: bold; color: #00ff99;">Welcome to Paulibot! 🤖</div>
-                  <div style="font-size: 0.85rem; margin-top: 8px;">Your AI coding assistant is ready to help</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Input box -->
-            <div class="card-footer p-2" style="gap: 5px; display: flex;">
-              <div style="position: relative; flex-grow: 1;">
-                <textarea id="userMessage" class="form-control" placeholder="Ask Paulibot anything..." 
-                          style="width: 100%; background-color: #1f2937; color: #fff; border-radius: 0.375rem; border: 1px solid #4a5568; font-size: 0.85rem; height: 50px; padding: 4px 30px 4px 8px; resize: none; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;"
-                          maxlength="500"></textarea>
-                <!-- ✅ Character counter -->
-                <div id="charCounter" style="position: absolute; left: 8px; bottom: 4px; font-size: 0.65rem; color: #718096;">
-                  0/500
-                </div>
-                <i class="fas fa-paper-plane" 
-                  id="sendButton"
-                  style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #00ff99; cursor: pointer; transition: all 0.2s;"
-                  onclick="sendMessage()"
-                  onmouseover="this.style.color='#00ff00'; this.style.transform='translateY(-50%) scale(1.1)'"
-                  onmouseout="this.style.color='#00ff99'; this.style.transform='translateY(-50%) scale(1)'"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
       </div>
     </div>
 
-    <!-- Interactive Console Modal -->
+    <!-- Interactive Console Modal - Clean CodeChum Style -->
     <div class="modal fade console-modal" id="consoleModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
-              <i class="fas fa-terminal"></i> Interactive Console
+              <i class="fas fa-terminal me-2"></i>Console
             </h5>
-            <button type="button" class="btn-close btn-close-white" onclick="closeConsole()" id="closeConsoleBtn"></button>
+            <button type="button" class="btn-close btn-close-white" onclick="closeConsole()"></button>
           </div>
           <div class="modal-body p-0">
             <div class="console-container">
               <div class="console-output" id="consoleOutput">
-                <span class="info">Ready to execute...</span>
+                Ready to execute...
               </div>
               
               <div class="console-input-area" id="consoleInputArea">
-                <div class="input-line" style="position: relative;">
-                  <textarea 
-                    id="consoleInput" 
-                    class="form-control" 
-                    placeholder="Type your input..."
-                    autocomplete="off"
-                    style="resize: vertical; min-height: 40px; max-height: 200px; padding-right: 35px;"
-                  ></textarea>
-                  <i class="fas fa-paper-plane" 
-                     onclick="submitInput()"
-                     id="submitInputIcon"
-                     style="position: absolute; right: 12px; top: 12px; color: #00ff99; cursor: pointer; transition: all 0.2s; font-size: 1rem;"
-                     onmouseover="this.style.color='#00ff00'; this.style.transform='scale(1.15)'"
-                     onmouseout="this.style.color='#00ff99'; this.style.transform='scale(1)'"></i>
-                </div>
-                <div class="input-help-text" id="inputHelp">
-                  Waiting to start...
-                </div>
-                
-                <!-- Info box for C/C++ -->
-                <div id="batchInputInfo" style="display: none; margin-top: 10px; padding: 8px; background-color: rgba(0, 204, 102, 0.1); border: 1px solid #00cc66; border-radius: 4px;">
-                  <div style="font-size: 11px; color: #00ff99; font-family: monospace;">
-                    <i class="fas fa-info-circle"></i> <strong>Batch Input Mode:</strong> Enter values separated by spaces (e.g., 3 1 2 3) or one per line
-                  </div>
-                </div>
+                <input 
+                  type="text" 
+                  id="consoleInput" 
+                  placeholder="Enter input..."
+                  autocomplete="off"
+                  disabled
+                />
+                <button class="btn-send-input" onclick="submitInput()" id="submitInputBtn" disabled>
+                  Send
+                </button>
               </div>
             </div>
           </div>
-          <div class="modal-footer" style="background-color: #12181f; border-top: 2px solid #00cc66;">
-            <button type="button" class="btn btn-console" onclick="rerunCode()" id="rerunBtn" style="margin-right: auto;">
-              <i class="fas fa-redo"></i> Rerun
+          <div class="modal-footer" style="background-color: #252526; border-top: 1px solid #333; padding: 10px 16px;">
+            <button type="button" class="btn btn-console" onclick="rerunCode()" id="rerunBtn" disabled>
+              <i class="fas fa-redo me-1"></i>Rerun
             </button>
-            <button type="button" class="btn btn-console-danger" onclick="closeConsole()">
-              <i class="fas fa-times"></i> Close Console
+            <button type="button" class="btn btn-console-secondary" onclick="closeConsole()">
+              Close
             </button>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- ========== FLOATING AI CHAT WIDGET ========== -->
+    
+    <!-- Floating AI Chat Button -->
+    <div class="ai-chat-fab" id="aiChatFab" onclick="toggleAIChat()">
+      <i class="fas fa-robot"></i>
+      <div class="ai-chat-badge" id="aiChatBadge" style="display: none;">1</div>
+    </div>
+
+    <!-- Connector Line (appears when chat is open) -->
+    <div class="ai-chat-connector" id="aiChatConnector"></div>
+
+    <!-- Floating Chat Window -->
+    <div class="ai-chat-window" id="aiChatWindow">
+      <div class="ai-chat-header">
+        <div class="ai-chat-header-info">
+          <div class="ai-chat-avatar">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div class="ai-chat-title">
+            <h3>Paulibot</h3>
+            <div class="ai-chat-status" id="aiChatStatus">Loading stats...</div>
+          </div>
+        </div>
+        <div class="ai-chat-controls">
+          <button class="ai-chat-btn" onclick="startNewChatFloat()">
+            <i class="fas fa-plus"></i> New
+          </button>
+          <button class="ai-chat-close" onclick="toggleAIChat()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="ai-chat-messages" id="aiChatMessagesFloat">
+        <div class="text-center" style="padding: 20px; color: #718096;">
+          <i class="fas fa-robot" style="font-size: 3rem; color: #00ff99; margin-bottom: 12px;"></i>
+          <div style="font-size: 1.1rem; font-weight: bold; color: #00ff99;">Welcome to Paulibot! 🤖</div>
+          <div style="font-size: 0.85rem; margin-top: 8px;">Your AI coding assistant is ready to help</div>
+        </div>
+      </div>
+      
+      <div class="ai-chat-input-container">
+        <div class="ai-chat-input-wrapper">
+          <textarea 
+            id="aiChatInputFloat" 
+            class="ai-chat-textarea" 
+            placeholder="Ask Paulibot anything..."
+            maxlength="500"
+          ></textarea>
+          <div class="ai-chat-char-count" id="aiChatCharCountFloat">0/500</div>
+          <button class="ai-chat-send-btn" id="aiChatSendBtnFloat" onclick="sendMessageFloat()">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
   </main>
-  {% include "partials/footer.html" %}
+ 
 </div>
 
 <!-- Highlight.js for syntax highlighting -->
@@ -775,11 +1014,7 @@ if __name__ == "__main__":
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
 
 <script>
-const chatMessages = document.getElementById("chatMessages");
-const userMessage = document.getElementById("userMessage");
-
 let currentTyping = null;
-let editingState = null;
 
 // Configure marked for better markdown rendering
 marked.setOptions({
@@ -796,12 +1031,6 @@ marked.setOptions({
   breaks: true,
   gfm: true
 });
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
 
 function stopTyping() {
   if (currentTyping && currentTyping.interval) {
@@ -868,9 +1097,7 @@ function copyCode(codeId, btn) {
   });
 }
 
-// ✅ Simple notification system
 function showNotification(message, type = 'info') {
-  // Remove any existing notifications
   const existing = document.querySelector('.custom-notification');
   if (existing) existing.remove();
   
@@ -906,90 +1133,53 @@ function showNotification(message, type = 'info') {
   }, 4000);
 }
 
-// ✅ Enhanced welcome message with dynamic stats
-async function showEnhancedWelcome() {
-  try {
-    const response = await fetch("{% url 'get_usage_stats' %}");
-    const stats = await response.json();
-    
-    if (response.ok) {
-      chatMessages.innerHTML = `
-        <div class="text-center" style="padding: 20px; color: #718096;">
-          <i class="fas fa-robot" style="font-size: 3rem; color: #00ff99; margin-bottom: 12px;"></i>
-          <div style="font-size: 1.1rem; font-weight: bold; color: #00ff99;">Welcome to Paulibot! 🤖</div>
-          <div style="font-size: 0.85rem; margin-top: 8px;">Your AI coding assistant is ready to help</div>
-          
-          <div style="margin-top: 20px; padding: 15px; background: rgba(0, 255, 153, 0.05); border: 1px solid rgba(0, 255, 153, 0.2); border-radius: 8px; text-align: left;">
-            <div style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 8px;">
-              <strong style="color: #00ff99;">📊 Your Daily Quota:</strong>
-            </div>
-            <div style="font-size: 0.75rem; color: #cbd5e0; line-height: 1.8;">
-              💬 Requests: <strong style="color: #00ff99;">${stats.daily_remaining}/${stats.daily_limit}</strong> remaining<br>
-              ⚡ Rate: <strong style="color: #00ff99;">${stats.minute_limit} per minute</strong><br>
-              🔤 Tokens: <strong style="color: #00ff99;">${(stats.tokens_per_minute_limit / 1000).toFixed(1)}K/min</strong><br>
-              👥 Sharing with: <strong style="color: #ffa500;">${stats.total_users} users</strong>
-            </div>
-            <div style="font-size: 0.68rem; color: #718096; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-style: italic;">
-              💡 Tip: API limits are divided equally. More users = lower per-user quota.
-            </div>
-          </div>
-        </div>
-      `;
-    } else {
-      // Fallback welcome
-      chatMessages.innerHTML = `
-        <div class="text-center" style="padding: 20px; color: #718096;">
-          <i class="fas fa-robot" style="font-size: 3rem; color: #00ff99; margin-bottom: 12px;"></i>
-          <div style="font-size: 1.1rem; font-weight: bold; color: #00ff99;">Welcome to Paulibot! 🤖</div>
-          <div style="font-size: 0.85rem; margin-top: 8px;">Your AI coding assistant is ready to help</div>
-        </div>
-      `;
-    }
-  } catch (error) {
-    console.error("Error loading welcome:", error);
-    // Fallback welcome
-    chatMessages.innerHTML = `
-      <div class="text-center" style="padding: 20px; color: #718096;">
-        <i class="fas fa-robot" style="font-size: 3rem; color: #00ff99; margin-bottom: 12px;"></i>
-        <div style="font-size: 1.1rem; font-weight: bold; color: #00ff99;">Welcome to Paulibot! 🤖</div>
-        <div style="font-size: 0.85rem; margin-top: 8px;">Your AI coding assistant is ready to help</div>
-      </div>
-    `;
+// ========== FLOATING AI CHAT FUNCTIONS ==========
+
+let floatChatMessages = document.getElementById("aiChatMessagesFloat");
+let floatChatInput = document.getElementById("aiChatInputFloat");
+let floatCharCount = document.getElementById("aiChatCharCountFloat");
+
+function toggleAIChat() {
+  const chatWindow = document.getElementById('aiChatWindow');
+  const badge = document.getElementById('aiChatBadge');
+  const connector = document.getElementById('aiChatConnector');
+  
+  chatWindow.classList.toggle('active');
+  
+  if (chatWindow.classList.contains('active')) {
+    badge.style.display = 'none';
+    connector.classList.add('active');
+    loadFloatChatHistory();
+    updateFloatUsageStats();
+    floatChatInput.focus();
+  } else {
+    connector.classList.remove('active');
   }
 }
 
-// ✅ Enhanced clear chat with better feedback
-async function startNewChat() {
-  if (confirm('Start a new chat? This will clear your conversation history from the database.')) {
-    stopTyping();
-    
-    try {
-      const response = await fetch("{% url 'clear_chat_history' %}", {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": getCookie("csrftoken")
-        }
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        showNotification(`Chat cleared! ${data.message}`, 'success');
-        await showEnhancedWelcome();
-        userMessage.value = "";
-        editingState = null;
-        updateUsageStats(); // Refresh stats
-      } else {
-        showNotification("Failed to clear chat: " + (data.error || "Unknown error"), 'error');
-      }
-    } catch (error) {
-      console.error("Error clearing chat:", error);
-      showNotification("Failed to clear chat history. Please try again.", 'error');
-    }
+function sendMessageFloat() {
+  const message = floatChatInput.value.trim();
+  if (!message) return;
+  
+  if (message.length > 500) {
+    showNotification('Message too long! Please keep it under 500 characters.', 'warning');
+    return;
   }
+  
+  stopTyping();
+  
+  addFloatMessage(message, "user", true);
+  floatChatInput.value = "";
+  floatCharCount.textContent = '0/500';
+  floatCharCount.style.color = '#718096';
+  
+  const aiMsg = addFloatMessage("", "ai", false);
+  typeFloatAI(aiMsg, message);
+  
+  setTimeout(updateFloatUsageStats, 1000);
 }
 
-function addMessage(text = "", sender = "user", isComplete = false) {
+function addFloatMessage(text = "", sender = "user", isComplete = false) {
   const wrapper = document.createElement("div");
   wrapper.className = `message-wrapper ${sender}-message`;
   
@@ -1011,9 +1201,7 @@ function addMessage(text = "", sender = "user", isComplete = false) {
   const controls = document.createElement("div");
   controls.className = "message-controls";
   
-  if (sender === "user") {
-    // Users can only send new messages (no edit)
-  } else {
+  if (sender === "ai") {
     if (!isComplete) {
       const stopBtn = document.createElement("button");
       stopBtn.className = "control-btn";
@@ -1037,45 +1225,13 @@ function addMessage(text = "", sender = "user", isComplete = false) {
   }
   
   wrapper.appendChild(controls);
-  chatMessages.appendChild(wrapper);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+  floatChatMessages.appendChild(wrapper);
+  floatChatMessages.scrollTop = floatChatMessages.scrollHeight;
   
   return { wrapper, content };
 }
 
-// ✅ Updated sendMessage with rate limit handling
-function sendMessage() {
-  const message = userMessage.value.trim();
-  if (!message) return;
-  
-  // Check message length
-  if (message.length > 500) {
-    showNotification('Message too long! Please keep it under 500 characters.', 'warning');
-    return;
-  }
-  
-  stopTyping();
-  
-  // Display user message immediately
-  addMessage(message, "user", true);
-  userMessage.value = "";
-  
-  // Reset character counter
-  if (document.getElementById('charCounter')) {
-    document.getElementById('charCounter').textContent = '0/500';
-    document.getElementById('charCounter').style.color = '#718096';
-  }
-  
-  // Start AI response
-  const aiMsg = addMessage("", "ai", false);
-  typeAI(aiMsg, message);
-  
-  // Update usage stats after sending
-  setTimeout(updateUsageStats, 1000);
-}
-
-// ✅ Updated typeAI with enhanced error handling
-function typeAI(msgObj, message) {
+function typeFloatAI(msgObj, message) {
   const { wrapper, content } = msgObj;
   
   let buffer = "";
@@ -1091,11 +1247,8 @@ function typeAI(msgObj, message) {
       "Content-Type": "application/json",
       "X-CSRFToken": getCookie("csrftoken")
     },
-    body: JSON.stringify({
-      message: message
-    })
+    body: JSON.stringify({ message: message })
   }).then(res => {
-    // ✅ Enhanced rate limit error handling
     if (res.status === 429) {
       return res.json().then(data => {
         const errorMsg = data.error || "Rate limit exceeded";
@@ -1113,24 +1266,8 @@ function typeAI(msgObj, message) {
         
         clearInterval(currentTyping.interval);
         currentTyping = null;
-        updateUsageStats(); // Update stats to show limit
-        
-        // Show notification
+        updateFloatUsageStats();
         showNotification(errorMsg, 'warning');
-        
-        // Auto-retry countdown if wait_seconds is provided
-        if (data.wait_seconds > 0 && data.wait_seconds <= 60) {
-          let countdown = data.wait_seconds;
-          const countdownInterval = setInterval(() => {
-            countdown--;
-            if (countdown <= 0) {
-              clearInterval(countdownInterval);
-              showNotification('You can send messages again!', 'success');
-              updateUsageStats();
-            }
-          }, 1000);
-        }
-        
         throw new Error("Rate limited");
       });
     }
@@ -1170,10 +1307,9 @@ function typeAI(msgObj, message) {
         displayedText += buffer[index];
         content.textContent = displayedText;
         index++;
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        floatChatMessages.scrollTop = floatChatMessages.scrollHeight;
       } else if (isComplete) {
         clearInterval(currentTyping.interval);
-        
         content.innerHTML = renderMarkdownWithCode(displayedText);
         
         const controls = wrapper.querySelector('.message-controls');
@@ -1193,7 +1329,7 @@ function typeAI(msgObj, message) {
         controls.appendChild(copyBtn);
         
         currentTyping = null;
-        updateUsageStats(); // Update after response complete
+        updateFloatUsageStats();
       }
     }, 15);
   }).catch(err => {
@@ -1213,114 +1349,128 @@ function typeAI(msgObj, message) {
   });
 }
 
-// ✅ Load chat history from database
-async function loadChatHistory() {
+async function loadFloatChatHistory() {
   try {
     const response = await fetch("{% url 'load_chat_history' %}");
     const data = await response.json();
     
     if (data.messages && data.messages.length > 0) {
-      chatMessages.innerHTML = ""; // Clear welcome message
+      floatChatMessages.innerHTML = "";
       data.messages.forEach(msg => {
-        addMessage(msg.text, msg.sender, true);
+        addFloatMessage(msg.text, msg.sender, true);
       });
     } else {
-      await showEnhancedWelcome();
+      await showFloatWelcome();
     }
   } catch (error) {
     console.error("Error loading chat history:", error);
-    await showEnhancedWelcome();
+    await showFloatWelcome();
   }
 }
 
-// ✅ Enhanced usage stats with dynamic limits
-async function updateUsageStats() {
+async function showFloatWelcome() {
+  try {
+    const response = await fetch("{% url 'get_usage_stats' %}");
+    const stats = await response.json();
+    
+    if (response.ok) {
+      floatChatMessages.innerHTML = `
+        <div class="text-center" style="padding: 20px; color: #718096;">
+          <i class="fas fa-robot" style="font-size: 3rem; color: #00ff99; margin-bottom: 12px;"></i>
+          <div style="font-size: 1.1rem; font-weight: bold; color: #00ff99;">Welcome to Paulibot! 🤖</div>
+          <div style="font-size: 0.85rem; margin-top: 8px;">Your AI coding assistant is ready to help</div>
+          
+          <div style="margin-top: 20px; padding: 15px; background: rgba(0, 255, 153, 0.05); border: 1px solid rgba(0, 255, 153, 0.2); border-radius: 8px; text-align: left;">
+            <div style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 8px;">
+              <strong style="color: #00ff99;">📊 Your Daily Quota:</strong>
+            </div>
+            <div style="font-size: 0.75rem; color: #cbd5e0; line-height: 1.8;">
+              💬 Requests: <strong style="color: #00ff99;">${stats.daily_remaining}/${stats.daily_limit}</strong> remaining<br>
+              ⚡ Rate: <strong style="color: #00ff99;">${stats.minute_limit} per minute</strong><br>
+              📤 Tokens: <strong style="color: #00ff99;">${(stats.tokens_per_minute_limit / 1000).toFixed(1)}K/min</strong><br>
+              👥 Sharing with: <strong style="color: #ffa500;">${stats.total_users} users</strong>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  } catch (error) {
+    console.error("Error loading welcome:", error);
+  }
+}
+
+async function updateFloatUsageStats() {
   try {
     const response = await fetch("{% url 'get_usage_stats' %}");
     const stats = await response.json();
     
     if (!response.ok) {
-      document.getElementById('usageStats').textContent = 'Stats unavailable';
+      document.getElementById('aiChatStatus').textContent = 'Stats unavailable';
       return;
     }
     
-    // ✅ Display dynamic per-user limits with total users
-    const statsText = `${stats.requests_today}/${stats.daily_limit} today • ${stats.minute_remaining}/${stats.minute_limit} RPM • ${stats.total_users} users`;
-    document.getElementById('usageStats').textContent = statsText;
-    
-    // Update color based on usage
-    const dailyPercent = (stats.requests_today / stats.daily_limit) * 100;
-    const minutePercent = ((stats.minute_limit - stats.minute_remaining) / stats.minute_limit) * 100;
-    const statsElement = document.getElementById('usageStats');
-    
-    // Use the higher percentage for color coding
-    const usagePercent = Math.max(dailyPercent, minutePercent);
-    
-    if (usagePercent > 90) {
-      statsElement.style.color = '#ff6b6b'; // Red when near limit
-      statsElement.style.fontWeight = 'bold';
-    } else if (usagePercent > 70) {
-      statsElement.style.color = '#ffa500'; // Orange at 70%
-      statsElement.style.fontWeight = '600';
-    } else {
-      statsElement.style.color = '#a0aec0'; // Normal gray
-      statsElement.style.fontWeight = 'normal';
-    }
-    
-    // ✅ Enhanced tooltip with all details
-    statsElement.title = 
-      `📊 Your Current Quota:\n\n` +
-      `Daily Requests: ${stats.requests_today}/${stats.daily_limit} (${stats.daily_remaining} remaining)\n` +
-      `Per Minute: ${stats.minute_limit - stats.minute_remaining}/${stats.minute_limit} requests\n` +
-      `Token Limit: ${stats.tokens_per_minute_limit.toLocaleString()} TPM\n\n` +
-      `👥 Platform Info:\n` +
-      `Total Users: ${stats.total_users}\n` +
-      `Your Share: ${(100 / stats.total_users).toFixed(1)}% of total API quota\n\n` +
-      `🔧 API Limits (Total for all users):\n` +
-      `${stats.api_limits.rpm} RPM | ${stats.api_limits.rpd} RPD | ${stats.api_limits.tpm.toLocaleString()} TPM\n\n` +
-      `💡 Limits are divided equally among all ${stats.total_users} registered users`;
-    
-    // ✅ Show warning if approaching limits (only once per session)
-    if (dailyPercent >= 85 && !sessionStorage.getItem('limit_warning_shown_today')) {
-      showNotification(`⚠️ You've used ${dailyPercent.toFixed(0)}% of your daily quota!`, 'warning');
-      sessionStorage.setItem('limit_warning_shown_today', 'true');
-    }
+    const statsText = `${stats.requests_today}/${stats.daily_limit} today • ${stats.minute_remaining}/${stats.minute_limit} RPM`;
+    document.getElementById('aiChatStatus').textContent = statsText;
     
   } catch (error) {
     console.error('Error fetching usage stats:', error);
-    document.getElementById('usageStats').textContent = 'Stats error';
+    document.getElementById('aiChatStatus').textContent = 'Stats error';
   }
 }
 
-// ✅ Character counter for message input
-if (document.getElementById('userMessage')) {
-  const userMessageInput = document.getElementById('userMessage');
-  const charCounter = document.getElementById('charCounter');
-  
-  if (charCounter) {
-    userMessageInput.addEventListener('input', function() {
-      const length = this.value.length;
-      charCounter.textContent = `${length}/500`;
+async function startNewChatFloat() {
+  if (confirm('Start a new chat? This will clear your conversation history from the database.')) {
+    stopTyping();
+    
+    try {
+      const response = await fetch("{% url 'clear_chat_history' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken")
+        }
+      });
       
-      if (length > 450) {
-        charCounter.style.color = '#ff6b6b';
-        charCounter.style.fontWeight = 'bold';
-      } else if (length > 400) {
-        charCounter.style.color = '#ffa500';
-        charCounter.style.fontWeight = '600';
+      const data = await response.json();
+      
+      if (data.success) {
+        showNotification(`Chat cleared! ${data.message}`, 'success');
+        await showFloatWelcome();
+        floatChatInput.value = "";
+        updateFloatUsageStats();
       } else {
-        charCounter.style.color = '#718096';
-        charCounter.style.fontWeight = 'normal';
+        showNotification("Failed to clear chat: " + (data.error || "Unknown error"), 'error');
       }
-    });
+    } catch (error) {
+      console.error("Error clearing chat:", error);
+      showNotification("Failed to clear chat history. Please try again.", 'error');
+    }
   }
 }
 
-// ✅ Enter key handler
-userMessage.addEventListener("keydown", e => {
+// Character counter for floating chat
+if (floatChatInput && floatCharCount) {
+  floatChatInput.addEventListener('input', function() {
+    const length = this.value.length;
+    floatCharCount.textContent = `${length}/500`;
+    
+    if (length > 450) {
+      floatCharCount.style.color = '#ff6b6b';
+      floatCharCount.style.fontWeight = 'bold';
+    } else if (length > 400) {
+      floatCharCount.style.color = '#ffa500';
+      floatCharCount.style.fontWeight = '600';
+    } else {
+      floatCharCount.style.color = '#718096';
+      floatCharCount.style.fontWeight = 'normal';
+    }
+  });
+}
+
+// Enter key to send
+floatChatInput.addEventListener("keydown", e => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
-    sendMessage();
+    sendMessageFloat();
   }
 });
 
@@ -1339,75 +1489,14 @@ function getCookie(name) {
   return cookieValue;
 }
 
-// ✅ Page load initialization
+// Initialize on page load
 window.addEventListener("DOMContentLoaded", async () => {
-  // Load chat history
-  await loadChatHistory();
-  
-  // Update stats immediately
-  await updateUsageStats();
-  
-  // Update stats every 30 seconds
-  setInterval(updateUsageStats, 30000);
-  
-  // Reset warning flag daily
   const today = new Date().toDateString();
   if (sessionStorage.getItem('last_date') !== today) {
     sessionStorage.setItem('last_date', today);
     sessionStorage.removeItem('limit_warning_shown_today');
   }
-  
-  // Check and warn if approaching limits every minute
-  setInterval(async () => {
-    try {
-      const response = await fetch("{% url 'get_usage_stats' %}");
-      const stats = await response.json();
-      
-      if (response.ok) {
-        const dailyPercent = (stats.requests_today / stats.daily_limit) * 100;
-        
-        // Warn at 90% and 95%
-        if (dailyPercent >= 95 && !sessionStorage.getItem('limit_warning_95')) {
-          showNotification(`🚨 Critical: ${dailyPercent.toFixed(0)}% of daily quota used!`, 'error');
-          sessionStorage.setItem('limit_warning_95', 'true');
-        } else if (dailyPercent >= 90 && !sessionStorage.getItem('limit_warning_90')) {
-          showNotification(`⚠️ Warning: ${dailyPercent.toFixed(0)}% of daily quota used!`, 'warning');
-          sessionStorage.setItem('limit_warning_90', 'true');
-        }
-      }
-    } catch (error) {
-      console.error('Error checking limits:', error);
-    }
-  }, 60000); // Check every minute
 });
-
-// ✅ Add notification animation styles
-const notificationStyles = document.createElement('style');
-notificationStyles.textContent = `
-  @keyframes slideInRight {
-    from {
-      transform: translateX(400px);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-  
-  @keyframes slideOutRight {
-    from {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateX(400px);
-      opacity: 0;
-    }
-  }
-`;
-document.head.appendChild(notificationStyles);
-
 </script>
 
 {% include "partials/scripts.html" %}

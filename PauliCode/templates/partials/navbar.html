@@ -1,266 +1,529 @@
 {% load static %}
-
+<!--navbar.html-->
 <style>
- .margin-nav{
-  margin-left: 3rem !important;
-  margin-right: 3rem !important;
- }
- .class-nav{
-  margin-right: 1rem !important;
- }
- /* Responsive Search Bar */
-@media (max-width: 576px) {
-  .navbar form input[type="search"] {
-    height: 4.5vh;
-    font-size: 0.9rem;
+  /* ========== Base Navbar Styles ========== */
+  .navbar-main {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 70px;
+    background-color: #1f2937 !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #303f53;
+    transition: left 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
   }
-}
 
-@media (min-width: 768px) {
-  .navbar form {
-    max-width: 350px; /* keeps it clean on tablets/laptops */
+  .navbar-main.navbar-hidden {
+    transform: translateY(-100%);
   }
-}
 
-@media (min-width: 1200px) {
-  .navbar form {
-    max-width: 400px; /* slightly wider for desktops */
+  body {
+    padding-top: 90px;
   }
-}
 
+  .navbar-main .container-fluid {
+    padding: 0.5rem 1rem;
+  }
 
+  /* ========== Page Title ========== */
+  .page-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    letter-spacing: -0.025em;
+  }
 
+  /* ========== Mobile Toggle Button ========== */
+  .mobile-toggle {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.4rem;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-toggle:hover {
+    color: #3b82f6;
+  }
+
+  /* ========== Search Bar ========== */
+  .search-wrapper {
+    position: relative;
+    flex-grow: 1;
+    max-width: 280px;
+  }
+
+  .search-input {
+    height: 32px;
+    border-radius: 0.5rem;
+    padding: 0.4rem 2rem 0.4rem 0.75rem;
+    font-size: 0.813rem;
+    transition: all 0.3s ease;
+  }
+
+  .search-input:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    border-color: #3b82f6;
+  }
+
+  .search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  .search-wrapper:hover .search-icon {
+    opacity: 1;
+  }
+
+  .search-wrapper button.search-icon {
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  /* ========== Action Buttons ========== */
+  .btn-custom {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.813rem;
+    white-space: nowrap;
+    height: 32px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-custom:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-custom img {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ========== User Info Card ========== */
+  .user-info-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .user-info-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .profile-img {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border: 2px solid #3b82f6;
+    transition: transform 0.2s ease;
+  }
+
+  .profile-img:hover {
+    transform: scale(1.05);
+  }
+
+  /* ========== Profile Dropdown ========== */
+  .profile-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+  }
+
+  .profile-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #374151;
+  }
+
+  .dropdown-header .user-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+  }
+
+  .dropdown-header .user-id {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin: 0;
+  }
+
+  .dropdown-menu-custom {
+    padding: 0.5rem 0;
+  }
+
+  .dropdown-item-custom {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    color: #e5e7eb;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+  }
+
+  .dropdown-item-custom:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+  }
+
+  .dropdown-item-custom i {
+    width: 18px;
+    font-size: 1rem;
+  }
+
+  .dropdown-item-custom.logout {
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    color: #ef4444;
+    border-top: 1px solid #374151;
+    margin-top: 0.25rem;
+  }
+
+  .dropdown-item-custom.logout:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+  }
+
+  /* ========== Responsive Design ========== */
+  @media (max-width: 768px) {
+    .navbar-main {
+      left: 0 !important;
+    }
+
+    body {
+      padding-top: 48px;
+    }
+
+    .margin-nav {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    .navbar-main .container-fluid {
+      padding: 0.4rem 0.75rem;
+    }
+
+    .page-title {
+      font-size: 1rem;
+    }
+
+    .search-wrapper {
+      max-width: 100%;
+    }
+
+    .search-input {
+      height: 30px;
+      font-size: 0.75rem;
+      padding: 0.3rem 1.75rem 0.3rem 0.65rem;
+    }
+
+    .search-icon {
+      right: 8px;
+    }
+
+    .search-icon img,
+    .search-icon i {
+      width: 14px !important;
+      height: 14px !important;
+      font-size: 14px !important;
+    }
+
+    .btn-custom {
+      padding: 0.3rem 0.7rem;
+      font-size: 0.75rem;
+      height: 30px;
+    }
+
+    .btn-custom img {
+      width: 12px;
+      height: 12px;
+    }
+
+    .user-info-card {
+      padding: 0.2rem;
+    }
+
+    .profile-img {
+      width: 32px !important;
+      height: 32px !important;
+    }
+
+    .profile-dropdown {
+      min-width: 180px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .btn-custom span {
+      display: none;
+    }
+
+    .btn-custom {
+      padding: 0.4rem;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+    }
+
+    .btn-custom img {
+      width: 14px;
+      height: 14px;
+    }
+
+    .page-title {
+      font-size: 0.938rem;
+    }
+
+    .search-wrapper {
+      max-width: 160px;
+    }
+  }
 </style>
 
 <!-- Navbar -->
-    <nav class="navbar  navbar-main {% if currentpage == 'dashboard' or currentpage == 'StudentDashboard' %} margin-nav mt-4 {% endif %}
-    navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl {% if currentpage == 'MyClasses' or currentpage == 'StudentClass' %} class-nav {% endif %} px-3" 
-    id="navbarBlur" data-scroll="false" style = "background-color: #1f2937;">
+<nav class="navbar navbar-main navbar-expand-lg fixed-top 
+     {% if currentpage == 'dashboard' or currentpage == 'StudentDashboard' %}margin-nav{% endif %} 
+     {% if currentpage == 'MyClasses' or currentpage == 'StudentClass' %}class-nav{% endif %}" 
+     id="navbarBlur">
+  
+  <div class="container-fluid">
+    <div class="d-flex align-items-center justify-content-between w-100">
       
-      
-      <div class="container-fluid py-1 px-3">
-        <nav aria-label="breadcrumb">
-          <ul class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a></li>
-            {% if currentpage == 'dashboard' or currentpage == 'StudentDashboard' %}
-            <li class="breadcrumb-item text-sm text-white active" aria-current="page">Dashboard</li>
-            
-            {% elif currentpage == 'StudentClass' or currentpage == 'MyClasses' %}
-            <li class="breadcrumb-item text-sm text-white active" aria-current="page">My Classes</li>
-            
-            {% elif currentpage == 'report' %}
-            <li class="breadcrumb-item text-sm text-white active" aria-current="page">Report</li>
-           
-            {% endif %}
-            
-          </ul>
-          <h6 class="font-weight-bolder text-white mb-0">
-            {% if currentpage == 'dashboard' or currentpage == 'StudentDashboard' %}
+      <!-- Left Section: Mobile Toggle + Page Title -->
+      <div class="d-flex align-items-center gap-2">
+        <button class="mobile-toggle d-lg-none" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <h6 class="page-title mb-0">
+          {% if nav == 'student_class_details' or nav == 'classDetails' %}
+            Challenges
+          {% elif currentpage == 'dashboard' or currentpage == 'StudentDashboard' %}
             Dashboard
-            {% elif currentpage == 'StudentClass' or currentpage == 'MyClasses' %}
+          {% elif currentpage == 'StudentClass' or currentpage == 'MyClasses' %}
             My Classes
-            {% elif currentpage == 'report' %}
+          {% elif currentpage == 'report' %}
             Report
-            {% endif %}
-          </h6>
-        </nav>
-        <div class="collapse navbar-collapse mt-sm-0 me-md-0 me-sm-4" id="navbar">
-
-          {% if currentpage != 'dashboard' and currentpage != 'StudentDashboard' %}
-
-          <!--STUDENT CLASS PAGE-->
-          {% if currentpage == 'StudentClass' %}
-          <div class="container-fluid d-flex flex-wrap justify-content-between align-items-center p-0 mt-2">
-
-          <!-- Search Bar -->
-          <div class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end  mb-2">
-            <form class="position-relative w-100 d-flex justify-content-center" method="GET" style="max-width: 300px;">
-              <input 
-                class="form-control form-control-sm bg-dark text-white border-0 shadow-sm pe-5"
-                style="height: 5vh; border-radius: 0.25rem;"
-                type="search" 
-                name="q" 
-                placeholder="Search classes..." 
-                aria-label="Search"
-                value="{{ request.GET.q|default:'' }}">
-              
-              <!-- Search Icon (inside the input, on the right) -->
-              <button type="submit" 
-                      class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent pe-2"
-                      style="outline: none;">
-                <img src="{% static 'img/search.png' %}" alt="search" style="width: 18px; height: 18px; opacity: 0.8;">
-              </button>
-            </form>
-          </div>
-        
-          <div class="col-12 col-md-auto d-flex justify-content-center justify-content-md-end align-items-center mt-2 gap-2">
-            <!-- Join Class Button -->
-            <button class="btn btn-primary text-white fw-bold shadow-sm align-items-center"
-                    data-bs-toggle="modal" data-bs-target="#joinClassModal">
-              <img src="{% static 'img/plusIcon.png' %}" alt="add" 
-                  style="width: 16px; height: 16px;" class="me-2">
-              Join Class
-            </button>
-
-            <!-- Navbar Toggler (for mobile) -->
-            <a href="javascript:;" class="nav-link text-white p-0 d-xl-none mb-3" id="iconNavbarSidenav">
-              <div class="sidenav-toggler-inner">
-                <i class="sidenav-toggler-line bg-white"></i>
-                <i class="sidenav-toggler-line bg-white"></i>
-                <i class="sidenav-toggler-line bg-white"></i>
-              </div>
-            </a>
-          </div>
-
-
-          </div>
-        
-        <!--Teacher MyClasses Page-->
-        {% elif currentpage == 'MyClasses'%}
-
-          <div class="container-fluid d-flex flex-wrap justify-content-between align-items-center p-0 mt-2">
-        <!-- Search Bar -->
-          <div class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end mb-2">
-            <!-- Search Form -->
-            <form class="d-flex align-items-center me-2 position-relative w-100" method="GET">
-              <input 
-                class="form-control form-control-sm bg-dark text-white border-0 shadow-sm pe-4 w-100"
-                style="height: 5vh; border-radius: 0.25rem; min-width: 180px;"
-                type="search" 
-                name="q" 
-                placeholder="Search classes..." 
-                value="{{ request.GET.q|default:'' }}">
-              
-              <i class="fa fa-search text-secondary position-absolute" 
-                style="right: 10px; font-size: 14px;"></i>
-            </form>
-          </div>
-
-
-
-        
-          <div class="col-12 col-md-auto d-flex justify-content-center justify-content-md-end align-items-center mt-2 gap-2">
-            <!-- Create Class Button -->
-           <button class="btn btn-success text-white fw-bold shadow-sm align-items-center"
-                  data-bs-toggle="modal" data-bs-target="#createClassModal">
-            <img src="{% static 'img/plusIcon.png' %}" alt="add" style="width: 16px; height: 16px;" class = "me-2">
-            <span class="me-2">Create Class</span>
-            </button>
-
-            <!-- Navbar Toggler (for mobile) -->
-            <a href="javascript:;" class="nav-link text-white p-0 d-xl-none mb-3" id="iconNavbarSidenav">
-              <div class="sidenav-toggler-inner">
-                <i class="sidenav-toggler-line bg-white"></i>
-                <i class="sidenav-toggler-line bg-white"></i>
-                <i class="sidenav-toggler-line bg-white"></i>
-              </div>
-            </a>
-          </div>
-          </div>
-
-          <!-- TEACHER REPORT PAGE -->
-  {% elif currentpage == 'report' %}
-<div class="container-fluid mt-2">
-
-  <div class="d-flex flex-wrap align-items-center justify-content-between">
-
-    <!-- Left Side (Title or empty) -->
-    <div class="me-auto mb-2 mb-lg-0">
-      <!-- Optional title here -->
-    </div>
-
-    <!-- Right Side (Search + Toggler) -->
-    <div class="d-flex align-items-center">
-
-      <!-- Search Form -->
-      <form class="position-relative me-2 flex-grow-1 flex-lg-grow-0" 
-            method="GET" action="{% url 'report' %}" 
-            style="min-width: 200px; max-width: 400px; width: 100%;">
-        
-        <input 
-          class="form-control form-control-sm bg-dark text-white border-0 shadow-sm ps-2 pe-4"
-          style="height: 5vh; border-radius: 0.25rem; width: 100%;"
-          type="search" 
-          name="search" 
-          placeholder="Search by class title or class code" 
-          aria-label="Search"
-          value="{{ request.GET.search|default:'' }}">
-        
-        <i class="fa fa-search position-absolute" 
-           style="right: 10px; top: 50%; transform: translateY(-50%); color: #fff;"></i>
-      </form>
-
-      <!-- Navbar Toggler (for mobile) -->
-      <a href="javascript:;" class="nav-link text-white p-0 d-flex align-items-center d-xl-none" id="iconNavbarSidenav">
-        <div class="sidenav-toggler-inner">
-          <i class="sidenav-toggler-line bg-white"></i>
-          <i class="sidenav-toggler-line bg-white"></i>
-          <i class="sidenav-toggler-line bg-white"></i>
-        </div>
-      </a>
-
-    </div>
-
-  </div>
-</div>
-{% endif %}
-
-
-
-
-     
-
+          {% elif currentpage == 'Playground' %}
+            Study Area
+          {% elif currentpage == 'leaderboard' %}
+            Leaderboard
           {% endif %}
-
-        <!--DASHBOARD PAGE-->
-        
-        {% if currentpage == 'dashboard' or currentpage == 'StudentDashboard' %}
-        <ul class="navbar-nav justify-content-end ms-md-auto pe-md-3 m-0 p-2 mt-2">
-
-          <!-- Profile Picture -->
-          <li class="nav-item m-0 p-0">
-            <a href="#" class="d-flex flex-column align-items-center text-decoration-none text-white m-0 p-0">
-              <div class="profile-pic border-radius-md overflow-hidden m-0 p-0">
-                {% if user.user_image and user.user_image.url %}
-                  <img src="{{ user.user_image.url }}" 
-                      alt="Profile Picture" 
-                      class="img-fluid rounded-circle profile-img"
-                      style="width: 6vh; height: 6vh;">
-                {% else %}
-                  <img src="{% static 'img/image.png' %}" 
-                      alt="Default Profile Picture" 
-                      class="img-fluid rounded-circle profile-img"
-                      style="width: 6vh; height: 6vh;">
-                {% endif %}
-              </div>
-            </a>
-          </li>
-
-          <!-- User Info -->
-          <li class="nav-item d-flex flex-column ps-3 justify-content-center text-white my-0 me-5">
-            <span class="fw-semibold">{{ user.first_name }} {{ user.last_name }}</span>
-            <small class="text-secondary">{{ user.school_id }}</small>
-          </li>
-
-          <!-- Navbar Toggler (mobile) -->
-          <li class="nav-item d-xl-none ps-3 d-flex align-items-center m-0 p-0 justify-content-md-end">
-            <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
-              <div class="sidenav-toggler-inner">
-                <i class="sidenav-toggler-line bg-white"></i>
-                <i class="sidenav-toggler-line bg-white"></i>
-                <i class="sidenav-toggler-line bg-white"></i>
-              </div>
-            </a>
-          </li>
-
-        </ul>
-
-       
-
-
-        {% endif %}
-
-          
-        </div>
+        </h6>
       </div>
-    </nav>
+
+      <!-- Right Section: Dynamic Content -->
+      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+        {% if currentpage == 'dashboard' or currentpage == 'StudentDashboard' or currentpage == 'leaderboard' %}
+          <!-- User Info Card - Avatar Only -->
+          <div class="user-info-card" id="userInfoCard" onclick="toggleProfileDropdown(event)">
+            {% if user.user_image and user.user_image.url %}
+              <img src="{{ user.user_image.url }}" 
+                   alt="Profile Picture" 
+                   class="rounded-circle profile-img">
+            {% else %}
+              <img src="{% static 'img/image.png' %}" 
+                   alt="Default Profile Picture" 
+                   class="rounded-circle profile-img">
+            {% endif %}
+
+            <!-- Dropdown Menu -->
+            <div class="profile-dropdown" id="profileDropdown">
+              <div class="dropdown-header">
+                <p class="user-name">{{ user.first_name }} {{ user.last_name }}</p>
+                <p class="user-id">{{ user.school_id }}</p>
+              </div>
+              <div class="dropdown-menu-custom">
+                <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+                  {% csrf_token %}
+                  <button type="submit" class="dropdown-item-custom logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        {% elif currentpage == 'StudentClass' and nav != 'student_class_details' and nav != 'classDetails' %}
+          <!-- Search + Join Class Button -->
+          <form class="search-wrapper" method="GET">
+            <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
+                   type="search" 
+                   name="q" 
+                   placeholder="Search classes..." 
+                   value="{{ request.GET.q|default:'' }}"
+                   aria-label="Search classes">
+            <button type="submit" class="border-0 bg-transparent search-icon" aria-label="Search">
+              <img src="{% static 'img/search.png' %}" alt="" style="width: 16px; height: 16px;">
+            </button>
+          </form>
+
+          <button class="btn btn-primary btn-custom"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#joinClassModal">
+            <img src="{% static 'img/plusIcon.png' %}" alt="">
+            <span>Join Class</span>
+          </button>
+
+        {% elif currentpage == 'MyClasses' and nav != 'student_class_details' and nav != 'classDetails' %}
+          <!-- Search + Create Class Button -->
+          <form class="search-wrapper" method="GET">
+            <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
+                   type="search" 
+                   name="q" 
+                   placeholder="Search classes..." 
+                   value="{{ request.GET.q|default:'' }}"
+                   aria-label="Search classes">
+            <i class="fa fa-search text-secondary search-icon"></i>
+          </form>
+
+          <button class="btn btn-success btn-custom"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#createClassModal">
+            <img src="{% static 'img/plusIcon.png' %}" alt="">
+            <span>Create Class</span>
+          </button>
+
+        {% elif currentpage == 'report' %}
+          <!-- Search Only -->
+          <form class="search-wrapper" method="GET" action="{% url 'report' %}">
+            <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
+                   type="search" 
+                   name="search" 
+                   placeholder="Search by class title or code" 
+                   value="{{ request.GET.search|default:'' }}"
+                   aria-label="Search reports">
+            <i class="fa fa-search text-white search-icon"></i>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Navbar Auto-hide on Scroll
+  (function() {
+    const navbar = document.getElementById('navbarBlur');
+    if (!navbar) return;
+    
+    let lastScrollTop = 0;
+    const scrollThreshold = 10;
+    let scrollTimeout;
+
+    window.addEventListener('scroll', function() {
+      clearTimeout(scrollTimeout);
+      
+      scrollTimeout = setTimeout(function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (Math.abs(scrollTop - lastScrollTop) > scrollThreshold) {
+          navbar.classList.toggle('navbar-hidden', scrollTop > lastScrollTop && scrollTop > 100);
+          lastScrollTop = Math.max(0, scrollTop);
+        }
+      }, 10);
+    });
+  })();
+
+  // Toggle Profile Dropdown
+  function toggleProfileDropdown(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown?.classList.toggle('show');
+  }
+
+  // Toggle Sidebar
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidenav-main');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    
+    sidebar?.classList.toggle('show');
+    backdrop?.classList.toggle('show');
+  }
+
+  // Close Sidebar
+  function closeSidebar() {
+    const sidebar = document.getElementById('sidenav-main');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    
+    sidebar?.classList.remove('show');
+    backdrop?.classList.remove('show');
+  }
+
+  // Event Listeners
+  document.addEventListener('DOMContentLoaded', function() {
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('profileDropdown');
+      const userCard = document.getElementById('userInfoCard');
+      
+      if (dropdown?.classList.contains('show') && 
+          !userCard?.contains(event.target)) {
+        dropdown.classList.remove('show');
+      }
+    });
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(event) {
+      if (window.innerWidth > 768) return;
+      
+      const sidebar = document.getElementById('sidenav-main');
+      const toggleBtn = document.querySelector('.mobile-toggle');
+      
+      if (sidebar?.classList.contains('show') && 
+          !sidebar.contains(event.target) && 
+          !toggleBtn?.contains(event.target)) {
+        closeSidebar();
+      }
+    });
+
+    // Close mobile sidebar on window resize
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 768) {
+        closeSidebar();
+      }
+    });
+  });
+</script>

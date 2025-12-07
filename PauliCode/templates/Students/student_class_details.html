@@ -1,122 +1,322 @@
 {% extends "base.html" %}
 {% load static %}
-
+<!--student_class_details.html - Improved Design-->
 {% block content %}
-{% include "partials/header.html" %}
 
-<body class="g-sidenav-show text-white" style="background-color: #1E2835;">
+<body class="g-sidenav-show text-white" style="background-color: #0f172a; margin-left: 90px; padding-right: 90px;">
   <div class="min-height-300 position-absolute w-100"></div>
-  {% include "partials/StudentSidebar.html" %}
 
-  <main class="main-content position-relative border-radius-lg p-4">
-     {% include "partials/side_content_navbar.html" %}
-
+  <main class="main-content position-relative border-radius-lg p-4" style="max-width: 100%; width: 100%;">
+    
     <!-- CLASS HEADER -->
-    <div class="card bg-dark p-4 border-0 shadow-sm rounded-4" style="margin-top: -5px; margin-bottom: 20px;">
-      <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
-        <div class="flex-grow-1">
-          <h3 class="fw-bold text-white mb-2">{{ class.title }}</h3>
-          <p class="text-muted small mb-0">{{ class.description }}</p>
+    <div class="class-header card border-0 shadow-sm rounded-4 p-4 mb-4" 
+         style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-left: 4px solid #3b82f6 !important;">
+      <div class="d-flex justify-content-between align-items-start flex-wrap">
+        <div class="flex-grow-1 mb-3 mb-md-0">
+          <div class="d-flex align-items-center mb-2">
+            <i class="fas fa-graduation-cap text-white me-2" style="font-size: 1.5rem;"></i>
+            <h3 class="fw-bold text-white mb-0">{{ class.title }}</h3>
+          </div>
+          <p class="text-white-50 small mb-0 ms-5">{{ class.description }}</p>
         </div>
 
-        <div class="d-flex align-items-center mt-2 mt-md-0">
-          <!-- Unenroll Button -->
-          <a href="{% url 'unenroll_class' class.class_id %}" 
-             class="btn btn-outline-danger fw-bold align-items-center"
-             onclick="return confirm('Are you sure you want to unenroll from this class?');">
-            <img src="{% static 'img/deleteIcon.png' %}" alt="unenroll" style="width: 18px; height: 18px;" class="me-2">
-            Unenroll
-          </a>
-        </div>
+        <a href="{% url 'unenroll_class' class.class_id %}" 
+           class="btn btn-outline-danger fw-bold d-flex align-items-center unenroll-btn"
+           onclick="return confirm('Are you sure you want to unenroll from this class?');">
+          <i class="fas fa-sign-out-alt me-2"></i>
+          <span class="btn-text">Unenroll</span>
+        </a>
       </div>
 
-      <div class="mt-3">
-        <span class="badge bg-success px-3 py-2">{{ class.class_code }}</span>  
-        <span class="badge bg-primary px-3 py-2 mx-2">{{ class.teacher }}</span>
+      <div class="d-flex gap-2 flex-wrap mt-3">
+        <span class="badge px-3 py-2" style="background-color: rgba(59, 130, 246, 0.2); color: #60a5fa;">
+          <i class="fas fa-code me-1"></i>{{ class.class_code }}
+        </span>
+        <span class="badge bg-dark px-3 py-2">
+          <i class="fas fa-chalkboard-teacher me-1"></i>{{ class.teacher }}
+        </span>
       </div>
     </div>
 
-    <!-- MAIN CONTENT AREA -->
-    <div class="row g-4 mb-5">
+     <!-- RESOURCES SECTION -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 mt-4" style="background-color: #1e293b;">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-white d-flex align-items-center mb-0">
+          <i class="fas fa-folder-open me-2" style="color: #3b82f6;"></i>
+          Class Resources
+        </h5>
+        <span class="badge px-3 py-2" style="background-color: rgba(59, 130, 246, 0.2); color: #60a5fa;">
+          <i class="fas fa-file me-1"></i>{{ resources|length }} Resources
+        </span>
+      </div>
 
-      <!-- LEFT COLUMN (Problems Section only) -->
-      <div class="col-12">
-        <div class="card bg-dark border-0 shadow-sm text-white rounded-4 p-3">
+      <!-- Resources Search -->
+      <div class="mb-3">
+        <div class="input-group">
+          <span class="input-group-text bg-dark border-0" style="color: #64748b;">
+            <i class="fas fa-search"></i>
+          </span>
+          <input type="text" id="resourceSearch" 
+                class="form-control text-white border-0"
+                placeholder="Search resources by title or description..."
+                style="background-color: #0f172a; height: 44px;">
+        </div>
+      </div>
 
-          <!-- Search and Filter -->
-          <form method="GET"
-                class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3"
-                style="margin-top: -10px;">
-            
-            <!-- Title -->
-            <h5 class="fw-bold text-white mb-0 d-flex align-items-center flex-shrink-0">
-              <img src="{% static 'img/problemsIcon.png' %}" alt="Problems Icon" width="25" height="25" class="me-2">
-              Problems
-            </h5>
+      <!-- Resources Grid -->
+      <div class="resources-container rounded-3 p-3" style="background-color: #0f172a; min-height: 200px; max-height: 400px; overflow-y: auto;">
+        {% if resources %}
+          <div class="row g-3" id="resourcesGrid">
+            {% for resource_group in resources %}
+              <div class="col-12 col-md-6 col-lg-4 resource-item" 
+                  data-title="{{ resource_group.title|lower }}" 
+                  data-description="{{ resource_group.description|lower }}">
+                <div class="resource-card card text-white rounded-3 p-3 h-100 resource-card-clickable"
+                  style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
+                          border: 1px solid #334155; 
+                          transition: all 0.3s ease; 
+                          cursor: pointer;"
+                  data-resource-title="{{ resource_group.title|escapejs }}"
+                  data-resource-files='{{ resource_group.files|safe }}'>
 
-            <!-- Search -->
-            <div class="flex-grow-1 d-flex justify-content-center">
-              <input type="text" name="q" value="{{ query }}"
-                     class="form-control form-control-sm text-white border-0 shadow-sm"
-                     placeholder="Search problems..."
-                     style="max-width: 350px; background-color: rgb(37,36,36);">
-            </div>
+                  <div class="d-flex align-items-start mb-2">
+                    <!-- Multiple files indicator -->
+                    <div class="flex-shrink-0 me-3 position-relative">
+                      {% if resource_group.files|length > 1 %}
+                        <div class="file-stack">
+                          <i class="fas fa-file fa-2x" style="color: #3b82f6;"></i>
+                          <span class="badge bg-primary position-absolute top-0 start-100 translate-middle rounded-pill">
+                          {{ resource_group.file_count }}
+                          </span>
+                        </div>
+                      {% else %}
+                        {% with resource=resource_group.files.0 %}
+                          {% if resource.file_extension == 'pdf' %}
+                            <i class="fas fa-file-pdf fa-2x text-danger"></i>
+                          {% elif resource.file_extension in 'png,jpg,jpeg' %}
+                            <i class="fas fa-file-image fa-2x text-info"></i>
+                          {% elif resource.file_extension in 'docx,doc' %}
+                            <i class="fas fa-file-word fa-2x text-primary"></i>
+                          {% elif resource.file_extension in 'pptx,ppt' %}
+                            <i class="fas fa-file-powerpoint fa-2x text-warning"></i>
+                          {% elif resource.file_extension == 'zip' %}
+                            <i class="fas fa-file-archive fa-2x text-secondary"></i>
+                          {% elif resource.file_extension == 'txt' %}
+                            <i class="fas fa-file-alt fa-2x text-muted"></i>
+                          {% elif resource.file_extension in 'mp4,mov,avi' %}
+                            <i class="fas fa-file-video fa-2x text-danger"></i>
+                          {% elif resource.file_extension in 'mp3,wav' %}
+                            <i class="fas fa-file-audio fa-2x text-info"></i>
+                          {% elif resource.file_extension in 'xls,xlsx' %}
+                            <i class="fas fa-file-excel fa-2x text-success"></i>
+                          {% else %}
+                            <i class="fas fa-file fa-2x" style="color: #3b82f6;"></i>
+                          {% endif %}
+                        {% endwith %}
+                      {% endif %}
+                    </div>
 
-            <!-- Filters -->
-            <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
-              <span class="text-white fw-semibold">Quick Filter:</span>
-              <button type="submit" name="filter" value="Assignment"
-                data-filter="Assignment"
-                class="btn btn-warning btn-sm fw-bold px-3 my-3 {% if filter_type == 'Assignment' %}active{% endif %}">
-                Assignments
-              </button>
-              <button type="submit" name="filter" value="Quiz"
-                      data-filter="Quiz"
-                      class="btn btn-success btn-sm fw-bold px-3 my-3 {% if filter_type == 'Quiz' %}active{% endif %}">
-                Quizzes
-              </button>
-            </div>
-          </form>
+                    <div class="flex-grow-1 overflow-hidden">
+                      <h6 class="fw-bold mb-1 text-white text-truncate" title="{{ resource_group.title }}">
+                        {{ resource_group.title }}
+                      </h6>
+                      <small class="text-white-50 d-block mb-1" title="{{ resource_group.description|default:'No description' }}">
+                        {{ resource_group.description|default:'No description'|truncatewords:3 }}
+                      </small>
+                      <div class="d-flex gap-2">
+                        <span class="badge small" style="background-color: #334155;">
+                          <i class="fas fa-copy me-1"></i>{{ resource_group.file_count }} file{{ resource_group.file_count|pluralize }}
+                        </span>
+                        <span class="badge small" style="background-color: #334155;">
+                          <i class="far fa-calendar me-1"></i>{{ resource_group.uploaded_at|date:"M d, Y" }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
 
-          <!-- Problems List (Read-Only) -->
-          {% if problems %}
-          <div class="row g-3">
-            {% for problem in problems %}
-            <div class="col-md-6">
-              <div class="card bg-transparent text-white border 
-                  {% if problem.problem.problem_type == 'Quiz' %}border-success{% else %}border-warning{% endif %}
-                  rounded-3 p-3 shadow-sm h-100 problem-card"
-                  data-problem-id="{{ problem.problem.problem_id }}"
-                  style="cursor: pointer; position: relative;">
-
-                <div class="d-flex justify-content-between align-items-start">
-                  <h6 class="fw-bold mb-2 text-white">{{ problem.problem.problem_title }}</h6>
-
-                  {% if problem.score is not None %}
-                    {% if problem.score >= problem.half_score %}
-                      <h5 class="fw-bold text-success">{{ problem.score }}/{{ problem.problem.total_score }}</h5>
-                    {% else %}
-                      <h5 class="fw-bold text-danger">{{ problem.score }}/{{ problem.problem.total_score }}</h5>
-                    {% endif %}
-                  {% else %}
-                    <h6 class="text-muted">No score yet</h6>
-                  {% endif %}
-
-                  <span class="badge 
-                    {% if problem.problem.problem_type == 'Quiz' %}bg-success{% else %}bg-warning text-dark{% endif %}">
-                    Due: {{ problem.problem.due_date|date:"M d, Y H:i" }}
-                  </span>
+                  <!-- Action Buttons -->
+                  <div class="d-flex gap-2 mt-2">
+                    <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1" onclick="event.stopPropagation(); downloadResourceGroup('{{ resource_group.title|escapejs }}', {{ resource_group.files|safe }})">
+                      <i class="fas fa-download me-1"></i>Download All
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-info flex-grow-1" onclick="event.stopPropagation(); viewResourceGroupDetails('{{ resource_group.title|escapejs }}', {{ resource_group.files|safe }})">
+                      <i class="fas fa-eye me-1"></i>View Files
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
             {% endfor %}
           </div>
-          {% else %}
-          <div class="p-3 rounded-3 text-center text-muted"
-               style="min-height: 316px; background-color: rgb(37,36,36);">
-            <p>No problems yet.</p>
+        {% else %}
+          <div class="text-center text-muted py-5">
+            <i class="fas fa-folder-open fa-3x mb-3 opacity-50" style="color: #64748b;"></i>
+            <p class="mb-0">No resources uploaded yet.</p>
+            <small class="text-muted">Your teacher will upload resources here.</small>
           </div>
-          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+    <!-- PROBLEMS SECTION -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 mt-4" style="background-color: #1e293b;">
+      
+      <!-- Search and Filter Header -->
+      <form method="GET" class="mb-4">
+        <div class="row g-3 align-items-center">
+          
+          <!-- Title -->
+          <div class="col-12 col-lg-auto">
+            <h5 class="fw-bold text-white mb-0 d-flex align-items-center">
+              <i class="fas fa-tasks me-2" style="color: #3b82f6;"></i>
+              Problems
+            </h5>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="col-12 col-lg">
+            <div class="input-group">
+              <span class="input-group-text bg-dark border-0" style="color: #64748b;">
+                <i class="fas fa-search"></i>
+              </span>
+              <input type="text" name="q" value="{{ query }}"
+                     class="form-control text-white border-0"
+                     placeholder="Search problems..."
+                     style="background-color: #0f172a; height: 44px;">
+            </div>
+          </div>
+
+          <!-- Filter Buttons -->
+          <div class="col-12 col-lg-auto">
+            <div class="d-flex gap-2 flex-wrap justify-content-center justify-content-lg-end">
+              <button type="submit" name="filter" value="Assignment"
+                      class="btn fw-bold {% if filter_type == 'Assignment' %}btn-warning{% else %}btn-outline-warning{% endif %}"
+                      style="height: 44px; min-width: 120px;">
+                <i class="fas fa-code me-1"></i>
+                <span class="d-none d-sm-inline">Assignments</span>
+                <span class="d-inline d-sm-none">Assign.</span>
+              </button>
+              
+              <button type="submit" name="filter" value="Quiz"
+                      class="btn fw-bold {% if filter_type == 'Quiz' %}btn-success{% else %}btn-outline-success{% endif %}"
+                      style="height: 44px; min-width: 120px;">
+                <i class="fas fa-clipboard-check me-1"></i>
+                <span class="d-none d-sm-inline">Quizzes</span>
+                <span class="d-inline d-sm-none">Quiz</span>
+              </button>
+              
+              <button type="submit" name="filter" value=""
+                      class="btn fw-bold {% if not filter_type %}btn-primary{% else %}btn-outline-primary{% endif %}"
+                      style="height: 44px; min-width: 90px;">
+                <i class="fas fa-th-list me-1"></i>
+                All
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- Problems Grid -->
+      {% if problems %}
+      <div class="row g-3">
+        {% for problem in problems %}
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="problem-card card text-white rounded-3 p-3 shadow-sm h-100"
+               data-problem-id="{{ problem.problem.problem_id }}"
+               style="cursor: pointer; 
+                      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
+                      transition: all 0.3s ease; 
+                      border: 1px solid {% if problem.problem.problem_type == 'Quiz' %}#10b981{% else %}#f59e0b{% endif %};">
+            
+            <!-- Score Badge -->
+            {% if problem.score is not None %}
+            <div class="position-absolute top-0 end-0 mt-2 me-2">
+              {% if problem.score >= problem.half_score %}
+              <span class="badge px-2 py-1" style="background-color: #10b981;">
+                <i class="fas fa-check-circle me-1"></i>{{ problem.score }}/{{ problem.problem.total_score }}
+              </span>
+              {% else %}
+              <span class="badge px-2 py-1" style="background-color: #ef4444;">
+                <i class="fas fa-exclamation-circle me-1"></i>{{ problem.score }}/{{ problem.problem.total_score }}
+              </span>
+              {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Problem Title -->
+            <div class="mb-3">
+              <div class="d-flex align-items-center mb-2">
+                <i class="fas {% if problem.problem.problem_type == 'Quiz' %}fa-clipboard-check{% else %}fa-code{% endif %} me-2" 
+                   style="color: {% if problem.problem.problem_type == 'Quiz' %}#10b981{% else %}#f59e0b{% endif %};"></i>
+                <h6 class="fw-bold mb-0 text-white text-truncate">{{ problem.problem.problem_title }}</h6>
+              </div>
+            </div>
+
+            <!-- Problem Meta -->
+            <div class="d-flex justify-content-between align-items-center mt-auto pt-2 flex-wrap gap-2" 
+                 style="border-top: 1px solid rgba(100, 116, 139, 0.3);">
+              <span class="badge small" style="background-color: {% if problem.problem.problem_type == 'Quiz' %}#10b981{% else %}#f59e0b{% endif %};">
+                <i class="far fa-clock me-1"></i>{{ problem.problem.due_date|date:"M d, H:i" }}
+              </span>
+              <span class="badge bg-dark small">
+                <i class="fas fa-star me-1"></i>{{ problem.problem.total_score }} pts
+              </span>
+            </div>
+
+            <!-- Submission Status -->
+            {% if problem.answered %}
+            <div class="mt-2">
+              <span class="badge text-white small w-100" style="background-color: #10b981;">
+                <i class="fas fa-check-double me-1"></i>Submitted
+              </span>
+            </div>
+            {% else %}
+            <div class="mt-2">
+              <span class="badge small w-100" style="background-color: #64748b; color: white;">
+                <i class="fas fa-hourglass-half me-1"></i>Not Submitted
+              </span>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center text-muted p-5 rounded-3" style="background-color: #0f172a; border: 2px dashed #334155;">
+        <i class="fas fa-inbox fa-3x mb-3 opacity-50" style="color: #64748b;"></i>
+        <p class="mb-0">No problems available yet.</p>
+      </div>
+      {% endif %}
+    </div>
+
+
+   
+
+    <!-- RESOURCE GROUP DETAILS MODAL -->
+    <div class="modal fade" id="resourceGroupDetailsModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content text-white" style="background-color: #1e293b; border: 2px solid #3b82f6; border-radius: 15px;">
+          <div class="modal-header" style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+            <h4 class="fw-bold text-white d-flex align-items-center">
+              <i class="fas fa-folder-open me-2" style="color: #3b82f6;"></i>
+              <span id="resourceGroupTitle"></span>
+            </h4>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body px-4">
+            <div class="resource-group-info mb-4">
+              <h5 class="text-white mb-3">Files in this resource group:</h5>
+              <div id="resourceGroupFilesList" class="files-list">
+                <!-- Files will be populated here -->
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer" style="border-top: 1px solid rgba(100, 116, 139, 0.3);">
+            <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary px-4" onclick="downloadAllFilesInGroup()">
+              <i class="fas fa-download me-2"></i>Download All Files
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -125,66 +325,565 @@
 
   <!-- PROBLEM DETAILS MODAL -->
   <div class="modal fade" id="problemDetailsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content text-white" style="background-color: #1E2835; border-radius: 15px; max-width: 800px; margin: auto;">
-        <div class="modal-header border-0 pb-0">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content text-white" 
+           style="background-color: #1e293b; border: 2px solid #3b82f6; border-radius: 15px;">
+        
+        <div class="modal-header" style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
           <div class="w-100">
-            <div class="d-flex flex-wrap align-items-center justify-content-between">
-              <div>
-                <h4 class="fw-bold text-success mb-1" id="problem_title"></h4>
-                <span class="badge bg-info text-dark me-2" id="problem_type"></span>
-                <span class="badge bg-warning text-dark" id="due_date"></span>
-              </div>
+            <div class="d-flex align-items-center mb-2">
+              <i class="fas fa-file-code me-2" style="color: #3b82f6;"></i>
+              <h4 class="fw-bold text-white mb-0" id="problem_title"></h4>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              <span class="badge" style="background-color: #3b82f6;" id="problem_type"></span>
+              <span class="badge bg-secondary" id="due_date"></span>
             </div>
           </div>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
 
-        <div class="modal-body px-4 pb-3">
+        <div class="modal-body px-4">
           <div class="container-fluid">
+            
+            <!-- Score and Time -->
             <div class="row g-3 mb-3">
-              <div class="col-md-6">
-                <label class="fw-semibold mb-1">Score</label>
-                <div id="total_score" class="p-2 rounded mb-2" style="background:#101826; border:1px solid #2b3a55;"></div>
+              <div class="col-12 col-md-6">
+                <label class="fw-semibold mb-2 text-white">
+                  <i class="fas fa-star me-1"></i>Score
+                </label>
+                <div id="total_score" class="p-2 rounded text-white" 
+                     style="background-color: #0f172a; border: 1px solid #334155;"></div>
               </div>
-              <div class="col-md-6">
-                <label class="fw-semibold mb-1">Time Limit</label>
-                <div id="time_limit" class="p-2 rounded mb-2" style="background:#101826; border:1px solid #2b3a55;"></div>
+              <div class="col-12 col-md-6">
+                <label class="fw-semibold mb-2 text-white">
+                  <i class="far fa-clock me-1"></i>Time Limit
+                </label>
+                <div id="time_limit" class="p-2 rounded text-white" 
+                     style="background-color: #0f172a; border: 1px solid #334155;"></div>
               </div>
             </div>
+
+            <!-- Description -->
             <div class="row g-3 mb-3">
               <div class="col-12">
-                <label class="fw-semibold mb-1">Instruction</label>
-                <div id="problem_description" class="p-2 rounded" style="background:#101826; border:1px solid #2b3a55; min-height:120px; white-space:pre-line; font-size: 12px;"></div>
+                <label class="fw-semibold mb-2 text-white">
+                  <i class="fas fa-align-left me-1"></i>Instructions
+                </label>
+                <div id="problem_description" 
+                     class="p-3 rounded text-white" 
+                     style="background-color: #0f172a; border: 1px solid #334155; min-height: 120px; white-space: pre-line;"></div>
               </div>
             </div>
+
+            <!-- Test Cases -->
             <div class="row g-2">
               <div class="col-12">
-                <label class="fw-semibold mb-2">Test Cases</label>
+                <label class="fw-semibold mb-2 text-white">
+                  <i class="fas fa-vial me-1"></i>Test Cases
+                </label>
                 <div class="row g-2" id="test_cases_container"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="modal-footer border-0 d-flex justify-content-between pt-0">
-          <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-success px-4" id="answerButton">Answer</button>
+        <div class="modal-footer" style="border-top: 1px solid rgba(100, 116, 139, 0.3);">
+          <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i>Cancel
+          </button>
+          <button type="button" class="btn btn-primary px-4" id="answerButton">
+            <i class="fas fa-pen me-2"></i>Answer
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  {% include "partials/footer.html" %}
-  {% include "partials/scripts.html" %}
+  
+<script>
+// ============================================
+// SEARCH & FILTER JS (Existing)
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('form');
+  const searchInput = form.querySelector('input[name="q"]');
+  const filterButtons = document.querySelectorAll('button[name="filter"]');
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+
+      const selectedFilter = btn.value;
+      const searchValue = searchInput.value.trim();
+
+      const url = new URL(window.location.href);
+
+      // If user clicks the same filter again, remove it (toggle off)
+      if (url.searchParams.get('filter') === selectedFilter) {
+        url.searchParams.delete('filter');
+      } else {
+        url.searchParams.set('filter', selectedFilter);
+      }
+
+      // Keep the search query if it exists
+      if (searchValue) {
+        url.searchParams.set('q', searchValue);
+      } else {
+        url.searchParams.delete('q');
+      }
+
+      window.location.href = url.toString();
+    });
+  });
+
+  // Clear search query dynamically when the input is cleared
+  searchInput.addEventListener('input', () => {
+    if (searchInput.value.trim() === '') {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('q');
+      window.location.href = url.toString();
+    }
+  });
+});
+
+// ============================================
+// PROBLEM CARD CLICK JS (Existing)
+// ============================================
+document.querySelectorAll('.problem-card').forEach(card => {
+  card.addEventListener('click', function() {
+    const problemId = this.dataset.problemId;
+    if (!problemId) return;
+
+    fetch(`/problem/${problemId}/details/`)
+      .then(res => res.json())
+      .then(data => {
+        // Fill in modal data
+        document.getElementById('problem_title').textContent = data.title;
+        document.getElementById('problem_description').textContent = data.description;
+        document.getElementById('problem_type').textContent = data.type;
+        document.getElementById('total_score').textContent = data.score;
+        document.getElementById('time_limit').textContent = data.time_limit;
+        document.getElementById('due_date').textContent = "Due: " + data.due_date;
+
+        // Populate test cases
+        const container = document.getElementById('test_cases_container');
+        container.innerHTML = '';
+
+        data.test_cases.forEach((tc, index) => {
+          const col = document.createElement('div');
+          col.className = 'col-12';
+
+          const total = data.test_cases.length;
+          const testCaseNumber = index + 1;
+          let hideIndex = total; // Hide the last test case, depending on total count
+
+          if (testCaseNumber === hideIndex) {
+            // Hide this test case
+            col.innerHTML = `
+              <div class="p-3 mb-3 rounded text-center" style="background:#1e2b4d; border:1px dashed #3b4b6b;">
+                <span class="badge bg-secondary px-3 py-2">Test Case ${testCaseNumber} Hidden</span>
+              </div>
+            `;
+          } else {
+            // Show normal test case
+            col.innerHTML = `
+              <div class="p-2 mb-2 rounded" style="background:#121f3d; border:1px solid #2b3a55;">
+                <strong>Input ${testCaseNumber}:</strong>
+                <pre style="margin:0; white-space:pre-wrap;">${tc.input}</pre>
+              </div>
+              <div class="p-2 mb-3 rounded" style="background:#121f3d; border:1px solid #2b3a55;">
+                <strong>Output ${testCaseNumber}:</strong>
+                <pre style="margin:0; white-space:pre-wrap;">${tc.output}</pre>
+              </div>
+            `;
+          }
+
+          container.appendChild(col);
+        });
+
+        // Get reference to Answer button
+        const answerBtn = document.getElementById('answerButton');
+
+        // ✅ Disable button if problem already answered
+        if (data.answered === true) {
+          answerBtn.disabled = true;
+          answerBtn.textContent = "Answered";
+          answerBtn.classList.remove("btn-success");
+          answerBtn.classList.add("btn-secondary");
+        } else {
+          answerBtn.disabled = false;
+          answerBtn.textContent = "Answer";
+          answerBtn.classList.add("btn-success");
+          answerBtn.classList.remove("btn-secondary");
+        }
+
+        // Set Answer button link dynamically
+        answerBtn.onclick = () => {
+          if (!data.answered) {
+            window.location.href = `/playground/${problemId}/`;
+          }
+        };
+
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('problemDetailsModal'));
+        modal.show();
+      })
+      .catch(err => console.error('Error fetching problem details:', err));
+  });
+});
+
+// ============================================
+// RESOURCES JS (New)
+// ============================================
+
+// Global variable to store current resource group data
+let currentResourceGroup = null;
+
+// View Resource Group Details (multiple files)
+function viewResourceGroupDetails(title, files) {
+  try {
+    console.log('Opening resource group:', title, files);
+    
+    currentResourceGroup = { title, files };
+    
+    document.getElementById('resourceGroupTitle').textContent = title;
+    
+    // Populate files list
+    const filesList = document.getElementById('resourceGroupFilesList');
+    if (!filesList) {
+      console.error('Files list container not found!');
+      return;
+    }
+    
+    filesList.innerHTML = '';
+    
+    if (!files || !Array.isArray(files) || files.length === 0) {
+      filesList.innerHTML = '<div class="text-white-50 text-center p-4">No files available</div>';
+    } else {
+      files.forEach(file => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item d-flex align-items-center justify-content-between p-3 rounded-2 mb-2';
+        fileItem.style.backgroundColor = '#0f172a';
+        
+        // Get file icon
+        const ext = file.file_extension || '';
+        const iconMap = {
+          'pdf': 'fa-file-pdf text-danger',
+          'png': 'fa-file-image text-info',
+          'jpg': 'fa-file-image text-info',
+          'jpeg': 'fa-file-image text-info',
+          'docx': 'fa-file-word text-primary',
+          'doc': 'fa-file-word text-primary',
+          'pptx': 'fa-file-powerpoint text-warning',
+          'ppt': 'fa-file-powerpoint text-warning',
+          'zip': 'fa-file-archive text-secondary',
+          'txt': 'fa-file-alt text-muted',
+          'mp4': 'fa-file-video text-danger',
+          'mp3': 'fa-file-audio text-info',
+          'xls': 'fa-file-excel text-success',
+          'xlsx': 'fa-file-excel text-success'
+        };
+        
+        const iconClass = iconMap[ext] || 'fa-file text-primary';
+        
+        fileItem.innerHTML = `
+          <div class="d-flex align-items-center gap-3">
+            <i class="fas ${iconClass} fa-lg"></i>
+            <div>
+              <div class="text-white fw-semibold">${file.original_filename || 'Unknown file'}</div>
+              <small class="text-white-50">${file.file_size || 'Unknown size'} • ${file.uploaded_at || 'Unknown date'}</small>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="${file.file_url || '#'}" target="_blank" class="btn btn-sm btn-outline-primary" download title="Download">
+              <i class="fas fa-download"></i>
+            </a>
+            <a href="${file.file_url || '#'}" target="_blank" class="btn btn-sm btn-outline-info" title="View">
+              <i class="fas fa-eye"></i>
+            </a>
+          </div>
+        `;
+        
+        filesList.appendChild(fileItem);
+      });
+    }
+    
+    // Show the modal
+    const modalElement = document.getElementById('resourceGroupDetailsModal');
+    if (!modalElement) {
+      console.error('Modal element not found!');
+      return;
+    }
+    
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+    
+  } catch (error) {
+    console.error('Error in viewResourceGroupDetails:', error);
+    alert('Error opening resource details: ' + error.message);
+  }
+}
+
+// Download all files in a group
+function downloadAllFilesInGroup() {
+  if (!currentResourceGroup || !currentResourceGroup.files) return;
+  
+  // Download each file individually (browser will handle multiple downloads)
+  currentResourceGroup.files.forEach((file, index) => {
+    setTimeout(() => {
+      const link = document.createElement('a');
+      link.href = file.file_url;
+      link.download = file.original_filename;
+      link.target = '_blank';
+      link.click();
+    }, index * 500); // Stagger downloads by 500ms to avoid browser blocking
+  });
+}
+
+// Resource Search
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('resourceSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const resourceItems = document.querySelectorAll('.resource-item');
+      
+      resourceItems.forEach(item => {
+        const title = item.dataset.title;
+        const description = item.dataset.description;
+        
+        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  // Handle resource card clicks using event delegation
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.resource-card-clickable');
+    if (card) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      try {
+        const title = card.dataset.resourceTitle;
+        const filesJson = card.dataset.resourceFiles;
+        
+        if (!filesJson || filesJson === '') {
+          alert('No files available for this resource');
+          return;
+        }
+        
+        // Parse the JSON data
+        let files;
+        try {
+          files = JSON.parse(filesJson);
+        } catch (parseError) {
+          console.error('JSON parse error:', parseError);
+          alert('Error loading resource files');
+          return;
+        }
+        
+        // Show the modal
+        viewResourceGroupDetails(title, files);
+        
+      } catch (error) {
+        console.error('Resource click error:', error);
+        alert('Error opening resource: ' + error.message);
+      }
+    }
+  });
+});
+</script>
 
   <style>
-    .btn-success { background-color: #00C98D; border: none; }
-    .btn-success:hover { background-color: #00b07d; }
-    .btn-danger { background-color: #ff4b5c; border: none; }
-    .btn-danger:hover { background-color: #e63b4b; }
-    .card { background-color: #2C3648 !important; }
-    .small-placeholder::placeholder { font-size: 0.65rem; color: #b0b0b0; }
+    .problem-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary {
+      background-color: #3b82f6;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #2563eb;
+    }
+
+    .btn-outline-primary {
+      border-color: #3b82f6;
+      color: #3b82f6;
+    }
+
+    .btn-outline-primary:hover {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .btn-success {
+      background-color: #10b981;
+      border: none;
+    }
+
+    .btn-success:hover {
+      background-color: #059669;
+    }
+
+    .btn-outline-success {
+      border-color: #10b981;
+      color: #10b981;
+    }
+
+    .btn-outline-success:hover {
+      background-color: #10b981;
+      color: white;
+    }
+
+    .btn-warning {
+      background-color: #f59e0b;
+      border: none;
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background-color: #d97706;
+    }
+
+    .btn-outline-warning {
+      border-color: #f59e0b;
+      color: #f59e0b;
+    }
+
+    .btn-outline-warning:hover {
+      background-color: #f59e0b;
+      color: white;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 767.98px) {
+      body {
+        margin-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
+      .main-content {
+        padding: 1rem !important;
+      }
+
+      .class-header {
+        padding: 1.5rem !important;
+      }
+
+      .unenroll-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .problem-card {
+        min-height: auto !important;
+      }
+
+      .modal-dialog {
+        margin: 0.5rem !important;
+        max-width: calc(100% - 1rem) !important;
+      }
+
+      .btn {
+        font-size: 0.875rem;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 991.98px) {
+      .main-content {
+        padding: 2rem !important;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .main-content {
+        padding-left: 3rem;
+        padding-right: 3rem;
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .main-content {
+        padding-left: 4rem;
+        padding-right: 4rem;
+      }
+    }
+
+    /* Touch Devices */
+    @media (hover: none) and (pointer: coarse) {
+      .btn {
+        min-height: 44px;
+      }
+
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+    }
+
+    .text-truncate {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Resource Styles */
+.resource-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+  border-color: #3b82f6 !important;
+}
+
+.file-stack {
+  position: relative;
+  display: inline-block;
+}
+
+.file-stack .badge {
+  font-size: 0.7rem;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-item {
+  transition: all 0.2s ease;
+}
+
+.file-item:hover {
+  background-color: #1e293b !important;
+}
+
+.files-list::-webkit-scrollbar,
+.resources-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.files-list::-webkit-scrollbar-track,
+.resources-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.files-list::-webkit-scrollbar-thumb,
+.resources-container::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 3px;
+}
+
+.files-list::-webkit-scrollbar-thumb:hover,
+.resources-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
   </style>
 </body>
 {% endblock %}

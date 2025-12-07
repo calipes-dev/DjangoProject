@@ -1,4 +1,5 @@
 {% load static %}
+<!--base.html-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -112,7 +113,7 @@
   {% if messages %}
   <div class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 2000;">
     {% for message in messages %}
-      <div class="alert alert-dismissible fade show text-center text-white py-2 px-5 shadow small-alert 
+      <div class="alert alert-dismissible fade show text-center text-black py-2 px-5 shadow small-alert 
                   {% if message.tags == 'error' %}alert-danger
                   {% elif message.tags == 'success' %}alert-success
                   {% elif message.tags == 'warning' %}alert-warning
@@ -120,7 +121,7 @@
                   {% else %}alert-secondary{% endif %}"
            role="alert">
         <strong>{{ message }}</strong>
-        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-black ms-2" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     {% endfor %}
   </div>
@@ -133,7 +134,25 @@
 
   <!-- 🧱 Main Page Content -->
   <div id="main-content">
-    {% block content %}{% endblock %}
+
+    {% if currentpage != "sign-up" and currentpage != "index" and nav != 'StudentPlayground' %}
+    {% include "partials/navbar.html" %}
+
+    {% if sidebar == 'teacher' %}
+    {% include 'partials/sidebar.html' %}
+    {% else %}
+    {% include 'partials/StudentSidebar.html' %}
+    {% endif %}
+
+    {% endif %}
+    
+    {% block content %}
+   
+    
+    
+    {% endblock %}
+
+    
   </div>
 
   <!-- ✅ Bootstrap Bundle JS -->

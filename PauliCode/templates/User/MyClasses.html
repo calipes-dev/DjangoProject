@@ -1,14 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
-
+<!--MyClasses.html-->
 {% block title %}My Classes{% endblock %}
 
 {% block content %}
 <div>
-  {% include "partials/sidebar.html" %}
 
   <main class="main-content position-relative p-4">
-    {% include "partials/navbar.html" %}
 
     <div class="ms-3">
       
@@ -37,6 +35,21 @@
                   </h6>
                 </div>
 
+                <!-- Class Type Badge -->
+                {% if cls.class_type %}
+                <div class="position-absolute top-0 end-0 mt-2 me-2">
+                  {% if cls.class_type == 'programming' %}
+                    <span class="badge bg-primary px-2 py-1 rounded-pill shadow-sm" style="font-size: 0.7rem;">
+                      <i class="fa fa-code "></i>
+                    </span>
+                  {% elif cls.class_type == 'cybersecurity' %}
+                    <span class="badge bg-danger px-2 py-1 rounded-pill shadow-sm" style="font-size: 0.7rem;">
+                      <i class="fa fa-shield-alt"></i>
+                    </span>
+                  {% endif %}
+                </div>
+                {% endif %}
+
                 <div class="card-body d-flex flex-column align-items-center justify-content-center position-relative p-3">
                   {% if cls.upload_icon %}
                     <img src="{{ cls.upload_icon.url }}" alt="Class Icon" class="rounded mb-3 cls-img">
@@ -57,7 +70,7 @@
       {% endfor %}
     {% else %}
       <div class="col-12 text-center text-muted py-4">
-        You haven’t created any classes yet.
+        You haven't created any classes yet.
       </div>
     {% endif %}
   </div>
@@ -68,125 +81,271 @@
     </div>
   </main>
 
-  {% include "partials/footer.html" %}
+
   
 
-  <!-- CREATE CLASS MODAL -->
-  <div class="modal fade" id="createClassModal" tabindex="-1" aria-labelledby="createClassLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md">
-      <div class="modal-content shadow-lg border-0" style="background-color: #1E2835; color: white; border-radius: 16px;">
-        <div class="modal-header border-0">
-          <h5 class="modal-title fw-bold text-success" id="createClassLabel">Create New Class</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+  <!-- CREATE CLASS MODAL - FIXED VERSION -->
+    <div class="modal fade" id="createClassModal" tabindex="-1" aria-labelledby="createClassLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content shadow-lg border-0" style="background-color: #1E2835; color: white; border-radius: 16px;">
+          <div class="modal-header border-0">
+            <h5 class="modal-title fw-bold text-success" id="createClassLabel">Create New Class</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
 
-        <div class="modal-body pt-0">
-          <p class="text-muted small mb-4">Set up your classroom with all the essential details to get started.</p>
+          <div class="modal-body pt-0">
+            <p class="text-muted small mb-4">Set up your classroom with all the essential details to get started.</p>
 
-          <form id="createClassForm" method="POST" enctype="multipart/form-data" action="{% url 'create_class' %}">
-            {% csrf_token %}
+            <form id="createClassForm" method="POST" enctype="multipart/form-data" action="{% url 'create_class' %}">
+              {% csrf_token %}
 
-            <!-- Upload -->
-            <div class="mb-3">
-              <label class="form-label fw-bold">Class Thumbnail</label>
-              <div class="upload-box border border-2 border-dashed rounded position-relative d-flex justify-content-center align-items-center"
-                   style="width: 100px; height: 100px; background-color: #101826; cursor: pointer;">
-                <input type="file" id="uploadIcon" name="upload_icon" accept="image/*" class="position-absolute w-100 h-100 opacity-0" style="cursor: pointer;">
-                <div class="text-center" id="uploadPlaceholder">
-                  <i class="fa fa-camera mb-2 text-muted" style="font-size: 28px;"></i>
-                  <p class="small text-muted mb-0">Upload</p>
+              <!-- Upload -->
+              <div class="mb-3">
+                <label class="form-label fw-bold">Class Thumbnail</label>
+                <div class="upload-box border border-2 border-dashed rounded position-relative d-flex justify-content-center align-items-center"
+                    style="width: 100px; height: 100px; background-color: #101826; cursor: pointer;">
+                  <input type="file" id="uploadIcon" name="upload_icon" accept="image/*" class="position-absolute w-100 h-100 opacity-0" style="cursor: pointer;">
+                  <div class="text-center" id="uploadPlaceholder">
+                    <i class="fa fa-camera mb-2 text-muted" style="font-size: 28px;"></i>
+                    <p class="small text-muted mb-0">Upload</p>
+                  </div>
+                  <img id="previewImage" src="#" alt="Preview" class="d-none position-absolute top-0 start-0 w-100 h-100 rounded" style="object-fit: cover;">
                 </div>
-                <img id="previewImage" src="#" alt="Preview" class="d-none position-absolute top-0 start-0 w-100 h-100 rounded" style="object-fit: cover;">
+                <p class="text-muted small mt-2 mb-0">Recommended: 400×400px (JPG, PNG)</p>
               </div>
-              <p class="text-muted small mt-2 mb-0">Recommended: 400×400px (JPG, PNG)</p>
-            </div>
 
-            <!-- Class Code -->
-            <div class="mb-3">
-              <label class="form-label fw-bold">Class Code</label>
-              <input type="text" name="class_code" class="form-control text-white"
-                     placeholder="Enter unique class code (e.g., APPDEV3)"
-                     style="background-color: #101826; border: 1px solid #4CD964; border-radius: 8px;">
-            </div>
+              <!-- Class Type Selection - FIXED -->
+              <div class="mb-3">
+                <label class="form-label fw-bold">Class Type <span class="text-danger">*</span></label>
+                <div class="d-flex gap-2">
+                  <!-- Programming Option -->
+                  <div class="form-check flex-fill">
+                    <input class="form-check-input" 
+                          type="radio" 
+                          name="class_type" 
+                          id="typeProgramming" 
+                          value="programming" 
+                          required>
+                    <label class="form-check-label w-100" for="typeProgramming">
+                      <div class="class-type-option p-3 rounded border border-primary text-center" 
+                          style="background-color: #101826; cursor: pointer;"
+                          data-type="programming">
+                        <i class="fa fa-code text-primary mb-2" style="font-size: 24px;"></i>
+                        <p class="mb-0 fw-bold">Programming</p>
+                        <small class="text-muted">Coding & Development</small>
+                      </div>
+                    </label>
+                  </div>
 
-            <!-- Class Title -->
-            <div class="mb-3">
-              <label class="form-label fw-bold">Class Title</label>
-              <input type="text" name="title" class="form-control text-white"
-                     placeholder="Enter class title (e.g., Application Development)"
-                     style="background-color: #101826; border: 1px solid #555; border-radius: 8px;">
-            </div>
+                  <!-- Cybersecurity Option -->
+                  <div class="form-check flex-fill">
+                    <input class="form-check-input" 
+                          type="radio" 
+                          name="class_type" 
+                          id="typeCybersecurity" 
+                          value="cybersecurity" 
+                          required>
+                    <label class="form-check-label w-100" for="typeCybersecurity">
+                      <div class="class-type-option p-3 rounded border border-danger text-center" 
+                          style="background-color: #101826; cursor: pointer;"
+                          data-type="cybersecurity">
+                        <i class="fa fa-shield-alt text-danger mb-2" style="font-size: 24px;"></i>
+                        <p class="mb-0 fw-bold">Cybersecurity</p>
+                        <small class="text-muted">Security & Protection</small>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
 
-            <!-- Description -->
-            <div class="mb-4">
-              <label class="form-label fw-bold">Class Description</label>
-              <textarea name="description" rows="3" class="form-control text-white"
-                        placeholder="Enter class description..."
-                        style="background-color: #101826; border: 1px solid #555; border-radius: 8px;"></textarea>
-            </div>
+              <!-- Class Code -->
+              <div class="mb-3">
+                <label class="form-label fw-bold">Class Code <span class="text-danger">*</span></label>
+                <input type="text" name="class_code" class="form-control text-white" required
+                      placeholder="Enter unique class code (e.g., APPDEV3)"
+                      style="background-color: #101826; border: 1px solid #4CD964; border-radius: 8px;">
+              </div>
 
-            <!-- Buttons -->
-            <div class="d-flex justify-content-end">
-              <button type="button" class="btn btn-outline-secondary btn-sm me-2 px-3" data-bs-dismiss="modal">
-                <i class="fa fa-times me-1"></i> Cancel
-              </button>
-              <button type="submit" class="btn btn-success btn-sm px-3">
-                <i class="fa fa-plus me-1"></i> Create Class
-              </button>
-            </div>
-          </form>
+              <!-- Class Title -->
+              <div class="mb-3">
+                <label class="form-label fw-bold">Class Title <span class="text-danger">*</span></label>
+                <input type="text" name="title" class="form-control text-white" required
+                      placeholder="Enter class title (e.g., Application Development)"
+                      style="background-color: #101826; border: 1px solid #555; border-radius: 8px;">
+              </div>
+
+              <!-- Description -->
+              <div class="mb-4">
+                <label class="form-label fw-bold">Class Description</label>
+                <textarea name="description" rows="3" class="form-control text-white"
+                          placeholder="Enter class description..."
+                          style="background-color: #101826; border: 1px solid #555; border-radius: 8px;"></textarea>
+              </div>
+
+              <!-- Buttons -->
+              <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-outline-secondary btn-sm me-2 px-3" data-bs-dismiss="modal">
+                  <i class="fa fa-times me-1"></i> Cancel
+                </button>
+                <button type="submit" class="btn btn-success btn-sm px-3">
+                  <i class="fa fa-plus me-1"></i> Create Class
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
 
 
 
   <!-- Thumbnail Preview Script -->
 
-  <style>
+ <style>
+.cls-card {
+  width: 100%;
+  min-height: 200px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 1rem;
+  margin: 0 auto;
+}
+
+.cls-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.cls-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.class-type-option {
+  transition: all 0.3s ease;
+}
+
+.class-type-option:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.form-check-input:checked + .form-check-label .class-type-option {
+  background-color: #1a2332 !important;
+  border-width: 2px !important;
+}
+
+.form-check-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bg-gradient-success {
+  background: linear-gradient(135deg, rgb(35, 103, 51), rgba(35, 103, 51, 0.7));
+}
+
+@media (max-width: 576px) {
   .cls-card {
-    width: 100%;
-    min-height: 200px;
-    transition: transform 0.2s, box-shadow 0.2s;
-    border-radius: 1rem;
-    margin: 0 auto;
+    min-height: 180px;
   }
-
-  .cls-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-  }
-
   .cls-img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
+    width: 70px;
+    height: 70px;
   }
-
- 
-  .bg-gradient-success {
-    background: linear-gradient(135deg, rgb(35, 103, 51), rgba(35, 103, 51, 0.7));
+  .class-type-option {
+    padding: 0.75rem !important;
   }
-
-  @media (max-width: 576px) {
-    .cls-card {
-      min-height: 180px;
-    }
-    .cls-img {
-      width: 70px;
-      height: 70px;
-    }
+  .class-type-option i {
+    font-size: 20px !important;
   }
+}
 
-  @media (min-width: 1400px) {
-    .cls-card {
-      max-width: 230px;
-    }
+@media (min-width: 1400px) {
+  .cls-card {
+    max-width: 230px;
   }
-
-  </style>
+}
+</style>
   {% include "partials/scripts.html" %}
+
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Image preview functionality
+  const uploadIcon = document.getElementById('uploadIcon');
+  const previewImage = document.getElementById('previewImage');
+  const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+
+  if (uploadIcon) {
+    uploadIcon.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          previewImage.src = event.target.result;
+          previewImage.classList.remove('d-none');
+          uploadPlaceholder.classList.add('d-none');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Class type selection visual feedback
+  const classTypeOptions = document.querySelectorAll('.class-type-option');
+  const radioInputs = document.querySelectorAll('input[name="class_type"]');
+
+  classTypeOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      const type = this.getAttribute('data-type');
+      const radioInput = document.querySelector(`input[value="${type}"]`);
+      if (radioInput) {
+        radioInput.checked = true;
+        
+        // Visual feedback
+        classTypeOptions.forEach(opt => {
+          opt.style.backgroundColor = '#101826';
+          opt.style.borderWidth = '1px';
+        });
+        this.style.backgroundColor = '#1a2332';
+        this.style.borderWidth = '2px';
+      }
+    });
+  });
+
+  // Form submission validation
+  const createClassForm = document.getElementById('createClassForm');
+  if (createClassForm) {
+    createClassForm.addEventListener('submit', function(e) {
+      const classType = document.querySelector('input[name="class_type"]:checked');
+      
+      if (!classType) {
+        e.preventDefault();
+        alert('Please select a class type (Programming or Cybersecurity)');
+        return false;
+      }
+
+      // Debug: Log the selected class type
+      console.log('Selected class type:', classType.value);
+    });
+  }
+
+  // Reset form when modal is closed
+  const createClassModal = document.getElementById('createClassModal');
+  if (createClassModal) {
+    createClassModal.addEventListener('hidden.bs.modal', function () {
+      createClassForm.reset();
+      previewImage.classList.add('d-none');
+      uploadPlaceholder.classList.remove('d-none');
+      classTypeOptions.forEach(opt => {
+        opt.style.backgroundColor = '#101826';
+        opt.style.borderWidth = '1px';
+      });
+    });
+  }
+});
+</script>
+
 </div>
 {% endblock %}

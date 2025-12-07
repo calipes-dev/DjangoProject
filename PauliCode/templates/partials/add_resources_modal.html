@@ -1,0 +1,351 @@
+<!-- ADD RESOURCES MODAL -->
+<!--add_resources_modal.html-->
+<div class="modal fade" id="addResourcesModal" tabindex="-1" aria-labelledby="addResourcesModalLabel" aria-hidden="true"> 
+  <div class="modal-dialog modal-lg modal-dialog-centered"> 
+    <div class="modal-content text-white" style="background-color: #1E2835; border-radius: 15px;"> 
+      <form method="POST" action="{% url 'add_resources' class.class_id %}" id="addResourcesForm" enctype="multipart/form-data"> 
+        {% csrf_token %} 
+        
+        <!-- HEADER --> 
+        <div class="modal-header border-0 pb-0 px-4 py-4 d-flex justify-content-between align-items-start"> 
+          <div> 
+            <h4 class="fw-bold text-white mb-1">Upload Resources</h4> 
+            <p class="text-muted small mb-0">Upload files and materials for your class.</p> 
+          </div> 
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; top: 15px; right: 15px;"></button> 
+        </div> 
+        
+        <!-- BODY --> 
+        <div class="modal-body px-4 pb-4"> 
+          
+          <!-- ROW 1: Resource Details Card -->
+          <div class="mb-3">
+            <div class="resource-details-section p-3 rounded-3" style="background-color: #0f172a; border: 1px solid #334155;">
+              <h6 class="fw-semibold text-white mb-3 d-flex align-items-center">
+                <i class="fas fa-info-circle me-2" style="color: #10b981;"></i>
+                Resource Information
+              </h6>
+              
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="small text-white-50 mb-2">Resource Title</label> 
+                  <input type="text" name="resource_title" class="form-control text-white" style="background-color: #1e293b; border: 1px solid #334155; height: 44px;" placeholder="Enter resource title" required> 
+                </div>
+
+                <div class="col-12">
+                  <label class="small text-white-50 mb-2">Description</label> 
+                  <textarea name="resource_description" rows="3" class="form-control text-white" placeholder="Enter resource description..." style="background-color: #1e293b; border: 1px solid #334155; resize: vertical; min-height: 80px;"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ROW 2: File Upload Card -->
+          <div class="mb-0">
+            <div class="file-upload-section p-3 rounded-3" style="background-color: #0f172a; border: 1px solid #334155;">
+              <h6 class="fw-semibold text-white mb-3 d-flex align-items-center">
+                <i class="fas fa-upload me-2" style="color: #10b981;"></i>
+                Upload Files (Multiple files allowed)
+              </h6>
+              
+              <div class="upload-area p-4 rounded-3 text-center" style="background-color: #1e293b; border: 2px dashed #334155; cursor: pointer; transition: all 0.3s ease;" id="resourcesUploadArea">
+                <input type="file" name="resource_files" id="resourcesFileInput" class="d-none" accept=".pdf,.png,.jpg,.jpeg,.docx,.pptx,.ppt,.zip,.txt,.mp4,.mp3,.doc,.xls,.xlsx" multiple>
+                <i class="fas fa-cloud-upload-alt mb-2" style="font-size: 2.5rem; color: #64748b;"></i>
+                <p class="text-white-50 mb-1">Click to upload or drag and drop</p>
+                <small class="text-muted">All file types allowed (Max 50MB per file)</small>
+                
+                <!-- Files Preview Container -->
+                <div id="filesPreviewContainer" class="mt-3" style="display: none;">
+                  <div class="files-list" id="filesList">
+                    <!-- Files will be added here dynamically -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Upload Progress (hidden by default) -->
+              <div id="uploadProgress" class="mt-3" style="display: none;">
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-success" id="uploadProgressBar" role="progressbar" style="width: 0%"></div>
+                </div>
+                <small class="text-white-50 mt-1 d-block" id="uploadProgressText">Uploading...</small>
+              </div>
+            </div>
+          </div>
+
+        </div> 
+        
+        <!-- FOOTER --> 
+        <div class="modal-footer border-0 px-4 py-3" style="background-color: #0f172a; border-radius: 0 0 15px 15px;"> 
+          <button type="button" class="btn btn-outline-light px-4 fw-semibold" data-bs-dismiss="modal" style="height: 44px;">
+            Cancel
+          </button> 
+          <button type="submit" class="btn btn-success fw-bold px-5" style="height: 44px; background-color: #10b981;">
+            <i class="fas fa-check me-2"></i>Upload Resources
+          </button> 
+        </div> 
+      </form> 
+    </div> 
+  </div> 
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // File Upload Handlers
+  const uploadArea = document.getElementById('resourcesUploadArea');
+  const fileInput = document.getElementById('resourcesFileInput');
+  const filesPreviewContainer = document.getElementById('filesPreviewContainer');
+  const filesList = document.getElementById('filesList');
+  const uploadProgress = document.getElementById('uploadProgress');
+  const uploadProgressBar = document.getElementById('uploadProgressBar');
+  const uploadProgressText = document.getElementById('uploadProgressText');
+
+  let selectedFiles = [];
+
+  // Click to upload
+  uploadArea.addEventListener('click', function(e) {
+    if (!e.target.closest('.file-item')) {
+      fileInput.click();
+    }
+  });
+
+  // File selected
+  fileInput.addEventListener('change', function(e) {
+    handleFiles(Array.from(e.target.files));
+  });
+
+  // Drag and drop
+  uploadArea.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    uploadArea.style.borderColor = '#10b981';
+    uploadArea.style.backgroundColor = '#0f172a';
+  });
+
+  uploadArea.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    uploadArea.style.borderColor = '#334155';
+    uploadArea.style.backgroundColor = '#1e293b';
+  });
+
+  uploadArea.addEventListener('drop', function(e) {
+    e.preventDefault();
+    uploadArea.style.borderColor = '#334155';
+    handleFiles(Array.from(e.dataTransfer.files));
+  });
+
+  function handleFiles(files) {
+    // Validate files
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    const validFiles = [];
+    const errors = [];
+
+    files.forEach(file => {
+      if (file.size > maxSize) {
+        errors.push(`${file.name} exceeds 50MB limit`);
+      } else {
+        validFiles.push(file);
+      }
+    });
+
+    if (errors.length > 0) {
+      alert('File upload errors:\n' + errors.join('\n'));
+    }
+
+    if (validFiles.length > 0) {
+      selectedFiles = validFiles;
+      displayFilesPreview();
+    }
+  }
+
+  function displayFilesPreview() {
+    filesList.innerHTML = '';
+    
+    if (selectedFiles.length === 0) {
+      filesPreviewContainer.style.display = 'none';
+      return;
+    }
+
+    filesPreviewContainer.style.display = 'block';
+
+    selectedFiles.forEach((file, index) => {
+      const fileItem = createFilePreviewItem(file, index);
+      filesList.appendChild(fileItem);
+    });
+  }
+
+  function createFilePreviewItem(file, index) {
+    const fileItem = document.createElement('div');
+    fileItem.className = 'file-item d-flex align-items-center justify-content-between gap-2 p-2 rounded-2 mb-2';
+    fileItem.style.backgroundColor = '#0f172a';
+
+    // Get file icon based on extension
+    const ext = file.name.split('.').pop().toLowerCase();
+    const iconMap = {
+      'pdf': 'fa-file-pdf text-danger',
+      'png': 'fa-file-image text-info',
+      'jpg': 'fa-file-image text-info',
+      'jpeg': 'fa-file-image text-info',
+      'docx': 'fa-file-word text-primary',
+      'doc': 'fa-file-word text-primary',
+      'pptx': 'fa-file-powerpoint text-warning',
+      'ppt': 'fa-file-powerpoint text-warning',
+      'zip': 'fa-file-archive text-secondary',
+      'txt': 'fa-file-alt text-muted',
+      'mp4': 'fa-file-video text-danger',
+      'mp3': 'fa-file-audio text-info',
+      'xls': 'fa-file-excel text-success',
+      'xlsx': 'fa-file-excel text-success'
+    };
+
+    const iconClass = iconMap[ext] || 'fa-file text-success';
+
+    fileItem.innerHTML = `
+      <div class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden">
+        <i class="fas ${iconClass}"></i>
+        <div class="flex-grow-1 overflow-hidden">
+          <div class="text-white small text-truncate" title="${file.name}">${file.name}</div>
+          <div class="text-white-50 small">${formatFileSize(file.size)}</div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-danger remove-file" data-index="${index}" title="Remove file">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+
+    return fileItem;
+  }
+
+  function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  // Remove file handler
+  filesList.addEventListener('click', function(e) {
+    if (e.target.closest('.remove-file')) {
+      e.stopPropagation();
+      const index = parseInt(e.target.closest('.remove-file').dataset.index);
+      selectedFiles.splice(index, 1);
+      displayFilesPreview();
+      
+      // Update the file input
+      const dataTransfer = new DataTransfer();
+      selectedFiles.forEach(file => dataTransfer.items.add(file));
+      fileInput.files = dataTransfer.files;
+    }
+  });
+
+  // Form submission with progress
+  document.getElementById('addResourcesForm').addEventListener('submit', function(e) {
+    if (selectedFiles.length === 0) {
+      e.preventDefault();
+      alert('Please select at least one file to upload.');
+      return;
+    }
+
+    // Show progress bar
+    uploadProgress.style.display = 'block';
+    
+    // Simulate upload progress (you can replace this with actual upload progress)
+    let progress = 0;
+    const interval = setInterval(function() {
+      progress += Math.random() * 30;
+      if (progress > 90) progress = 90;
+      
+      uploadProgressBar.style.width = progress + '%';
+      uploadProgressText.textContent = `Uploading... ${Math.round(progress)}%`;
+      
+      if (progress >= 90) {
+        clearInterval(interval);
+      }
+    }, 200);
+  });
+
+  // Reset when modal is closed
+  document.getElementById('addResourcesModal').addEventListener('hidden.bs.modal', function() {
+    document.getElementById('addResourcesForm').reset();
+    selectedFiles = [];
+    displayFilesPreview();
+    uploadProgress.style.display = 'none';
+    uploadProgressBar.style.width = '0%';
+  });
+});
+</script>
+
+<style>
+.resource-details-section,
+.file-upload-section {
+  transition: all 0.2s ease;
+}
+
+/* File Upload Styling */
+#resourcesUploadArea:hover {
+  border-color: #10b981 !important;
+  background-color: #0f172a !important;
+}
+
+#resourcesUploadArea.dragging {
+  border-color: #10b981 !important;
+  background-color: #0f172a !important;
+}
+
+.file-item {
+  transition: all 0.2s ease;
+}
+
+.file-item:hover {
+  background-color: #1e293b !important;
+}
+
+.remove-file:hover {
+  background-color: #ef4444 !important;
+  border-color: #ef4444 !important;
+}
+
+/* Form styling */
+.form-control:focus,
+.form-select:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+  background-color: #1e293b !important;
+}
+
+/* Progress bar styling */
+.progress {
+  background-color: #0f172a;
+}
+
+.progress-bar {
+  transition: width 0.3s ease;
+}
+
+/* Scrollbar styling */
+.files-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.files-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.files-list::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 3px;
+}
+
+.files-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .modal-body {
+    padding: 1.5rem !important;
+  }
+  
+  .resource-details-section,
+  .file-upload-section {
+    margin-bottom: 1rem;
+  }
+}
+</style>

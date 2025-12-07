@@ -1,48 +1,72 @@
+# Core Django imports
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import User, Class, Problem, Enrollment, ProblemTestCase, Submission, ChatHistory
-from django.contrib import messages
-from datetime import datetime, timedelta
-from django.core.cache import cache
 from django.http import JsonResponse, StreamingHttpResponse, HttpResponse
-import json, requests, subprocess, tempfile, os, shutil
-from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
+from django.contrib import messages
+from django.core.cache import cache
 from django.urls import reverse
-from django.db.models import Q, Sum, Max, F, Exists, OuterRef
-from django.core.serializers.json import DjangoJSONEncoder
+from django.utils import timezone
 from django.utils.html import escape
-from django.db import IntegrityError
-from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.core.serializers.json import DjangoJSONEncoder
+from django.utils.safestring import mark_safe
+
+# Authentication & Security
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.hashers import make_password, check_password
+from django.views.decorators.csrf import csrf_exempt
+
+# Database
+from django.db import IntegrityError
+from django.db.models import Q, Sum, Max, F, Exists, OuterRef
+
+# Models
+from .models import User, Class, Problem, Enrollment, ProblemTestCase, Submission, ChatHistory, ProblemResource
+
+# Python standard library
+from datetime import datetime, timedelta
+import json
+import requests
+import subprocess
+import tempfile
+import os
+import shutil
 import logging
+import re
+import time
+from collections import defaultdict
+
+# Third-party
 from google import genai
-import re, time
 
 
 
 # ---------------- LOGIN & DASHBOARD ---------------- #
 
 def index(request):
-    school_id = request.session.get('school_id')
-    if school_id:
-        user_type = request.session.get('user_type')
-        if user_type == 'Teacher':
+    """Login page - redirects if already logged in"""
+    if request.user.is_authenticated:
+        if request.user.user_type == 'Teacher':
             return redirect('dashboard')
         else:
             return redirect('StudentDashboard')
     return render(request, 'User/index.html', {'currentpage': 'index'})
 
 
-
 def login_view(request):
+    """Handle user login with Django's authentication system"""
     if request.method == 'POST':
         school_id = request.POST.get('school_id', '').strip()
         password = request.POST.get('password', '').strip()
 
-        try:
-            user = User.objects.get(school_id=school_id, password=password)
+        # Use Django's authenticate with custom backend
+        user = authenticate(request, school_id=school_id, password=password)
+        
+        if user is not None:
+            # Use Django's login function
+            login(request, user)
             
-            # Store user data in session
+            # Store additional session data for convenience
             request.session['school_id'] = user.school_id
             request.session['first_name'] = user.first_name
             request.session['last_name'] = user.last_name
@@ -51,31 +75,30 @@ def login_view(request):
 
             messages.success(request, f"Welcome back, {user.first_name}!")
 
-            # Redirect based on user type
             if user.user_type == 'Teacher':
-                return redirect('dashboard')  # make sure 'dashboard' exists in urls.py
+                return redirect('dashboard')
             else:
-                return redirect('StudentDashboard')  
-
-        except User.DoesNotExist:
+                return redirect('StudentDashboard')
+        else:
             messages.error(request, "Invalid School ID or Password.")
             return redirect('index')
 
-    # Render login page
     return render(request, 'User/index.html')
 
 
+
+
 #-------------TEACHER DASHBOARD----------------------#
+@login_required(login_url='index')
 def dashboard(request):
-    school_id = request.session.get('school_id')
+    """Teacher dashboard with classes and leaderboard"""
+    user = request.user
+    
+    # Permission check
+    if user.user_type != 'Teacher':
+        messages.error(request, "Access denied. Teachers only.")
+        return redirect('StudentDashboard')
 
-    if not school_id:
-        messages.warning(request, "Please log in first.")
-        return redirect('index')
-
-    user = User.objects.filter(school_id=school_id).first()
-
-    # ✅ Annotate each class with whether it has any submissions (available scores)
     classes = (
         Class.objects
         .filter(teacher=user)
@@ -84,10 +107,9 @@ def dashboard(request):
                 Submission.objects.filter(problem_id__class_id=OuterRef('pk'))
             )
         )
-        .order_by('-has_scores', '-class_id')  # ✅ Classes with scores first
+        .order_by('-has_scores', '-class_id')
     )
 
-    # ✅ Find the top scorer for each class created by this teacher
     top_scorers = []
     for c in classes:
         top_submission = (
@@ -107,7 +129,6 @@ def dashboard(request):
             'top_scorer': top_submission
         })
 
-    # ✅ Leaderboard: All students ranked by total score (across all teacher’s classes)
     leaderboard = (
         Submission.objects
         .filter(problem_id__class_id__teacher=user)
@@ -116,38 +137,33 @@ def dashboard(request):
         .order_by('-total_score')[:10]
     )
 
-    # ✅ Compute rank for all students under this teacher (based on total score)
-    all_scores = (
-        Submission.objects
-        .filter(problem_id__class_id__teacher=user)
-        .values('student_id')
-        .annotate(total_score=Sum('score'))
-        .order_by('-total_score')
-    )
-
-    rank = None  # Teachers don’t have rank, but structure preserved for consistency
-
     return render(request, 'User/dashboard.html', {
         'currentpage': 'dashboard',
         'user': user,
         'classes': classes,
         'leaderboard': leaderboard,
-        'rank': rank,
+        'rank': None,
         'top_scorers': top_scorers,
+        'sidebar': 'teacher'
     })
+
+
 
 
     
 
 def logout_view(request):
-    request.session.flush()  # Clears all session data
+    """Handle user logout"""
+    logout(request)  # Django's logout clears the session
     messages.success(request, "You have been logged out successfully.")
     return redirect('index')
 
 
 # ---------------- SIGNUP ---------------- #
 
+
 def signup(request):
+    """Handle user registration"""
     if request.method == 'POST':
         first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
@@ -155,7 +171,7 @@ def signup(request):
         user_type = request.POST.get('user_type', '').strip()
         password = request.POST.get('password', '').strip()
         confirm_password = request.POST.get('confirm_password', '').strip()
-        user_image = request.FILES.get('user_image')  # handle uploaded file
+        user_image = request.FILES.get('user_image')
 
         context = {
             'first_name': first_name,
@@ -164,7 +180,7 @@ def signup(request):
             'user_type': user_type,
         }
 
-        # ✅ Validate inputs
+        # Validation
         if not all([first_name, last_name, school_id, user_type, password, confirm_password]):
             messages.error(request, "Please fill in all fields.")
             return render(request, 'User/sign-up.html', context)
@@ -173,22 +189,30 @@ def signup(request):
             messages.error(request, "Passwords do not match.")
             return render(request, 'User/sign-up.html', context)
 
+        if len(password) < 8:
+            messages.error(request, "Password must be at least 8 characters long.")
+            return render(request, 'User/sign-up.html', context)
+
         if User.objects.filter(school_id=school_id).exists():
             messages.error(request, "School ID already exists.")
             return render(request, 'User/sign-up.html', context)
 
-        # ✅ Create new user
-        user = User.objects.create(
+        # Create user using the custom manager (automatically hashes password)
+        user = User.objects.create_user(
             school_id=school_id,
             first_name=first_name,
             last_name=last_name,
-            password=password,
+            password=password,  # This will be hashed by set_password()
             user_type=user_type.capitalize(),
-            user_image=user_image if user_image else 'profile_pic/default.png'
         )
+        
+        # Add profile image if provided
+        if user_image:
+            user.user_image = user_image
+            user.save()
 
         messages.success(request, "Account created successfully! Please log in.")
-        return redirect('index')  # ✅ Redirect to index.html (login page)
+        return redirect('index')
 
     return render(request, 'User/sign-up.html', {'currentpage': 'sign-up'})
 
@@ -196,35 +220,55 @@ def signup(request):
 
 # ---------------- CLASS MANAGEMENT ---------------- #
 
+@login_required(login_url='index')
 def create_class(request):
+    """Create a new class with class_type support"""
+    school_id = request.session.get('school_id')
+    teacher = get_object_or_404(User, school_id=school_id)
+    
+    # Permission check
+    if teacher.user_type != 'Teacher':
+        messages.error(request, "Only teachers can create classes.")
+        return redirect('StudentDashboard')
+    
     if request.method == "POST":
-        class_code = request.POST.get("class_code")
-        title = request.POST.get("title")
-        description = request.POST.get("description")
+        class_code = request.POST.get("class_code", "").strip()
+        title = request.POST.get("title", "").strip()
+        description = request.POST.get("description", "").strip()
         upload_icon = request.FILES.get("upload_icon")
+        
+        # ✅ GET THE CLASS TYPE FROM FORM
+        class_type = request.POST.get("class_type", "programming").strip()
 
-        teacher = User.objects.get(school_id=request.session.get("school_id"))
+        # Validation
+        if not all([class_code, title]):
+            messages.error(request, "Class code and title are required.")
+            return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
-        # Prevent duplicate class codes
+        # Validate class_type
+        if class_type not in ['programming', 'cybersecurity']:
+            messages.error(request, "Invalid class type selected.")
+            return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
+
+        # Check for duplicate using ORM
         if Class.objects.filter(class_code=class_code).exists():
             messages.error(request, "Class code already exists.")
-            # Redirect back to the same page (MyClasses or dashboard)
-            previous_page = request.META.get('HTTP_REFERER', '')
-            if 'MyClasses' in previous_page:
-                return redirect('MyClasses')
-            return redirect('dashboard')
+            return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
-        # Create the class
+        # ✅ CREATE THE CLASS WITH class_type
         Class.objects.create(
             class_code=class_code,
             title=title,
             description=description,
             upload_icon=upload_icon,
-            teacher=teacher
+            teacher=teacher,
+            class_type=class_type  # ✅ THIS WAS MISSING!
         )
-        messages.success(request, "Class created successfully!")
+        
+        # Success message with class type
+        class_type_display = "Programming" if class_type == "programming" else "Cybersecurity"
+        messages.success(request, f"{class_type_display} class '{title}' created successfully!")
 
-        # Redirect to the same page where the request came from
         previous_page = request.META.get('HTTP_REFERER', '')
         if 'MyClasses' in previous_page:
             return redirect('MyClasses')
@@ -245,23 +289,26 @@ def MyClasses(request):
         'currentpage': 'MyClasses',
         'user': teacher,
         'classes': classes,
+        'sidebar': 'teacher',
     })
 
 
 
+@login_required(login_url='index')
 def delete_class(request, class_id):
-    """Deletes a class created by the teacher and redirects to the appropriate page."""
     school_id = request.session.get('school_id')
-    if not school_id:
-        messages.warning(request, "Please log in first.")
-        return redirect('index')
-
-    # Get class belonging to the teacher
-    class_obj = get_object_or_404(Class, pk=class_id, teacher__school_id=school_id)
+    teacher = get_object_or_404(User, school_id=school_id)
+    
+    # Use ORM with permission check
+    class_obj = get_object_or_404(Class, pk=class_id, teacher=teacher)
+    
+    if class_obj.teacher != teacher:
+        messages.error(request, "You don't have permission to delete this class.")
+        return redirect('MyClasses')
+    
     class_obj.delete()
     messages.success(request, 'Class deleted successfully!')
 
-    # Redirect based on where the request came from
     referer = request.META.get('HTTP_REFERER', '')
     if 'report' in referer.lower():
         return redirect('report')
@@ -271,27 +318,65 @@ def delete_class(request, class_id):
 
 # ---------------- CLASS DETAILS PAGE ---------------- #
 
+@login_required(login_url='index')
 def classDetails(request, class_id):
-    # Check if user is logged in
+    """Teacher class details with resources - handles both programming and cybersecurity"""
     school_id = request.session.get('school_id')
-    if not school_id:
-        messages.warning(request, "Please log in first.")
-        return redirect('index')
-
-    # Get teacher info
     teacher = get_object_or_404(User, school_id=school_id)
+    
+    if teacher.user_type != 'Teacher':
+        messages.error(request, "Access denied.")
+        return redirect('StudentDashboard')
 
-    # Get the class object
     class_obj = get_object_or_404(Class, class_id=class_id, teacher=teacher)
+    
+    # Exclude "Class Resources" problem from problems list
+    problems = Problem.objects.filter(
+        class_id=class_obj
+    ).exclude(
+        problem_title="Class Resources" 
+    ).order_by('-problem_id')
 
-    # Base query for problems
-    problems = Problem.objects.filter(class_id=class_obj).order_by('-problem_id')
+    # Get all resources for this class and group by title
+    from .models import ProblemResource
+    
+    all_resources = ProblemResource.objects.filter(
+        problem__class_id=class_obj
+    ).select_related('problem').order_by('-uploaded_at')
+    
+    # Group resources by title
+    grouped_resources = defaultdict(list)
+    for resource in all_resources:
+        grouped_resources[resource.title].append(resource)
+    
+    # Convert to list of dictionaries for template with JSON formatting
+    resources_list = []
+    for title, resource_list in grouped_resources.items():
+        # Prepare files data as JSON-serializable dictionaries
+        files_data = []
+        for resource in resource_list:
+            files_data.append({
+                'file_url': resource.file.url,
+                'original_filename': resource.original_filename,
+                'file_size': resource.file_size,
+                'uploaded_at': resource.uploaded_at.strftime('%Y-%m-%d %H:%M'),
+                'file_extension': resource.file_extension,
+                'resource_id': resource.resource_id
+            })
+        
+        resources_list.append({
+            'title': title,
+            'description': resource_list[0].description,
+            'files': mark_safe(json.dumps(files_data)),  # ✅ For JavaScript
+            'file_count': len(resource_list),            # ✅ For Django template
+            'uploaded_at': resource_list[0].uploaded_at,
+            'resource_ids': [r.resource_id for r in resource_list]
+        })
 
-    # ---- SEARCH AND FILTER FOR PROBLEMS ----
+    # Search and filter handling
     query = request.GET.get('q', '').strip()
     filter_type = request.GET.get('filter', '').strip()
 
-    # Toggle filter (Assignment / Quiz)
     last_filter = request.session.get('last_filter', '')
     if filter_type == last_filter:
         filter_type = ''
@@ -299,52 +384,52 @@ def classDetails(request, class_id):
     else:
         request.session['last_filter'] = filter_type
 
-    # Apply search/filter for problems
     if query:
         problems = problems.filter(problem_title__icontains=query)
     if filter_type == 'Assignment':
         problems = problems.filter(problem_type='Assignment')
     elif filter_type == 'Quiz':
         problems = problems.filter(problem_type='Quiz')
-    if not query and not filter_type:
-        problems = Problem.objects.filter(class_id=class_obj).order_by('-problem_id')
 
-    # ---- STUDENT SEARCH ----
+    # Student search and filtering
     student_query = request.GET.get('student_search', '').strip()
+    students = Enrollment.objects.filter(class_id=class_obj).select_related('student_id').order_by('student_id__first_name')
 
-    students = (
-        Enrollment.objects.filter(class_id=class_obj)
-        .select_related('student_id')
-        .order_by('student_id__first_name')
-    )
-
-    # Filter students if search term entered
     if student_query:
         students = students.filter(
-            student_id__first_name__icontains=student_query
-        ) | students.filter(
-            student_id__last_name__icontains=student_query
+            Q(student_id__first_name__icontains=student_query) |
+            Q(student_id__last_name__icontains=student_query)
         )
 
-    return render(request, 'User/classDetails.html', {
+    context = {
         'currentpage': 'MyClasses',
         'nav': 'classDetails',
         'user': teacher,
         'class': class_obj,
         'problems': problems,
         'students': students,
+        'resources': resources_list,
         'query': query,
         'filter_type': filter_type,
         'student_query': student_query,
-    })
+        'sidebar': 'teacher'
+    }
+
+    # ✅ Route to appropriate template based on class_type
+    if hasattr(class_obj, 'class_type') and class_obj.class_type == 'cybersecurity':
+        return render(request, 'User/cybersecurity_class_details.html', context)
+    else:
+        return render(request, 'User/classDetails.html', context)
+
 
 
 
 
     # ---- ADD PROBLEM------------
 
+@login_required(login_url='index')
 def add_problem(request, class_id):
-    # Ensure user is logged in
+    """Add problem with optional file resource"""
     school_id = request.session.get('school_id')
     if not school_id:
         messages.warning(request, "Please log in first.")
@@ -360,18 +445,17 @@ def add_problem(request, class_id):
         total_score = request.POST.get("total_score", "").strip()
         time_limit = request.POST.get("time_limit", "").strip()
         due_date = request.POST.get("due_date", "").strip()
+        
+        # Get uploaded file
+        resource_file = request.FILES.get("resource_file")
 
         # Test cases
-        inputs = [
-            request.POST.get(f"input{i}", "").strip() for i in range(1, 4)
-        ]
-        outputs = [
-            request.POST.get(f"output{i}", "").strip() for i in range(1, 4)
-        ]
+        inputs = [request.POST.get(f"input{i}", "").strip() for i in range(1, 4)]
+        outputs = [request.POST.get(f"output{i}", "").strip() for i in range(1, 4)]
 
         # Validation
         if not all([title, description, problem_type, total_score, time_limit, due_date]):
-            messages.error(request, "Please fill in all fields.")
+            messages.error(request, "Please fill in all required fields.")
             return redirect('classDetails', class_id=class_id)
 
         try:
@@ -381,6 +465,20 @@ def add_problem(request, class_id):
         except ValueError:
             messages.error(request, "Invalid input values.")
             return redirect('classDetails', class_id=class_id)
+
+        # Validate file if provided
+        if resource_file:
+            # Check file size (10MB max)
+            if resource_file.size > 10 * 1024 * 1024:
+                messages.error(request, "File size exceeds 10MB limit.")
+                return redirect('classDetails', class_id=class_id)
+            
+            # Check file extension
+            allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg', 'docx', 'pptx', 'ppt', 'zip', 'txt']
+            file_ext = resource_file.name.split('.')[-1].lower()
+            if file_ext not in allowed_extensions:
+                messages.error(request, "Invalid file type. Allowed: PDF, Images, DOCX, PPTX, ZIP, TXT")
+                return redirect('classDetails', class_id=class_id)
 
         # Create Problem
         problem = Problem.objects.create(
@@ -403,18 +501,197 @@ def add_problem(request, class_id):
                     expected_output=outputs[i]
                 )
 
-        messages.success(request, f"Problem '{title}' created successfully!")
+        # Add resource file if provided
+        if resource_file:
+            from .models import ProblemResource  # Import here to avoid circular import
+            ProblemResource.objects.create(
+                problem=problem,
+                file=resource_file
+            )
+            messages.success(request, f"Problem '{title}' created with resource file!")
+        else:
+            messages.success(request, f"Problem '{title}' created successfully!")
+
         return redirect('classDetails', class_id=class_id)
 
     return redirect('classDetails', class_id=class_id)
 
+#delete resources
+@login_required(login_url='index')
+@csrf_exempt
+def delete_resource(request, resource_id):
+    """Delete a problem resource"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+    
+    school_id = request.session.get('school_id')
+    teacher = get_object_or_404(User, school_id=school_id)
+    
+    from .models import ProblemResource
+    resource = get_object_or_404(ProblemResource, resource_id=resource_id)
+    
+    # Check if teacher owns the class
+    if resource.problem.class_id.teacher != teacher:
+        return JsonResponse({'error': 'Permission denied'}, status=403)
+    
+    try:
+        resource.delete()
+        return JsonResponse({'success': True, 'message': 'Resource deleted successfully'})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+#add resources
+@login_required(login_url='index')
+def add_resources(request, class_id):
+    """Add resources to a class with multiple file upload support"""
+    school_id = request.session.get('school_id')
+    if not school_id:
+        messages.warning(request, "Please log in first.")
+        return redirect('index')
+
+    teacher = get_object_or_404(User, school_id=school_id)
+    class_obj = get_object_or_404(Class, class_id=class_id, teacher=teacher)
+
+    if request.method == "POST":
+        title = request.POST.get("resource_title", "").strip()
+        description = request.POST.get("resource_description", "").strip()
+        files = request.FILES.getlist("resource_files")
+
+        # Validation
+        if not title:
+            messages.error(request, "Please provide a resource title.")
+            return redirect('classDetails', class_id=class_id)
+
+        if not files:
+            messages.error(request, "Please select at least one file.")
+            return redirect('classDetails', class_id=class_id)
+
+        # Validate each file
+        max_size = 50 * 1024 * 1024  # 50MB
+        errors = []
+        valid_files = []
+
+        for file in files:
+            if file.size > max_size:
+                errors.append(f"{file.name} exceeds 50MB limit")
+            else:
+                valid_files.append(file)
+
+        if errors:
+            messages.error(request, "File validation errors:\n" + "\n".join(errors))
+
+        if not valid_files:
+            messages.error(request, "No valid files to upload.")
+            return redirect('classDetails', class_id=class_id)
+
+        # Find or create a resources problem for this class
+        resources_problem, created = Problem.objects.get_or_create(
+            class_id=class_obj,
+            teacher_id=teacher,
+            problem_title=f"Class Resources",
+            defaults={
+                'problem_description': f"Resources for {class_obj.title}",
+                'problem_type': 'Assignment',
+                'total_score': 0,
+                'due_date': timezone.now() + timedelta(days=365),
+                'time_limit': None,
+            }
+        )
+
+        # Create resources for each file with the same title (grouped)
+        created_count = 0
+        for file in valid_files:
+            try:
+                ProblemResource.objects.create(
+                    problem=resources_problem,
+                    title=title,  # Same title for all files in this upload
+                    description=description,
+                    file=file
+                )
+                created_count += 1
+            except Exception as e:
+                messages.error(request, f"Error uploading {file.name}: {str(e)}")
+
+        if created_count > 0:
+            messages.success(request, f"Successfully uploaded {created_count} resource(s)!")
+        else:
+            messages.error(request, "No resources were uploaded.")
+
+        return redirect('classDetails', class_id=class_id)
+
+    return redirect('classDetails', class_id=class_id)
+
+#delete resources
+@login_required(login_url='index')
+def delete_resource(request, resource_id):
+    """Delete a resource"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+    
+    school_id = request.session.get('school_id')
+    teacher = get_object_or_404(User, school_id=school_id)
+    
+    resource = get_object_or_404(ProblemResource, resource_id=resource_id)
+    
+    # Check if teacher owns the class
+    if resource.problem.class_id.teacher != teacher:
+        return JsonResponse({'error': 'Permission denied'}, status=403)
+    
+    try:
+        resource.delete()
+        return JsonResponse({'success': True, 'message': 'Resource deleted successfully'})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+def get_resource_details(request, resource_id):
+    """Get resource details for the modal"""
+    resource = get_object_or_404(ProblemResource, resource_id=resource_id)
+    
+    # Check permissions
+    school_id = request.session.get('school_id')
+    if not school_id:
+        return JsonResponse({'error': 'Please log in first'}, status=401)
+    
+    user = get_object_or_404(User, school_id=school_id)
+    
+    # Check if user has access to this resource
+    if user.user_type == 'Teacher':
+        if resource.problem.class_id.teacher != user:
+            return JsonResponse({'error': 'Permission denied'}, status=403)
+    else:  # Student
+        if not Enrollment.objects.filter(
+            student_id=user, 
+            class_id=resource.problem.class_id
+        ).exists():
+            return JsonResponse({'error': 'Permission denied'}, status=403)
+    
+    data = {
+        'resource_id': resource.resource_id,
+        'title': resource.title,
+        'description': resource.description,
+        'file_url': resource.file.url,
+        'original_filename': resource.original_filename,
+        'file_size': resource.file_size,
+        'file_extension': resource.file_extension,
+        'uploaded_at': resource.uploaded_at.strftime('%Y-%m-%d %H:%M'),
+        'problem_title': resource.problem.problem_title,
+        'class_title': resource.problem.class_id.title
+    }
+    
+    return JsonResponse(data)
 #--------------------------Problem Details---------------------------------#
 
                 #Works for both Students and Teachers
 
 def get_problem_details(request, problem_id):
-    """Return problem details as JSON (used in both Teacher and Student modals)."""
+    """Return problem details as JSON (handles both programming and cybersecurity)"""
     problem = get_object_or_404(Problem, pk=problem_id)
+    
+    # Check if it's a cybersecurity challenge
+    if problem.class_id.class_type == 'cybersecurity':
+        return get_cybersecurity_problem_details(request, problem_id)
+    
+    # Original code for programming challenges
     test_cases = ProblemTestCase.objects.filter(problem_id=problem)
 
     # Default value
@@ -436,7 +713,7 @@ def get_problem_details(request, problem_id):
         "score": problem.total_score,
         "time_limit": problem.time_limit,
         "due_date": problem.due_date.strftime("%Y-%m-%d %H:%M"),
-        "answered": answered,  # ✅ Student-specific info only if applicable
+        "answered": answered,
         "test_cases": [
             {"input": tc.input_data, "output": tc.expected_output} for tc in test_cases
         ]
@@ -508,7 +785,7 @@ def report(request):
     if user.user_type.lower() == 'teacher':
         classes = Class.objects.filter(teacher=user).order_by('class_id')
     else:
-        classes = Class.objects.filter(enrollment__student_id=user).distinct().order_by('class_id')
+        classes = Class.objects.filter(enrollments__student_id=user).distinct().order_by('class_id')
 
     # ✅ Apply search filtering to classes
     if search_query:
@@ -527,7 +804,7 @@ def report(request):
     # ✅ Students enrolled in these classes
     students = User.objects.filter(
         user_type__iexact='student',
-        enrollment__class_id__in=classes
+        enrollments__class_id__in=classes
     ).distinct().order_by('school_id')
 
     # ✅ Summary counts
@@ -546,22 +823,29 @@ def report(request):
         'pending_reviews': pending_reviews,
         'currentpage': 'report',
         'search_query': search_query,
+        'sidebar': 'teacher'
     }
     return render(request, 'User/report.html', context)
 
 
 # ---------- Unenroll STUDENT ----------
+@login_required(login_url='index')
 def delete_student(request, school_id, class_id):
+    current_user_id = request.session.get('school_id')
+    current_user = get_object_or_404(User, school_id=current_user_id)
+    
+    # Permission check - only teachers can unenroll students
+    if current_user.user_type != 'Teacher':
+        messages.error(request, "Only teachers can unenroll students.")
+        return redirect('StudentDashboard')
+    
     student = get_object_or_404(User, school_id=school_id, user_type__iexact='student')
-    class_obj = get_object_or_404(Class, class_id=class_id)
+    class_obj = get_object_or_404(Class, class_id=class_id, teacher=current_user)
 
-    # Delete only the enrollment, not the user
-    enrollment = Enrollment.objects.filter(student_id=student, class_id=class_obj).first()
-    if enrollment:
-        enrollment.delete()
-        messages.success(request, f'{student.first_name} has been unenrolled from {class_obj.title}.')
-    else:
-        messages.warning(request, 'Student was not enrolled in this class.')
+    # Use ORM get_or_404
+    enrollments = get_object_or_404(Enrollment, student_id=student, class_id=class_obj)
+    enrollments.delete()
+    messages.success(request, f'{student.first_name} has been unenrolled from {class_obj.title}.')
 
     return redirect('report')
 
@@ -638,23 +922,23 @@ def view_submission_code(request, submission_id):
 #---------------Student Part-------------------------#
 
 #---------------Student Dashboard--------------------#
+@login_required(login_url='index')
 def StudentDashboard(request):
-    school_id = request.session.get('school_id')
+    """Student dashboard"""
+    student = request.user
+    
+    # Permission check
+    if student.user_type != 'Student':
+        messages.error(request, "Access denied. Students only.")
+        return redirect('dashboard')
 
-    if not school_id:
-        messages.warning(request, "Please log in first.")
-        return redirect('index')
-
-    student = User.objects.filter(school_id=school_id).first()
-
-    # Get all classes the student is enrolled in
     enrolled_classes = (
-        Class.objects.filter(enrollment__student_id=student)
+        Class.objects
+        .filter(enrollments__student_id=student)
         .order_by('-class_id')
         .distinct()
     )
 
-    # ✅ Find the top scorer for each class
     top_scorers = []
     for c in enrolled_classes:
         top_submission = (
@@ -674,7 +958,6 @@ def StudentDashboard(request):
             'top_scorer': top_submission
         })
 
-    # ✅ Leaderboard: All students ranked by total score (overall)
     leaderboard = (
         Submission.objects
         .values('student_id__first_name', 'student_id__last_name', 'student_id__school_id')
@@ -682,14 +965,14 @@ def StudentDashboard(request):
         .order_by('-total_score')[:10]
     )
 
-    # ✅ Compute student's own rank
+    # Calculate rank
     all_scores = (
         Submission.objects
-        .values('student_id')
+        .values('student_id__school_id')
         .annotate(total_score=Sum('score'))
         .order_by('-total_score')
     )
-    rank = next((i + 1 for i, s in enumerate(all_scores) if s['student_id'] == student.school_id), None)
+    rank = next((i + 1 for i, s in enumerate(all_scores) if s['student_id__school_id'] == student.school_id), None)
 
     return render(request, 'Students/StudentDashboard.html', {
         'currentpage': 'StudentDashboard',
@@ -713,7 +996,7 @@ def StudentClass(request):
 
     # Get classes the student is enrolled in
     enrolled_classes = Class.objects.filter(
-        enrollment__student_id=student
+        enrollments__student_id=student
     ).order_by('-class_id').distinct()
 
     return render(request, 'Students/StudentClass.html', {
@@ -723,27 +1006,31 @@ def StudentClass(request):
     })
 
 # ---------------- JOIN CLASS (STUDENT) ---------------- #
+@login_required(login_url='index')
 def join_class(request):
     if request.method == "POST":
         school_id = request.session.get('school_id')
-        if not school_id:
-            messages.warning(request, "Please log in first.")
-            return redirect('index')
-
-        student = User.objects.get(school_id=school_id)
+        student = get_object_or_404(User, school_id=school_id)
+        
+        # Permission check
+        if student.user_type != 'Student':
+            messages.error(request, "Only students can join classes.")
+            return redirect('dashboard')
+        
         class_code = request.POST.get('class_code', '').strip()
 
         if not class_code:
             messages.error(request, "Please enter a class code.")
             return redirect('StudentClass')
 
+        # Use ORM
         try:
             class_obj = Class.objects.get(class_code=class_code)
         except Class.DoesNotExist:
             messages.error(request, "Class not found. Please check the code.")
             return redirect('StudentClass')
 
-        # Check if already enrolled
+        # Check if already enrolled using ORM
         if Enrollment.objects.filter(class_id=class_obj, student_id=student).exists():
             messages.warning(request, f"You are already enrolled in {class_obj.title}.")
             return redirect('StudentClass')
@@ -753,13 +1040,11 @@ def join_class(request):
         messages.success(request, f"Successfully joined {class_obj.title}!")
         return redirect('StudentClass')
 
-    # If GET request, just redirect
     return redirect('StudentClass')
-
 #---------------STUDENT CLASS DETAILS PAGE---------------------#
 
 def student_class_details(request, class_id):
-    # Make sure the student is logged in
+    """Student class details - routes to appropriate template based on class type"""
     school_id = request.session.get('school_id')
     if not school_id:
         messages.warning(request, "Please log in first.")
@@ -774,7 +1059,10 @@ def student_class_details(request, class_id):
     query = request.GET.get('q', '').strip()
     filter_type = request.GET.get('filter', '').strip()
 
-    problems = Problem.objects.filter(class_id=class_instance).order_by('-problem_id')
+    problems = Problem.objects.filter(class_id=class_instance).exclude(
+        problem_title="Class Resources"  # Exclude resources problem
+    ).order_by('-problem_id')
+    
     if query:
         problems = problems.filter(problem_title__icontains=query)
     if filter_type:
@@ -786,7 +1074,6 @@ def student_class_details(request, class_id):
         submission = Submission.objects.filter(
             student_id=student,
             problem_id=p
-            
         ).order_by('-submission_id').first()
 
         half_score = p.total_score / 2
@@ -798,17 +1085,56 @@ def student_class_details(request, class_id):
             'half_score': half_score, 
         })
 
+    # ✅ Get all resources for this class and group by title (same as teacher view)
+    all_resources = ProblemResource.objects.filter(
+        problem__class_id=class_instance
+    ).select_related('problem').order_by('-uploaded_at')
+    
+    # Group resources by title
+    grouped_resources = defaultdict(list)
+    for resource in all_resources:
+        grouped_resources[resource.title].append(resource)
+    
+    # Convert to list of dictionaries for template with JSON formatting
+    resources_list = []
+    for title, resource_list in grouped_resources.items():
+        # Prepare files data as JSON-serializable dictionaries
+        files_data = []
+        for resource in resource_list:
+            files_data.append({
+                'file_url': resource.file.url,
+                'original_filename': resource.original_filename,
+                'file_size': resource.file_size,
+                'uploaded_at': resource.uploaded_at.strftime('%Y-%m-%d %H:%M'),
+                'file_extension': resource.file_extension,
+                'resource_id': resource.resource_id
+            })
+        
+        resources_list.append({
+            'title': title,
+            'description': resource_list[0].description,
+            'files': mark_safe(json.dumps(files_data)),  # For JavaScript
+            'file_count': len(resource_list),
+            'uploaded_at': resource_list[0].uploaded_at,
+            'resource_ids': [r.resource_id for r in resource_list]
+        })
+
     context = {
-        'user': student,                     # ✅ Added this for StudentSidebar
+        'user': student,
         'class': class_instance,
         'problems': problem_data,
+        'resources': resources_list,  # ✅ Added resources
         'query': query,
         'filter_type': filter_type,
-        'currentpage': 'StudentClass',       # ✅ Keeps sidebar highlighting correct
-        'nav' : 'student_class_details'
+        'currentpage': 'StudentClass',
+        'nav': 'student_class_details'
     }
 
-    return render(request, 'Students/student_class_details.html', context)
+    # ✅ Route to appropriate template based on class_type
+    if hasattr(class_instance, 'class_type') and class_instance.class_type == 'cybersecurity':
+        return render(request, 'Students/cybersecurity_student_class_details.html', context)
+    else:
+        return render(request, 'Students/student_class_details.html', context)
 
 #------------------Unenroll Function--------------------#
 def unenroll_class(request, class_id):
@@ -832,23 +1158,23 @@ def unenroll_class(request, class_id):
 PISTON_URL = "https://emkc.org/api/v2/piston/execute"
 
 # ---------------- PLAYGROUND PAGE ---------------- #
+@login_required(login_url='index')
 def playground(request, problem_id):
-    """Renders the coding playground for a student"""
     school_id = request.session.get('school_id')
-    if not school_id:
-        messages.warning(request, "Please log in first.")
-        return redirect('index')
-
     student = get_object_or_404(User, school_id=school_id)
+    
+    # Permission check
+    if student.user_type != 'Student':
+        messages.error(request, "Access denied.")
+        return redirect('dashboard')
+    
     problem = get_object_or_404(Problem, pk=problem_id)
 
-    # 🚫 Prevent already-submitted students from re-accessing
-    existing_submission = Submission.objects.filter(problem_id=problem, student_id=student).first()
-    if existing_submission:
+    # Check if already submitted using ORM
+    if Submission.objects.filter(problem_id=problem, student_id=student).exists():
         messages.warning(request, "You already submitted this problem.")
         return redirect('student_class_details', problem.class_id.class_id)
 
-    # ✅ Clear sessionStorage flag on fresh access (allows retake if teacher deleted submission)
     context = {
         'user': student,
         'problem': problem,
@@ -1040,9 +1366,11 @@ def submit_problem(request, problem_id):
 
 
 # ---------------- RUN & CHECK CODE (Testing only) ---------------- #
+# Replace the run_playground_code function in views.py with this fixed version
+
 @csrf_exempt
 def run_playground_code(request):
-    """For testing code without submitting"""
+    """For testing code without submitting - FIXED VERSION"""
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=400)
 
@@ -1058,6 +1386,9 @@ def run_playground_code(request):
         if not code.strip():
             return JsonResponse({"error": "Code cannot be empty."}, status=400)
 
+        if not problem_id:
+            return JsonResponse({"error": "Problem ID is required."}, status=400)
+
         problem = get_object_or_404(Problem, pk=problem_id)
         tmp_dir = tempfile.mkdtemp(prefix="code_run_")
 
@@ -1071,6 +1402,13 @@ def run_playground_code(request):
         if check_mode:
             testcases = list(ProblemTestCase.objects.filter(problem_id=problem))
             total_cases = len(testcases)
+            
+            if total_cases == 0:
+                return JsonResponse({
+                    "success": False,
+                    "error": "No test cases found for this problem."
+                }, status=404)
+            
             results = []
             passed_count = 0
 
@@ -1084,8 +1422,17 @@ def run_playground_code(request):
                     results.append(f"❌ Test {i}: {exec_res['error']}")
                     continue
 
+                if exec_res.get("compile_error"):
+                    results.append(f"❌ Test {i}: Compilation Error\n{exec_res['compile_error']}")
+                    continue
+
+                if exec_res.get("stderr"):
+                    results.append(f"❌ Test {i}: Runtime Error\n{exec_res['stderr']}")
+                    continue
+
                 output = (exec_res.get("stdout") or "").strip()
 
+                # Determine if test case is hidden
                 is_hidden = (
                     (total_cases == 1) or
                     (total_cases == 2 and i == 2) or
@@ -1104,25 +1451,51 @@ def run_playground_code(request):
                         passed_count += 1
                     else:
                         results.append(
-                            f"❌ Test {i}: Failed\nInput: {raw_input}\nExpected: {expected}\nGot: {output}"
+                            f"❌ Test {i}: Failed\n"
+                            f"Input: {raw_input}\n"
+                            f"Expected: {expected}\n"
+                            f"Got: {output}"
                         )
 
+            # ✅ CRITICAL FIX: Return success=True
             return JsonResponse({
+                "success": True,  # ← This was missing!
                 "result_summary": "\n".join(results),
                 "total_score": passed_count * 10,
+                "passed": passed_count,
+                "total": total_cases
             })
 
-        # Manual Run Mode
+        # Manual Run Mode (not check mode)
         exec_res = execute_source(language, source_path, stdin_data=stdin_data + "\n")
+        
         return JsonResponse({
+            "success": True,  # ← Also add here for consistency
             "output": exec_res.get("stdout", "No output."),
             "stderr": exec_res.get("stderr", ""),
             "compile_error": exec_res.get("compile_error", ""),
             "error": exec_res.get("error", "")
         })
 
+    except json.JSONDecodeError as e:
+        return JsonResponse({
+            "success": False,
+            "error": f"Invalid JSON data: {str(e)}"
+        }, status=400)
+    except Problem.DoesNotExist:
+        return JsonResponse({
+            "success": False,
+            "error": "Problem not found."
+        }, status=404)
     except Exception as e:
-        return JsonResponse({"error": f"Server error: {str(e)}"}, status=500)
+        import traceback
+        error_trace = traceback.format_exc()
+        print(f"[ERROR] run_playground_code: {str(e)}")
+        print(error_trace)
+        return JsonResponse({
+            "success": False,
+            "error": f"Server error: {str(e)}"
+        }, status=500)
     finally:
         if tmp_dir and os.path.exists(tmp_dir):
             shutil.rmtree(tmp_dir, ignore_errors=True)
@@ -1190,108 +1563,6 @@ def execute_source(language, source_path, stdin_data="", timeout_sec=5):
         return {"stdout": "", "stderr": "", "compile_error": "", "error": f"⚠️ Unexpected: {e}"}
 
 
-# ---------------- STUDENT CONSOLE (NEW) ---------------- #
-@csrf_exempt
-def run_student_console(request):
-    """Execute code in student playground console"""
-    if request.method != "POST":
-        return JsonResponse({"error": "Invalid request method."}, status=400)
-    
-    school_id = request.session.get('school_id')
-    if not school_id:
-        return JsonResponse({"error": "Please log in first."}, status=401)
-    
-    try:
-        data = json.loads(request.body)
-        code = data.get("code", "").strip()
-        language = (data.get("language", "python") or "python").lower()
-        stdin_data = data.get("stdin", "")
-        
-        if not code:
-            return JsonResponse({"error": "Code cannot be empty."}, status=400)
-        
-        # Parse input values
-        input_values = []
-        if stdin_data:
-            if '\n' in stdin_data:
-                input_values = [v.strip() for v in stdin_data.split('\n') if v.strip()]
-            else:
-                input_values = [v.strip() for v in stdin_data.split() if v.strip()]
-        
-        # Fix Java class name
-        if language == "java":
-            lines = code.split('\n')
-            modified_lines = []
-            for line in lines:
-                if 'public class' in line and '{' in line:
-                    before = line.split('public class')[0]
-                    after_parts = line.split('public class')[1].split('{', 1)
-                    if len(after_parts) == 2:
-                        modified_lines.append(before + 'public class Main {' + after_parts[1])
-                        continue
-                modified_lines.append(line)
-            code = '\n'.join(modified_lines)
-        
-        # Language configurations
-        lang_config = {
-            "python": {"lang": "python", "version": "3.10.0", "file": "main.py"},
-            "c": {"lang": "c", "version": "10.2.0", "file": "main.c"},
-            "cpp": {"lang": "c++", "version": "10.2.0", "file": "main.cpp"},
-            "java": {"lang": "java", "version": "15.0.2", "file": "Main.java"},
-        }
-        config = lang_config.get(language, lang_config["python"])
-        
-        # Execute code
-        payload = {
-            "language": config["lang"],
-            "version": config["version"],
-            "files": [{"name": config["file"], "content": code}],
-            "stdin": stdin_data,
-            "compile_timeout": 10000,
-            "run_timeout": 3000,
-        }
-        
-        response = requests.post(PISTON_URL, json=payload, timeout=15)
-        
-        if "application/json" not in response.headers.get("Content-Type", ""):
-            return JsonResponse({
-                "error": f"Non-JSON response ({response.status_code})"
-            }, status=500)
-        
-        result = response.json()
-        if response.status_code != 200:
-            return JsonResponse({
-                "error": f"Execution error: {result}"
-            }, status=500)
-        
-        run_data = result.get("run", {})
-        compile_data = result.get("compile", {})
-        
-        # Get output and format with inputs
-        raw_output = run_data.get("stdout", "")
-        formatted_output = format_output_with_inputs(raw_output, input_values)
-        
-        return JsonResponse({
-            "success": True,
-            "output": formatted_output,
-            "stderr": run_data.get("stderr", ""),
-            "compile_error": compile_data.get("stderr", ""),
-            "exit_code": run_data.get("code", 0)
-        })
-        
-    except json.JSONDecodeError:
-        return JsonResponse({"error": "Invalid JSON data in request."}, status=400)
-    except requests.Timeout:
-        return JsonResponse({"error": "Code execution timed out."}, status=408)
-    except requests.RequestException as e:
-        return JsonResponse({"error": f"Network error: {str(e)}"}, status=500)
-    except Exception as e:
-        import traceback
-        print(f"[ERROR] User {school_id} - {str(e)}")
-        print(traceback.format_exc())
-        return JsonResponse({"error": f"Server error: {str(e)}"}, status=500)
-
-
 #----------------------Universal Playground--------------------------#
 
 def code_testing_playground(request):
@@ -1313,145 +1584,12 @@ def code_testing_playground(request):
     else:
         return render(request, 'Universal/Playground.html', {**context, 'sidebar': 'student'})
 
-def format_output_with_inputs(raw_output, input_values):
-    """
-    Simple formatter: Add input values next to lines that end with : or ?
-    The program already runs sequentially, we just display inputs where they were entered.  
-    """
-    if not input_values:
-        return raw_output
-    
-    lines = raw_output.split('\n')
-    result = []
-    input_index = 0
-    
-    for line in lines:
-        # If line ends with : or ? and we have inputs left, append the input
-        if input_index < len(input_values) and (line.rstrip().endswith(':') or line.rstrip().endswith('?')):
-            result.append(f"{line} {input_values[input_index]}")
-            input_index += 1
-        else:
-            result.append(line)
-    
-    return '\n'.join(result)
 
 
-def extract_prompts(code, language):
-    """Extract input prompts from code - IMPROVED VERSION"""
-    prompts = []
-    lines = code.split('\n')
-    
-    if language == 'python':
-        for i, line in enumerate(lines):
-            if 'input(' in line:
-                # Try to find the prompt in the input() call
-                match = re.search(r'input\s*\(\s*["\']([^"\']*)["\']', line)
-                if match:
-                    prompt = match.group(1).strip()
-                    # Remove f-string formatting
-                    prompt = re.sub(r'\{[^}]+\}', '', prompt).strip()
-                    prompts.append(prompt if prompt else f"Value {len(prompts) + 1}")
-                else:
-                    # Check if there's a print statement before this input
-                    found_print = False
-                    for j in range(i - 1, max(-1, i - 3), -1):
-                        if 'print(' in lines[j]:
-                            match = re.search(r'print\s*\(\s*f?["\']([^"\']*)["\']', lines[j])
-                            if match:
-                                prompt = match.group(1).strip()
-                                prompt = re.sub(r'\{[^}]+\}', '', prompt).strip()
-                                if prompt and prompt not in prompts:
-                                    prompts.append(prompt)
-                                    found_print = True
-                                    break
-                    if not found_print:
-                        prompts.append(f"Value {len(prompts) + 1}")
-    
-    elif language == 'c':
-        # Find all scanf lines
-        scanf_lines = []
-        for i, line in enumerate(lines):
-            if 'scanf' in line:
-                scanf_lines.append(i)
-        
-        # For each scanf, look for printf before it
-        for scanf_line in scanf_lines:
-            found = False
-            for j in range(scanf_line - 1, max(-1, scanf_line - 5), -1):
-                if 'printf' in lines[j]:
-                    match = re.search(r'printf\s*\(\s*"([^"]*)"', lines[j])
-                    if match:
-                        prompt = match.group(1).strip()
-                        # Remove format specifiers and newlines
-                        prompt = re.sub(r'%[dfscilfg]', '', prompt)
-                        prompt = prompt.replace('\\n', '').strip()
-                        if prompt:
-                            prompts.append(prompt)
-                            found = True
-                            break
-            
-            if not found:
-                prompts.append(f"Value {len(prompts) + 1}")
-    
-    elif language == 'cpp':
-        # Find all cin lines and count >> operators
-        cin_lines = []
-        for i, line in enumerate(lines):
-            if 'cin' in line and '>>' in line:
-                var_count = line.count('>>')
-                cin_lines.append({'line': i, 'count': var_count})
-        
-        # For each cin operation, look for cout before it
-        for cin_info in cin_lines:
-            cin_line = cin_info['line']
-            var_count = cin_info['count']
-            
-            for v in range(var_count):
-                found = False
-                for j in range(cin_line - 1, max(-1, cin_line - 5), -1):
-                    if 'cout' in lines[j] and '<<' in lines[j]:
-                        match = re.search(r'cout\s*<<\s*"([^"]*)"', lines[j])
-                        if match:
-                            prompt = match.group(1).strip()
-                            prompt = prompt.replace('\\n', '').strip()
-                            if prompt and prompt not in prompts:
-                                prompts.append(prompt)
-                                found = True
-                                break
-                
-                if not found:
-                    prompts.append(f"Value {len(prompts) + 1}")
-    
-    elif language == 'java':
-        # Find all Scanner input calls
-        scanner_lines = []
-        for i, line in enumerate(lines):
-            if re.search(r'\.next(Int|Line|Double|Float|Boolean|Long)\s*\(', line):
-                scanner_lines.append(i)
-        
-        # For each Scanner call, look for System.out.print before it
-        for scanner_line in scanner_lines:
-            found = False
-            for j in range(scanner_line - 1, max(-1, scanner_line - 5), -1):
-                if 'System.out.print' in lines[j]:
-                    match = re.search(r'System\.out\.print\w*\s*\(\s*"([^"]*)"', lines[j])
-                    if match:
-                        prompt = match.group(1).strip()
-                        if prompt:
-                            prompts.append(prompt)
-                            found = True
-                            break
-            
-            if not found:
-                prompts.append(f"Value {len(prompts) + 1}")
-    
-    return prompts
 
-
-# Update the run_test_code view to use the fixed formatting
 @csrf_exempt  
 def run_test_code(request):
-    """Execute code - the Piston API handles sequential execution"""
+    """Execute code with CodeChum-style output formatting"""
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=400)
     
@@ -1464,7 +1602,7 @@ def run_test_code(request):
         if not code:
             return JsonResponse({"error": "Code cannot be empty."}, status=400)
         
-        # Parse input values (space or newline separated)
+        # Parse input values
         input_values = []
         if stdin_data:
             if '\n' in stdin_data:
@@ -1472,19 +1610,9 @@ def run_test_code(request):
             else:
                 input_values = [v.strip() for v in stdin_data.split() if v.strip()]
         
-        # Fix Java class name if needed
+        # Fix Java class name
         if language == "java":
-            lines = code.split('\n')
-            modified_lines = []
-            for line in lines:
-                if 'public class' in line and '{' in line:
-                    before = line.split('public class')[0]
-                    after_parts = line.split('public class')[1].split('{', 1)
-                    if len(after_parts) == 2:
-                        modified_lines.append(before + 'public class Main {' + after_parts[1])
-                        continue
-                modified_lines.append(line)
-            code = '\n'.join(modified_lines)
+            code = fix_java_class_name(code)
         
         # Language configurations
         lang_config = {
@@ -1495,39 +1623,36 @@ def run_test_code(request):
         }
         config = lang_config.get(language, lang_config["python"])
         
-        # Execute via Piston API - it runs the code sequentially
+        # Execute via Piston API
         payload = {
             "language": config["lang"],
             "version": config["version"],
             "files": [{"name": config["file"], "content": code}],
-            "stdin": stdin_data,  # Pass all inputs, Piston handles them sequentially
+            "stdin": stdin_data,
             "compile_timeout": 10000,
             "run_timeout": 3000,
             "compile_memory_limit": -1,
             "run_memory_limit": -1
         }
         
+        PISTON_URL = "https://emkc.org/api/v2/piston/execute"
         response = requests.post(PISTON_URL, json=payload, timeout=15)
         
         if "application/json" not in response.headers.get("Content-Type", ""):
             return JsonResponse({
-                "error": f"Non-JSON response from execution service ({response.status_code})"
+                "error": f"Non-JSON response ({response.status_code})"
             }, status=500)
         
         result = response.json()
         if response.status_code != 200:
-            return JsonResponse({
-                "error": f"Execution service error: {result}"
-            }, status=500)
+            return JsonResponse({"error": f"Execution error: {result}"}, status=500)
         
         run_data = result.get("run", {})
         compile_data = result.get("compile", {})
-        
-        # Get the raw output - Piston already executed everything in order
         raw_output = run_data.get("stdout", "")
         
-        # Just add input values next to prompts for display
-        formatted_output = format_output_with_inputs(raw_output, input_values)
+        # Format output like CodeChum
+        formatted_output = format_codechum_style(raw_output, input_values, code, language)
         
         return JsonResponse({
             "success": True,
@@ -1548,6 +1673,98 @@ def run_test_code(request):
         print(f"[ERROR] {str(e)}")
         print(traceback.format_exc())
         return JsonResponse({"error": f"Server error: {str(e)}"}, status=500)
+
+
+def fix_java_class_name(code):
+    """Fix Java class name to Main"""
+    lines = code.split('\n')
+    modified_lines = []
+    for line in lines:
+        if 'public class' in line and '{' in line:
+            before = line.split('public class')[0]
+            after_parts = line.split('public class')[1].split('{', 1)
+            if len(after_parts) == 2:
+                modified_lines.append(before + 'public class Main {' + after_parts[1])
+                continue
+        modified_lines.append(line)
+    return '\n'.join(modified_lines)
+
+
+def format_codechum_style(raw_output, input_values, code, language):
+    """Format output exactly like CodeChum - show user's exact code output"""
+    if not raw_output:
+        return ""
+    
+    if not input_values:
+        return raw_output
+    
+    lines = raw_output.split('\n')
+    result = []
+    input_index = 0
+    num_expected_inputs = count_inputs_in_code(code, language)
+    prompt_lines = []
+    
+    # Strategy 1: Lines ending with : or ?
+    for i, line in enumerate(lines):
+        stripped = line.rstrip()
+        if (stripped.endswith(':') or stripped.endswith('?')) and input_index < len(input_values):
+            prompt_lines.append(i)
+            input_index += 1
+    
+    # Strategy 2: Keyword-based detection
+    if len(prompt_lines) < min(num_expected_inputs, len(input_values)):
+        input_index = len(prompt_lines)
+        keywords = ['enter', 'input', 'type', 'give', 'provide', 'number', 'value', 'element', 'size', 'name', 'age', 'data', 'num']
+        
+        for i, line in enumerate(lines):
+            if i not in prompt_lines:
+                if any(kw in line.strip().lower() for kw in keywords) and input_index < len(input_values):
+                    prompt_lines.append(i)
+                    input_index += 1
+    
+    # Strategy 3: First N non-output lines
+    if len(prompt_lines) < min(num_expected_inputs, len(input_values)):
+        input_index = len(prompt_lines)
+        output_words = ['sum', 'result', 'total', 'answer', 'output', 'product', 'difference', 'quotient']
+        
+        for i, line in enumerate(lines):
+            if i not in prompt_lines and line.strip() and input_index < len(input_values):
+                is_output = (
+                    re.match(r'^\d+(\.\d+)?$', line.strip()) or
+                    any(w in line.lower() for w in output_words) or
+                    re.match(r'^[A-Z][a-z]+\s+is\s+', line.strip())
+                )
+                if not is_output:
+                    prompt_lines.append(i)
+                    input_index += 1
+    
+    prompt_lines.sort()
+    input_index = 0
+    
+    # Format output
+    for i, line in enumerate(lines):
+        if i in prompt_lines and input_index < len(input_values):
+            result.append(line)
+            input_index += 1
+        else:
+            result.append(line)
+    
+    return '\n'.join(result)
+
+
+def count_inputs_in_code(code, language):
+    """Count expected inputs"""
+    count = 0
+    for line in code.split('\n'):
+        if language == 'python' and 'input(' in line:
+            count += 1
+        elif language == 'c' and 'scanf' in line:
+            count += len(re.findall(r'%[dfscilfg]', line))
+        elif language == 'cpp' and 'cin' in line and '>>' in line:
+            count += line.count('>>')
+        elif language == 'java' and re.search(r'\.next(Int|Line|Double|Float|Boolean|Long)\s*\(', line):
+            count += 1
+    return count
 
 #---------------END OF CONSOLE CODE------------------------------------#
 
@@ -1901,3 +2118,490 @@ def clear_chat_history(request):
         return JsonResponse({"error": "User not found."}, status=404)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
+
+
+# ============================================
+# CYBERSECURITY-SPECIFIC VIEWS
+# ============================================
+
+@login_required(login_url='index')
+def add_cybersecurity_challenge(request, class_id):
+    """Add a cybersecurity challenge with file upload support and correct answer"""
+    school_id = request.session.get('school_id')
+    if not school_id:
+        messages.warning(request, "Please log in first.")
+        return redirect('index')
+
+    teacher = get_object_or_404(User, school_id=school_id)
+    class_obj = get_object_or_404(Class, class_id=class_id, teacher=teacher)
+    
+    # Verify it's a cybersecurity class
+    if class_obj.class_type != 'cybersecurity':
+        messages.error(request, "This endpoint is only for cybersecurity classes.")
+        return redirect('classDetails', class_id=class_id)
+
+    if request.method == "POST":
+        title = request.POST.get("problem_title", "").strip()
+        description = request.POST.get("problem_description", "").strip()
+        problem_type = request.POST.get("problem_type", "").strip()
+        total_score = request.POST.get("total_score", "").strip()
+        due_date = request.POST.get("due_date", "").strip()
+        challenge_file = request.FILES.get("challenge_file")
+        correct_answer = request.POST.get("correct_answer", "").strip()
+
+        # Validation
+        if not all([title, description, problem_type, total_score, due_date, correct_answer]):
+            messages.error(request, "Please fill in all required fields including correct answer.")
+            return redirect('classDetails', class_id=class_id)
+
+        try:
+            total_score = int(total_score)
+            due_date = datetime.fromisoformat(due_date)
+        except ValueError:
+            messages.error(request, "Invalid input values.")
+            return redirect('classDetails', class_id=class_id)
+
+        # Create Problem with correct answer
+        problem = Problem.objects.create(
+            class_id=class_obj,
+            teacher_id=teacher,
+            problem_title=title,
+            problem_description=description,
+            problem_type=problem_type,
+            total_score=total_score,
+            time_limit=None,  # No time limit for cybersecurity
+            due_date=due_date,
+            challenge_file=challenge_file,
+            correct_answer=correct_answer,  # ✅ NEW
+        )
+
+        messages.success(request, f"Challenge '{title}' created successfully!")
+        return redirect('classDetails', class_id=class_id)
+
+    return redirect('classDetails', class_id=class_id)
+
+
+@login_required(login_url='index')
+def edit_cybersecurity_challenge(request, problem_id):
+    """Edit a cybersecurity challenge"""
+    problem = get_object_or_404(Problem, pk=problem_id)
+    class_id = problem.class_id.class_id
+    
+    # Verify it's a cybersecurity challenge
+    if problem.class_id.class_type != 'cybersecurity':
+        messages.error(request, "This endpoint is only for cybersecurity challenges.")
+        return redirect('classDetails', class_id=class_id)
+
+    if request.method == "POST":
+        title = request.POST.get("problem_title", "").strip()
+        description = request.POST.get("problem_description", "").strip()
+        problem_type = request.POST.get("problem_type", "").strip()
+        total_score = request.POST.get("total_score", "").strip()
+        due_date = request.POST.get("due_date", "").strip()
+        challenge_file = request.FILES.get("challenge_file")
+
+        try:
+            problem.problem_title = title
+            problem.problem_description = description
+            problem.problem_type = problem_type
+            problem.total_score = int(total_score)
+            problem.due_date = datetime.fromisoformat(due_date)
+            
+            # Update file only if a new one is provided
+            if challenge_file:
+                problem.challenge_file = challenge_file
+            
+            problem.save()
+
+            messages.success(request, f"Challenge '{problem.problem_title}' updated successfully!")
+        except Exception as e:
+            messages.error(request, f"Update failed: {e}")
+
+    return redirect('classDetails', class_id=class_id)
+
+
+def get_cybersecurity_problem_details(request, problem_id):
+    """Return cybersecurity challenge details as JSON"""
+    problem = get_object_or_404(Problem, pk=problem_id)
+    
+    # Verify it's a cybersecurity challenge
+    if problem.class_id.class_type != 'cybersecurity':
+        return JsonResponse({"error": "Not a cybersecurity challenge"}, status=400)
+
+    # Check if student has submitted a CORRECT answer
+    answered_correctly = False
+    school_id = request.session.get('school_id')
+    if school_id:
+        user = User.objects.filter(school_id=school_id).first()
+        if user and user.user_type == "Student":
+            # Check if there's a submission with full score (correct answer)
+            answered_correctly = Submission.objects.filter(
+                problem_id=problem, 
+                student_id=user,
+                score=problem.total_score  # Only consider correct submissions
+            ).exists()
+
+    # Prepare data
+    data = {
+        "problem_id": problem.problem_id,
+        "title": problem.problem_title,
+        "description": problem.problem_description,
+        "type": problem.problem_type,
+        "score": problem.total_score,
+        "due_date": problem.due_date.strftime("%Y-%m-%d %H:%M"),
+        "answered": answered_correctly,  # Now only true if answered correctly
+        "challenge_file": problem.challenge_file.url if problem.challenge_file else None,
+        "currentpage": "cybersec"
+    }
+
+    return JsonResponse(data)
+
+
+@csrf_exempt
+@login_required(login_url='index')
+def submit_cybersecurity_answer(request, problem_id):
+    """Submit answer for cybersecurity challenge - ONLY saves correct answers"""
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method."}, status=400)
+
+    school_id = request.session.get("school_id")
+    if not school_id:
+        return JsonResponse({
+            "error": "Please log in first.",
+            "redirect_url": reverse("index")
+        }, status=401)
+
+    student = get_object_or_404(User, school_id=school_id)
+    problem = get_object_or_404(Problem, pk=problem_id)
+    
+    # Verify it's a cybersecurity challenge
+    if problem.class_id.class_type != 'cybersecurity':
+        return JsonResponse({"error": "Not a cybersecurity challenge"}, status=400)
+
+    # Parse request body
+    try:
+        data = json.loads(request.body)
+        answer_text = (data.get("answer") or "").strip()
+        
+        if not answer_text:
+            return JsonResponse({
+                "error": "Answer cannot be empty.",
+            }, status=400)
+
+        # ✅ Check if already answered correctly
+        existing_correct_submission = Submission.objects.filter(
+            problem_id=problem,
+            student_id=student,
+            score=problem.total_score  # Full score = correct answer
+        ).first()
+        
+        if existing_correct_submission:
+            return JsonResponse({
+                "success": False,
+                "is_correct": True,
+                "score": problem.total_score,
+                "total_score": problem.total_score,
+                "message": "You have already solved this challenge correctly!",
+                "already_solved": True
+            })
+
+        # ✅ Check if answer is correct (case-insensitive, strip whitespace)
+        correct_answer = (problem.correct_answer or "").strip().lower()
+        student_answer = answer_text.strip().lower()
+        is_correct = (student_answer == correct_answer)
+        
+        # Calculate score based on correctness
+        score = problem.total_score if is_correct else 0
+
+        # ✅ ONLY SAVE TO DATABASE IF CORRECT
+        if is_correct:
+            submission = Submission.objects.create(
+                problem_id=problem,
+                student_id=student,
+                answer_text=answer_text,
+                code=None,  # No code for cybersecurity
+                score=score,
+                status='Graded',
+                submitted_at=timezone.now()
+            )
+            
+            return JsonResponse({
+                "success": True,
+                "is_correct": True,
+                "score": score,
+                "total_score": problem.total_score,
+                "message": "Correct! Answer saved successfully!",
+            })
+        else:
+            # ❌ Wrong answer - DO NOT SAVE, just return feedback
+            return JsonResponse({
+                "success": True,
+                "is_correct": False,
+                "score": 0,
+                "total_score": problem.total_score,
+                "message": "Incorrect answer. Try again!",
+            })
+        
+    except json.JSONDecodeError as e:
+        return JsonResponse({
+            "error": f"Invalid data format: {str(e)}",
+        }, status=400)
+    except Exception as e:
+        return JsonResponse({
+            "error": f"Server error: {str(e)}",
+        }, status=500)
+    
+@login_required(login_url='index')
+def get_cybersecurity_submissions(request, problem_id):
+    """Get all submissions for a student for a specific cybersecurity challenge"""
+    school_id = request.session.get("school_id")
+    if not school_id:
+        return JsonResponse({"error": "Please log in first."}, status=401)
+
+    student = get_object_or_404(User, school_id=school_id)
+    problem = get_object_or_404(Problem, pk=problem_id)
+    
+    # Get all submissions for this student and problem
+    submissions = Submission.objects.filter(
+        problem_id=problem,
+        student_id=student
+    ).order_by('-submitted_at')
+    
+    submissions_data = [{
+        'submission_id': sub.submission_id,
+        'answer_text': sub.answer_text,
+        'score': sub.score,
+        'total_score': problem.total_score,
+        'is_correct': sub.score == problem.total_score,
+        'submitted_at': sub.submitted_at.isoformat(),
+    } for sub in submissions]
+    
+    return JsonResponse({
+        "submissions": submissions_data
+    })
+
+@login_required(login_url='index')
+def leaderboard(request):
+    """
+    Display leaderboard with filtering by class
+    Works for both teachers and students
+    """
+    user = request.user
+    selected_class_id = request.GET.get('class_id', None)
+    
+    # Get classes based on user type
+    if user.user_type == 'Teacher':
+        user_classes = Class.objects.filter(teacher=user).order_by('title')
+    else:  # Student
+        user_classes = Class.objects.filter(
+            enrollments__student_id=user
+        ).distinct().order_by('title')
+    
+    # Get selected class if class_id is provided
+    selected_class = None
+    if selected_class_id:
+        try:
+            if user.user_type == 'Teacher':
+                selected_class = Class.objects.get(
+                    class_id=selected_class_id, 
+                    teacher=user
+                )
+            else:
+                selected_class = Class.objects.get(
+                    class_id=selected_class_id,
+                    enrollments__student_id=user
+                )
+        except Class.DoesNotExist:
+            selected_class = None
+    
+    # Build leaderboard query - using student_id instead of values()
+    leaderboard_query = Submission.objects.select_related('student_id')
+    
+    # Filter by class if selected
+    if selected_class:
+        leaderboard_query = leaderboard_query.filter(
+            problem_id__class_id=selected_class
+        )
+    else:
+        # Filter by user's accessible classes
+        if user.user_type == 'Teacher':
+            leaderboard_query = leaderboard_query.filter(
+                problem_id__class_id__teacher=user
+            )
+        else:
+            leaderboard_query = leaderboard_query.filter(
+                problem_id__class_id__in=user_classes
+            )
+    
+    # Aggregate scores - Get distinct students with their total scores
+    
+    
+    # Get all students with submissions
+    student_scores = {}
+    for submission in leaderboard_query:
+        student_id = submission.student_id.school_id
+        if student_id not in student_scores:
+            student_scores[student_id] = {
+                'student': submission.student_id,
+                'total_score': 0
+            }
+        student_scores[student_id]['total_score'] += submission.score or 0
+    
+    # Convert to list and sort by score
+    leaderboard_data = []
+    for student_id, data in student_scores.items():
+        student = data['student']
+        leaderboard_data.append({
+            'student_id__school_id': student.school_id,
+            'student_id__first_name': student.first_name,
+            'student_id__last_name': student.last_name,
+            'student_id__user_image': student.user_image.url if student.user_image else None,
+            'total_score': data['total_score']
+        })
+    
+    # Sort by total score descending
+    leaderboard_data.sort(key=lambda x: x['total_score'], reverse=True)
+    
+    # Calculate current user's rank (only for students)
+    user_rank = None
+    if user.user_type == 'Student':
+        for index, entry in enumerate(leaderboard_data, start=1):
+            if entry['student_id__school_id'] == user.school_id:
+                user_rank = index
+                break
+    
+    context = {
+        'currentpage': 'leaderboard',
+        'user': user,
+        'user_classes': user_classes,
+        'selected_class': selected_class,
+        'leaderboard_data': leaderboard_data,
+        'user_rank': user_rank,
+        'sidebar': 'teacher' if user.user_type == 'Teacher' else 'student',
+    }
+    
+    return render(request, 'Universal/leaderboard.html', context)
+
+@login_required(login_url='index')
+def leaderboard_data_api(request):
+    """
+    API endpoint that returns leaderboard data as JSON for real-time updates
+    """
+    user = request.user
+    selected_class_id = request.GET.get('class_id', None)
+    
+    # Get classes based on user type
+    if user.user_type == 'Teacher':
+        user_classes = Class.objects.filter(teacher=user).order_by('title')
+    else:  # Student
+        user_classes = Class.objects.filter(
+            enrollments__student_id=user
+        ).distinct().order_by('title')
+    
+    # Get selected class if class_id is provided
+    selected_class = None
+    if selected_class_id:
+        try:
+            if user.user_type == 'Teacher':
+                selected_class = Class.objects.get(
+                    class_id=selected_class_id, 
+                    teacher=user
+                )
+            else:
+                selected_class = Class.objects.get(
+                    class_id=selected_class_id,
+                    enrollments__student_id=user
+                )
+        except Class.DoesNotExist:
+            selected_class = None
+    
+    # Build leaderboard query
+    leaderboard_query = Submission.objects.select_related('student_id')
+    
+    # Filter by class if selected
+    if selected_class:
+        leaderboard_query = leaderboard_query.filter(
+            problem_id__class_id=selected_class
+        )
+    else:
+        # Filter by user's accessible classes
+        if user.user_type == 'Teacher':
+            leaderboard_query = leaderboard_query.filter(
+                problem_id__class_id__teacher=user
+            )
+        else:
+            leaderboard_query = leaderboard_query.filter(
+                problem_id__class_id__in=user_classes
+            )
+    
+    # Aggregate scores - Get distinct students with their total scores
+    student_scores = {}
+    for submission in leaderboard_query:
+        student_id = submission.student_id.school_id
+        if student_id not in student_scores:
+            student_scores[student_id] = {
+                'student': submission.student_id,
+                'total_score': 0
+            }
+        student_scores[student_id]['total_score'] += submission.score or 0
+    
+    # Convert to list and sort by score
+    leaderboard_data = []
+    for student_id, data in student_scores.items():
+        student = data['student']
+        leaderboard_data.append({
+            'student_id__school_id': student.school_id,
+            'student_id__first_name': student.first_name,
+            'student_id__last_name': student.last_name,
+            'student_id__user_image': student.user_image.url if student.user_image else None,
+            'total_score': data['total_score']
+        })
+    
+    # Sort by total score descending
+    leaderboard_data.sort(key=lambda x: x['total_score'], reverse=True)
+    
+    # Calculate current user's rank (only for students)
+    user_rank = None
+    if user.user_type == 'Student':
+        for index, entry in enumerate(leaderboard_data, start=1):
+            if entry['student_id__school_id'] == user.school_id:
+                user_rank = index
+                break
+    
+    # Prepare response data
+    response_data = {
+        'leaderboard_data': leaderboard_data,
+        'user_rank': user_rank,
+        'selected_class': {
+            'class_id': selected_class.class_id,
+            'title': selected_class.title
+        } if selected_class else None,
+        'timestamp': timezone.now().isoformat()
+    }
+    
+    return JsonResponse(response_data, safe=False)
+
+@login_required(login_url='index')
+def get_student_total_exp(request):
+    """
+    API endpoint to get student's total EXP (sum of all submission scores)
+    """
+    user = request.user
+    
+    # Only allow students to access this endpoint
+    if user.user_type != 'Student':
+        return JsonResponse({"error": "Only students can access this endpoint"}, status=403)
+    
+    # Calculate total EXP from all submissions
+    total_exp = Submission.objects.filter(
+        student_id=user
+    ).aggregate(
+        total=Sum('score')
+    )['total'] or 0
+    
+    return JsonResponse({
+        'total_exp': total_exp,
+        'student_name': f"{user.first_name} {user.last_name}",
+        'school_id': user.school_id
+    })

@@ -1,126 +1,507 @@
 {% load static %}
-
-<!-- Student Sidebar -->
+<!--StudentSidebar.html-->
+<!-- Collapsible Sidebar with Hover Effect -->
 <style>
-  /* Sidebar Base */
+  /* Sidebar Base - Collapsed by default */
   #sidenav-main {
-    width: 180px !important;
-    background-color: #434343 !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 70px !important;
+    background-color: #1E2835 !important;
     color: white !important;
+    transition: width 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 1040;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    box-shadow: none;
+    margin: 0;
+    border: none;
+    border-right: 1px solid #303f53;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  /* Brand Text */
-  #sidenav-main .navbar-brand span {
-    font-size: 14px;
+  /* Remove any potential transparent backgrounds */
+  #sidenav-main * {
+    background-color: transparent;
   }
 
-  /* Nav Text */
-  #sidenav-main .nav-link-text {
-    font-size: 13px;
-    transition: color 0.3s ease;
+  #sidenav-main::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #1E2835;
+    z-index: -1;
   }
 
-  /* Nav Links */
-  #sidenav-main a.nav-link {
+  /* Expanded on hover */
+  #sidenav-main:hover {
+    width: 220px !important;
+    box-shadow: none;
+    align-items: stretch;
+  }
+
+  /* Brand Section - CENTERED */
+  .sidenav-header {
     display: flex;
     align-items: center;
-    padding: 6px 12px;
+    justify-content: center;
+    padding: 0 12px;
+    margin-bottom: 1.5rem;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  #sidenav-main .navbar-brand {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    text-decoration: none;
+  }
+
+  #sidenav-main .navbar-brand-img {
+    min-width: 35px;
+    width: 35px;
+    height: 35px;
+    transition: all 0.3s ease;
+  }
+
+  #sidenav-main .navbar-brand span {
+    font-size: 14px;
+    margin-left: 10px;
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease 0.1s, max-width 0.3s ease;
+    color: white;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  #sidenav-main:hover .navbar-brand span {
+    opacity: 1;
+    max-width: 180px;
+  }
+
+  /* Horizontal Line with Custom Color */
+  .horizontal {
+    margin: 0.5rem 0 1.5rem 0;
+    border: none;
+    border-top: 2px solid #303f53;
+    width: 100%;
+  }
+
+  #sidenav-main:hover .horizontal {
+    width: 90%;
+  }
+
+  /* Nav List - CENTERED */
+  .navbar-nav {
+    padding: 0 8px;
+    list-style: none;
+    margin: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  #sidenav-main:hover .navbar-nav {
+    align-items: stretch;
+  }
+
+  /* Profile Section - CENTERED */
+  .nav-item.profile-section {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .profile-pic {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  .profile-img {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    border: 2px solid #303f53;
+  }
+
+  #sidenav-main:hover .profile-img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .username,
+  .profile-section .text-muted {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease 0.1s, max-width 0.3s ease;
+    font-size: 13px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .username {
+    font-weight: bold;
+    color: white;
+  }
+
+  .profile-section .text-muted {
+    font-size: 12px;
+    color: #9ca3af;
+  }
+
+  #sidenav-main:hover .username,
+  #sidenav-main:hover .profile-section .text-muted {
+    opacity: 1;
+    max-width: 200px;
+  }
+
+  /* Nav Links - ALWAYS CENTERED icons */
+  .nav-item {
+    margin-bottom: 12px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  #sidenav-main:hover .nav-item {
+    justify-content: stretch;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 12px;
     color: #e0e0e0 !important;
     text-decoration: none;
     border-radius: 8px;
     transition: all 0.3s ease;
+    white-space: nowrap;
+    width: 46px;
+    height: 46px;
   }
 
-  /* Hover Effect (not white) */
-  #sidenav-main a.nav-link:hover {
-    color: #D68022 !important;
-    background: linear-gradient(90deg, #505050, #3a3a3a);
-  }
-
-  /* Active Link */
-  #sidenav-main a.nav-link.active {
-    color: #D68022 !important;
-    font-weight: bold;
-    background: linear-gradient(90deg, #383838, #2f2f2f);
-  }
-
-  /* Profile Image */
-  .profile-img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-  }
-
-  /* Logout Button (Centered + Small) */
-  .logout-btn {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 8px;
+  /* When expanded, align to left with text */
+  #sidenav-main:hover .nav-link {
     width: 100%;
-    padding: 10px 20px;
-    font-size: 13px;
+    height: auto;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 10px 12px;
+  }
+
+  .nav-link:hover {
+    color: #70c18c !important;
+    background: rgba(74, 97, 80, 0.174) !important;
+  }
+
+  .nav-link.active {
+    color: #70c18c !important;
     font-weight: bold;
-    transition: all 0.3s ease;
+    background: rgba(66, 113, 78, 0.174) !important;
+    position: relative;
+  }
+
+  /* Active indicator line */
+  .nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 70%;
+    background: #356749;
+    border-radius: 0 3px 3px 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  #sidenav-main:hover .nav-link.active::before {
+    opacity: 1;
+  }
+
+  /* Icon Container - CENTERED */
+  .nav-link .icon-container {
+    min-width: 24px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto; /* Centers button */
+    flex-shrink: 0;
   }
 
-  .logout-btn:hover {
-    background-color: #b02a37;
-    transform: scale(1.05);
+  .nav-link img {
+    width: 22px;
+    height: 22px;
+    filter: brightness(0.9);
+    transition: filter 0.3s ease;
   }
 
-  .logout-btn img {
-    width: 18px;
-    height: 18px;
-    margin-right: 6px;
+  .nav-link:hover img,
+  .nav-link.active img {
+    filter: brightness(1.2);
   }
 
-  /* Footer Centering */
-  .sidenav-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .nav-link .code-icon {
+    font-size: 18px;
+    color: #32B851;
+    font-weight: bold;
   }
 
-  /* Main Content Spacing */
+  /* Nav Link Text */
+  .nav-link-text {
+    margin-left: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease 0.1s, max-width 0.3s ease;
+    white-space: nowrap;
+  }
+
+  #sidenav-main:hover .nav-link-text {
+    opacity: 1;
+    max-width: 180px;
+  }
+
+  /* Main Content Adjustment */
   .main-content {
-    margin-left: 200px !important;
+    margin-left: 90px !important;
+    transition: margin-left 0.3s ease;
+    min-height: 100vh;
+  }
+
+  /* Scrollbar Styling */
+  #sidenav-main::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  #sidenav-main::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  #sidenav-main::-webkit-scrollbar-thumb {
+    background: rgba(48, 63, 83, 0.3);
+    border-radius: 3px;
+  }
+
+  #sidenav-main::-webkit-scrollbar-thumb:hover {
+    background: rgba(48, 63, 83, 0.5);
+  }
+
+  /* Footer positioning fix */
+  body {
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Make footer respect sidebar space */
+  footer.footer,
+  footer.fixed-bottom {
+    left: 70px !important;
+    right: 0 !important;
+    width: auto !important;
+    margin-left: 0 !important;
+    z-index: 1039 !important;
+    border-left: none;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    #sidenav-main {
+      transform: translateX(-100%);
+      width: 220px !important;
+      align-items: stretch;
+      border-right: none;
+    }
+    
+    #sidenav-main.show {
+      transform: translateX(0);
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+      border-right: 2px solid #303f53;
+    }
+
+    #sidenav-main.show .navbar-brand span,
+    #sidenav-main.show .nav-link-text,
+    #sidenav-main.show .username,
+    #sidenav-main.show .profile-section .text-muted {
+      opacity: 1;
+      max-width: 180px;
+    }
+
+    #sidenav-main.show .profile-img {
+      width: 60px;
+      height: 60px;
+    }
+
+    #sidenav-main.show .horizontal {
+      width: 90%;
+    }
+
+    /* On mobile when expanded, align to left */
+    #sidenav-main.show .nav-item {
+      justify-content: stretch;
+    }
+
+    #sidenav-main.show .nav-link {
+      width: 100%;
+      height: auto;
+      flex-direction: row;
+      justify-content: flex-start;
+      padding: 10px 12px;
+    }
+
+    #sidenav-main.show .nav-link.active::before {
+      opacity: 1;
+    }
+
+    #sidenav-main.show .navbar-nav {
+      align-items: stretch;
+    }
+    
+    .main-content {
+      margin-left: 0 !important;
+      padding-left: 15px;
+    }
+    
+    footer.footer,
+    footer.fixed-bottom {
+      left: 0 !important;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    /* Tablet view */
+    #sidenav-main {
+      width: 70px !important;
+    }
+    
+    .main-content {
+      margin-left: 90px !important;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    /* Desktop: always show sidebar */
+    #sidenav-main {
+      transform: translateX(0) !important;
+    }
+  }
+
+  /* Container adjustments for full-width pages */
+  body {
+    overflow-x: hidden;
+  }
+
+  .container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  /* Backdrop for mobile */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1038;
+  }
+
+  .sidebar-backdrop.show {
+    display: block;
   }
 </style>
 
-<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4" id="sidenav-main">
-  <div class="sidenav-header text-center align-items-center">
-    <a class="navbar-brand m-0" href="{% url 'StudentDashboard' %}">
-      <img src="{% static 'img/PCodeLogo.svg' %}" width="35" height="35" class="navbar-brand-img h-100" alt="main_logo">
-      <span class="ms-1 font-weight-bold text-white">PauliCode</span>
+<!-- Backdrop -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<script>
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidenav-main');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  sidebar.classList.toggle('show');
+  backdrop.classList.toggle('show');
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById('sidenav-main');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  sidebar.classList.remove('show');
+  backdrop.classList.remove('show');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+  const sidebar = document.getElementById('sidenav-main');
+  const toggle = document.querySelector('.mobile-toggle');
+  
+  if (window.innerWidth <= 768 && 
+      sidebar.classList.contains('show') && 
+      !sidebar.contains(event.target) && 
+      !toggle.contains(event.target)) {
+    closeSidebar();
+  }
+});
+</script>
+
+<aside id="sidenav-main">
+  <!-- Brand/Logo -->
+  <div class="sidenav-header">
+    <a class="navbar-brand" href="{% url 'StudentDashboard' %}">
+      <img src="{% static 'img/PCodeLogo.svg' %}" class="navbar-brand-img" alt="PauliCode Logo">
+      <span>PauliCode</span>
     </a>
   </div>
 
-  <hr class="horizontal dark mt-0">
+  <hr class="horizontal">
 
-  <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
+  <!-- Navigation -->
+  <div id="sidenav-collapse-main">
     <ul class="navbar-nav">
 
       <!-- Profile Section -->
-      <li class="nav-item mb-4 text-center">
-        <div class="profile-pic border-radius-md overflow-hidden mb-2">
+      <li class="nav-item profile-section">
+        <div class="profile-pic">
           <img src="{% if user.user_image and user.user_image.url %}{{ user.user_image.url }}{% else %}{% static 'img/image.png' %}{% endif %}"
                alt="Profile Picture"
-               class="img-fluid rounded-circle profile-img">
+               class="profile-img">
         </div>
-        <span class="fw-bold username d-block">{{ user.first_name }} {{ user.last_name }}</span>
-        <span class="text-muted small">School ID: {{ user.school_id }}</span>
+        <span class="username">{{ user.first_name }} {{ user.last_name }}</span>
+        <span class="text-muted">ID: {{ user.school_id }}</span>
       </li>
 
       <!-- Dashboard -->
-      <li class="nav-item mb-2">
-        <a class="nav-link {% if currentpage == 'StudentDashboard' %}active{% endif %}" href="{% url 'StudentDashboard' %}">
-          <div class="me-2 d-flex align-items-center justify-content-center">
-            <img src="{% static 'img/dashboardIcon.png' %}" alt="Dashboard Icon" style="height: 20px; width: 20px;">
+      <li class="nav-item">
+        <a class="nav-link {% if currentpage == 'dashboard' or currentpage == 'StudentDashboard' %}active{% endif %}" href="{% url 'StudentDashboard' %}">
+          <div class="code-icon">
+            <i class="fa fa-home"></i>  
           </div>
           <span class="nav-link-text">Dashboard</span>
         </a>
@@ -128,36 +509,44 @@
 
       <!-- Classes -->
       <li class="nav-item">
-        <a class="nav-link {% if currentpage == 'StudentClass' %}active{% endif %}" href="{% url 'StudentClass' %}">
-          <div class="me-2 d-flex align-items-center justify-content-center">
-            <img src="{% static 'img/blackboardIcon.png' %}" alt="Classes Icon" style="height: 20px; width: 20px;">
+        <a class="nav-link {% if currentpage == 'MyClasses' or currentpage == 'StudentClass' %}active{% endif %}" href="{% url 'StudentClass' %}">
+          <div class="code-icon">
+            <i class="fa fa-graduation-cap"></i>        
           </div>
           <span class="nav-link-text">Classes</span>
         </a>
       </li>
 
       <li class="nav-item">
+        <a class="nav-link {% if currentpage == 'leaderboard' %}active{% endif %}" 
+          href="{% url 'leaderboard' %}">
+          <div class="icon-container">
+            <i class="fa fa-trophy code-icon"></i>
+          </div>
+          <span class="nav-link-text">Leaderboard</span>
+        </a>
+      </li>
+
+      <!-- Playground -->
+      <li class="nav-item">
         <a class="nav-link {% if currentpage == 'Playground' %}active{% endif %}" href="{% url 'code_testing_playground' %}">
-          <div class="me-2 d-flex align-items-center justify-content-center" style="height: 20px; width: 20px;">
-            <span style="font-size: 14px; color: rgb(50, 184, 81);">&lt;/&gt;</span>
+          <div class="icon-container">
+            <span class="code-icon"><i class="fa fa-code"></i> </span>
           </div>
           <span class="nav-link-text">Playground</span>
         </a>
       </li>
 
-
+      <li class="nav-item">
+        <a class="nav-link" href="http://192.168.8.127:8000/" target="_blank">
+          <div class="icon-container">
+            <span class="code-icon"><i class="fa fa-comments"></i></i></span>
+          </div>
+          <span class="nav-link-text">Communicate</span>
+        </a>
+      </li>
 
 
     </ul>
-  </div>
-
-  <!-- Logout Button -->
-  <div class="sidenav-footer px-3" style="padding-top: 25vh;">
-    <a href="{% url 'logout' %}">
-      <button class="logout-btn">
-        <img src="{% static 'img/out.png' %}" alt="Logout Icon">
-        Logout
-      </button>
-    </a>
   </div>
 </aside>

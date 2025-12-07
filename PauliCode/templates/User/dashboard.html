@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+<!--dashboard.html-->
 {% block content %}
 <style>
   .bg-gradient-success {
@@ -26,6 +26,68 @@
     border-style: dashed !important;
   }
 
+  /* 🌿 Programming Classes - Blue outline */
+  .border-programming {
+    background-color: #1f2937;
+    color: rgb(137, 216, 255);
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    border: 2.5px dashed rgb(59, 130, 246) !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  /* 🔴 Cybersecurity Classes - Red outline */
+  .border-cybersecurity {
+    background-color: #1f2937;
+    color: rgb(252, 165, 165);
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    border: 2.5px dashed rgb(239, 68, 68) !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  /* Legacy classes for backward compatibility */
+  .border-green {
+    background-color: #1f2937;
+    color: #00ff9d;
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    border: 1px dashed #00ff9d;
+    border-width: 1px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(0, 255, 157, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .border-dark {
+    background-color: #1f2937;
+    color: rgb(137, 216, 255);
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    border: 1px dashed rgb(180, 230, 255);
+    border-width: 1px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(13, 110, 253, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  /* Hover effects */
+  .border-programming:hover,
+  .border-cybersecurity:hover,
+  .border-green:hover,
+  .border-dark:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 15px currentColor;
+  }
+
+  /* Responsive text hiding for "View All" buttons */
+  .view-all-text {
+    display: inline;
+  }
 
   @media (max-width: 768px) {
     .card .position-absolute {
@@ -37,16 +99,23 @@
       text-align: center;
       padding-top: 1rem !important;
     }
+    
+    /* Hide text on small screens, keep arrow */
+    .view-all-text {
+      display: none;
+    }
+    
+    /* Adjust badge padding when text is hidden */
+    .badge.d-flex {
+      padding: 0.5rem !important;
+    }
   }
 </style>
 
 <div class="g-sidenav-show text-white">
   <div class="min-height-300 position-absolute w-100"></div>
 
-  {% include "partials/sidebar.html" %}
-
   <main class="main-content position-relative border-radius-lg">
-    {% include "partials/navbar.html" %}
 
     <div class="container-fluid p-5">
 
@@ -78,14 +147,14 @@
       </div>
 
       <!-- Quick Actions -->
-      <h5 class="fw-bold mt-4 mb-2">⚡ Quick Actions</h5>
+      <h5 class="fw-bold mt-4 mb-2"><i class="fas fa-bolt me-2" style="color: #fbbf24;"></i>Quick Actions</h5>
       <div class="row g-3 mb-4">
         <!-- 4 action cards -->
         <div class="col-md-3">
           <div class="card text-center bg-success text-white border-0 rounded-4 shadow-sm action-card h-100"
                data-bs-toggle="modal" data-bs-target="#createClassModal">
             <div class="card-body">
-              <h1 class="display-5 mb-2" style="color: white;">+</h1>
+              <i class="fas fa-plus display-5 mb-2" style="color: white;"></i>
               <h6 class="fw-bold">Create New Class</h6>
               <p class="text-light small mb-0">Start a new class</p>
             </div>
@@ -96,7 +165,7 @@
            <a href="{% url 'code_testing_playground' %}">
           <div class="card text-center button-gray text-white border-0 rounded-4 shadow-sm h-100 action-card">
             <div class="card-body">
-              <h1 class="display-6 mb-2" style="color: skyblue;">&lt;/&gt;</h1>
+              <i class="fas fa-code display-6 mb-2" style="color: skyblue;"></i>
               <h6 class="fw-bold">Practice Coding</h6>
               <p class="text-light small mb-0">Code Playground</p>
             </div>
@@ -107,7 +176,7 @@
         <div class="col-md-3">
           <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card">
             <div class="card-body">
-              <img src="{% static 'img/progressIcon.png' %}" alt="progress" width="40" height="40" class="mb-2">
+              <i class="fas fa-chart-line mb-2" style="font-size: 2.5rem; color: #10b981;"></i>
               <h6 class="fw-bold">View Progress</h6>
               <p class="text-light small mb-0">Track your students</p>
             </div>
@@ -117,7 +186,7 @@
         <div class="col-md-3">
           <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card">
             <div class="card-body">
-              <img src="{% static 'img/PendingIC.png' %}" alt="pendingIcon" width="40" height="40" class="mb-2">
+              <i class="fas fa-tasks mb-2" style="font-size: 2.5rem; color: #f59e0b;"></i>
               <h6 class="fw-bold">Pending Tasks</h6>
               <p class="text-light small mb-0">View student task</p>
             </div>
@@ -125,13 +194,13 @@
         </div>
       </div>
 
-     <!-- 🏆 Leaderboard -->
+     <!-- Leaderboard -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="fw-bold mb-0">🏆 Leaderboard</h5>
-      <a href="#" 
+      <h5 class="fw-bold mb-0"><i class="fas fa-trophy me-2" style="color: #fbbf24;"></i>Leaderboard</h5>
+      <a href="{% url 'leaderboard' %}" 
         class="badge border-green d-flex align-items-center gap-1 text-decoration-none px-3 py-2"
         style="border-radius: 8px; font-weight: 600;">
-        <span style="color: #00ff9d;">View All Rank</span>
+        <span class="view-all-text" style="color: #00ff9d;">View All Rank</span>
         <i class="fa fa-arrow-right" style="color: #00ff9d; font-size: 0.9rem;"></i>
       </a>
     </div>
@@ -141,8 +210,8 @@
           {% for entry in top_scorers %}
             {% if forloop.counter <= 4 %}
               <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
-                <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative {% cycle 'border-green' 'border-dark' %}"
-                     style="background-color: rgb(34, 36, 55); border-width: 2.5px; border-style: dashed; min-height: 100%;">
+                <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative border-{{ entry.class.class_type }}"
+                     style="background-color: rgb(34, 36, 55); min-height: 100%;">
                   <div class="card-body position-relative d-flex flex-column align-items-center">
                     <!-- Class Title Badge -->
                     <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-1 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
@@ -169,7 +238,7 @@
                     </div>
 
                     {% if entry.top_scorer %}
-                      <span class="badge px-3 py-2 rounded-3 shadow-sm {% cycle 'border-green' 'border-dark' %}"
+                      <span class="badge px-3 py-2 rounded-3 shadow-sm border-{{ entry.class.class_type }}"
                             style="border: 1px solid currentColor !important; white-space: nowrap;">
                         {{ entry.top_scorer.student_id__first_name }} {{ entry.top_scorer.student_id__last_name }}
                       </span>
@@ -186,13 +255,13 @@
         {% endif %}
       </div>
 
-      <!-- 🔰 Recent Classes -->
+      <!-- Recent Classes -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="fw-bold mb-0">🔰 Recent Classes</h5>
+      <h5 class="fw-bold mb-0"><i class="fas fa-book-open me-2" style="color: #10b981;"></i>Recent Classes</h5>
       <a href="{% url 'MyClasses' %}" 
         class="badge border-green d-flex align-items-center gap-1 text-decoration-none px-3 py-2"
         style="border-radius: 8px; font-weight: 600;">
-        <span style="color: #00ff9d;">View All Classes</span>
+        <span class="view-all-text" style="color: #00ff9d;">View All Classes</span>
         <i class="fa fa-arrow-right" style="color: #00ff9d; font-size: 0.9rem;"></i>
       </a>
     </div>
@@ -202,8 +271,8 @@
     {% for class in classes %}
       {% if forloop.counter <= 6 %}
         <div class="col-6 col-sm-4 col-md-3 col-lg-2 d-flex justify-content-center">
-          <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative {% cycle 'border-green' 'border-dark' %}"
-               style="background-color: rgb(1, 45, 35); border-width: 2.5px; border-style: dashed; min-height: 180px; width: 100%;">
+          <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative border-{{ class.class_type }}"
+               style="background-color: rgb(1, 45, 35); min-height: 180px; width: 100%;">
             <div class="card-body d-flex flex-column align-items-center justify-content-center position-relative p-3">
 
               <!-- 🏷️ Class Code Badge -->
@@ -229,7 +298,7 @@
               {% endif %}
 
               <!-- 📘 Class Title Badge (Flexible & Responsive) -->
-              <span class="badge px-2 py-1 rounded-3 shadow-sm text-truncate {% cycle 'border-green' 'border-dark' %}"
+              <span class="badge px-2 py-1 rounded-3 shadow-sm text-truncate border-{{ class.class_type }}"
                     style="border: 1px solid currentColor !important; max-width: 100%; font-size: clamp(0.7rem, 2vw, 0.85rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block;">
                 {{ class.title }}
               </span>
@@ -244,10 +313,6 @@
   {% endif %}
 </div>
 
-
-
-
-      {% include "partials/footer.html" %}
     </div>
 
       <!-- CREATE CLASS MODAL -->

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-
+<!--StudentDashboard.html-->
 
 <style>
   body {
@@ -30,7 +30,134 @@
     filter: invert(1);
   }
 
-    @media (max-width: 768px) {
+  /* 🌿 Programming Classes - Blue outline */
+  .border-programming {
+    background-color: #1f2937;
+    color: rgb(137, 216, 255);
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    border: 2.5px dashed rgb(59, 130, 246) !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  /* 🔴 Cybersecurity Classes - Red outline */
+  .border-cybersecurity {
+    background-color: #1f2937;
+    color: rgb(252, 165, 165);
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    border: 2.5px dashed rgb(239, 68, 68) !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  /* Legacy classes for backward compatibility */
+  .border-green {
+    background-color: #1f2937;
+    color: #00ff9d;
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    border: 1px dashed #00ff9d;
+    border-width: 1px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(0, 255, 157, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .border-dark {
+    background-color: #1f2937;
+    color: rgb(137, 216, 255);
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    border: 1px dashed rgb(180, 230, 255);
+    border-width: 1px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(13, 110, 253, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  /* Hover effects */
+  .border-programming:hover,
+  .border-cybersecurity:hover,
+  .border-green:hover,
+  .border-dark:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 15px currentColor;
+  }
+
+  /* 📊 Total EXP Badge - Below welcome text */
+  .exp-badge {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    border: 2px solid #2563eb;
+    padding: 8px 16px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+    animation: pulse-glow 2s ease-in-out infinite;
+    width: fit-content;
+  }
+
+  .exp-badge i {
+    font-size: 1.2rem;
+    color: #fbbf24;
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.8));
+  }
+
+  .exp-value {
+    font-weight: 800;
+    font-size: 1rem;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.3px;
+  }
+
+  /* 🏅 Rank Card in Leaderboard */
+  .rank-card-leaderboard {
+    background: linear-gradient(135deg, #059669, #10b981);
+    border: 3px solid #10b981;
+    transition: all 0.3s ease;
+  }
+
+  .rank-card-leaderboard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  }
+
+  .rank-number {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #fbbf24;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.8));
+  }
+
+  .rank-label {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+    }
+    50% {
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.7);
+    }
+  }
+
+  /* Responsive text hiding for "View All" buttons */
+  .view-all-text {
+    display: inline;
+  }
+
+  @media (max-width: 768px) {
     .card .position-absolute {
       position: static !important;
       margin: 10px auto 0;
@@ -40,71 +167,72 @@
       text-align: center;
       padding-top: 1rem !important;
     }
+    
+    /* Hide text on small screens, keep arrow */
+    .view-all-text {
+      display: none;
+    }
+    
+    /* Adjust badge padding when text is hidden */
+    .badge.d-flex {
+      padding: 0.5rem !important;
+    }
+    
+    /* Center welcome text on mobile */
+    .welcome-text-container {
+      text-align: center !important;
+      margin: 0 auto !important;
+    }
+    
+    .exp-badge {
+      margin: 1rem auto 0 !important;
+    }
   }
-  /* 🌿 Green family (first card) */
-.border-green {
-  background-color: #1f2937;
-  color: #00ff9d;
-  font-family: 'Courier New', monospace;
-  font-size: 15px;
-  border: 1px dashed #00ff9d;
-  border-width: 1px !important; /* ✅ only width is important */
-  letter-spacing: 0.5px;
-  box-shadow: 0 0 8px rgba(0, 255, 157, 0.3);
-  transition: all 0.3s ease;
-}
 
-
-/* 💙 Blue (Bootstrap primary family, second card) */
-.border-dark {
-  background-color: #1f2937;
-  color: rgb(137, 216, 255);
-  font-family: 'Courier New', monospace;
-  font-size: 15px;
-  border: 1px dashed rgb(180, 230, 255);
-  border-width: 1px !important; /* ✅ only the width is forced */
-  letter-spacing: 0.5px;
-  box-shadow: 0 0 8px rgba(13, 110, 253, 0.3);
-  transition: all 0.3s ease;
-}
-
-
-/* Optional: subtle hover glow */
-.border-green:hover,
-.border-dark:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 0 15px currentColor;
-}
-
-
-
-
+  @media (max-width: 576px) {
+    .exp-badge {
+      padding: 6px 12px;
+      gap: 6px;
+    }
+    
+    .exp-value {
+      font-size: 0.9rem;
+    }
+    
+    .exp-badge i {
+      font-size: 1rem;
+    }
+    
+    .rank-number {
+      font-size: 2rem;
+    }
+    
+    .rank-label {
+      font-size: 1rem;
+    }
+  }
 </style>
 
 <div class="g-sidenav-show text-white">
   <div class="min-height-300 position-absolute w-100"></div>
- 
-
-  {% include "partials/StudentSidebar.html" %}
 
   <main class="main-content position-relative border-radius-lg">
-    {% include "partials/navbar.html" %}
+  
     <div class="container-fluid p-5">
-     
 
-  <!-- Welcome Section -->
-    <div class="card text-white border-0 rounded-4 shadow-sm position-relative mx-auto"  
-          style="background: linear-gradient(135deg, #198754, #74c69d);
-                  margin-top: -0.75rem; 
-                  margin-bottom: 0.75rem; 
-                  min-height: 130px; 
-                  display: flex; 
-                  align-items: flex-start; 
-                  justify-content: flex-start;">
+      <!-- Welcome Section -->
+      <div class="card text-white border-0 rounded-4 shadow-sm position-relative mx-auto"  
+            style="background: linear-gradient(135deg, #198754, #74c69d);
+                    margin-top: -0.75rem; 
+                    margin-bottom: 0.75rem; 
+                    min-height: 130px; 
+                    display: flex; 
+                    align-items: flex-start; 
+                    justify-content: flex-start;">
 
-        <!-- Badge -->
+        <!-- Student Badge - Right Side -->
         <div class="position-absolute top-0 end-0 mt-2 me-4 bg-white d-flex align-items-center px-3 py-1 rounded-pill shadow-sm"
-            style="border: 2px solid #D68022;">
+            style="border: 2px solid #D68022; z-index: 2;">
           <img src="{% static 'img/studenthaticon.png' %}" 
               alt="Student Hat" 
               style="width: 3.5vh; height: 3.5vh;" 
@@ -117,25 +245,26 @@
           </span>
         </div>
 
-        <!-- Welcome Text aligned at start -->
-        <div class="d-flex flex-column justify-content-start text-start px-3 py-3 ms-4" style="height: 100%; margin-top: 10px;">
+        <!-- Welcome Text + EXP Badge - Left Side -->
+        <div class="welcome-text-container d-flex flex-column justify-content-start text-start px-3 py-3 ms-4" style="height: 100%; margin-top: 10px;">
           <h3 class="fw-bold text-white mb-2">Welcome back, {{ user.first_name }}!</h3>
-          <h6 class="text-white small m-0">Explore your classes and start learning today.</h6>
+          <h6 class="text-white small m-0 mb-3">Explore your classes and start learning today.</h6>
+          
+          <!-- 📊 Total EXP Badge -->
+          <div class="exp-badge">
+            <i class="fas fa-star"></i>
+            <span class="exp-value" id="totalExp">0 EXP</span>
+          </div>
         </div>
-
       </div>
 
-
-
-
-
       <!-- Quick Actions -->
-      <h5 class="fw-bold mb-3 mt-4">Quick Actions</h5>
+      <h5 class="fw-bold mb-3 mt-4"><i class="fas fa-bolt me-2" style="color: #fbbf24;"></i>Quick Actions</h5>
       <div class="row g-3 mb-4">
         <div class="col-md-3">
           <div class="card text-center bg-success text-white border-0 rounded-4 shadow-sm action-card h-100" data-bs-toggle="modal" data-bs-target="#joinClassModal">
             <div class="card-body">
-              <h1 class="display-5 mb-2" style="color: white;">+</h1>
+              <i class="fas fa-plus display-5 mb-2" style="color: white;"></i>
               <h6 class="fw-bold">Join Class</h6>
               <p class="text-light small mb-0">Enter class code</p>
             </div>
@@ -143,21 +272,21 @@
         </div>
 
         <div class="col-md-3">
-        <a href="{% url 'code_testing_playground' %}">
-          <div class="card text-center button-gray text-white border-0 rounded-4 shadow-sm h-100 action-card">
-            <div class="card-body">
-              <h1 class="display-6 mb-2" style="color: skyblue">&lt;/&gt;</h1>
-              <h6 class="fw-bold">Practice Coding</h6>
-              <p class="text-light small mb-0">Code Playground</p>
+          <a href="{% url 'code_testing_playground' %}">
+            <div class="card text-center button-gray text-white border-0 rounded-4 shadow-sm h-100 action-card">
+              <div class="card-body">
+                <i class="fas fa-code display-6 mb-2" style="color: skyblue;"></i>
+                <h6 class="fw-bold">Practice Coding</h6>
+                <p class="text-light small mb-0">Code Playground</p>
+              </div>
             </div>
-          </div>
           </a>
         </div>
 
         <div class="col-md-3">
           <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card">
             <div class="card-body">
-              <img src="{% static 'img/progressIcon.png' %}" alt="progress" width="40" height="40" class="mb-2">
+              <i class="fas fa-chart-line mb-2" style="font-size: 2.5rem; color: #10b981;"></i>
               <h6 class="fw-bold">View Progress</h6>
               <p class="text-light small mb-0">Track your progress</p>
             </div>
@@ -167,7 +296,7 @@
         <div class="col-md-3">
           <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card">
             <div class="card-body">
-              <img src="{% static 'img/PendingIC.png' %}" alt="pendingIcon" width="40" height="40" class="mb-2">
+              <i class="fas fa-tasks mb-2" style="font-size: 2.5rem; color: #f59e0b;"></i>
               <h6 class="fw-bold">Pending Task</h6>
               <p class="text-light small mb-0">View tasks</p>
             </div>
@@ -175,176 +304,169 @@
         </div>
       </div>
 
-       <!-- 🏆 Leaderboard -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="fw-bold mb-0">🏆 Leaderboard</h5>
-      <a href="#" 
-        class="badge border-green d-flex align-items-center gap-1 text-decoration-none px-3 py-2"
-        style="border-radius: 8px; font-weight: 600;">
-        <span style="color: #00ff9d;">View All Rank</span>
-        <i class="fa fa-arrow-right" style="color: #00ff9d; font-size: 0.9rem;"></i>
-      </a>
-    </div>
-<div class="row g-4 justify-content-start">
-  {% if top_scorers %}
-    {% for entry in top_scorers %}
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
-        <div 
-          class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative {% cycle 'border-green' 'border-dark' %}"
-          style="
-            background-color: rgb(34, 36, 55);
-            border-width: 2.5px;
-            border-style: dashed;
-            min-height: 100%;
-          "
-        >
-          <div class="card-body position-relative d-flex flex-column align-items-center">
-
-            <!-- 🏷️ Class Title Badge -->
-            <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-1 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
-              style="
-                border: 1.5px solid #D68022;
-                transform: scale(0.9);
-                white-space: nowrap;
-                width: fit-content;
-                flex-shrink: 0;
-              ">
-              <h6 style="
-                background: linear-gradient(90deg, #324254 35%, #8e500f);
-                -webkit-text-fill-color: transparent;
-                -webkit-background-clip: text;
-                font-weight: bold;
-                font-size: 1rem;
-                margin: 0;
-              ">
-                {{ entry.class.title }}
-              </h6>
-            </div>
-
-            <!-- 🏆 Trophy Image -->
-            <img src="{% static 'img/1stCup.svg' %}" 
-                alt="cup" width="180" height="180" class="mt-4 rounded img-fluid">
-
-            <!-- ⭐ Star + Label -->
-            <div class="d-flex align-items-center justify-content-center mt-2 mb-2">
-              <img 
-                src="{% static 'img/star.png' %}" 
-                alt="star" 
-                style="width: 22px; height: 22px; margin-right: 6px;"
-              >
-              <h5 
-                class="mb-0 fw-bold"
-                style="
-                  background: linear-gradient(90deg, #FFD700, #FFB700, #FFA500); 
-                  -webkit-background-clip: text;
-                  -webkit-text-fill-color: transparent;
-                  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-                  font-weight: 800;
-                  letter-spacing: 1px;
-                ">
-                1st Placer
-              </h5>
-            </div>
-
-            <!-- 👤 Top Scorer Name -->
-            {% if entry.top_scorer %}
-              <span 
-                class="badge px-3 py-2 rounded-3 shadow-sm {% cycle 'border-green' 'border-dark' %}" 
-                style="border: 1px solid currentColor !important; white-space: nowrap;">
-                {{ entry.top_scorer.student_id__first_name }} {{ entry.top_scorer.student_id__last_name }}
-              </span>
-            {% else %}
-              <p class="small text-secondary mb-0 fst-italic">No scorer data available</p>
-            {% endif %}
-
-          </div>
-        </div>
+      <!-- Leaderboard -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0"><i class="fas fa-trophy me-2" style="color: #fbbf24;"></i>Leaderboard</h5>
+        <a href="{% url 'leaderboard' %}" 
+          class="badge border-green d-flex align-items-center gap-1 text-decoration-none px-3 py-2"
+          style="border-radius: 8px; font-weight: 600;">
+          <span class="view-all-text" style="color: #00ff9d;">View All Rank</span>
+          <i class="fa fa-arrow-right" style="color: #00ff9d; font-size: 0.9rem;"></i>
+        </a>
       </div>
-    {% endfor %}
-  {% else %}
-    <p class="text-muted text-center">You have not joined any classes yet.</p>
-  {% endif %}
-</div>
 
-     <!-- 🔰 Recent Classes -->
-    <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
-      <h5 class="fw-bold mb-0">🔰 Recent Classes</h5>
-      <a href="{% url 'StudentClass' %}" 
-        class="badge border-green d-flex align-items-center gap-1 text-decoration-none px-3 py-2"
-        style="border-radius: 8px; font-weight: 600;">
-        <span style="color: #00ff9d;">View All Classes</span>
-        <i class="fa fa-arrow-right" style="color: #00ff9d; font-size: 0.9rem;"></i>
-      </a>
-    </div>
-
-    <div class="row g-3 mb-4 justify-content-start">
-  {% if classes %}
-    {% for class in classes %}
-      {% if forloop.counter <= 6 %}
-        <div class="col-6 col-sm-4 col-md-3 col-lg-2 d-flex justify-content-center">
-          <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative {% cycle 'border-green' 'border-dark' %}"
-               style="background-color: rgb(1, 45, 35); border-width: 2.5px; border-style: dashed; min-height: 180px; width: 100%;">
-            <div class="card-body d-flex flex-column align-items-center justify-content-center position-relative p-3">
-
-              <!-- 🏷️ Class Code Badge -->
-              <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-2 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
-                   style="border: 1.5px solid #D68022; transform: scale(0.85); white-space: nowrap; width: fit-content;">
-                <h6 style="background: linear-gradient(90deg, #324254 35%, #8e500f);
-                          -webkit-text-fill-color: transparent;
-                          -webkit-background-clip: text;
-                          font-weight: bold;
-                          font-size: 0.85rem;
-                          margin: 0;">
-                  {{ class.class_code }}
-                </h6>
+      <div class="row g-4 justify-content-start">
+        <!-- 🏅 YOUR RANK CARD (First Card) -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+          <div class="card text-center rounded-4 shadow-sm flex-fill action-card rank-card-leaderboard"
+               style="min-height: 100%;">
+            <div class="card-body position-relative d-flex flex-column align-items-center justify-content-center p-4">
+              <i class="fas fa-medal mb-3" style="font-size: 3rem; color: #fbbf24; filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.8));"></i>
+              
+              <h6 class="text-white fw-bold mb-2" style="font-size: 0.95rem; opacity: 0.9;">YOUR RANK</h6>
+              
+              <div class="rank-number" id="studentRank">#{{ rank|default:"N/A" }}</div>
+              
+              <div class="rank-label mt-2">
+                {{ user.first_name }} {{ user.last_name }}
               </div>
-
-              <!-- 🖼️ Class Icon -->
-              {% if class.upload_icon %}
-                <img src="{{ class.upload_icon.url }}" 
-                     alt="Class Icon" class="mb-2 rounded mt-4" style="width: 80px; height: 80px; object-fit: cover;">
-              {% else %}
-                <img src="{% static 'img/classroom.png' %}" 
-                     alt="Default Class Icon" class="mb-2 rounded mt-4" style="width: 80px; height: 80px; object-fit: cover;">
-              {% endif %}
-
-              <!-- 📘 Class Title Badge (Flexible & Responsive) -->
-              <span class="badge px-2 py-1 rounded-3 shadow-sm text-truncate {% cycle 'border-green' 'border-dark' %}"
-                    style="border: 1px solid currentColor !important; max-width: 100%; font-size: clamp(0.7rem, 2vw, 0.85rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block;">
-                {{ class.title }}
+              
+              <span class="badge mt-3 px-3 py-2" style="background-color: rgba(255, 255, 255, 0.2); color: white; font-size: 0.85rem;">
+                <i class="fas fa-rocket me-1"></i>Keep climbing!
               </span>
-
             </div>
           </div>
         </div>
-      {% endif %}
-    {% endfor %}
-  {% else %}
-    <p class="text-muted">No classes created yet.</p>
-  {% endif %}
-</div>
 
+        <!-- TOP SCORERS (Remaining Cards) -->
+        {% if top_scorers %}
+          {% for entry in top_scorers %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+              <div 
+                class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative border-{{ entry.class.class_type }}"
+                style="background-color: rgb(34, 36, 55); min-height: 100%;"
+              >
+                <div class="card-body position-relative d-flex flex-column align-items-center">
+                  <!-- 🏷️ Class Title Badge -->
+                  <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-1 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
+                    style="border: 1.5px solid #D68022; transform: scale(0.9); white-space: nowrap; width: fit-content; flex-shrink: 0;">
+                    <h6 style="background: linear-gradient(90deg, #324254 35%, #8e500f);
+                      -webkit-text-fill-color: transparent;
+                      -webkit-background-clip: text;
+                      font-weight: bold;
+                      font-size: 1rem;
+                      margin: 0;">
+                      {{ entry.class.title }}
+                    </h6>
+                  </div>
 
+                  <!-- 🏆 Trophy Image -->
+                  <img src="{% static 'img/1stCup.svg' %}" 
+                      alt="cup" width="180" height="180" class="mt-4 rounded img-fluid">
 
+                  <!-- ⭐ Star + Label -->
+                  <div class="d-flex align-items-center justify-content-center mt-2 mb-2">
+                    <img src="{% static 'img/star.png' %}" alt="star" 
+                      style="width: 22px; height: 22px; margin-right: 6px;">
+                    <h5 class="mb-0 fw-bold"
+                      style="background: linear-gradient(90deg, #FFD700, #FFB700, #FFA500); 
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+                        font-weight: 800;
+                        letter-spacing: 1px;">
+                      1st Placer
+                    </h5>
+                  </div>
 
-      {% include "partials/footer.html" %}
+                  <!-- 👤 Top Scorer Name -->
+                  {% if entry.top_scorer %}
+                    <span class="badge px-3 py-2 rounded-3 shadow-sm border-{{ entry.class.class_type }}" 
+                      style="border: 1px solid currentColor !important; white-space: nowrap;">
+                      {{ entry.top_scorer.student_id__first_name }} {{ entry.top_scorer.student_id__last_name }}
+                    </span>
+                  {% else %}
+                    <p class="small text-secondary mb-0 fst-italic">No scorer data available</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted text-center">You have not joined any classes yet.</p>
+        {% endif %}
+      </div>
+
+      <!-- Recent Classes -->
+      <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+        <h5 class="fw-bold mb-0"><i class="fas fa-book-open me-2" style="color: #10b981;"></i>Recent Classes</h5>
+        <a href="{% url 'StudentClass' %}" 
+          class="badge border-green d-flex align-items-center gap-1 text-decoration-none px-3 py-2"
+          style="border-radius: 8px; font-weight: 600;">
+          <span class="view-all-text" style="color: #00ff9d;">View All Classes</span>
+          <i class="fa fa-arrow-right" style="color: #00ff9d; font-size: 0.9rem;"></i>
+        </a>
+      </div>
+
+      <div class="row g-3 mb-4 justify-content-start">
+        {% if classes %}
+          {% for class in classes %}
+            {% if forloop.counter <= 6 %}
+              <div class="col-6 col-sm-4 col-md-3 col-lg-2 d-flex justify-content-center">
+                <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative border-{{ class.class_type }}"
+                     style="background-color: rgb(1, 45, 35); min-height: 180px; width: 100%;">
+                  <div class="card-body d-flex flex-column align-items-center justify-content-center position-relative p-3">
+                    <!-- 🏷️ Class Code Badge -->
+                    <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-2 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
+                         style="border: 1.5px solid #D68022; transform: scale(0.85); white-space: nowrap; width: fit-content;">
+                      <h6 style="background: linear-gradient(90deg, #324254 35%, #8e500f);
+                                -webkit-text-fill-color: transparent;
+                                -webkit-background-clip: text;
+                                font-weight: bold;
+                                font-size: 0.85rem;
+                                margin: 0;">
+                        {{ class.class_code }}
+                      </h6>
+                    </div>
+
+                    <!-- 🖼️ Class Icon -->
+                    {% if class.upload_icon %}
+                      <img src="{{ class.upload_icon.url }}" 
+                           alt="Class Icon" class="mb-2 rounded mt-4" style="width: 80px; height: 80px; object-fit: cover;">
+                    {% else %}
+                      <img src="{% static 'img/classroom.png' %}" 
+                           alt="Default Class Icon" class="mb-2 rounded mt-4" style="width: 80px; height: 80px; object-fit: cover;">
+                    {% endif %}
+
+                    <!-- 📘 Class Title Badge -->
+                    <span class="badge px-2 py-1 rounded-3 shadow-sm text-truncate border-{{ class.class_type }}"
+                          style="border: 1px solid currentColor !important; max-width: 100%; font-size: clamp(0.7rem, 2vw, 0.85rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block;">
+                      {{ class.title }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <p class="text-muted">No classes created yet.</p>
+        {% endif %}
+      </div>
     </div>
   </main>
 
   {% include "partials/scripts.html" %}
-    <div class="modal fade" id="joinClassModal" tabindex="-1" aria-labelledby="joinClassLabel" aria-hidden="true">
+  
+  <!-- Join Class Modal -->
+  <div class="modal fade" id="joinClassModal" tabindex="-1" aria-labelledby="joinClassLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
       <div class="modal-content shadow-lg border-0" style="background-color: #1E2835; color: white; border-radius: 16px;">
         <div class="modal-header border-0">
-          <h5 class="modal-title fw-bold text-success" id="joinClassLabel">
-            Join a Class
-          </h5>
+          <h5 class="modal-title fw-bold text-success" id="joinClassLabel">Join a Class</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-
         <div class="modal-body pt-0">
           <p class="text-muted small mb-4">Enter the class code provided by your teacher to join a class.</p>
-
           <form id="joinClassForm" method="POST" action="{% url 'join_class' %}">
             {% csrf_token %}
             <div class="mb-3">
@@ -353,7 +475,6 @@
                      placeholder="Enter class code"
                      style="background-color: #101826; border: 1px solid #4CD964; border-radius: 8px;">
             </div>
-
             <div class="d-flex justify-content-end">
               <button type="button" class="btn btn-outline-secondary btn-sm me-2 px-3" data-bs-dismiss="modal">
                 <i class="fa fa-times me-1"></i> Cancel
@@ -368,5 +489,33 @@
     </div>
   </div>
 
+  <script>
+    // Calculate and display total EXP and Rank from all submissions
+    document.addEventListener('DOMContentLoaded', function() {
+      // Fetch Total EXP
+      fetch('/api/student/total-exp/')
+        .then(response => response.json())
+        .then(data => {
+          const totalExp = data.total_exp || 0;
+          document.getElementById('totalExp').textContent = totalExp.toLocaleString() + ' EXP';
+        })
+        .catch(error => {
+          console.error('Error fetching total EXP:', error);
+          document.getElementById('totalExp').textContent = '0 EXP';
+        });
+      
+      // Fetch Current Rank (using existing leaderboard API)
+      fetch('/api/leaderboard-data/')
+        .then(response => response.json())
+        .then(data => {
+          const userRank = data.user_rank || 'N/A';
+          document.getElementById('studentRank').textContent = userRank !== 'N/A' ? `#${userRank}` : '#N/A';
+        })
+        .catch(error => {
+          console.error('Error fetching rank:', error);
+          document.getElementById('studentRank').textContent = '#N/A';
+        });
+    });
+  </script>
 </div>
 {% endblock %}

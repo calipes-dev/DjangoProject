@@ -1,112 +1,264 @@
-
 {% extends "base.html" %}
 {% load static %}
-
+<!--classDetails.html - Improved Design-->
 {% block content %}
 <div>
   <div class="min-height-300 position-absolute w-100"></div>
-  {% include "partials/sidebar.html" %}
+
 
   <main class="main-content position-relative border-radius-lg p-4">
-    {% include 'partials/side_content_navbar.html' %}
+  
 
     <!-- CLASS HEADER -->
-    <div class="card bg-dark p-4 border-0 shadow-sm rounded-4" style="margin-top: -5px; margin-bottom: 20px;">
-      <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
-        <div class="flex-grow-1">
-          <h3 class="fw-bold text-white mb-2">{{ class.title }}</h3>
-          <p class="text-muted small mb-0">{{ class.description }}</p>
+    <div class="class-header card border-0 shadow-sm rounded-4 p-4 mb-4" 
+         style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-left: 4px solid #10b981 !important;">
+      <div class="d-flex justify-content-between align-items-start flex-wrap">
+        <div class="flex-grow-1 mb-3 mb-md-0">
+          <div class="d-flex align-items-center mb-2">
+            <i class="fas fa-chalkboard-teacher text-white me-2" style="font-size: 1.5rem;"></i>
+            <h3 class="fw-bold text-white mb-0">{{ class.title }}</h3>
+          </div>
+          <p class="text-white-50 small mb-0 ms-5">{{ class.description }}</p>
         </div>
 
-        <div class="d-flex align-items-center mt-2 mt-md-0">
-          <a href="#" class="btn btn-outline-success fw-bold me-2 align-items-center"
+        <div class="d-flex gap-2 flex-wrap teacher-actions">
+          <a href="#" class="btn btn-success fw-bold d-flex align-items-center"
              data-bs-toggle="modal" data-bs-target="#addProblemModal">
-            <img src="{% static 'img/plusIcon.png' %}" alt="add" style="width: 16px; height: 16px;" class="me-2">
-            Add Problem
+            <i class="fas fa-plus me-2"></i>
+            <span class="btn-text">Add Problem</span>
           </a>
 
           <a href="{% url 'delete_class' class.class_id %}"
-             class="btn btn-outline-danger fw-bold align-items-center"
+             class="btn btn-outline-danger fw-bold d-flex align-items-center"
              onclick="return confirm('Are you sure you want to delete this class?');">
-            <img src="{% static 'img/deleteIcon.png' %}" alt="delete" style="width: 18px; height: 18px;" class="me-2">
-            Delete Class
+            <i class="fas fa-trash me-2"></i>
+            <span class="btn-text">Delete Class</span>
           </a>
         </div>
       </div>
 
-      <div class="mt-3">
-        <span class="badge bg-success px-3 py-2">{{ class.class_code }}</span>
+      <div class="d-flex gap-2 flex-wrap mt-3">
+        <span class="badge px-3 py-2" style="background-color: rgba(16, 185, 129, 0.2); color: #34d399;">
+          <i class="fas fa-code me-1"></i>{{ class.class_code }}
+        </span>
       </div>
     </div>
 
     <!-- MAIN CONTENT AREA -->
     <div class="row g-4 mb-4">
 
-      <!-- LEFT COLUMN (Problems Section) -->
-      <div class="col-lg-8">
-        <div class="card bg-dark border-0 shadow-sm text-white rounded-4 p-3">
-
-          <!-- Search and Filter -->
-        <form method="GET"
-              class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3"
-              style="margin-top: -10px;">
-
-          <!-- Title -->
-          <h5 class="fw-bold text-white mb-0 d-flex align-items-center flex-shrink-0">
-            <img src="{% static 'img/problemsIcon.png' %}" alt="Problems Icon" width="25" height="25" class="me-2">
-            Problems
-          </h5>
-
-          <!-- Search + Filter Row -->
-          <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 flex-grow-1">
-
-            <!-- Search -->
-            <div class="d-flex align-items-center flex-grow-1" style="max-width: 350px;">
-              <input 
-                type="text" 
-                name="q" 
-                value="{{ query }}"
-                class="form-control form-control-sm text-white border-0 shadow-sm w-100"
-                placeholder="Search problems..."
-                style="background-color: rgb(37,36,36); height: 38px;">
-            </div>
-
-            <!-- Quick Filters -->
-            <div class="d-flex align-items-center flex-wrap gap-2">
-              <span class="text-white fw-semibold flex-shrink-0">Quick Filter:</span>
-
-              <div class="mt-3">
-              <button type="submit" name="filter" value="Assignment"
-                      class="btn btn-warning btn-sm fw-bold px-3 {% if filter_type == 'Assignment' %}active{% endif %}">
-                Assignments
+      <!-- RESOURCES SECTION -->
+      <div class="col-12 mt-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4" style="background-color: #1e293b;">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-white d-flex align-items-center mb-0">
+              <i class="fas fa-folder-open me-2" style="color: #10b981;"></i>
+              Class Resources
+            </h5>
+            <div class="d-flex gap-2 align-items-center">
+              <span class="badge px-3 py-2" style="background-color: rgba(16, 185, 129, 0.2); color: #34d399;">
+                <i class="fas fa-file me-1"></i>{{ resources|length }} Resources
+              </span>
+              <button type="button" class="btn btn-success fw-bold d-flex align-items-center"
+                      data-bs-toggle="modal" data-bs-target="#addResourcesModal">
+                <i class="fas fa-plus me-2"></i>
+                Add Resources
               </button>
-              <button type="submit" name="filter" value="Quiz"
-                      class="btn btn-success btn-sm fw-bold px-3 {% if filter_type == 'Quiz' %}active{% endif %}">
-                Quizzes
-              </button>
-
-              </div>
-
             </div>
           </div>
-        </form>
 
+          <!-- Resources Search -->
+          <div class="mb-3">
+            <div class="input-group">
+              <span class="input-group-text bg-dark border-0" style="color: #64748b;">
+                <i class="fas fa-search"></i>
+              </span>
+              <input type="text" id="resourceSearch" 
+                    class="form-control text-white border-0"
+                    placeholder="Search resources by title or description..."
+                    style="background-color: #0f172a; height: 44px;">
+            </div>
+          </div>
 
-          <!-- Problems List -->
+          <!-- Resources Grid -->
+          <div class="resources-container rounded-3 p-3" style="background-color: #0f172a; min-height: 200px; max-height: 400px; overflow-y: auto;">
+            {% if resources %}
+              <div class="row g-3" id="resourcesGrid">
+                {% for resource_group in resources %}
+                  <div class="col-12 col-md-6 col-lg-4 resource-item" 
+                      data-title="{{ resource_group.title|lower }}" 
+                      data-description="{{ resource_group.description|lower }}">
+                    <div class="resource-card card text-white rounded-3 p-3 h-100 resource-card-clickable"
+                      style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
+                              border: 1px solid #334155; 
+                              transition: all 0.3s ease; 
+                              cursor: pointer;"
+                      data-resource-title="{{ resource_group.title|escapejs }}"
+                      data-resource-files='{{ resource_group.files|safe }}'>
+
+                      
+                      <div class="d-flex align-items-start mb-2">
+                        <!-- Multiple files indicator -->
+                        <div class="flex-shrink-0 me-3 position-relative">
+                          {% if resource_group.files|length > 1 %}
+                            <div class="file-stack">
+                              <i class="fas fa-file fa-2x" style="color: #10b981;"></i>
+                              <span class="badge bg-success position-absolute top-0 start-100 translate-middle rounded-pill">
+                               {{ resource_group.file_count }}
+                              </span>
+                            </div>
+                          {% else %}
+                            {% with resource=resource_group.files.0 %}
+                              {% if resource.file_extension == 'pdf' %}
+                                <i class="fas fa-file-pdf fa-2x text-danger"></i>
+                              {% elif resource.file_extension in 'png,jpg,jpeg' %}
+                                <i class="fas fa-file-image fa-2x text-info"></i>
+                              {% elif resource.file_extension in 'docx,doc' %}
+                                <i class="fas fa-file-word fa-2x text-primary"></i>
+                              {% elif resource.file_extension in 'pptx,ppt' %}
+                                <i class="fas fa-file-powerpoint fa-2x text-warning"></i>
+                              {% elif resource.file_extension == 'zip' %}
+                                <i class="fas fa-file-archive fa-2x text-secondary"></i>
+                              {% elif resource.file_extension == 'txt' %}
+                                <i class="fas fa-file-alt fa-2x text-muted"></i>
+                              {% elif resource.file_extension in 'mp4,mov,avi' %}
+                                <i class="fas fa-file-video fa-2x text-danger"></i>
+                              {% elif resource.file_extension in 'mp3,wav' %}
+                                <i class="fas fa-file-audio fa-2x text-info"></i>
+                              {% elif resource.file_extension in 'xls,xlsx' %}
+                                <i class="fas fa-file-excel fa-2x text-success"></i>
+                              {% else %}
+                                <i class="fas fa-file fa-2x" style="color: #10b981;"></i>
+                              {% endif %}
+                            {% endwith %}
+                          {% endif %}
+                        </div>
+
+                        <div class="flex-grow-1 overflow-hidden">
+                          <h6 class="fw-bold mb-1 text-white text-truncate" title="{{ resource_group.title }}">
+                            {{ resource_group.title }}
+                          </h6>
+                          <small class="text-white-50 d-block mb-1" title="{{ resource_group.description|default:'No description' }}">
+                            {{ resource_group.description|default:'No description'|truncatewords:3 }}
+                          </small>
+                          <div class="d-flex gap-2">
+                            <span class="badge small" style="background-color: #334155;">
+                              <i class="fas fa-copy me-1"></i>{{ resource_group.file_count }} file{{ resource_group.file_count|pluralize }}
+                            </span>
+                            <span class="badge small" style="background-color: #334155;">
+                              <i class="far fa-calendar me-1"></i>{{ resource_group.uploaded_at|date:"M d, Y" }}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Action Buttons -->
+                      <div class="d-flex gap-2 mt-2">
+                        <button type="button" class="btn btn-sm btn-outline-success flex-grow-1" onclick="event.stopPropagation(); downloadResourceGroup('{{ resource_group.title|escapejs }}', {{ resource_group.files|safe }})">
+                          <i class="fas fa-download me-1"></i>Download All
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-info flex-grow-1" onclick="event.stopPropagation(); viewResourceGroupDetails('{{ resource_group.title|escapejs }}', {{ resource_group.files|safe }})">
+                          <i class="fas fa-eye me-1"></i>View Files
+                        </button>
+                        {% if user.user_type == 'Teacher' %}
+                          <button type="button" class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deleteResourceGroup('{{ resource_group.title|escapejs }}', {{ resource_group.resource_ids|safe }})"
+                                  title="Delete Resource Group">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="text-center text-muted py-5">
+                <i class="fas fa-folder-open fa-3x mb-3 opacity-50" style="color: #64748b;"></i>
+                <p class="mb-0">No resources uploaded yet.</p>
+                <small class="text-muted">Click "Add Resources" to upload files.</small>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- LEFT COLUMN (Problems Section) -->
+      <div class="col-12 col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4" style="background-color: #1e293b;">
+
+          <!-- Search and Filter -->
+          <form method="GET" class="mb-4">
+            <div class="row g-3 align-items-center">
+              
+              <!-- Title -->
+              <div class="col-12 col-lg-auto">
+                <h5 class="fw-bold text-white mb-0 d-flex align-items-center">
+                  <i class="fas fa-tasks me-2" style="color: #10b981;"></i>
+                  Problems
+                </h5>
+              </div>
+
+              <!-- Search Bar -->
+              <div class="col-12 col-lg">
+                <div class="input-group">
+                  <span class="input-group-text bg-dark border-0" style="color: #64748b;">
+                    <i class="fas fa-search"></i>
+                  </span>
+                  <input type="text" name="q" value="{{ query }}"
+                         class="form-control text-white border-0"
+                         placeholder="Search problems..."
+                         style="background-color: #0f172a; height: 44px;">
+                </div>
+              </div>
+
+              <!-- Filter Buttons -->
+              <div class="col-12 col-lg-auto">
+                <div class="d-flex gap-2 flex-wrap justify-content-center justify-content-lg-end">
+                  <button type="submit" name="filter" value="Assignment"
+                          class="btn fw-bold {% if filter_type == 'Assignment' %}btn-warning{% else %}btn-outline-warning{% endif %}"
+                          style="height: 44px; min-width: 130px;">
+                    <i class="fas fa-code me-1"></i>
+                    <span class="d-none d-sm-inline">Assignments</span>
+                    <span class="d-inline d-sm-none">Assign.</span>
+                  </button>
+                  
+                  <button type="submit" name="filter" value="Quiz"
+                          class="btn fw-bold {% if filter_type == 'Quiz' %}btn-success{% else %}btn-outline-success{% endif %}"
+                          style="height: 44px; min-width: 100px;">
+                    <i class="fas fa-clipboard-check me-1"></i>
+                    Quizzes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <!-- Problems Grid -->
           {% if problems %}
           <div class="row g-3">
             {% for problem in problems %}
-            <div class="col-md-6">
-              <div class="card bg-transparent text-white border 
-                          {% if problem.problem_type == 'Quiz' %}border-success{% else %}border-warning{% endif %}
-                          rounded-3 p-3 shadow-sm h-100 problem-card"
+            <div class="col-12 col-sm-6">
+              <div class="problem-card card text-white rounded-3 p-3 shadow-sm h-100"
                    data-problem-id="{{ problem.problem_id }}"
-                   style="cursor: pointer;">
-                <div class="d-flex justify-content-between align-items-start">
-                  <h6 class="fw-bold mb-2 text-white">{{ problem.problem_title }}</h6>
-                  <span class="badge 
-                    {% if problem.problem_type == 'Quiz' %}bg-success{% else %}bg-warning text-dark{% endif %}">
-                    Due: {{ problem.due_date|date:"M d, Y H:i" }}
+                   style="cursor: pointer; 
+                          background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
+                          transition: all 0.3s ease; 
+                          border: 1px solid {% if problem.problem_type == 'Quiz' %}#10b981{% else %}#f59e0b{% endif %};">
+                
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <div class="d-flex align-items-center flex-grow-1">
+                    <i class="fas {% if problem.problem_type == 'Quiz' %}fa-clipboard-check{% else %}fa-code{% endif %} me-2" 
+                       style="color: {% if problem.problem_type == 'Quiz' %}#10b981{% else %}#f59e0b{% endif %};"></i>
+                    <h6 class="fw-bold mb-0 text-white text-truncate">{{ problem.problem_title }}</h6>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-2 flex-wrap gap-2">
+                  <span class="badge small" style="background-color: {% if problem.problem_type == 'Quiz' %}#10b981{% else %}#f59e0b{% endif %};">
+                    <i class="far fa-clock me-1"></i>{{ problem.due_date|date:"M d, Y H:i" }}
+                  </span>
+                  <span class="badge bg-dark small">
+                    <i class="fas fa-star me-1"></i>{{ problem.total_score }} pts
                   </span>
                 </div>
               </div>
@@ -114,169 +266,197 @@
             {% endfor %}
           </div>
           {% else %}
-          <div class="p-3 rounded-3 text-center text-muted"
-               style="min-height: 316px; background-color: rgb(37,36,36);">
-            <p>No problems yet. Click <b>Add Problem</b> to create one.</p>
+          <div class="text-center text-muted p-5 rounded-3" style="background-color: #0f172a; border: 2px dashed #334155;">
+            <i class="fas fa-inbox fa-3x mb-3 opacity-50" style="color: #64748b;"></i>
+            <p class="mb-0">No problems yet. Click <b>Add Problem</b> to create one.</p>
           </div>
           {% endif %}
         </div>
       </div>
 
       <!-- RIGHT COLUMN (Students Section) -->
-      <div class="col-lg-4">
-        <div class="card bg-dark border-0 shadow-sm text-white rounded-4 p-3">
-          <h5 class="fw-bold text-white" style = "margin-bottom: -5px;">Students</h5>
+      <div class="col-12 col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4" style="background-color: #1e293b;">
+          <h5 class="fw-bold text-white d-flex align-items-center mb-3">
+            <i class="fas fa-users me-2" style="color: #10b981;"></i>
+            Students
+          </h5>
 
-        <!-- Student Search Form -->
-        <form method="GET" class="w-100">
-          <div class="d-flex align-items-center w-100" style="gap: 8px;">
-            <input 
-              type="text" 
-              name="student_search" 
-              value="{{ student_query }}"
-              class="form-control form-control-sm text-white border-0 shadow-sm flex-grow-1"
-              placeholder="Search students..."
-              style="
-                background-color: rgb(37,36,36);
-                height: 40px;
-                font-size: 14px;
-                border-radius: 6px;
-                min-width: 0; /* prevents overflow on small screens */
-              ">
-            
-            <button 
-              class="btn btn-success fw-bold btn-sm align-items-center justify-content-center mt-3"
-              type="submit"
-              style="
-                height: 40px;
-                font-size: 13px;
-                border-radius: 6px;
-                padding: 0 16px;
-                white-space: nowrap; /* keeps text from breaking */
-              ">
-              <i class="fa fa-search me-1"></i> Search
-            </button>
-          </div>
-        </form>
+          <!-- Student Search -->
+          <form method="GET" class="mb-3">
+            <div class="input-group">
+              <span class="input-group-text bg-dark border-0" style="color: #64748b;">
+                <i class="fas fa-search"></i>
+              </span>
+              <input type="text" name="student_search" value="{{ student_query }}"
+                     class="form-control text-white border-0"
+                     placeholder="Search students..."
+                     style="background-color: #0f172a; height: 44px;">
+              <button class="btn btn-success" type="submit" style="height: 44px;">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </form>
 
-
-
-
-
-<!-- Student List -->
-<div class="p-3 rounded-3 text-start text-white"
-     style="min-height: 300px; background-color: rgb(37,36,36); overflow-y: auto; max-height: 350px;">
-  {% if students %}
-    <ul class="list-group list-group-flush">
-      {% for enrollment in students %}
-        <li class="list-group-item bg-transparent text-white d-flex align-items-center justify-content-between border-0 py-2">
-          <div class="d-flex align-items-center">
-            {% if enrollment.student_id.user_image %}
-              <img src="{{ enrollment.student_id.user_image.url }}" alt="student" 
-                   class="rounded-circle me-2" width="35" height="35">
+          <!-- Student List -->
+          <div class="rounded-3 p-3 students-list" 
+               style="background-color: #0f172a; min-height: 300px; max-height: 400px; overflow-y: auto;">
+            {% if students %}
+              <ul class="list-group list-group-flush">
+                {% for enrollment in students %}
+                  <li class="list-group-item bg-transparent text-white border-0 d-flex align-items-center justify-content-between py-2">
+                    <div class="d-flex align-items-center flex-grow-1 overflow-hidden">
+                      {% if enrollment.student_id.user_image %}
+                        <img src="{{ enrollment.student_id.user_image.url }}" alt="student" 
+                             class="rounded-circle me-2 flex-shrink-0" width="35" height="35" 
+                             style="border: 2px solid #10b981;">
+                      {% else %}
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-2 flex-shrink-0" 
+                             style="width: 35px; height: 35px; background-color: #10b981;">
+                          <i class="fas fa-user text-white"></i>
+                        </div>
+                      {% endif %}
+                      <span class="small text-truncate">{{ enrollment.student_id.first_name }} {{ enrollment.student_id.last_name }}</span>
+                    </div>
+                    <span class="badge small flex-shrink-0 ms-2" style="background-color: #64748b;">
+                      {{ enrollment.student_id.school_id }}
+                    </span>
+                  </li>
+                {% endfor %}
+              </ul>
             {% else %}
-              <img src="{% static 'img/default_user.png' %}" alt="student" 
-                   class="rounded-circle me-2" width="35" height="35">
+              <div class="text-center text-muted py-4">
+                <i class="fas fa-user-slash fa-2x mb-2 opacity-50"></i>
+                <p class="small mb-0">No students enrolled yet.</p>
+              </div>
             {% endif %}
-            <span>{{ enrollment.student_id.first_name }} {{ enrollment.student_id.last_name }}</span>
           </div>
-          <span class="badge bg-secondary small">{{ enrollment.student_id.school_id }}</span>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <div class="text-center text-muted py-4">
-      <p>No students enrolled yet.</p>
-    </div>
-  {% endif %}
-</div>
-
         </div>
       </div>
+
+      
+      
+
+      <!-- RESOURCE GROUP DETAILS MODAL -->
+      <div class="modal fade" id="resourceGroupDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content text-white" style="background-color: #1e293b; border: 2px solid #10b981; border-radius: 15px;">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+              <h4 class="fw-bold text-white d-flex align-items-center">
+                <i class="fas fa-folder-open me-2" style="color: #10b981;"></i>
+                <span id="resourceGroupTitle"></span>
+              </h4>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body px-4">
+              <div class="resource-group-info mb-4">
+                <h5 class="text-white mb-3">Files in this resource group:</h5>
+                <div id="resourceGroupFilesList" class="files-list">
+                  <!-- Files will be populated here -->
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer" style="border-top: 1px solid rgba(100, 116, 139, 0.3);">
+              <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-success px-4" onclick="downloadAllFilesInGroup()">
+                <i class="fas fa-download me-2"></i>Download All Files
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
     </div>
 
     <!-- CREATE NEW PROBLEM MODAL -->
     {% include "partials/add_problem_modal.html" %}
 
+    <!-- CREATE NEW RESOURCE MODAL -->
+    {% include "partials/add_resources_modal.html" %}
+
     <!-- EDIT PROBLEM MODAL -->
     <div class="modal fade" id="problemDetailsModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content text-white" style="background-color: #1E2835; border-radius: 15px;">
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content text-white" 
+             style="background-color: #1e293b; border: 2px solid #10b981; border-radius: 15px;">
           <form method="POST" id="editProblemForm" action="">
             {% csrf_token %}
             
-            <!-- Header -->
-            <div class="modal-header border-0 pb-0">
-              <h4 class="fw-bold text-success">Edit Problem</h4>
+            <div class="modal-header" style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+              <h4 class="fw-bold text-white d-flex align-items-center">
+                <i class="fas fa-edit me-2" style="color: #10b981;"></i>
+                Edit Problem
+              </h4>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
-            <!-- Body -->
-            <div class="modal-body px-4 pb-1">
+            <div class="modal-body px-4">
               <input type="hidden" id="problem_id" name="problem_id">
 
               <div class="row g-3">
                 
-                <!-- Left -->
-                <div class="col-md-6">
-                  <label class="fw-semibold mb-1">Title</label>
+                <!-- Left Column -->
+                <div class="col-12 col-md-6">
+                  <label class="fw-semibold mb-2 text-white">Title</label>
                   <input type="text" id="problem_title" name="problem_title"
                          class="form-control text-white"
-                         style="background-color: #101826; border: 1px solid #2b3a55;">
+                         style="background-color: #0f172a; border: 1px solid #334155;">
 
                   <div class="row g-2 mt-3">
                     <div class="col-6">
-                      <label class="fw-semibold mb-1">Score</label>
+                      <label class="fw-semibold mb-2 text-white">Score</label>
                       <input type="number" id="total_score" name="total_score"
                              class="form-control text-white"
-                             style="background-color: #101826; border: 1px solid #2b3a55;">
+                             style="background-color: #0f172a; border: 1px solid #334155;">
                     </div>
                     <div class="col-6">
-                      <label class="fw-semibold mb-1">Due Date</label>
-                      <input type="datetime-local" id="due_date" name="due_date"
+                      <label class="fw-semibold mb-2 text-white">Time Limit</label>
+                      <input type="number" id="time_limit" name="time_limit"
                              class="form-control text-white"
-                             style="background-color: #101826; border: 1px solid #2b3a55;">
+                             style="background-color: #0f172a; border: 1px solid #334155;">
                     </div>
                   </div>
 
-                  <div class="row g-2 mt-3">
-                    <div class="col-6">
-                      <label class="fw-semibold mb-1">Time Limit</label>
-                      <input type="number" id="time_limit" name="time_limit"
-                             class="form-control text-white"
-                             style="background-color: #101826; border: 1px solid #2b3a55;">
-                    </div>
-                    <div class="col-6">
-                      <label class="fw-semibold mb-1">Type</label>
-                      <select id="problem_type" name="problem_type"
-                              class="form-select text-white"
-                              style="background-color: #101826; border: 1px solid #2b3a55;">
-                        <option value="Assignment">Assignment</option>
-                        <option value="Quiz">Quiz</option>
-                      </select>
-                    </div>
+                  <div class="mt-3">
+                    <label class="fw-semibold mb-2 text-white">Due Date</label>
+                    <input type="datetime-local" id="due_date" name="due_date"
+                           class="form-control text-white"
+                           style="background-color: #0f172a; border: 1px solid #334155;">
+                  </div>
+
+                  <div class="mt-3">
+                    <label class="fw-semibold mb-2 text-white">Type</label>
+                    <select id="problem_type" name="problem_type"
+                            class="form-select text-white"
+                            style="background-color: #0f172a; border: 1px solid #334155;">
+                      <option value="Assignment">Assignment</option>
+                      <option value="Quiz">Quiz</option>
+                    </select>
                   </div>
                 </div>
 
-                <!-- Right -->
-                <div class="col-md-6">
-                  <label class="fw-semibold mb-1">Instruction</label>
+                <!-- Right Column -->
+                <div class="col-12 col-md-6">
+                  <label class="fw-semibold mb-2 text-white">Instructions</label>
                   <textarea id="problem_description" name="problem_description" rows="5"
                             class="form-control text-white"
-                            style="background-color: #101826; border: 1px solid #2b3a55;"></textarea>
+                            style="background-color: #0f172a; border: 1px solid #334155;"></textarea>
 
-                  <label class="fw-semibold mt-3 mb-2">Test Cases</label>
+                  <label class="fw-semibold mt-3 mb-2 text-white">Test Cases</label>
                   <div class="row g-2">
                     {% for i in "123" %}
                     <div class="col-4">
                       <textarea id="input{{ i }}" name="input{{ i }}" rows="2"
                                 class="form-control text-white small-placeholder mb-1"
                                 placeholder="Input {{ i }}"
-                                style="background-color: #101826; border: 1px solid #2b3a55;"></textarea>
+                                style="background-color: #0f172a; border: 1px solid #334155; font-size: 0.8rem;"></textarea>
                       <textarea id="output{{ i }}" name="output{{ i }}" rows="2"
                                 class="form-control text-white small-placeholder"
                                 placeholder="Output {{ i }}"
-                                style="background-color: #101826; border: 1px solid #2b3a55;"></textarea>
+                                style="background-color: #0f172a; border: 1px solid #334155; font-size: 0.8rem;"></textarea>
                     </div>
                     {% endfor %}
                   </div>
@@ -284,13 +464,16 @@
               </div>
             </div>
 
-            <!-- Footer -->
-            <div class="modal-footer border-0 d-flex justify-content-between pt-0">
+            <div class="modal-footer" style="border-top: 1px solid rgba(100, 116, 139, 0.3);">
               <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Cancel</button>
-              <div>
-                <button type="submit" class="btn btn-info fw-bold px-4 me-2">Save Changes</button>
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-info fw-bold px-4">
+                  <i class="fas fa-save me-2"></i>Save
+                </button>
                 <a href="#" id="deleteProblemBtn" class="btn btn-danger fw-bold px-4"
-                   onclick="return confirm('Are you sure you want to delete this problem?');">Delete</a>
+                   onclick="return confirm('Are you sure you want to delete this problem?');">
+                  <i class="fas fa-trash me-2"></i>Delete
+                </a>
               </div>
             </div>
 
@@ -301,59 +484,532 @@
 
   </main>
 
-  {% include "partials/footer.html" %}
+</div>
+
+ <!-- JavaScript -->
+
+<script>
+// Global error handler
+window.addEventListener('error', function(e) {
+  console.error('Global error:', e.error);
+});
+
+// Bootstrap availability check
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Bootstrap available:', typeof bootstrap !== 'undefined');
+  console.log('Modal element exists:', document.getElementById('resourceGroupDetailsModal') !== null);
   
+  // Handle resource card clicks using event delegation
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.resource-card-clickable');
+    if (card) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      try {
+        const title = card.dataset.resourceTitle;
+        const filesJson = card.dataset.resourceFiles;
+        
+        console.log('Clicked resource:', title);
+        console.log('Files data:', filesJson);
+        
+        if (!filesJson || filesJson === '') {
+          alert('No files available for this resource');
+          return;
+        }
+        
+        // Parse the JSON data
+        let files;
+        try {
+          files = JSON.parse(filesJson);
+        } catch (parseError) {
+          console.error('JSON parse error:', parseError);
+          console.error('JSON string:', filesJson);
+          alert('Error loading resource files');
+          return;
+        }
+        
+        // Show the modal
+        viewResourceGroupDetails(title, files);
+        
+      } catch (error) {
+        console.error('Resource click error:', error);
+        alert('Error opening resource: ' + error.message);
+      }
+    }
+  });
 
-  <!-- JavaScript: Load problem details dynamically -->
-  <script>
-    document.querySelectorAll('.problem-card').forEach(card => {
-      card.addEventListener('click', function() {
-        const problemId = this.dataset.problemId;
+  // Problem card functionality (existing)
+  document.querySelectorAll('.problem-card').forEach(card => {
+    card.addEventListener('click', function() {
+      const problemId = this.dataset.problemId;
 
-        fetch(`/problem/${problemId}/details/`)
-          .then(res => res.json())
-          .then(data => {
-            const form = document.getElementById('editProblemForm');
-            form.reset();
-            form.action = `/problem/${problemId}/edit/`;
+      fetch(`/problem/${problemId}/details/`)
+        .then(res => res.json())
+        .then(data => {
+          const form = document.getElementById('editProblemForm');
+          form.reset();
+          form.action = `/problem/${problemId}/edit/`;
 
-            document.getElementById('problem_id').value = data.problem_id;
-            document.getElementById('problem_title').value = data.title;
-            document.getElementById('problem_description').value = data.description;
-            document.getElementById('problem_type').value = data.type;
-            document.getElementById('total_score').value = data.score;
-            document.getElementById('time_limit').value = data.time_limit;
-            document.getElementById('due_date').value = data.due_date;
+          document.getElementById('problem_id').value = data.problem_id;
+          document.getElementById('problem_title').value = data.title;
+          document.getElementById('problem_description').value = data.description;
+          document.getElementById('problem_type').value = data.type;
+          document.getElementById('total_score').value = data.score;
+          document.getElementById('time_limit').value = data.time_limit;
+          document.getElementById('due_date').value = data.due_date;
 
-            for (let i = 1; i <= 3; i++) {
-              document.getElementById(`input${i}`).value = "";
-              document.getElementById(`output${i}`).value = "";
-            }
+          for (let i = 1; i <= 3; i++) {
+            document.getElementById(`input${i}`).value = "";
+            document.getElementById(`output${i}`).value = "";
+          }
 
-            data.test_cases.forEach((tc, index) => {
-              const i = index + 1;
-              document.getElementById(`input${i}`).value = tc.input;
-              document.getElementById(`output${i}`).value = tc.output;
-            });
-
-            document.getElementById('deleteProblemBtn').href = `/problem/${problemId}/delete/`;
-
-            const modal = new bootstrap.Modal(document.getElementById('problemDetailsModal'));
-            modal.show();
+          data.test_cases.forEach((tc, index) => {
+            const i = index + 1;
+            document.getElementById(`input${i}`).value = tc.input;
+            document.getElementById(`output${i}`).value = tc.output;
           });
-      });
+
+          document.getElementById('deleteProblemBtn').href = `/problem/${problemId}/delete/`;
+
+          const modal = new bootstrap.Modal(document.getElementById('problemDetailsModal'));
+          modal.show();
+        });
     });
-  </script>
+  });
+
+  // Resource Search for grouped resources
+  document.getElementById('resourceSearch').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const resourceItems = document.querySelectorAll('.resource-item');
+    
+    resourceItems.forEach(item => {
+      const title = item.dataset.title;
+      const description = item.dataset.description;
+      
+      if (title.includes(searchTerm) || description.includes(searchTerm)) {
+        item.style.display = 'block';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  });
+});
+
+// Global variable to store current resource group data
+let currentResourceGroup = null;
+
+// View Resource Group Details (multiple files)
+function viewResourceGroupDetails(title, files) {
+  try {
+    console.log('Opening resource group:', title, files);
+    
+    currentResourceGroup = { title, files };
+    
+    document.getElementById('resourceGroupTitle').textContent = title;
+    
+    // Populate files list
+    const filesList = document.getElementById('resourceGroupFilesList');
+    if (!filesList) {
+      console.error('Files list container not found!');
+      return;
+    }
+    
+    filesList.innerHTML = '';
+    
+    if (!files || !Array.isArray(files) || files.length === 0) {
+      filesList.innerHTML = '<div class="text-white-50 text-center p-4">No files available</div>';
+    } else {
+      files.forEach(file => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item d-flex align-items-center justify-content-between p-3 rounded-2 mb-2';
+        fileItem.style.backgroundColor = '#0f172a';
+        
+        // Get file icon
+        const ext = file.file_extension || '';
+        const iconMap = {
+          'pdf': 'fa-file-pdf text-danger',
+          'png': 'fa-file-image text-info',
+          'jpg': 'fa-file-image text-info',
+          'jpeg': 'fa-file-image text-info',
+          'docx': 'fa-file-word text-primary',
+          'doc': 'fa-file-word text-primary',
+          'pptx': 'fa-file-powerpoint text-warning',
+          'ppt': 'fa-file-powerpoint text-warning',
+          'zip': 'fa-file-archive text-secondary',
+          'txt': 'fa-file-alt text-muted',
+          'mp4': 'fa-file-video text-danger',
+          'mp3': 'fa-file-audio text-info',
+          'xls': 'fa-file-excel text-success',
+          'xlsx': 'fa-file-excel text-success'
+        };
+        
+        const iconClass = iconMap[ext] || 'fa-file text-success';
+        
+        fileItem.innerHTML = `
+          <div class="d-flex align-items-center gap-3">
+            <i class="fas ${iconClass} fa-lg"></i>
+            <div>
+              <div class="text-white fw-semibold">${file.original_filename || 'Unknown file'}</div>
+              <small class="text-white-50">${file.file_size || 'Unknown size'} • ${file.uploaded_at || 'Unknown date'}</small>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="${file.file_url || '#'}" target="_blank" class="btn btn-sm btn-outline-success" download title="Download">
+              <i class="fas fa-download"></i>
+            </a>
+            <a href="${file.file_url || '#'}" target="_blank" class="btn btn-sm btn-outline-info" title="View">
+              <i class="fas fa-eye"></i>
+            </a>
+          </div>
+        `;
+        
+        filesList.appendChild(fileItem);
+      });
+    }
+    
+    // Show the modal
+    const modalElement = document.getElementById('resourceGroupDetailsModal');
+    if (!modalElement) {
+      console.error('Modal element not found!');
+      return;
+    }
+    
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+    
+  } catch (error) {
+    console.error('Error in viewResourceGroupDetails:', error);
+    alert('Error opening resource details: ' + error.message);
+  }
+}
+
+// Download all files in a group (as a ZIP or individual downloads)
+function downloadAllFilesInGroup() {
+  if (!currentResourceGroup || !currentResourceGroup.files) return;
+  
+  // Download each file individually (browser will handle multiple downloads)
+  currentResourceGroup.files.forEach((file, index) => {
+    setTimeout(() => {
+      const link = document.createElement('a');
+      link.href = file.file_url;
+      link.download = file.original_filename;
+      link.target = '_blank';
+      link.click();
+    }, index * 500); // Stagger downloads by 500ms to avoid browser blocking
+  });
+}
+
+// Delete Resource Group
+function deleteResourceGroup(title, resourceIds) {
+  if (confirm(`Are you sure you want to delete the resource group "${title}" with ${resourceIds.length} file(s)?`)) {
+    // Delete each resource in the group
+    let deletedCount = 0;
+    const totalCount = resourceIds.length;
+    
+    resourceIds.forEach((resourceId, index) => {
+      setTimeout(() => {
+        fetch(`/resource/${resourceId}/delete/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            deletedCount++;
+            if (deletedCount === totalCount) {
+              location.reload(); // Reload page when all files are deleted
+            }
+          } else {
+            alert(`Error deleting file: ${data.error}`);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while deleting the resource.');
+        });
+      }, index * 200); // Stagger deletions
+    });
+  }
+}
+
+// Legacy single resource functions (for backward compatibility)
+function viewResourceDetails(resourceId) {
+  fetch(`/resource/${resourceId}/details/`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+      
+      // For single files, create a temporary group and show in group modal
+      const tempGroup = {
+        title: data.title,
+        files: [{
+          file_url: data.file_url,
+          original_filename: data.original_filename,
+          file_size: data.file_size,
+          uploaded_at: data.uploaded_at,
+          file_extension: data.file_extension
+        }]
+      };
+      
+      viewResourceGroupDetails(data.title, tempGroup.files);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while loading resource details.');
+    });
+}
+
+function deleteResource(resourceId) {
+  if (confirm('Are you sure you want to delete this resource?')) {
+    fetch(`/resource/${resourceId}/delete/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      } else {
+        alert('Error deleting resource: ' + data.error);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while deleting the resource.');
+    });
+  }
+}
+</script>
 
   <style>
-    .btn-success { background-color: #00C98D; border: none; }
-    .btn-success:hover { background-color: #00b07d; }
-    .btn-danger { background-color: #ff4b5c; border: none; }
-    .btn-danger:hover { background-color: #e63b4b; }
-    .card { background-color: #2C3648 !important; }
-    .small-placeholder::placeholder { font-size: 0.65rem; color: #b0b0b0; }
-  </style>
+/* ===== RESOURCE MANAGEMENT STYLES ===== */
+
+/* File stack indicator for multiple files */
+.file-stack {
+  position: relative;
+  display: inline-block;
+}
+
+.file-stack .badge {
+  font-size: 0.7rem;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Resource card hover effect */
+.resource-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+  border-color: #10b981 !important;
+}
+
+/* File item in modal */
+.file-item {
+  transition: all 0.2s ease;
+}
+
+.file-item:hover {
+  background-color: #1e293b !important;
+}
+
+/* Files list scrollbar */
+.files-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.files-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.files-list::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 3px;
+}
+
+.files-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+/* ===== PROBLEM CARD STYLES ===== */
+.problem-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+}
+
+/* ===== BUTTON STYLES ===== */
+.btn-success {
+  background-color: #10b981;
+  border: none;
+}
+
+.btn-success:hover {
+  background-color: #059669;
+}
+
+.btn-outline-success {
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.btn-outline-success:hover {
+  background-color: #10b981;
+  color: white;
+}
+
+.btn-warning {
+  background-color: #f59e0b;
+  border: none;
+  color: white;
+}
+
+.btn-warning:hover {
+  background-color: #d97706;
+}
+
+.btn-outline-warning {
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
+.btn-outline-warning:hover {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #ef4444;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+}
+
+.btn-info {
+  background-color: #3b82f6;
+  border: none;
+}
+
+.btn-info:hover {
+  background-color: #2563eb;
+}
+
+/* ===== FORM STYLES ===== */
+.small-placeholder::placeholder {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+/* ===== SCROLLBAR STYLES ===== */
+.students-list::-webkit-scrollbar,
+.resources-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.students-list::-webkit-scrollbar-track,
+.resources-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.students-list::-webkit-scrollbar-thumb,
+.resources-container::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 3px;
+}
+
+.students-list::-webkit-scrollbar-thumb:hover,
+.resources-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+/* ===== UTILITY CLASSES ===== */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 767.98px) {
+  .main-content {
+    padding: 1rem !important;
+  }
+
+  .class-header {
+    padding: 1.5rem !important;
+  }
+
+  .teacher-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .teacher-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .problem-card {
+    min-height: auto !important;
+  }
+
+  .students-list {
+    max-height: 250px !important;
+  }
+
+  .modal-dialog {
+    margin: 0.5rem !important;
+    max-width: calc(100% - 1rem) !important;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+
+  .modal-footer .d-flex {
+    width: 100%;
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .main-content {
+    padding: 2rem !important;
+  }
+
+  .students-list {
+    max-height: 300px !important;
+  }
+}
+
+/* ===== TOUCH DEVICES ===== */
+@media (hover: none) and (pointer: coarse) {
+  .btn {
+    min-height: 44px;
+  }
+
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+</style>
 
   {% include 'partials/scripts.html' %}
-</div>
+
 {% endblock %}

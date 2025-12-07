@@ -4,9 +4,9 @@ from . import views
 urlpatterns = [
 
     #--------------Portal---------------------------#
-    path('', views.index, name='index'),  # shows the login page
-    path('login/', views.login_view, name='login'),  # handles login form submission
-    path('logout/', views.logout_view, name='logout'),  # handles logout
+    path('', views.index, name='index'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
 
     #--------------Teacher Part--------------------#
     path('dashboard/', views.dashboard, name='dashboard'),
@@ -19,16 +19,19 @@ urlpatterns = [
     path("problem/<int:problem_id>/details/", views.get_problem_details, name="get_problem_details"),
     path("problem/<int:problem_id>/edit/", views.edit_problem, name="edit_problem"),
     path("problem/<int:problem_id>/delete/", views.delete_problem, name="delete_problem"),
-    path('report/', views.report, name='report'),  # Reports dashboard
+    path('report/', views.report, name='report'),
     path('delete_student/<str:school_id>/<int:class_id>/', views.delete_student, name='delete_student'),
     path('delete_submission/<int:submission_id>/', views.delete_submission, name='delete_submission'),
     path('submission/view/<int:submission_id>/', views.view_submission_code, name='view_submission_code'),
+    path('class/<int:class_id>/add-resources/', views.add_resources, name='add_resources'),
+    path('resource/<int:resource_id>/details/', views.get_resource_details, name='get_resource_details'),
+    path('resource/<int:resource_id>/delete/', views.delete_resource, name='delete_resource'),
 
-   
-
-
-
-    
+    #--------------Cybersecurity-Specific Routes----#
+    path('class/<int:class_id>/add-cybersecurity-challenge/', views.add_cybersecurity_challenge, name='add_cybersecurity_challenge'),
+    path('cybersecurity/problem/<int:problem_id>/edit/', views.edit_cybersecurity_challenge, name='edit_cybersecurity_challenge'),
+    path('cybersecurity/submit/<int:problem_id>/', views.submit_cybersecurity_answer, name='submit_cybersecurity_answer'),
+    path('cybersecurity/submissions/<int:problem_id>/', views.get_cybersecurity_submissions, name='get_cybersecurity_submissions'),
 
     #---------------Student Part--------------------#
     path('StudentDashboard/', views.StudentDashboard, name='StudentDashboard'),
@@ -37,24 +40,22 @@ urlpatterns = [
     path('student/class/<int:class_id>/', views.student_class_details, name='student_class_details'),
     path('student/class/<int:class_id>/unenroll/', views.unenroll_class, name='unenroll_class'),
 
-    #--------------Student Playground---------------#
+    #--------------Student Playground (Programming Only)---------------#
     path('playground/<int:problem_id>/', views.playground, name='playground'),
     path('run_playground_code/', views.run_playground_code, name='run_playground_code'),
     path('submit_problem/<int:problem_id>/', views.submit_problem, name='submit_problem'),
-    path('run-student-console/', views.run_student_console, name='run_student_console'),
+    
 
-
-    #--------------Universal Playground---------------#
+    #--------------Universal---------------#
     path('code-playground/', views.code_testing_playground, name='code_testing_playground'),
     path('run-test-code/', views.run_test_code, name='run_test_code'),
-
+    path('leaderboard/', views.leaderboard, name='leaderboard'),
+    path('api/leaderboard-data/', views.leaderboard_data_api, name='leaderboard_data_api'),
+    path('api/student/total-exp/', views.get_student_total_exp, name='get_student_total_exp'),
 
     #--------------AI----------------------------------#
-   path('ai-chat-stream/', views.ai_chat_stream, name='ai_chat_stream'),
-   path('load-chat-history/', views.load_chat_history, name='load_chat_history'),
-   path('clear-chat-history/', views.clear_chat_history, name='clear_chat_history'),
-   path('get-usage-stats/', views.get_usage_stats, name='get_usage_stats'),
-
-
-
+    path('ai-chat-stream/', views.ai_chat_stream, name='ai_chat_stream'),
+    path('load-chat-history/', views.load_chat_history, name='load_chat_history'),
+    path('clear-chat-history/', views.clear_chat_history, name='clear_chat_history'),
+    path('get-usage-stats/', views.get_usage_stats, name='get_usage_stats'),
 ]

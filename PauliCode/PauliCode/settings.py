@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-*e7y)ze6r)abbf6l=kq6@&np+n_ryrws0q!q-=4$l&(3^gb2h4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'User',
     'channels',
-
 ]
 
 MIDDLEWARE = [
@@ -89,6 +89,36 @@ DATABASES = {
 }
 
 
+# ============================================
+# CUSTOM AUTHENTICATION CONFIGURATION
+# ============================================
+AUTH_USER_MODEL = 'User.User'
+# Authentication Backends - Use custom backend for school_id login
+AUTHENTICATION_BACKENDS = [
+    'User.auth_backend.SchoolIDBackend',  # Primary: Custom school_id authentication
+    'User.auth_backend.SessionAuthBackend',  # Secondary: Session-based authentication
+    'django.contrib.auth.backends.ModelBackend',  # Fallback: Default Django auth
+]
+
+# Login/Logout URLs
+LOGIN_URL = 'index'  # Redirect here when @login_required fails
+LOGIN_REDIRECT_URL = 'dashboard'  # Default redirect after login (can be overridden in views)
+LOGOUT_REDIRECT_URL = 'index'  # Redirect here after logout
+
+# Session Configuration
+SESSION_COOKIE_AGE = 86400  # 24 hours (in seconds)
+SESSION_SAVE_EVERY_REQUEST = True  # Update session on every request
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session even after browser closes
+SESSION_COOKIE_NAME = 'paulicode_sessionid'  # Custom session cookie name
+SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to session cookie
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_SAMESITE = 'Lax'  # CSRF protection
+
+# ============================================
+# END CUSTOM AUTHENTICATION
+# ============================================
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -98,6 +128,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,  # Minimum 8 characters
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -113,7 +146,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Manila'  # Philippine Time Zone
 
 USE_I18N = True
 
@@ -125,10 +158,21 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / "User/static"]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # For production
+
+# Media files (User uploads)
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ============================================
+# JAZZMIN ADMIN CUSTOMIZATION
+# ============================================
 
 JAZZMIN_SETTINGS = {
     "site_title": "PauliCode Admin",
@@ -137,6 +181,7 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to the PauliCode Admin",
     "show_ui_builder": True,
 }
+
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
     "footer_small_text": False,
@@ -170,6 +215,55 @@ JAZZMIN_UI_TWEAKS = {
     "actions_sticky_top": False
 }
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
 
+# ============================================
+# SECURITY SETTINGS (for Production)
+# ============================================
+
+# Uncomment these when deploying to production with HTTPS:
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+# X_FRAME_OPTIONS = 'DENY'
+
+# CSRF Settings
+CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to read CSRF token
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
+
+
+# ============================================
+# LOGGING CONFIGURATION (Optional but Recommended)
+# ============================================
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+        },
+    },
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'User': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}

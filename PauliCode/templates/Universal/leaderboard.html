@@ -1,0 +1,629 @@
+{% extends "base.html" %}
+{% load static %}
+<!--leaderboard.html-->
+{% block content %}
+<style>
+  body {
+    background-color: #111827 !important;
+  }
+
+  .leaderboard-header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-left: 4px solid #10b981 !important;
+  }
+
+  .rank-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+
+  .rank-1 {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+  }
+
+  .rank-2 {
+    background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
+    color: #000;
+    box-shadow: 0 0 15px rgba(192, 192, 192, 0.5);
+  }
+
+  .rank-3 {
+    background: linear-gradient(135deg, #CD7F32, #8B4513);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(205, 127, 50, 0.5);
+  }
+
+  .rank-default {
+    background-color: #374151;
+    color: #9ca3af;
+  }
+
+  .leaderboard-card {
+    background-color: #1f2937;
+    transition: all 0.3s ease;
+  }
+
+  .leaderboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  }
+
+  .score-badge {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  }
+
+  .class-filter-btn {
+    background-color: #1f2937;
+    color: #9ca3af;
+    border: 1px solid #374151;
+    transition: all 0.3s ease;
+  }
+
+  .class-filter-btn:hover,
+  .class-filter-btn.active {
+    background-color: #10b981;
+    color: white;
+    border-color: #10b981;
+  }
+
+  .profile-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #10b981;
+  }
+
+  .empty-state {
+    background-color: #0f172a;
+    border: 2px dashed #334155;
+    padding: 3rem;
+    text-align: center;
+    border-radius: 12px;
+  }
+
+  /* Podium styles for top 3 */
+  .podium-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .podium-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
+  }
+
+  .podium-item:hover {
+    transform: scale(1.05);
+  }
+
+  .podium-rank-1 {
+    order: 2;
+  }
+
+  .podium-rank-2 {
+    order: 1;
+  }
+
+  .podium-rank-3 {
+    order: 3;
+  }
+
+  .podium-card {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 180px;
+    position: relative;
+  }
+
+  .podium-rank-1 .podium-card {
+    border: 2px solid #FFD700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  }
+
+  .podium-rank-2 .podium-card {
+    border: 2px solid #C0C0C0;
+    box-shadow: 0 0 20px rgba(192, 192, 192, 0.3);
+  }
+
+  .podium-rank-3 .podium-card {
+    border: 2px solid #CD7F32;
+    box-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
+  }
+
+  .trophy-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .current-user-highlight {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+    border-left: 4px solid #10b981 !important;
+  }
+
+  /* Animation for updates */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .leaderboard-card.updated {
+    animation: slideIn 0.5s ease;
+  }
+
+  /* Live update indicator */
+  .live-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: rgba(16, 185, 129, 0.1);
+    border-radius: 20px;
+    border: 1px solid #10b981;
+  }
+
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #10b981;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1.2);
+    }
+  }
+
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .podium-container {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .podium-item {
+      order: 0 !important;
+      width: 100%;
+    }
+
+    .podium-card {
+      min-width: 100%;
+    }
+
+    .rank-badge {
+      width: 40px;
+      height: 40px;
+      font-size: 0.9rem;
+    }
+
+    .profile-avatar {
+      width: 40px;
+      height: 40px;
+    }
+
+    .score-badge {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+    }
+
+    .trophy-icon {
+      font-size: 2rem;
+    }
+
+    .leaderboard-header h3 {
+      font-size: 1.25rem;
+    }
+
+    .class-filter-btn {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .main-content {
+      padding: 1rem !important;
+    }
+
+    .leaderboard-header {
+      padding: 1.5rem 1rem !important;
+    }
+
+    .leaderboard-card {
+      padding: 0.75rem !important;
+    }
+
+    .empty-state {
+      padding: 2rem 1rem;
+    }
+  }
+
+  /* Scrollbar styling */
+  .class-filter-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .class-filter-scroll::-webkit-scrollbar-track {
+    background: #0f172a;
+    border-radius: 3px;
+  }
+
+  .class-filter-scroll::-webkit-scrollbar-thumb {
+    background: #374151;
+    border-radius: 3px;
+  }
+
+  .class-filter-scroll::-webkit-scrollbar-thumb:hover {
+    background: #4b5563;
+  }
+</style>
+
+<div class="g-sidenav-show text-white">
+  <div class="min-height-300 position-absolute w-100"></div>
+
+  <main class="main-content position-relative border-radius-lg">
+    <div class="container-fluid p-4 p-md-5">
+
+      <!-- LEADERBOARD HEADER -->
+      <div class="leaderboard-header card border-0 shadow-sm rounded-4 p-3 p-md-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <div class="d-flex align-items-center mb-2">
+              <i class="fas fa-trophy text-warning me-2" style="font-size: 1.5rem;"></i>
+              <h3 class="fw-bold text-white mb-0">Leaderboard</h3>
+              <div class="live-indicator ms-3">
+                <div class="live-dot"></div>
+                <span class="text-white small">Live</span>
+              </div>
+            </div>
+            <p class="text-white-50 small mb-0 ms-4 ms-md-2">
+            {% if user.user_type != 'Teacher' %}
+              Track your performance and compete with others • Updates every 10 seconds
+            {% else %}
+              Track your student's progress real-time!
+            {% endif %}
+            </p>
+          </div>
+          
+          <!-- Current User Rank Badge -->
+           {% if user.user_type != 'Teacher' %}
+          <div id="userRankBadge" class="d-flex align-items-center gap-2 px-3 py-2 rounded-3" 
+               style="background-color: rgba(16, 185, 129, 0.2);">
+            <i class="fas fa-medal" style="color: #10b981;"></i>
+            <span class="text-white fw-bold">Your Rank: <span id="currentRank">#{{ user_rank|default:"N/A" }}</span></span>
+          </div>
+          {% else %}
+          <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3" 
+               style="background-color: rgba(16, 185, 129, 0.2);">
+            <i class="fa fa-area-chart" style="color: #10b981;"></i>
+            <span class="text-white fw-bold">Real-time Monitoring</span></span>
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
+
+      <!-- CLASS FILTER -->
+      <div class="card border-0 shadow-sm rounded-4 p-3 p-md-4 mb-4" 
+           style="background-color: #1f2937;">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3">
+          <h5 class="fw-bold text-white mb-0 d-flex align-items-center">
+            <i class="fas fa-filter me-2" style="color: #10b981;"></i>
+            Filter by Class
+          </h5>
+          
+          <!-- Search Bar -->
+          <div class="position-relative" style="min-width: 250px;">
+            <input type="text" 
+                   id="classSearch" 
+                   class="form-control form-control-sm bg-dark text-white border-0" 
+                   placeholder="Search classes..."
+                   style="padding-right: 2.5rem; height: 36px; border-radius: 0.5rem;">
+            <i class="fa fa-search position-absolute text-secondary" 
+               style="right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; pointer-events: none;"></i>
+          </div>
+        </div>
+
+        <div class="class-filter-scroll" 
+             style="overflow-x: auto; white-space: nowrap; padding-bottom: 0.5rem;">
+          <div class="d-inline-flex gap-2 flex-nowrap">
+            <!-- All Classes Button -->
+            <button type="button" 
+                    class="btn class-filter-btn {% if not selected_class %}active{% endif %}" 
+                    onclick="filterByClass(null)">
+              <i class="fas fa-list me-1"></i>
+              <span class="d-none d-sm-inline">All Classes</span>
+              <span class="d-inline d-sm-none">All</span>
+            </button>
+
+            <!-- Individual Class Buttons -->
+            {% for class in user_classes %}
+            <button type="button" 
+                    class="btn class-filter-btn {% if selected_class.class_id == class.class_id %}active{% endif %}" 
+                    onclick="filterByClass('{{ class.class_id }}')">
+              <i class="fas fa-graduation-cap me-1"></i>
+              <span>{{ class.title|truncatechars:20 }}</span>
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- TOP 3 PODIUM (Desktop View) -->
+      <div id="podiumContainer" class="d-none d-md-block mb-4">
+        <!-- Podium will be dynamically generated -->
+      </div>
+
+      <!-- LEADERBOARD LIST -->
+      <div class="card border-0 shadow-sm rounded-4 p-3 p-md-4" 
+           style="background-color: #1f2937;">
+        <h5 class="fw-bold text-white mb-3 d-flex align-items-center">
+          <i class="fas fa-list-ol me-2" style="color: #10b981;"></i>
+          Rankings
+          <span id="classFilterBadge" class="badge ms-2" style="background-color: #10b981; display: none;"></span>
+        </h5>
+
+        <div id="leaderboardList" class="row g-3">
+          <!-- Leaderboard will be dynamically generated -->
+        </div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+          <i class="fas fa-chart-line fa-3x mb-3 opacity-50" style="color: #64748b;"></i>
+          <h5 class="text-white mb-2">No Rankings Yet</h5>
+          <p class="text-muted mb-0">
+            Start submitting assignments to appear on the leaderboard!
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  {% include "partials/scripts.html" %}
+</div>
+
+<script>
+  // Current state
+  let currentClassFilter = {% if selected_class %}'{{ selected_class.class_id }}'{% else %}null{% endif %};
+  let currentUserSchoolId = '{{ user.school_id }}';
+  let refreshInterval = null;
+
+  // Filter by class
+  function filterByClass(classId) {
+    currentClassFilter = classId;
+    
+    // Update active button
+    document.querySelectorAll('.class-filter-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    event.target.closest('.class-filter-btn').classList.add('active');
+    
+    // Update URL without refresh
+    const url = new URL(window.location);
+    if (classId) {
+      url.searchParams.set('class_id', classId);
+    } else {
+      url.searchParams.delete('class_id');
+    }
+    window.history.pushState({}, '', url);
+    
+    // Fetch updated leaderboard
+    fetchLeaderboard();
+  }
+
+  // Fetch leaderboard data
+  async function fetchLeaderboard() {
+    try {
+      const url = new URL(window.location.href);
+      const response = await fetch(`/api/leaderboard-data/?${url.searchParams}`);
+      
+      if (!response.ok) throw new Error('Failed to fetch leaderboard');
+      
+      const data = await response.json();
+      updateLeaderboard(data);
+    } catch (error) {
+      console.error('Error fetching leaderboard:', error);
+    }
+  }
+
+  // Update leaderboard UI
+  function updateLeaderboard(data) {
+    const { leaderboard_data, user_rank, selected_class } = data;
+    
+    // Update user rank badge
+    if (user_rank) {
+      document.getElementById('currentRank').textContent = `#${user_rank}`;
+    }
+    
+    // Update class filter badge
+    const classFilterBadge = document.getElementById('classFilterBadge');
+    if (selected_class) {
+      classFilterBadge.textContent = selected_class.title;
+      classFilterBadge.style.display = 'inline';
+    } else {
+      classFilterBadge.style.display = 'none';
+    }
+    
+    // Update podium (top 3)
+    updatePodium(leaderboard_data.slice(0, 3));
+    
+    // Update full leaderboard list
+    updateLeaderboardList(leaderboard_data);
+  }
+
+  // Update podium for top 3
+  function updatePodium(top3) {
+    const podiumContainer = document.getElementById('podiumContainer');
+    
+    if (top3.length === 0) {
+      podiumContainer.innerHTML = '';
+      return;
+    }
+    
+    let html = '<div class="podium-container">';
+    
+    top3.forEach((entry, index) => {
+      const rank = index + 1;
+      const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉';
+      const isCurrentUser = entry.student_id__school_id === currentUserSchoolId;
+      
+      html += `
+        <div class="podium-item podium-rank-${rank}">
+          <div class="podium-card ${isCurrentUser ? 'current-user-highlight' : ''}">
+            <div class="trophy-icon">${medal}</div>
+            ${entry.student_id__user_image ? 
+              `<img src="${entry.student_id__user_image}" alt="Profile" class="profile-avatar mb-2 mx-auto d-block" style="width: 60px; height: 60px;">` :
+              `<div class="profile-avatar mb-2 mx-auto d-flex align-items-center justify-content-center" style="background-color: #10b981; width: 60px; height: 60px;">
+                <i class="fas fa-user text-white"></i>
+              </div>`
+            }
+            <h6 class="text-white fw-bold mb-1 text-truncate">
+              ${entry.student_id__first_name} ${entry.student_id__last_name}
+            </h6>
+            <span class="badge mb-2" style="background-color: #374151; font-size: 0.75rem;">
+              ${entry.student_id__school_id}
+            </span>
+            <div class="score-badge mt-2">
+              <i class="fas fa-star me-1"></i>${entry.total_score || 0} pts
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    
+    html += '</div>';
+    podiumContainer.innerHTML = html;
+  }
+
+  // Update leaderboard list
+  function updateLeaderboardList(leaderboard_data) {
+    const listContainer = document.getElementById('leaderboardList');
+    const emptyState = document.getElementById('emptyState');
+    
+    if (leaderboard_data.length === 0) {
+      listContainer.style.display = 'none';
+      emptyState.style.display = 'block';
+      return;
+    }
+    
+    listContainer.style.display = 'block';
+    emptyState.style.display = 'none';
+    
+    let html = '';
+    
+    leaderboard_data.forEach((entry, index) => {
+      const rank = index + 1;
+      const isCurrentUser = entry.student_id__school_id === currentUserSchoolId;
+      const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-default';
+      
+      html += `
+        <div class="col-12">
+          <div class="leaderboard-card card border-0 rounded-3 p-3 shadow-sm updated ${isCurrentUser ? 'current-user-highlight' : ''}">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+              <div class="d-flex align-items-center gap-3 flex-grow-1" style="min-width: 0;">
+                <div class="rank-badge ${rankClass}">${rank}</div>
+                ${entry.student_id__user_image ? 
+                  `<img src="${entry.student_id__user_image}" alt="Profile" class="profile-avatar flex-shrink-0">` :
+                  `<div class="profile-avatar flex-shrink-0 d-flex align-items-center justify-content-center" style="background-color: #10b981;">
+                    <i class="fas fa-user text-white"></i>
+                  </div>`
+                }
+                <div class="flex-grow-1" style="min-width: 0;">
+                  <h6 class="text-white fw-bold mb-1 text-truncate">
+                    ${entry.student_id__first_name} ${entry.student_id__last_name}
+                    ${isCurrentUser ? '<span class="badge badge-sm ms-1" style="background-color: #10b981;">You</span>' : ''}
+                  </h6>
+                  <span class="text-muted small d-block text-truncate">
+                    ID: ${entry.student_id__school_id}
+                  </span>
+                </div>
+              </div>
+              <div class="score-badge flex-shrink-0">
+                <i class="fas fa-star me-1"></i>${entry.total_score || 0} pts
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    
+    listContainer.innerHTML = html;
+  }
+
+  // Class search functionality
+  document.getElementById('classSearch')?.addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase().trim();
+    const classButtons = document.querySelectorAll('.class-filter-btn:not(:first-child)');
+    
+    classButtons.forEach(button => {
+      const className = button.textContent.toLowerCase();
+      if (className.includes(searchTerm)) {
+        button.style.display = '';
+      } else {
+        button.style.display = 'none';
+      }
+    });
+  });
+
+  // Initial load
+  document.addEventListener('DOMContentLoaded', function() {
+    fetchLeaderboard();
+    
+    // Set up auto-refresh every 10 seconds
+    refreshInterval = setInterval(fetchLeaderboard, 10000);
+    
+    // Auto-scroll to current user if highlighted
+    setTimeout(() => {
+      const currentUserCard = document.querySelector('.current-user-highlight');
+      if (currentUserCard && window.innerWidth > 768) {
+        currentUserCard.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+      }
+    }, 500);
+  });
+
+  // Clean up on page unload
+  window.addEventListener('beforeunload', function() {
+    if (refreshInterval) {
+      clearInterval(refreshInterval);
+    }
+  });
+</script>
+
+{% endblock %}
