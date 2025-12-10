@@ -22,7 +22,10 @@ urlpatterns = [
     path('report/', views.report, name='report'),
     path('delete_student/<str:school_id>/<int:class_id>/', views.delete_student, name='delete_student'),
     path('delete_submission/<int:submission_id>/', views.delete_submission, name='delete_submission'),
-    path('submission/view/<int:submission_id>/', views.view_submission_code, name='view_submission_code'),
+    
+    # ✅ FIXED: Changed from 'submission/view/' to 'submission/' to match report.html
+    path('submission/<int:submission_id>/view-code/', views.view_submission_code, name='view_submission_code'),
+    
     path('class/<int:class_id>/add-resources/', views.add_resources, name='add_resources'),
     path('resource/<int:resource_id>/details/', views.get_resource_details, name='get_resource_details'),
     path('resource/<int:resource_id>/delete/', views.delete_resource, name='delete_resource'),
@@ -32,6 +35,7 @@ urlpatterns = [
     path('cybersecurity/problem/<int:problem_id>/edit/', views.edit_cybersecurity_challenge, name='edit_cybersecurity_challenge'),
     path('cybersecurity/submit/<int:problem_id>/', views.submit_cybersecurity_answer, name='submit_cybersecurity_answer'),
     path('cybersecurity/submissions/<int:problem_id>/', views.get_cybersecurity_submissions, name='get_cybersecurity_submissions'),
+    path('cybersecurity/problem/<int:problem_id>/delete-file/', views.delete_challenge_file, name='delete_challenge_file'),
 
     #---------------Student Part--------------------#
     path('StudentDashboard/', views.StudentDashboard, name='StudentDashboard'),

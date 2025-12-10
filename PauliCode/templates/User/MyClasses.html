@@ -4,82 +4,73 @@
 {% block title %}My Classes{% endblock %}
 
 {% block content %}
-<div>
+<div class="g-sidenav-show text-white">
+  <main class="main-content position-relative border-radius-lg">
+    <div class="container-fluid py-3">
+      <!-- CLASSES GRID -->
+      <div class="row g-4 justify-content-start">
+        {% if classes %}
+          {% for cls in classes %}
+            {% if not request.GET.q or request.GET.q|lower in cls.title|lower or request.GET.q|lower in cls.class_code|lower %}
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-center">
+                <a href="{% url 'classDetails' cls.class_id %}" class="text-decoration-none text-white w-100">
+                  <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative {% cycle 'border-green' 'border-dark' %} cls-card"
+                       style="background-color: rgb(1, 45, 35); border-width: 2.5px; border-style: dashed;">   
 
-  <main class="main-content position-relative p-4">
+                    <!-- 🏷️ Class Code Badge -->
+                    <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-2 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
+                         style="border: 1.5px solid #D68022; transform: scale(0.85); white-space: nowrap; width: fit-content;">
+                      <h6 style="background: linear-gradient(90deg, #324254 35%, #8e500f);
+                                -webkit-text-fill-color: transparent;
+                                -webkit-background-clip: text;
+                                font-weight: bold;
+                                font-size: 0.85rem;
+                                margin: 0;">
+                        {{ cls.class_code }}
+                      </h6>
+                    </div>
 
-    <div class="ms-3">
-      
+                    <!-- Class Type Badge -->
+                    {% if cls.class_type %}
+                    <div class="position-absolute top-0 end-0 mt-2 me-2">
+                      {% if cls.class_type == 'programming' %}
+                        <span class="badge bg-primary px-2 py-1 rounded-pill shadow-sm" style="font-size: 0.7rem;">
+                          <i class="fa fa-code "></i>
+                        </span>
+                      {% elif cls.class_type == 'cybersecurity' %}
+                        <span class="badge bg-danger px-2 py-1 rounded-pill shadow-sm" style="font-size: 0.7rem;">
+                          <i class="fa fa-shield-alt"></i>
+                        </span>
+                      {% endif %}
+                    </div>
+                    {% endif %}
 
-  <!-- CLASSES GRID -->
-<div class="container-fluid py-3">
-  <div class="row g-4 justify-content-start">
-    {% if classes %}
-      {% for cls in classes %}
-        {% if not request.GET.q or request.GET.q|lower in cls.title|lower or request.GET.q|lower in cls.class_code|lower %}
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-center">
-            <a href="{% url 'classDetails' cls.class_id %}" class="text-decoration-none text-white w-100">
-              <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative {% cycle 'border-green' 'border-dark' %} cls-card"
-                   style="background-color: rgb(1, 45, 35); border-width: 2.5px; border-style: dashed;">   
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center position-relative p-3">
+                      {% if cls.upload_icon %}
+                        <img src="{{ cls.upload_icon.url }}" alt="Class Icon" class="rounded mb-3 cls-img">
+                      {% else %}
+                        <img src="{% static 'img/classroom.png' %}" alt="Default Class Icon" class="rounded mb-3 cls-img">
+                      {% endif %}
 
-                <!-- 🏷️ Class Code Badge -->
-                <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-2 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
-                     style="border: 1.5px solid #D68022; transform: scale(0.85); white-space: nowrap; width: fit-content;">
-                  <h6 style="background: linear-gradient(90deg, #324254 35%, #8e500f);
-                            -webkit-text-fill-color: transparent;
-                            -webkit-background-clip: text;
-                            font-weight: bold;
-                            font-size: 0.85rem;
-                            margin: 0;">
-                    {{ cls.class_code }}
-                  </h6>
-                </div>
-
-                <!-- Class Type Badge -->
-                {% if cls.class_type %}
-                <div class="position-absolute top-0 end-0 mt-2 me-2">
-                  {% if cls.class_type == 'programming' %}
-                    <span class="badge bg-primary px-2 py-1 rounded-pill shadow-sm" style="font-size: 0.7rem;">
-                      <i class="fa fa-code "></i>
-                    </span>
-                  {% elif cls.class_type == 'cybersecurity' %}
-                    <span class="badge bg-danger px-2 py-1 rounded-pill shadow-sm" style="font-size: 0.7rem;">
-                      <i class="fa fa-shield-alt"></i>
-                    </span>
-                  {% endif %}
-                </div>
-                {% endif %}
-
-                <div class="card-body d-flex flex-column align-items-center justify-content-center position-relative p-3">
-                  {% if cls.upload_icon %}
-                    <img src="{{ cls.upload_icon.url }}" alt="Class Icon" class="rounded mb-3 cls-img">
-                  {% else %}
-                    <img src="{% static 'img/classroom.png' %}" alt="Default Class Icon" class="rounded mb-3 cls-img">
-                  {% endif %}
-
-                  <span class="badge px-2 py-1 rounded-3 shadow-sm text-truncate {% cycle 'border-green' 'border-dark' %}"
-                        style="border: 1px solid currentColor !important; max-width: 100%; font-size: clamp(0.7rem, 2vw, 0.85rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block;">
-                    {{ cls.title }}
-                  </span>
-
-                </div>
+                      <span class="badge px-2 py-1 rounded-3 shadow-sm text-truncate {% cycle 'border-green' 'border-dark' %}"
+                            style="border: 1px solid currentColor !important; max-width: 100%; font-size: clamp(0.7rem, 2vw, 0.85rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block;">
+                        {{ cls.title }}
+                      </span>
+                    </div>
+                  </div>
+                </a>
               </div>
-            </a>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <div class="col-12 text-center text-muted py-4">
+            You haven't created any classes yet.
           </div>
         {% endif %}
-      {% endfor %}
-    {% else %}
-      <div class="col-12 text-center text-muted py-4">
-        You haven't created any classes yet.
       </div>
-    {% endif %}
-  </div>
-</div>
-
-
-
     </div>
   </main>
+</div>
 
 
   

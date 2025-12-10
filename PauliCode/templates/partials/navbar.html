@@ -231,8 +231,12 @@
       left: 0 !important;
     }
 
+    .mobile-toggle {
+    display: block !important;  /* Explicitly show burger on mobile */
+    }
+
     body {
-      padding-top: 48px;
+      padding-top: 100px;
     }
 
     .margin-nav {
@@ -294,6 +298,12 @@
     }
   }
 
+  @media (min-width: 769px) {
+  .mobile-toggle {
+    display: none !important;
+  }
+}
+
   @media (max-width: 576px) {
     .btn-custom span {
       display: none;
@@ -332,7 +342,10 @@
       
       <!-- Left Section: Mobile Toggle + Page Title -->
       <div class="d-flex align-items-center gap-2">
-        <button class="mobile-toggle d-lg-none" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+        <button class="mobile-toggle d-md-none" 
+        onclick="toggleSidebar()" 
+        aria-label="Toggle sidebar"
+        style="display: none;">
           <i class="fas fa-bars"></i>
         </button>
         
@@ -348,7 +361,7 @@
           {% elif currentpage == 'Playground' %}
             Study Area
           {% elif currentpage == 'leaderboard' %}
-            Leaderboard
+            Hall of Fame
           {% endif %}
         </h6>
       </div>
@@ -403,7 +416,7 @@
           <button class="btn btn-primary btn-custom"
                   data-bs-toggle="modal" 
                   data-bs-target="#joinClassModal">
-            <img src="{% static 'img/plusIcon.png' %}" alt="">
+            <i class="fa fa-plus"></i>
             <span>Join Class</span>
           </button>
 

@@ -9,6 +9,8 @@ from django.utils.html import escape
 from django.utils.decorators import method_decorator
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.safestring import mark_safe
+from django.core.files.storage import default_storage
+from django.conf import settings
 
 # Authentication & Security
 from django.contrib.auth import login, logout, authenticate
@@ -772,7 +774,7 @@ def edit_problem(request, problem_id):
     return redirect('classDetails', class_id=class_id)
 
 
-# ---------- REPORT DASHBOARD ----------  
+# ---------- REPORT DASHBOARD ----------   
 def report(request):
     if not request.session.get('school_id'):
         messages.warning(request, "Please log in first.")
@@ -781,33 +783,40 @@ def report(request):
     user = User.objects.get(school_id=request.session['school_id'])
     search_query = request.GET.get('search', '').strip()
 
-    # ✅ Base classes depending on user type
+    # Base classes depending on user type
     if user.user_type.lower() == 'teacher':
         classes = Class.objects.filter(teacher=user).order_by('class_id')
     else:
         classes = Class.objects.filter(enrollments__student_id=user).distinct().order_by('class_id')
 
-    # ✅ Apply search filtering to classes
+    # Apply search filtering to classes
     if search_query:
         classes = classes.filter(
             Q(title__icontains=search_query) |
             Q(class_code__icontains=search_query)
         )
 
-    # ✅ Problems and submissions related to the shown classes
-    problems = Problem.objects.filter(class_id__in=classes).select_related('class_id').order_by('problem_id')
+    # Problems related to the shown classes (exclude "Class Resources")
+    problems = Problem.objects.filter(
+        class_id__in=classes
+    ).exclude(
+        problem_title="Class Resources"
+    ).select_related('class_id').order_by('problem_id')
 
+    # ✅ Get ALL submissions for these classes
     submissions = Submission.objects.select_related(
         'student_id', 'problem_id', 'problem_id__class_id'
-    ).filter(problem_id__in=problems).exclude(submission_id__isnull=True)
+    ).filter(
+        problem_id__class_id__in=classes
+    ).order_by('student_id__school_id', '-submitted_at')
 
-    # ✅ Students enrolled in these classes
+    # ✅ Get students enrolled in these classes
     students = User.objects.filter(
         user_type__iexact='student',
         enrollments__class_id__in=classes
     ).distinct().order_by('school_id')
 
-    # ✅ Summary counts
+    # Summary counts
     total_students = students.count()
     total_submissions = submissions.count()
     pending_reviews = submissions.filter(score__isnull=True).count()
@@ -826,7 +835,6 @@ def report(request):
         'sidebar': 'teacher'
     }
     return render(request, 'User/report.html', context)
-
 
 # ---------- Unenroll STUDENT ----------
 @login_required(login_url='index')
@@ -1770,7 +1778,7 @@ def count_inputs_in_code(code, language):
 
 
 #---------------------------AI-----------------------------------------# Initialize client
-client = genai.Client(api_key="AIzaSyBMDsSEJa4B9VC181QIClqH1TLf_77WwPA")
+client = genai.Client(api_key="AIzaSyDOpX6P-bHaqdiXNX8S2mXbQwrGj_EB5w4")
 # API Rate Limits for Gemini 2.5 Flash-Lite
 API_LIMITS = {
     'requests_per_minute': 15,      # RPM: 15
@@ -2127,7 +2135,7 @@ def clear_chat_history(request):
 
 @login_required(login_url='index')
 def add_cybersecurity_challenge(request, class_id):
-    """Add a cybersecurity challenge with file upload support and correct answer"""
+    """Add a cybersecurity challenge with file upload support (including HTML) and correct answer"""
     school_id = request.session.get('school_id')
     if not school_id:
         messages.warning(request, "Please log in first.")
@@ -2162,25 +2170,110 @@ def add_cybersecurity_challenge(request, class_id):
             messages.error(request, "Invalid input values.")
             return redirect('classDetails', class_id=class_id)
 
-        # Create Problem with correct answer
-        problem = Problem.objects.create(
-            class_id=class_obj,
-            teacher_id=teacher,
-            problem_title=title,
-            problem_description=description,
-            problem_type=problem_type,
-            total_score=total_score,
-            time_limit=None,  # No time limit for cybersecurity
-            due_date=due_date,
-            challenge_file=challenge_file,
-            correct_answer=correct_answer,  # ✅ NEW
-        )
+        # ✅ Handle file upload (including HTML files)
+        if challenge_file:
+            # Check file size (10MB max)
+            if challenge_file.size > 10 * 1024 * 1024:
+                messages.error(request, "File size exceeds 10MB limit.")
+                return redirect('classDetails', class_id=class_id)
+            
+            # Get file extension
+            file_ext = challenge_file.name.split('.')[-1].lower()
+            
+            # Check file extension
+            allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg', 'docx', 'pptx', 'ppt', 'zip', 'txt', 'html', 'htm']
+            if file_ext not in allowed_extensions:
+                messages.error(request, "Invalid file type. Allowed: PDF, Images, DOCX, PPTX, ZIP, TXT, HTML")
+                return redirect('classDetails', class_id=class_id)
+            
+            # ✅ Special handling for HTML files
+            if file_ext in ['html', 'htm']:
+                # Define the challenges directory
+                challenges_dir = os.path.join(settings.BASE_DIR, 'User', 'static', 'challenges')
+                
+                # Create directory if it doesn't exist
+                os.makedirs(challenges_dir, exist_ok=True)
+                
+                # Check if file with same name already exists
+                file_path = os.path.join(challenges_dir, challenge_file.name)
+                if os.path.exists(file_path):
+                    messages.error(request, f"A file named '{challenge_file.name}' already exists. Please rename your file.")
+                    return redirect('classDetails', class_id=class_id)
+                
+                # Save HTML file to static/challenges
+                with open(file_path, 'wb+') as destination:
+                    for chunk in challenge_file.chunks():
+                        destination.write(chunk)
+                
+                # Store relative path for the model
+                challenge_file_path = f'challenges/{challenge_file.name}'
+                
+                # Create Problem with HTML file path
+                problem = Problem.objects.create(
+                    class_id=class_obj,
+                    teacher_id=teacher,
+                    problem_title=title,
+                    problem_description=description,
+                    problem_type=problem_type,
+                    total_score=total_score,
+                    time_limit=None,
+                    due_date=due_date,
+                    challenge_file=challenge_file_path,  # Store path as string
+                    correct_answer=correct_answer,
+                )
+                
+                messages.success(request, f"Challenge '{title}' created with HTML file '{challenge_file.name}'!")
+                return redirect('classDetails', class_id=class_id)
+            
+            # Regular file upload (non-HTML)
+            else:
+                problem = Problem.objects.create(
+                    class_id=class_obj,
+                    teacher_id=teacher,
+                    problem_title=title,
+                    problem_description=description,
+                    problem_type=problem_type,
+                    total_score=total_score,
+                    time_limit=None,
+                    due_date=due_date,
+                    challenge_file=challenge_file,  # Django handles regular uploads
+                    correct_answer=correct_answer,
+                )
+        else:
+            # No file uploaded
+            problem = Problem.objects.create(
+                class_id=class_obj,
+                teacher_id=teacher,
+                problem_title=title,
+                problem_description=description,
+                problem_type=problem_type,
+                total_score=total_score,
+                time_limit=None,
+                due_date=due_date,
+                correct_answer=correct_answer,
+            )
 
         messages.success(request, f"Challenge '{title}' created successfully!")
         return redirect('classDetails', class_id=class_id)
 
     return redirect('classDetails', class_id=class_id)
 
+def get_challenge_file_url(problem):
+    """
+    Returns the appropriate URL for challenge files
+    Handles both regular uploads and HTML files in static/challenges
+    """
+    if not problem.challenge_file:
+        return None
+    
+    file_path = str(problem.challenge_file)
+    
+    # Check if it's an HTML file in static/challenges
+    if file_path.startswith('challenges/'):
+        return f"/static/{file_path}"
+    
+    # Regular uploaded file
+    return problem.challenge_file.url
 
 @login_required(login_url='index')
 def edit_cybersecurity_challenge(request, problem_id):
@@ -2222,7 +2315,7 @@ def edit_cybersecurity_challenge(request, problem_id):
 
 
 def get_cybersecurity_problem_details(request, problem_id):
-    """Return cybersecurity challenge details as JSON"""
+    """Return cybersecurity challenge details as JSON with proper HTML file handling"""
     problem = get_object_or_404(Problem, pk=problem_id)
     
     # Verify it's a cybersecurity challenge
@@ -2235,12 +2328,33 @@ def get_cybersecurity_problem_details(request, problem_id):
     if school_id:
         user = User.objects.filter(school_id=school_id).first()
         if user and user.user_type == "Student":
-            # Check if there's a submission with full score (correct answer)
             answered_correctly = Submission.objects.filter(
                 problem_id=problem, 
                 student_id=user,
-                score=problem.total_score  # Only consider correct submissions
+                score=problem.total_score
             ).exists()
+
+    # ✅ Handle challenge file URL properly (including HTML files)
+    challenge_file_url = None
+    challenge_file_name = None
+    
+    if problem.challenge_file:
+        file_path = str(problem.challenge_file)
+        
+        # Check if it's an HTML file in User/static/challenges
+        if file_path.startswith('challenges/'):
+            # For HTML files saved in User/static/challenges
+            challenge_file_url = f'/static/{file_path}'
+            challenge_file_name = file_path.split('/')[-1]
+        else:
+            # Regular uploaded file (uses MEDIA_URL)
+            try:
+                challenge_file_url = problem.challenge_file.url
+                challenge_file_name = problem.challenge_file.name.split('/')[-1]
+            except:
+                # Fallback if file doesn't exist
+                challenge_file_url = None
+                challenge_file_name = file_path.split('/')[-1]
 
     # Prepare data
     data = {
@@ -2250,8 +2364,9 @@ def get_cybersecurity_problem_details(request, problem_id):
         "type": problem.problem_type,
         "score": problem.total_score,
         "due_date": problem.due_date.strftime("%Y-%m-%d %H:%M"),
-        "answered": answered_correctly,  # Now only true if answered correctly
-        "challenge_file": problem.challenge_file.url if problem.challenge_file else None,
+        "answered": answered_correctly,
+        "challenge_file": challenge_file_url,
+        "challenge_file_name": challenge_file_name,
         "currentpage": "cybersec"
     }
 
@@ -2605,3 +2720,51 @@ def get_student_total_exp(request):
         'student_name': f"{user.first_name} {user.last_name}",
         'school_id': user.school_id
     })
+
+@login_required(login_url='index')
+@csrf_exempt
+def delete_challenge_file(request, problem_id):
+    """Delete the challenge file from a cybersecurity problem"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+    
+    school_id = request.session.get('school_id')
+    teacher = get_object_or_404(User, school_id=school_id)
+    
+    # Get the problem and verify ownership
+    problem = get_object_or_404(Problem, pk=problem_id)
+    
+    if problem.class_id.teacher != teacher:
+        return JsonResponse({'error': 'Permission denied'}, status=403)
+    
+    if not problem.challenge_file:
+        return JsonResponse({'error': 'No file to delete'}, status=400)
+    
+    try:
+        file_path = str(problem.challenge_file)
+        
+        # Check if it's an HTML file in User/static/challenges
+        if file_path.startswith('challenges/'):
+            # Delete from User/static/challenges
+            full_path = os.path.join(settings.BASE_DIR, 'User', 'static', file_path)
+            if os.path.exists(full_path):
+                os.remove(full_path)
+        else:
+            # Delete regular uploaded file
+            if problem.challenge_file:
+                # Delete the file from storage
+                problem.challenge_file.delete(save=False)
+        
+        # Clear the challenge_file field
+        problem.challenge_file = None
+        problem.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'File deleted successfully'
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'error': f'Failed to delete file: {str(e)}'
+        }, status=500)

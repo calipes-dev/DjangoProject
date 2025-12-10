@@ -2,8 +2,96 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import User, Class, Enrollment, Problem, ProblemTestCase, Submission, ChatHistory
+from django.contrib.admin import AdminSite
+from django.db.models import Count, Sum, Avg
+from django.utils.timezone import now
+from datetime import timedelta
+
+class PauliCodeAdminSite(AdminSite):
+    site_header = "PauliCode Administration"
+    site_title = "PauliCode Admin Portal"
+    index_title = "Welcome to PauliCode Admin Dashboard"
+    
+    def index(self, request, extra_context=None):
+        from .models import User, Class, Problem, Submission
+        
+        extra_context = extra_context or {}
+        week_ago = now() - timedelta(days=7)
+        
+        # User statistics
+        extra_context['total_users'] = User.objects.count()
+        extra_context['total_teachers'] = User.objects.filter(user_type='Teacher').count()
+        extra_context['total_students'] = User.objects.filter(user_type='Student').count()
+        extra_context['recent_users'] = User.objects.filter(date_joined__gte=week_ago).count()
+        
+        # Class statistics
+        extra_context['total_classes'] = Class.objects.count()
+        extra_context['programming_classes'] = Class.objects.filter(class_type='programming').count()
+        extra_context['cybersecurity_classes'] = Class.objects.filter(class_type='cybersecurity').count()
+        
+        # Problem statistics
+        extra_context['total_problems'] = Problem.objects.count()
+        extra_context['total_assignments'] = Problem.objects.filter(problem_type='Assignment').count()
+        extra_context['total_quizzes'] = Problem.objects.filter(problem_type='Quiz').count()
+        
+        # Submission statistics
+        extra_context['total_submissions'] = Submission.objects.count()
+        extra_context['recent_submissions'] = Submission.objects.filter(submitted_at__gte=week_ago).count()
+        extra_context['avg_score'] = Submission.objects.aggregate(avg=Avg('score'))['avg'] or 0
+        
+        # Top performers
+        extra_context['top_students'] = (
+            Submission.objects
+            .values('student_id__school_id', 'student_id__first_name', 'student_id__last_name')
+            .annotate(total_score=Sum('score'))
+            .order_by('-total_score')[:5]
+        )
+        
+        # Most active classes
+        extra_context['active_classes'] = (
+            Submission.objects
+            .values('problem_id__class_id__title')
+            .annotate(submission_count=Count('submission_id'))
+            .order_by('-submission_count')[:5]
+        )
+        
+        # Recent activity
+        extra_context['recent_activity'] = (
+            Submission.objects
+            .select_related('student_id', 'problem_id')
+            .order_by('-submitted_at')[:10]
+        )
+        
+        return super().index(request, extra_context)
+
+# Use custom admin site
+admin.site = PauliCodeAdminSite()
 
 
+@admin.action(description='Export selected users to CSV')
+def export_users_to_csv(modeladmin, request, queryset):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="users.csv"'
+    
+    writer = csv.writer(response)
+    writer.writerow(['School ID', 'First Name', 'Last Name', 'User Type', 'Date Joined'])
+    
+    for user in queryset:
+        writer.writerow([
+            user.school_id,
+            user.first_name,
+            user.last_name,
+            user.user_type,
+            user.date_joined.strftime('%Y-%m-%d %H:%M:%S')
+        ])
+    
+    return response
+
+@admin.action(description='Mark submissions as graded')
+def mark_as_graded(modeladmin, request, queryset):
+    queryset.update(status='Graded')
+    modeladmin.message_user(request, f"{queryset.count()} submissions marked as graded.")
+    
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('school_id', 'first_name', 'last_name', 'user_type', 'image_preview', 'date_joined')

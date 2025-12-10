@@ -79,8 +79,12 @@
       opacity: 0;
       transform: translateY(-10px);
       transition: opacity 0.5s ease, transform 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem !important;
     }
-
     /* Fade in and fade out animation */
     .small-alert.showing {
       opacity: 1;
@@ -89,6 +93,18 @@
     .small-alert.fade-out {
       opacity: 0;
       transform: translateY(-6px);
+    }
+    
+    .small-alert .btn-close {
+      margin: 0;
+      padding: 0;
+      width: 1em;
+      height: 1em;
+      opacity: 0.8;
+    }
+
+    .small-alert .btn-close:hover {
+      opacity: 1;
     }
 
     /* Keep text white for all alerts */
@@ -99,9 +115,9 @@
     }
 
      .alert.bg-gradient-success {
-        background: linear-gradient(135deg, rgb(35, 103, 51), rgba(35, 103, 51, 0.6)) !important;
-        border: none !important;
-      }
+      background: linear-gradient(135deg, rgb(35, 103, 51), rgba(35, 103, 51, 0.6)) !important;
+      border: none !important;
+    }
 
   </style>
 </head>
@@ -111,21 +127,21 @@
 
   <!-- ✅ Alerts -->
   {% if messages %}
-  <div class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 2000;">
-    {% for message in messages %}
-      <div class="alert alert-dismissible fade show text-center text-black py-2 px-5 shadow small-alert 
-                  {% if message.tags == 'error' %}alert-danger
-                  {% elif message.tags == 'success' %}alert-success
-                  {% elif message.tags == 'warning' %}alert-warning
-                  {% elif message.tags == 'info' %}alert-info
-                  {% else %}alert-secondary{% endif %}"
-           role="alert">
-        <strong>{{ message }}</strong>
-        <button type="button" class="btn-close btn-close-black ms-2" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  </div>
-  {% endif %}
+    <div class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 2000;">
+      {% for message in messages %}
+        <div class="alert alert-dismissible fade show small-alert 
+                    {% if message.tags == 'error' %}alert-danger
+                    {% elif message.tags == 'success' %}alert-success
+                    {% elif message.tags == 'warning' %}alert-warning
+                    {% elif message.tags == 'info' %}alert-info
+                    {% else %}alert-secondary{% endif %}"
+            role="alert">
+          <strong>{{ message }}</strong>
+          <button type="button" class="btn-close btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
 
   <!-- 🔄 Loading Screen -->
   <div id="loading-screen">

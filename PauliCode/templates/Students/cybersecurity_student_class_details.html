@@ -56,11 +56,13 @@
       </div>
 
       <!-- Resources Search -->
-      <div class="mb-3">
+      <div class="mb-3 position-relative">
+        <i class="fa fa-search position-absolute text-white-50" 
+          style="left: 12px; top: 50%; transform: translateY(-50%); z-index: 10;"></i>
         <input type="text" id="resourceSearch" 
               class="form-control text-white"
-              placeholder="🔍 Search resources..."
-              style="background-color: #111827; border: 1px solid #f87171; height: 44px;">
+              placeholder="Search resources..."
+              style="background-color: #111827; border: 1px solid #f87171; height: 44px; padding-left: 40px;">
       </div>
 
       <!-- Resources Grid -->
@@ -176,11 +178,13 @@
               </div>
 
               <!-- Search Bar -->
-              <div class="col-12 col-md">
+              <div class="col-12 col-md position-relative">
+                <i class="fa fa-search position-absolute text-white-50 ms-3" 
+                  style="left: 12px; top: 50%; transform: translateY(-50%); z-index: 10;"></i>
                 <input type="text" name="q" value="{{ query }}"
-                       class="form-control text-white w-100"
-                       placeholder="🔍 Search challenges..."
-                       style="background-color: #111827; border: 1px solid #f87171; height: 42px;">
+                      class="form-control text-muted w-100 ms-2"
+                      placeholder="Search challenges..."
+                      style="background-color: #111827; border: 1px solid #f87171; height: 42px; padding-left: 40px;">
               </div>
 
               <!-- Filter Label (Desktop only) -->
@@ -419,57 +423,180 @@
   {% include "partials/scripts.html" %}
 
   <script>
-// ============================================
-// EXISTING SCRIPTS FROM YOUR FILE
-// ============================================
+  let currentProblemId = null;
+  const successMessages = [
+    "🎉 All right!",
+    "✨ You got it!",
+    "🎊 Congratulations, you cracked it!",
+    "🌟 Perfect! Well done!",
+    "🏆 Excellent work!",
+    "💯 Spot on!",
+    "🎯 Bullseye!",
+    "⭐ Amazing job!",
+    "🔥 You nailed it!",
+    "👍 Outstanding!"
+  ];
 
-// Global variables for cybersecurity challenges
-let currentProblemId = null;
-const successMessages = [
-  "🎉 All right!",
-  "✨ You got it!",
-  "🎊 Congratulations, you cracked it!",
-  "🌟 Perfect! Well done!",
-  "🏆 Excellent work!",
-  "💯 Spot on!",
-  "🎯 Bullseye!",
-  "⭐ Amazing job!",
-  "🔥 You nailed it!",
-  "👍 Outstanding!"
-];
+  function getRandomSuccessMessage() {
+    return successMessages[Math.floor(Math.random() * successMessages.length)];
+  }
 
-function getRandomSuccessMessage() {
-  return successMessages[Math.floor(Math.random() * successMessages.length)];
-}
+  // ============================================
+  // CHALLENGE CARD CLICK HANDLER - WITH HTML FILE SUPPORT
+  // ============================================
+  document.querySelectorAll('.problem-card').forEach(card => {
+    card.addEventListener('click', function() {
+      currentProblemId = this.dataset.problemId;
 
-// Challenge card click handler
-document.querySelectorAll('.problem-card').forEach(card => {
-  card.addEventListener('click', function() {
-    currentProblemId = this.dataset.problemId;
+      fetch(`/problem/${currentProblemId}/details/`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('problem_title').textContent = data.title;
+          document.getElementById('problem_description').innerHTML = data.description;
+          document.getElementById('problem_type').textContent = data.type;
+          document.getElementById('total_score').textContent = data.score + ' points';
+          document.getElementById('due_date').textContent = 'Due: ' + data.due_date;
 
-    fetch(`/problem/${currentProblemId}/details/`)
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('problem_title').textContent = data.title;
-        document.getElementById('problem_description').textContent = data.description;
-        document.getElementById('problem_type').textContent = data.type;
-        document.getElementById('total_score').textContent = data.score + ' points';
-        document.getElementById('due_date').textContent = 'Due: ' + data.due_date;
+          // ✅ UPDATED: Handle challenge files including HTML
+          const fileContainer = document.getElementById('challenge_file_container');
+          if (data.challenge_file) {
+            const fileName = data.challenge_file_name || data.challenge_file.split('/').pop();
+            const fileExt = fileName.split('.').pop().toLowerCase();
+            
+            // Determine file icon and color
+            let fileIcon = 'fa-file';
+            let fileColor = '#be123c';
+            let buttonText = 'Download';
+            let buttonIcon = 'fa-download';
+            let showBadge = true; // Control whether to show the badge
+            
+            if (fileExt === 'html' || fileExt === 'htm') {
+              fileIcon = 'fa-code';
+              fileColor = '#f97316';
+              buttonText = fileName; // Use filename as button text for HTML
+              buttonIcon = 'fa-external-link-alt';
+              showBadge = false; // Don't show badge for HTML files
+            } else if (fileExt === 'pdf') {
+              fileIcon = 'fa-file-pdf';
+              fileColor = '#ef4444';
+              buttonText = 'View PDF';
+              buttonIcon = 'fa-eye';
+            } else if (fileExt === 'zip') {
+              fileIcon = 'fa-file-archive';
+              fileColor = '#6366f1';
+            } else if (['png', 'jpg', 'jpeg'].includes(fileExt)) {
+              fileIcon = 'fa-file-image';
+              fileColor = '#06b6d4';
+              buttonText = 'View Image';
+              buttonIcon = 'fa-eye';
+            } else if (['doc', 'docx'].includes(fileExt)) {
+              fileIcon = 'fa-file-word';
+              fileColor = '#2b579a';
+            } else if (['ppt', 'pptx'].includes(fileExt)) {
+              fileIcon = 'fa-file-powerpoint';
+              fileColor = '#d24726';
+            } else if (fileExt === 'txt') {
+              fileIcon = 'fa-file-alt';
+              fileColor = '#6b7280';
+              buttonText = 'View Text';
+              buttonIcon = 'fa-eye';
+            }
+            
+            // Build HTML - conditionally show badge
+            let fileHTML = '<div class="d-flex align-items-center gap-2 flex-wrap">';
+            
+            if (showBadge) {
+              fileHTML += `
+                <span class="badge px-2 py-1 d-flex align-items-center" style="background-color: ${fileColor};">
+                  <i class="fa ${fileIcon} me-1"></i>${fileName}
+                </span>
+              `;
+            }
+            
+            fileHTML += `
+              <a href="${data.challenge_file}" 
+                target="_blank" 
+                class="btn btn-sm btn-outline-rose d-flex align-items-center"
+                title="${buttonText}">
+                <i class="fa ${buttonIcon} me-1"></i>${buttonText}
+              </a>
+            </div>
+            `;
+            
+            fileContainer.innerHTML = fileHTML;
+          } else {
+            fileContainer.innerHTML = '<span class="text-white opacity-75">No file uploaded</span>';
+          }
 
-        const fileContainer = document.getElementById('challenge_file_container');
-        if (data.challenge_file) {
-          fileContainer.innerHTML = `<a href="${data.challenge_file}" target="_blank" class="text-white"><i class="fa fa-download me-1"></i>Download File</a>`;
-        } else {
-          fileContainer.innerHTML = '<span class="text-white opacity-75">No file uploaded</span>';
-        }
+          // Reset answer field
+          document.getElementById('answer_text').value = '';
+          document.getElementById('feedback_card').classList.add('d-none');
 
-        document.getElementById('answer_text').value = '';
-        document.getElementById('feedback_card').classList.add('d-none');
+          const answerField = document.getElementById('answer_text');
+          const submitButton = document.getElementById('submitButton');
+          
+          if (data.answered) {
+            answerField.disabled = true;
+            answerField.placeholder = 'You have already solved this challenge correctly!';
+            answerField.style.cursor = 'not-allowed';
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-50');
+            submitButton.style.cursor = 'not-allowed';
+          } else {
+            answerField.disabled = false;
+            answerField.placeholder = 'Write your answer here...';
+            answerField.style.cursor = 'text';
+            submitButton.disabled = false;
+            submitButton.classList.remove('opacity-50');
+            submitButton.style.cursor = 'pointer';
+          }
 
-        const answerField = document.getElementById('answer_text');
-        const submitButton = document.getElementById('submitButton');
-        
-        if (data.answered) {
+          const modal = new bootstrap.Modal(document.getElementById('problemDetailsModal'));
+          modal.show();
+        })
+        .catch(err => console.error('Error loading challenge:', err));
+    });
+  });
+
+  // ============================================
+  // SUBMIT ANSWER HANDLER
+  // ============================================
+  document.getElementById('submitButton').addEventListener('click', function() {
+    const answerText = document.getElementById('answer_text').value.trim();
+    const feedbackCard = document.getElementById('feedback_card');
+    const feedbackIcon = document.getElementById('feedback_icon');
+    const feedbackMessage = document.getElementById('feedback_message');
+
+    if (!answerText) {
+      feedbackCard.className = 'alert alert-warning d-flex align-items-center';
+      feedbackIcon.className = 'fa fa-exclamation-triangle me-2';
+      feedbackMessage.textContent = 'Please provide an answer before submitting.';
+      feedbackCard.classList.remove('d-none');
+      return;
+    }
+
+    fetch(`/cybersecurity/submit/${currentProblemId}/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify({
+        answer: answerText
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        if (data.is_correct) {
+          feedbackCard.className = 'alert d-flex align-items-center';
+          feedbackCard.style.backgroundColor = '#198754';
+          feedbackCard.style.border = '1px solid #4CD964';
+          feedbackIcon.className = 'fa fa-check-circle me-2';
+          feedbackMessage.textContent = `${getRandomSuccessMessage()} Your score: ${data.score}/${data.total_score}`;
+          
+          const answerField = document.getElementById('answer_text');
+          const submitButton = document.getElementById('submitButton');
           answerField.disabled = true;
           answerField.placeholder = 'You have already solved this challenge correctly!';
           answerField.style.cursor = 'not-allowed';
@@ -477,255 +604,334 @@ document.querySelectorAll('.problem-card').forEach(card => {
           submitButton.classList.add('opacity-50');
           submitButton.style.cursor = 'not-allowed';
         } else {
-          answerField.disabled = false;
-          answerField.placeholder = 'Write your answer here...';
-          answerField.style.cursor = 'text';
-          submitButton.disabled = false;
-          submitButton.classList.remove('opacity-50');
-          submitButton.style.cursor = 'pointer';
+          feedbackCard.className = 'alert d-flex align-items-center';
+          feedbackCard.style.backgroundColor = '#be123c';
+          feedbackCard.style.border = '1px solid #fb7185';
+          feedbackIcon.className = 'fa fa-times-circle me-2';
+          feedbackMessage.textContent = `Incorrect. Your score: ${data.score}/${data.total_score}. Try again!`;
         }
-
-        const modal = new bootstrap.Modal(document.getElementById('problemDetailsModal'));
-        modal.show();
-      })
-      .catch(err => console.error('Error loading challenge:', err));
-  });
-});
-
-// Submit answer handler
-document.getElementById('submitButton').addEventListener('click', function() {
-  const answerText = document.getElementById('answer_text').value.trim();
-  const feedbackCard = document.getElementById('feedback_card');
-  const feedbackIcon = document.getElementById('feedback_icon');
-  const feedbackMessage = document.getElementById('feedback_message');
-
-  if (!answerText) {
-    feedbackCard.className = 'alert alert-warning d-flex align-items-center';
-    feedbackIcon.className = 'fa fa-exclamation-triangle me-2';
-    feedbackMessage.textContent = 'Please provide an answer before submitting.';
-    feedbackCard.classList.remove('d-none');
-    return;
-  }
-
-  fetch(`/cybersecurity/submit/${currentProblemId}/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': '{{ csrf_token }}'
-    },
-    body: JSON.stringify({
-      answer: answerText
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      if (data.is_correct) {
-        feedbackCard.className = 'alert d-flex align-items-center';
-        feedbackCard.style.backgroundColor = '#198754';
-        feedbackCard.style.border = '1px solid #4CD964';
-        feedbackIcon.className = 'fa fa-check-circle me-2';
-        feedbackMessage.textContent = `${getRandomSuccessMessage()} Your score: ${data.score}/${data.total_score}`;
         
-        const answerField = document.getElementById('answer_text');
-        const submitButton = document.getElementById('submitButton');
-        answerField.disabled = true;
-        answerField.placeholder = 'You have already solved this challenge correctly!';
-        answerField.style.cursor = 'not-allowed';
-        submitButton.disabled = true;
-        submitButton.classList.add('opacity-50');
-        submitButton.style.cursor = 'not-allowed';
+        feedbackCard.classList.remove('d-none');
+        
+        if (!data.is_correct) {
+          document.getElementById('answer_text').value = '';
+        }
+        
+        setTimeout(() => location.reload(), 2000);
       } else {
-        feedbackCard.className = 'alert d-flex align-items-center';
-        feedbackCard.style.backgroundColor = '#be123c';
-        feedbackCard.style.border = '1px solid #fb7185';
-        feedbackIcon.className = 'fa fa-times-circle me-2';
-        feedbackMessage.textContent = `Incorrect. Your score: ${data.score}/${data.total_score}. Try again!`;
+        feedbackCard.className = 'alert alert-danger d-flex align-items-center';
+        feedbackIcon.className = 'fa fa-exclamation-circle me-2';
+        feedbackMessage.textContent = 'Error: ' + (data.error || 'Failed to submit answer');
+        feedbackCard.classList.remove('d-none');
       }
-      
-      feedbackCard.classList.remove('d-none');
-      
-      if (!data.is_correct) {
-        document.getElementById('answer_text').value = '';
-      }
-      
-      setTimeout(() => location.reload(), 2000);
-    } else {
+    })
+    .catch(err => {
+      console.error('Submission error:', err);
       feedbackCard.className = 'alert alert-danger d-flex align-items-center';
       feedbackIcon.className = 'fa fa-exclamation-circle me-2';
-      feedbackMessage.textContent = 'Error: ' + (data.error || 'Failed to submit answer');
+      feedbackMessage.textContent = 'An error occurred while submitting your answer.';
       feedbackCard.classList.remove('d-none');
-    }
-  })
-  .catch(err => {
-    console.error('Submission error:', err);
-    feedbackCard.className = 'alert alert-danger d-flex align-items-center';
-    feedbackIcon.className = 'fa fa-exclamation-circle me-2';
-    feedbackMessage.textContent = 'An error occurred while submitting your answer.';
-    feedbackCard.classList.remove('d-none');
+    });
   });
-});
 
-// ============================================
-// RESOURCES JS (New)
-// ============================================
+  // ============================================
+  // RESOURCES FUNCTIONALITY
+  // ============================================
 
-// Global variable for resources
-let currentResourceGroup = null;
+  // Global variable for resources
+  let currentResourceGroup = null;
 
-// View Resource Group Details
-function viewResourceGroupDetails(title, files) {
-  try {
-    currentResourceGroup = { title, files };
+  // View Resource Group Details
+  function viewResourceGroupDetails(title, files) {
+    try {
+      currentResourceGroup = { title, files };
+      
+      document.getElementById('resourceGroupTitle').textContent = title;
+      
+      const filesList = document.getElementById('resourceGroupFilesList');
+      if (!filesList) {
+        console.error('Files list container not found!');
+        return;
+      }
+      
+      filesList.innerHTML = '';
+      
+      if (!files || !Array.isArray(files) || files.length === 0) {
+        filesList.innerHTML = '<div class="text-white-50 text-center p-4">No files available</div>';
+      } else {
+        files.forEach(file => {
+          const fileItem = document.createElement('div');
+          fileItem.className = 'file-item d-flex align-items-center justify-content-between p-3 rounded-2 mb-2';
+          fileItem.style.backgroundColor = '#111827';
+          
+          const ext = file.file_extension || '';
+          const iconMap = {
+            'pdf': 'fa-file-pdf text-danger',
+            'png': 'fa-file-image text-info',
+            'jpg': 'fa-file-image text-info',
+            'jpeg': 'fa-file-image text-info',
+            'docx': 'fa-file-word text-primary',
+            'doc': 'fa-file-word text-primary',
+            'pptx': 'fa-file-powerpoint text-warning',
+            'ppt': 'fa-file-powerpoint text-warning',
+            'zip': 'fa-file-archive text-secondary',
+            'txt': 'fa-file-alt text-muted',
+            'mp4': 'fa-file-video text-danger',
+            'mp3': 'fa-file-audio text-info',
+            'xls': 'fa-file-excel text-success',
+            'xlsx': 'fa-file-excel text-success',
+            'html': 'fa-code text-warning',
+            'htm': 'fa-code text-warning'
+          };
+          
+          const iconClass = iconMap[ext] || 'fa-file';
+          
+          fileItem.innerHTML = `
+            <div class="d-flex align-items-center gap-3">
+              <i class="fa ${iconClass} fa-lg"></i>
+              <div>
+                <div class="text-white fw-semibold">${file.original_filename || 'Unknown file'}</div>
+                <small class="text-white-50">${file.file_size || 'Unknown size'} • ${file.uploaded_at || 'Unknown date'}</small>
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="${file.file_url || '#'}" target="_blank" class="btn btn-sm btn-outline-rose" download title="Download">
+                <i class="fa fa-download"></i>
+              </a>
+              <a href="${file.file_url || '#'}" target="_blank" class="btn btn-sm btn-outline-info" title="View">
+                <i class="fa fa-eye"></i>
+              </a>
+            </div>
+          `;
+          
+          filesList.appendChild(fileItem);
+        });
+      }
+      
+      const modalElement = document.getElementById('resourceGroupDetailsModal');
+      if (!modalElement) {
+        console.error('Modal element not found!');
+        return;
+      }
+      
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+      
+    } catch (error) {
+      console.error('Error in viewResourceGroupDetails:', error);
+      alert('Error opening resource details: ' + error.message);
+    }
+  }
+
+  // Download all files in group
+  function downloadAllFilesInGroup() {
+    if (!currentResourceGroup || !currentResourceGroup.files) return;
     
-    document.getElementById('resourceGroupTitle').textContent = title;
-    
-    const filesList = document.getElementById('resourceGroupFilesList');
-    if (!filesList) {
-      console.error('Files list container not found!');
+    currentResourceGroup.files.forEach((file, index) => {
+      setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = file.file_url;
+        link.download = file.original_filename;
+        link.target = '_blank';
+        link.click();
+      }, index * 500);
+    });
+  }
+
+  // Download resource group (alternative)
+  function downloadResourceGroup(title, files) {
+    if (!files || !Array.isArray(files) || files.length === 0) {
+      alert('No files to download');
       return;
     }
     
-    filesList.innerHTML = '';
-    
-    if (!files || !Array.isArray(files) || files.length === 0) {
-      filesList.innerHTML = '<div class="text-white-50 text-center p-4">No files available</div>';
-    } else {
-      files.forEach(file => {
-        const fileItem = document.createElement('div');
-        fileItem.className = 'file-item d-flex align-items-center justify-content-between p-3 rounded-2 mb-2';
-        fileItem.style.backgroundColor = '#111827';
+    files.forEach((file, index) => {
+      setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = file.file_url;
+        link.download = file.original_filename;
+        link.target = '_blank';
+        link.click();
+      }, index * 500);
+    });
+  }
+
+  // ============================================
+  // RESOURCE SEARCH AND CARD CLICKS
+  // ============================================
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('resourceSearch');
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const resourceItems = document.querySelectorAll('.resource-item');
         
-        const ext = file.file_extension || '';
-        const iconMap = {
-          'pdf': 'fa-file-pdf text-danger',
-          'png': 'fa-file-image text-info',
-          'jpg': 'fa-file-image text-info',
-          'jpeg': 'fa-file-image text-info',
-          'docx': 'fa-file-word text-primary',
-          'doc': 'fa-file-word text-primary',
-          'pptx': 'fa-file-powerpoint text-warning',
-          'ppt': 'fa-file-powerpoint text-warning',
-          'zip': 'fa-file-archive text-secondary',
-          'txt': 'fa-file-alt text-muted',
-          'mp4': 'fa-file-video text-danger',
-          'mp3': 'fa-file-audio text-info',
-          'xls': 'fa-file-excel text-success',
-          'xlsx': 'fa-file-excel text-success'
-        };
-        
-        const iconClass = iconMap[ext] || 'fa-file';
-        
-        fileItem.innerHTML = `
-          <div class="d-flex align-items-center gap-3">
-            <i class="fa ${iconClass} fa-lg"></i>
-            <div>
-              <div class="text-white fw-semibold">${file.original_filename || 'Unknown file'}</div>
-              <small class="text-white-50">${file.file_size || 'Unknown size'} • ${file.uploaded_at || 'Unknown date'}</small>
-            </div>
-          </div>
-          <div class="d-flex gap-2">
-            <a href="${file.file_url || '#'}" target="_blank" class="btn btn-sm btn-outline-rose" download title="Download">
-              <i class="fa fa-download"></i>
-            </a>
-            <a href="${file.file_url || '#'}" target="_blank" class="btn btn-sm btn-outline-info" title="View">
-              <i class="fa fa-eye"></i>
-            </a>
-          </div>
-        `;
-        
-        filesList.appendChild(fileItem);
+        resourceItems.forEach(item => {
+          const title = item.dataset.title;
+          const description = item.dataset.description;
+          
+          if (title.includes(searchTerm) || description.includes(searchTerm)) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
       });
     }
-    
-    const modalElement = document.getElementById('resourceGroupDetailsModal');
-    if (!modalElement) {
-      console.error('Modal element not found!');
-      return;
-    }
-    
-    const modal = new bootstrap.Modal(modalElement);
-    modal.show();
-    
-  } catch (error) {
-    console.error('Error in viewResourceGroupDetails:', error);
-    alert('Error opening resource details: ' + error.message);
-  }
-}
 
-// Download all files
-function downloadAllFilesInGroup() {
-  if (!currentResourceGroup || !currentResourceGroup.files) return;
-  
-  currentResourceGroup.files.forEach((file, index) => {
-    setTimeout(() => {
-      const link = document.createElement('a');
-      link.href = file.file_url;
-      link.download = file.original_filename;
-      link.target = '_blank';
-      link.click();
-    }, index * 500);
-  });
-}
-
-// Resource Search
-document.addEventListener('DOMContentLoaded', function() {
-  const searchInput = document.getElementById('resourceSearch');
-  if (searchInput) {
-    searchInput.addEventListener('input', function() {
-      const searchTerm = this.value.toLowerCase();
-      const resourceItems = document.querySelectorAll('.resource-item');
-      
-      resourceItems.forEach(item => {
-        const title = item.dataset.title;
-        const description = item.dataset.description;
+    // Handle resource card clicks
+    document.addEventListener('click', function(e) {
+      const card = e.target.closest('.resource-card-clickable');
+      if (card) {
+        e.preventDefault();
+        e.stopPropagation();
         
-        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+        try {
+          const title = card.dataset.resourceTitle;
+          const filesJson = card.dataset.resourceFiles;
+          
+          if (!filesJson || filesJson === '') {
+            alert('No files available for this resource');
+            return;
+          }
+          
+          let files;
+          try {
+            files = JSON.parse(filesJson);
+          } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            alert('Error loading resource files');
+            return;
+          }
+          
+          viewResourceGroupDetails(title, files);
+          
+        } catch (error) {
+          console.error('Resource click error:', error);
+          alert('Error opening resource: ' + error.message);
+        }
+      }
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+  const itemsPerPage = 6;
+  let currentPage = 1;
+  
+  const challengeItems = document.querySelectorAll('.col-12.col-sm-6.col-md-6.col-lg-4');
+  const totalItems = challengeItems.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  // Find the challenges row container (inside Security Challenges card)
+  // Target the row that contains problem cards specifically
+  const allRows = document.querySelectorAll('.row.g-3');
+  let challengesRow = null;
+  
+  // Find the row that contains elements with class 'problem-card'
+  allRows.forEach(row => {
+    if (row.querySelector('.problem-card')) {
+      challengesRow = row;
+    }
+  });
+  
+  if (challengesRow && totalItems > itemsPerPage) {
+    // Create pagination controls container
+    const paginationDiv = document.createElement('div');
+    paginationDiv.className = 'd-flex justify-content-center align-items-center gap-3 mt-4 w-100';
+    paginationDiv.style.gridColumn = '1 / -1'; // Make it span full width
+    paginationDiv.innerHTML = `
+      <button id="prevBtn" class="btn btn-outline-rose" style="width: 40px; height: 40px; padding: 0;" disabled>
+        <i class="fa fa-chevron-left"></i>
+      </button>
+      <span class="text-white" id="pageInfo">Page <span id="currentPage">1</span> of <span id="totalPages">${totalPages}</span></span>
+      <button id="nextBtn" class="btn btn-outline-rose" style="width: 40px; height: 40px; padding: 0;">
+        <i class="fa fa-chevron-right"></i>
+      </button>
+    `;
+    
+    // Insert pagination after the challenges row, but inside the same card
+    challengesRow.parentElement.appendChild(paginationDiv);
+    
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentPageSpan = document.getElementById('currentPage');
+    
+    // Add data-index to challenge items for easier management
+    challengeItems.forEach((item, index) => {
+      item.classList.add('challenge-item');
+      item.setAttribute('data-index', index);
+    });
+    
+    function showPage(page) {
+      const startIndex = (page - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      
+      challengeItems.forEach((item, index) => {
+        if (index >= startIndex && index < endIndex) {
           item.style.display = 'block';
         } else {
           item.style.display = 'none';
         }
       });
-    });
-  }
-
-  // Handle resource card clicks
-  document.addEventListener('click', function(e) {
-    const card = e.target.closest('.resource-card-clickable');
-    if (card) {
-      e.preventDefault();
-      e.stopPropagation();
       
-      try {
-        const title = card.dataset.resourceTitle;
-        const filesJson = card.dataset.resourceFiles;
-        
-        if (!filesJson || filesJson === '') {
-          alert('No files available for this resource');
-          return;
-        }
-        
-        let files;
-        try {
-          files = JSON.parse(filesJson);
-        } catch (parseError) {
-          console.error('JSON parse error:', parseError);
-          alert('Error loading resource files');
-          return;
-        }
-        
-        viewResourceGroupDetails(title, files);
-        
-      } catch (error) {
-        console.error('Resource click error:', error);
-        alert('Error opening resource: ' + error.message);
-      }
+      currentPage = page;
+      currentPageSpan.textContent = currentPage;
+      
+      // Update button states
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === totalPages;
+      
+      // Scroll to top of challenges section
+      challengesRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
-  });
+    
+    // Event listeners
+    prevBtn.addEventListener('click', function() {
+      if (currentPage > 1) {
+        showPage(currentPage - 1);
+      }
+    });
+    
+    nextBtn.addEventListener('click', function() {
+      if (currentPage < totalPages) {
+        showPage(currentPage + 1);
+      }
+    });
+    
+    // Show first page
+    showPage(1);
+  }
 });
   </script>
 
   <style>
+
+    .btn-outline-rose:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      border-color: #f87171;
+      color: #f87171;
+    }
+
+    .btn-outline-rose:disabled:hover {
+      background-color: transparent;
+      transform: none;
+    }
+
+    .btn-outline-rose:not(:disabled):hover {
+      transform: scale(1.1);
+    }
+
+    #pageInfo {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    @media (max-width: 575.98px) {
+      #pageInfo {
+        font-size: 0.85rem;
+      }
+    }
     .btn-rose {
       background-color: #be123c;
       border: none;
@@ -754,12 +960,33 @@ document.addEventListener('DOMContentLoaded', function() {
       background-color: #be123c;
       border-color: #be123c;
       color: white;
+      transform: translateY(-1px);
     }
-
     .cyber-challenge-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 8px 20px rgba(248, 113, 113, 0.4);
       border-color: #fb7185 !important;
+    }
+
+    #challenge_file_container .badge {
+      font-size: 0.8rem;
+      font-weight: 500;
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #challenge_file_container .btn-sm {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    #challenge_file_container .btn-sm:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(248, 113, 113, 0.3);
     }
 
     .badge {
@@ -1049,7 +1276,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .modal-footer .btn {
         width: auto;
       }
-    }
+    
 
     /* Large Devices (992px to 1199px - small desktops) */
     @media (min-width: 992px) and (max-width: 1199.98px) {
@@ -1205,6 +1432,23 @@ document.addEventListener('DOMContentLoaded', function() {
       word-break: break-word;
     }
 
+@media (max-width: 575.98px) {
+  #challenge_file_container .d-flex {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  
+  #challenge_file_container .badge {
+    max-width: 100%;
+    justify-content: center;
+  }
+  
+  #challenge_file_container .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
     /* Resource Styles for Cybersecurity Theme */
 .resource-card:hover {
   transform: translateY(-4px);
@@ -1265,6 +1509,41 @@ document.addEventListener('DOMContentLoaded', function() {
 .files-list::-webkit-scrollbar-thumb:hover,
 .resources-container::-webkit-scrollbar-thumb:hover {
   background: rgba(248, 113, 113, 0.5);
+}
+
+.file-item .fa-code,
+#challenge_file_container .fa-code,
+.resource-card .fa-code {
+  color: #f97316 !important;
+}
+
+.fa-file-pdf {
+  color: #ef4444 !important;
+}
+
+.fa-file-archive {
+  color: #6366f1 !important;
+}
+
+.fa-file-image {
+  color: #06b6d4 !important;
+}
+
+.fa-file-word {
+  color: #2b579a !important;
+}
+
+.fa-file-powerpoint {
+  color: #d24726 !important;
+}
+
+.fa-file-alt {
+  color: #6b7280 !important;
+}
+
+/* Add HTML icon to resources if needed */
+.file-item .fa-code {
+  color: #f97316 !important;
 }
   </style>
 
