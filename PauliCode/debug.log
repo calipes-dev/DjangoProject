@@ -14450,3 +14450,9 @@ Watching for file changes with StatReloader
 "GET /api/leaderboard-data/ HTTP/1.1" 200 116
 Not Found: /.well-known/appspecific/com.chrome.devtools.json
 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
