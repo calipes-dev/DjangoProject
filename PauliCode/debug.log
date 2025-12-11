@@ -14456,3 +14456,24 @@ C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\se
 Watching for file changes with StatReloader
 C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
 Watching for file changes with StatReloader
+"POST /signup/ HTTP/1.1" 200 35907
+"GET /static/img/image.png HTTP/1.1" 404 1798
+"GET /signup/ HTTP/1.1" 200 12537
+"POST /signup/ HTTP/1.1" 200 35907
+"GET /signup/ HTTP/1.1" 200 12537
+"GET /static/img/image.png HTTP/1.1" 404 1798
+"GET /StudentDashboard/ HTTP/1.1" 302 0
+"GET /?next=/StudentDashboard/ HTTP/1.1" 200 14877
+"GET /?next=/StudentDashboard/ HTTP/1.1" 200 14877
+"GET /signup/ HTTP/1.1" 200 12537
+"GET /signup/ HTTP/1.1" 200 12537
+"POST /signup/ HTTP/1.1" 200 35911
+"GET /signup/ HTTP/1.1" 200 12537
+"GET /static/img/image.png HTTP/1.1" 404 1798
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 73665
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 25
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 246
