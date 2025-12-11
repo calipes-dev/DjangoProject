@@ -89,6 +89,27 @@
     display: inline;
   }
 
+  /* Class type selection styles */
+  .class-type-option {
+    transition: all 0.3s ease;
+  }
+
+  .class-type-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .form-check-input:checked + .form-check-label .class-type-option {
+    background-color: #1a2332 !important;
+    border-width: 2px !important;
+  }
+
+  .form-check-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
   @media (max-width: 768px) {
     .card .position-absolute {
       position: static !important;
@@ -110,6 +131,106 @@
       padding: 0.5rem !important;
     }
   }
+
+  /* ============================================
+   MODAL BACKDROP & CONTAINER
+   ============================================ */
+
+  .modal-backdrop-custom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    display: none;
+    overflow-y: auto;
+  }
+
+  .modal-backdrop-custom.show {
+    display: block;
+    animation: fadeIn 0.15s ease;
+  }
+
+  .modal-container-custom {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .modal-content-custom {
+    position: relative;
+    background-color: #1f2937;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 80rem;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 2rem auto;
+    transform: scale(0.7);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .modal-backdrop-custom.show .modal-content-custom {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .modal-content-custom::-webkit-scrollbar {
+    display: none;
+  }
+
+  body.modal-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Task Card Styling */
+  .task-card {
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .task-card:hover {
+    background-color: #4b5563;
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Circular Progress */
+  .circular-progress {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .modal-content-custom {
+      max-width: 95%;
+      margin: 1rem auto;
+    }
+    
+    .modal-content-custom .sticky-top {
+      padding: 1rem;
+    }
+  }
 </style>
 
 <div class="g-sidenav-show text-white">
@@ -117,7 +238,7 @@
 
   <main class="main-content position-relative border-radius-lg">
 
-    <div class="container-fluid p-5">
+    <div class="container-fluid p-5 px-3 px-md-5">
 
       <!-- Welcome Section -->
       <div class="card text-white border-0 rounded-4 shadow-sm position-relative mx-auto"
@@ -174,7 +295,8 @@
         </div>
 
         <div class="col-md-3">
-          <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card">
+          <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card" 
+              onclick="showTeacherProgressModal()">
             <div class="card-body">
               <i class="fas fa-chart-line mb-2" style="font-size: 2.5rem; color: #10b981;"></i>
               <h6 class="fw-bold">View Progress</h6>
@@ -184,14 +306,16 @@
         </div>
 
         <div class="col-md-3">
-          <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card">
+          <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card" 
+              onclick="showTeacherTasksModal()">
             <div class="card-body">
               <i class="fas fa-tasks mb-2" style="font-size: 2.5rem; color: #f59e0b;"></i>
-              <h6 class="fw-bold">Pending Tasks</h6>
+              <h6 class="fw-bold">View Tasks</h6>
               <p class="text-light small mb-0">View student task</p>
             </div>
           </div>
         </div>
+
       </div>
 
      <!-- Leaderboard -->
@@ -318,27 +442,23 @@
       <!-- CREATE CLASS MODAL -->
   <div class="modal fade" id="createClassModal" tabindex="-1" aria-labelledby="createClassLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
-      <div class="modal-content shadow-lg border-0" style="background-color: #1E2835; color: #fff; border-radius: 16px;">
-        <div class="modal-header border-0 pb-1">
-          <h5 class="modal-title fw-bold text-success" id="createClassLabel">
-            <i class="fa fa-layer-group"></i> Create New Class
-          </h5>
+      <div class="modal-content shadow-lg border-0" style="background-color: #1E2835; color: white; border-radius: 16px;">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold text-success" id="createClassLabel">Create New Class</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body pt-0">
-          <p class="text-muted small mb-4">
-            Fill in the details below to set up your new class environment.
-          </p>
+          <p class="text-muted small mb-4">Set up your classroom with all the essential details to get started.</p>
 
           <form id="createClassForm" method="POST" enctype="multipart/form-data" action="{% url 'create_class' %}">
             {% csrf_token %}
 
-            <!-- Upload Section -->
-            <div class="mb-4">
+            <!-- Upload -->
+            <div class="mb-3">
               <label class="form-label fw-bold">Class Thumbnail</label>
-              <div class="upload-box border border-2 border-dashed rounded d-flex align-items-center justify-content-center position-relative overflow-hidden" 
-                  style="width: 120px; height: 120px; background-color: #101826; cursor: pointer;">
+              <div class="upload-box border border-2 border-dashed rounded position-relative d-flex justify-content-center align-items-center"
+                  style="width: 100px; height: 100px; background-color: #101826; cursor: pointer;">
                 <input type="file" id="uploadIcon" name="upload_icon" accept="image/*" class="position-absolute w-100 h-100 opacity-0" style="cursor: pointer;">
                 <div class="text-center" id="uploadPlaceholder">
                   <i class="fa fa-camera mb-2 text-muted" style="font-size: 28px;"></i>
@@ -346,24 +466,65 @@
                 </div>
                 <img id="previewImage" src="#" alt="Preview" class="d-none position-absolute top-0 start-0 w-100 h-100 rounded" style="object-fit: cover;">
               </div>
-              <p class="text-muted small mt-2 mb-0">Recommended size: <strong>400×400px</strong> (JPG, PNG)</p>
+              <p class="text-muted small mt-2 mb-0">Recommended: 400×400px (JPG, PNG)</p>
+            </div>
+
+            <!-- Class Type Selection -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Class Type <span class="text-danger">*</span></label>
+              <div class="d-flex gap-2">
+                <!-- Programming Option -->
+                <div class="form-check flex-fill">
+                  <input class="form-check-input" 
+                        type="radio" 
+                        name="class_type" 
+                        id="typeProgramming" 
+                        value="programming" 
+                        required>
+                  <label class="form-check-label w-100" for="typeProgramming">
+                    <div class="class-type-option p-3 rounded border border-primary text-center" 
+                        style="background-color: #101826; cursor: pointer;"
+                        data-type="programming">
+                      <i class="fa fa-code text-primary mb-2" style="font-size: 24px;"></i>
+                      <p class="mb-0 fw-bold">Programming</p>
+                      <small class="text-muted">Coding & Development</small>
+                    </div>
+                  </label>
+                </div>
+
+                <!-- Cybersecurity Option -->
+                <div class="form-check flex-fill">
+                  <input class="form-check-input" 
+                        type="radio" 
+                        name="class_type" 
+                        id="typeCybersecurity" 
+                        value="cybersecurity" 
+                        required>
+                  <label class="form-check-label w-100" for="typeCybersecurity">
+                    <div class="class-type-option p-3 rounded border border-danger text-center" 
+                        style="background-color: #101826; cursor: pointer;"
+                        data-type="cybersecurity">
+                      <i class="fa fa-shield-alt text-danger mb-2" style="font-size: 24px;"></i>
+                      <p class="mb-0 fw-bold">Cybersecurity</p>
+                      <small class="text-muted">Security & Protection</small>
+                    </div>
+                  </label>
+                </div>
+              </div>
             </div>
 
             <!-- Class Code -->
             <div class="mb-3">
-              <label class="form-label fw-bold">Class Code</label>
-              <div class="input-group">
-                <span class="input-group-text bg-success border-0 text-white fw-bold">#</span>
-                <input type="text" name="class_code" class="form-control text-white p-2"
-                      placeholder="Enter unique class code (e.g., APPDEV3)"
-                      style="background-color: #101826; border: 1px solid #4CD964; border-radius: 0 8px 8px 0;">
-              </div>
+              <label class="form-label fw-bold">Class Code <span class="text-danger">*</span></label>
+              <input type="text" name="class_code" class="form-control text-white" required
+                    placeholder="Enter unique class code (e.g., APPDEV3)"
+                    style="background-color: #101826; border: 1px solid #4CD964; border-radius: 8px;">
             </div>
 
             <!-- Class Title -->
             <div class="mb-3">
-              <label class="form-label fw-bold">Class Title</label>
-              <input type="text" name="title" class="form-control text-white"
+              <label class="form-label fw-bold">Class Title <span class="text-danger">*</span></label>
+              <input type="text" name="title" class="form-control text-white" required
                     placeholder="Enter class title (e.g., Application Development)"
                     style="background-color: #101826; border: 1px solid #555; border-radius: 8px;">
             </div>
@@ -391,8 +552,476 @@
     </div>
   </div>
 
+
+<!--Modals-->
+  <!-- Teacher Progress Modal -->
+  <div id="teacherProgressModal" class="modal-backdrop-custom" style="display: none;">
+    <div class="modal-container-custom">
+      <div class="modal-content-custom">
+        <div class="sticky-top p-4" style="background: linear-gradient(135deg, #10b981, #059669); border-radius: 1rem 1rem 0 0;">
+          <div class="d-flex align-items-center justify-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3 flex-grow-1">
+              <i class="fas fa-chart-line" style="font-size: 2rem; color: white;"></i>
+              <div>
+                <h2 class="mb-0 fw-bold" style="color: white;">Student Progress Overview</h2>
+                <p class="mb-0 small" style="opacity: 0.9; color: white;">Track class completion rates</p>
+              </div>
+            </div>
+            <button onclick="closeTeacherProgressModal()" class="btn btn-link text-white p-2">
+              <i class="fas fa-times" style="font-size: 1.5rem;"></i>
+            </button>
+          </div>
+
+          <div class="mt-3 d-flex align-items-center gap-2 flex-wrap">
+            <i class="fas fa-filter" style="color: white;"></i>
+            <select id="teacherProgressClassFilter" onchange="loadTeacherProgressData()" 
+                    class="form-select" style="background-color: #059669; color: white; border: 1px solid #047857; max-width: 300px;">
+              <option value="all">All Classes</option>
+              {% for class in classes %}
+                <option value="{{ class.class_id }}">{{ class.title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="p-4" id="teacherProgressContent">
+          <div class="text-center py-5">
+            <div class="spinner-border text-success" role="status"></div>
+            <p class="mt-2" style="color: #d1d5db;">Loading progress data...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Tasks Modal -->
+  <div id="teacherTasksModal" class="modal-backdrop-custom" style="display: none;">
+    <div class="modal-container-custom">
+      <div class="modal-content-custom">
+        <div class="sticky-top p-4" style="background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 1rem 1rem 0 0;">
+          <div class="d-flex align-items-center justify-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3 flex-grow-1">
+              <i class="fas fa-tasks" style="font-size: 2rem; color: white;"></i>
+              <div>
+                <h2 class="mb-0 fw-bold" style="color: white;">My Tasks</h2>
+                <p class="mb-0 small" style="opacity: 0.9; color: white;" id="teacherTasksCount">Loading...</p>
+              </div>
+            </div>
+            <button onclick="closeTeacherTasksModal()" class="btn btn-link text-white p-2">
+              <i class="fas fa-times" style="font-size: 1.5rem;"></i>
+            </button>
+          </div>
+
+          <div class="mt-3 d-flex align-items-center gap-2 flex-wrap">
+            <i class="fas fa-filter" style="color: white;"></i>
+            <select id="teacherTasksClassFilter" onchange="loadTeacherTasksData()" 
+                    class="form-select" style="background-color: #d97706; color: white; border: 1px solid #b45309; max-width: 300px;">
+              <option value="all">All Classes</option>
+              {% for class in classes %}
+                <option value="{{ class.class_id }}">{{ class.title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="p-4" id="teacherTasksContent">
+          <div class="text-center py-5">
+            <div class="spinner-border text-warning" role="status"></div>
+            <p class="mt-2" style="color: #d1d5db;">Loading tasks...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
   </main>
   
   {% include "partials/scripts.html" %}
+  <script>
+    // Image preview functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const uploadIcon = document.getElementById('uploadIcon');
+      const previewImage = document.getElementById('previewImage');
+      const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+
+      if (uploadIcon) {
+        uploadIcon.addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+              previewImage.src = event.target.result;
+              previewImage.classList.remove('d-none');
+              uploadPlaceholder.classList.add('d-none');
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      // Class type selection visual feedback
+      const classTypeOptions = document.querySelectorAll('.class-type-option');
+      const radioInputs = document.querySelectorAll('input[name="class_type"]');
+
+      classTypeOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          const type = this.getAttribute('data-type');
+          const radioInput = document.querySelector(`input[value="${type}"]`);
+          if (radioInput) {
+            radioInput.checked = true;
+            
+            // Visual feedback
+            classTypeOptions.forEach(opt => {
+              opt.style.backgroundColor = '#101826';
+              opt.style.borderWidth = '1px';
+            });
+            this.style.backgroundColor = '#1a2332';
+            this.style.borderWidth = '2px';
+          }
+        });
+      });
+
+      // Form submission validation
+      const createClassForm = document.getElementById('createClassForm');
+      if (createClassForm) {
+        createClassForm.addEventListener('submit', function(e) {
+          const classType = document.querySelector('input[name="class_type"]:checked');
+          
+          if (!classType) {
+            e.preventDefault();
+            alert('Please select a class type (Programming or Cybersecurity)');
+            return false;
+          }
+
+          console.log('Selected class type:', classType.value);
+        });
+      }
+
+      // Reset form when modal is closed
+      const createClassModal = document.getElementById('createClassModal');
+      if (createClassModal) {
+        createClassModal.addEventListener('hidden.bs.modal', function () {
+          createClassForm.reset();
+          previewImage.classList.add('d-none');
+          uploadPlaceholder.classList.remove('d-none');
+          classTypeOptions.forEach(opt => {
+            opt.style.backgroundColor = '#101826';
+            opt.style.borderWidth = '1px';
+          });
+        });
+      }
+    });
+
+    function showTeacherProgressModal() {
+      const modal = document.getElementById('teacherProgressModal');
+      modal.style.display = 'block';
+      document.body.classList.add('modal-open');
+      
+      setTimeout(() => {
+        modal.classList.add('show');
+      }, 10);
+      
+      loadTeacherProgressData();
+    }
+
+    function closeTeacherProgressModal() {
+      const modal = document.getElementById('teacherProgressModal');
+      modal.classList.remove('show');
+      
+      setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }, 300);
+    }
+
+    function loadTeacherProgressData() {
+      const classId = document.getElementById('teacherProgressClassFilter').value;
+      const content = document.getElementById('teacherProgressContent');
+      
+      content.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-success"></div><p class="mt-2" style="color: #d1d5db;">Loading...</p></div>';
+      
+      fetch(`/api/teacher/progress/?class_id=${classId}`)
+        .then(response => response.json())
+        .then(data => {
+          renderTeacherProgressData(data);
+        })
+        .catch(error => {
+          content.innerHTML = `
+            <div class="text-center py-5">
+              <i class="fas fa-exclamation-circle text-danger" style="font-size: 3rem;"></i>
+              <p class="mt-3" style="color: #d1d5db;">Error loading progress data. Please try again.</p>
+            </div>
+          `;
+        });
+    }
+
+    function renderTeacherProgressData(data) {
+      const content = document.getElementById('teacherProgressContent');
+      
+      content.innerHTML = `
+        <!-- Overall Stats -->
+        <div class="row g-4 mb-4">
+          <div class="col-12 col-md-4">
+            <div class="card h-100 p-4 text-center" style="background-color: #374151; border: none;">
+              <div class="circular-progress mx-auto mb-3" style="position: relative; width: 120px; height: 120px;">
+                <svg width="120" height="120" style="transform: rotate(-90deg);">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#4b5563" stroke-width="8"/>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#10b981" stroke-width="8"
+                          stroke-dasharray="${2 * Math.PI * 50}"
+                          stroke-dashoffset="${2 * Math.PI * 50 * (1 - data.completion_percentage / 100)}"
+                          stroke-linecap="round"
+                          style="transition: stroke-dashoffset 1s ease;"/>
+                </svg>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                  <div style="font-size: 1.5rem; font-weight: bold; color: #f9fafb;">${data.completion_percentage}%</div>
+                  <div style="font-size: 0.75rem; color: #9ca3af;">Complete</div>
+                </div>
+              </div>
+              <p class="mb-0" style="color: #9ca3af; font-weight: 500;">Overall Completion</p>
+              <p class="small mb-0" style="color: #9ca3af;">${data.total_submissions} of ${data.total_possible} submissions</p>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <div class="card h-100 p-4" style="background-color: #374151; border: none;">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <i class="fas fa-users" style="font-size: 2rem; color: #3b82f6;"></i>
+                <div>
+                  <h3 class="mb-0" style="color: #f9fafb;">${data.total_students}</h3>
+                  <p class="small mb-0" style="color: #9ca3af;">Total Students</p>
+                </div>
+              </div>
+              <div class="mt-auto">
+                <p class="small mb-0" style="color: #9ca3af;">Enrolled across all classes</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <div class="card h-100 p-4" style="background-color: #374151; border: none;">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <i class="fas fa-clipboard-list" style="font-size: 2rem; color: #f59e0b;"></i>
+                <div>
+                  <h3 class="mb-0" style="color: #f9fafb;">${data.total_problems}</h3>
+                  <p class="small mb-0" style="color: #9ca3af;">Total Tasks</p>
+                </div>
+              </div>
+              <div class="mt-auto">
+                <p class="small mb-0" style="color: #9ca3af;">Created across all classes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress by Class -->
+        ${data.progress_by_class && data.progress_by_class.length > 0 ? `
+        <div class="card p-4 mb-4" style="background-color: #374151; border: none;">
+          <h5 class="mb-4" style="color: #f9fafb;"><i class="fas fa-graduation-cap me-2" style="color: #10b981;"></i>Progress by Class</h5>
+          <div class="row g-3">
+            ${data.progress_by_class.map((cls, idx) => {
+              const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'];
+              const color = colors[idx % colors.length];
+              return `
+                <div class="col-12">
+                  <div class="card p-3" style="background-color: #1f2937; border: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="fw-semibold" style="color: #f3f4f6;">${cls.class_name}</span>
+                      <span class="badge" style="background-color: ${color};">${cls.completion_percentage}%</span>
+                    </div>
+                    <div class="d-flex justify-content-between small mb-2" style="color: #9ca3af;">
+                      <span>${cls.total_students} students</span>
+                      <span>${cls.total_problems} tasks</span>
+                    </div>
+                    <div class="progress mb-2" style="height: 12px; background-color: #4b5563;">
+                      <div class="progress-bar progress-bar-animated" 
+                          style="width: ${cls.completion_percentage}%; background-color: ${color};"></div>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                      <span style="color: #9ca3af;">Completed: ${cls.completed_submissions}/${cls.total_possible}</span>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        ` : ''}
+
+        <!-- Students with Incomplete Work -->
+        ${data.incomplete_students && data.incomplete_students.length > 0 ? `
+        <div class="card p-4" style="background-color: #374151; border: none;">
+          <h5 class="mb-3" style="color: #f9fafb;"><i class="fas fa-user-clock me-2" style="color: #ef4444;"></i>Students with Incomplete Work</h5>
+          <div class="row g-3">
+            ${data.incomplete_students.map(student => {
+              const progressColor = student.completion_rate < 30 ? '#ef4444' : student.completion_rate < 70 ? '#f59e0b' : '#10b981';
+              return `
+                <div class="col-12 col-md-6">
+                  <div class="card p-3" style="background-color: #1f2937; border: none;">
+                    <div class="d-flex align-items-center gap-3">
+                      <img src="${student.user_image || '/static/img/default-avatar.png'}" 
+                          alt="${student.first_name}" 
+                          style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                      <div class="flex-grow-1">
+                        <h6 class="mb-1" style="color: #f9fafb;">${student.first_name} ${student.last_name}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span class="small" style="color: #9ca3af;">${student.completed}/${student.total} completed</span>
+                          <span class="badge" style="background-color: ${progressColor};">${student.completion_rate}%</span>
+                        </div>
+                        <div class="progress mt-2" style="height: 6px; background-color: #4b5563;">
+                          <div class="progress-bar" style="width: ${student.completion_rate}%; background-color: ${progressColor};"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        ` : `
+        <div class="card p-4" style="background-color: #374151; border: none;">
+          <div class="text-center py-4">
+            <i class="fas fa-check-circle" style="font-size: 3rem; color: #10b981;"></i>
+            <h5 class="mt-3" style="color: #f9fafb;">All students have completed their tasks!</h5>
+            <p style="color: #9ca3af;">Great job keeping everyone on track.</p>
+          </div>
+        </div>
+        `}
+      `;
+    }
+
+    // ============================================
+    // TEACHER TASKS MODAL FUNCTIONS
+    // ============================================
+
+    function showTeacherTasksModal() {
+      const modal = document.getElementById('teacherTasksModal');
+      modal.style.display = 'block';
+      document.body.classList.add('modal-open');
+      
+      setTimeout(() => {
+        modal.classList.add('show');
+      }, 10);
+      
+      loadTeacherTasksData();
+    }
+
+    function closeTeacherTasksModal() {
+      const modal = document.getElementById('teacherTasksModal');
+      modal.classList.remove('show');
+      
+      setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }, 300);
+    }
+
+    function loadTeacherTasksData() {
+      const classId = document.getElementById('teacherTasksClassFilter').value;
+      const content = document.getElementById('teacherTasksContent');
+      
+      content.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-warning"></div><p class="mt-2" style="color: #d1d5db;">Loading...</p></div>';
+      
+      fetch(`/api/teacher/tasks/?class_id=${classId}`)
+        .then(response => response.json())
+        .then(data => {
+          renderTeacherTasksData(data);
+        })
+        .catch(error => {
+          content.innerHTML = `
+            <div class="text-center py-5">
+              <i class="fas fa-exclamation-circle text-danger" style="font-size: 3rem;"></i>
+              <p class="mt-3" style="color: #d1d5db;">Error loading tasks. Please try again.</p>
+            </div>
+          `;
+        });
+    }
+
+    function renderTeacherTasksData(data) {
+      const content = document.getElementById('teacherTasksContent');
+      const countEl = document.getElementById('teacherTasksCount');
+      
+      countEl.textContent = `${data.tasks.length} task${data.tasks.length !== 1 ? 's' : ''} created`;
+      
+      if (data.tasks.length === 0) {
+        content.innerHTML = `
+          <div class="text-center py-5">
+            <i class="fas fa-clipboard-list" style="font-size: 4rem; color: #6b7280; opacity: 0.3;"></i>
+            <h4 class="mt-3 mb-2" style="color: #f9fafb;">No tasks found</h4>
+            <p style="color: #9ca3af;">Create your first task to get started!</p>
+          </div>
+        `;
+        return;
+      }
+
+      content.innerHTML = data.tasks.map(task => {
+        const borderColor = task.class_type === 'cybersecurity' ? '#ef4444' : '#3b82f6';
+        const typeColor = task.type === 'CTF' ? 'danger' : task.type === 'Quiz' ? 'success' : 'warning';
+        const completionColor = task.completion_rate < 30 ? '#ef4444' : task.completion_rate < 70 ? '#f59e0b' : '#10b981';
+        const dueDate = new Date(task.due_date);
+        const isOverdue = task.is_overdue;
+        
+        return `
+          <div class="card task-card p-4 mb-3" 
+              style="background-color: #374151; border-left: 4px solid ${borderColor}; border-radius: 0.75rem;"
+              onclick="window.location.href='/teacher/class/${task.class_id}/'">
+            <div class="row align-items-center g-3">
+              <div class="col-12 col-md-7">
+                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                  <h5 class="mb-0" style="color: #f9fafb;">${task.title}</h5>
+                  <span class="badge bg-${typeColor} small">${task.type}</span>
+                  ${isOverdue ? '<span class="badge bg-danger small">Overdue</span>' : ''}
+                </div>
+                <div class="d-flex flex-wrap gap-3 small" style="color: #d1d5db;">
+                  <span><i class="fas fa-book-open me-1"></i>${task.class_name}</span>
+                  <span class="${isOverdue ? 'text-danger' : 'text-success'}">
+                    <i class="fas fa-clock me-1"></i>Due: ${dueDate.toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+              <div class="col-12 col-md-5">
+                <div class="d-flex flex-column gap-2">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small" style="color: #9ca3af;">Completion Rate</span>
+                    <span class="badge" style="background-color: ${completionColor};">${task.completion_rate}%</span>
+                  </div>
+                  <div class="progress" style="height: 8px; background-color: #4b5563;">
+                    <div class="progress-bar" style="width: ${task.completion_rate}%; background-color: ${completionColor};"></div>
+                  </div>
+                  <div class="d-flex justify-content-between small" style="color: #9ca3af;">
+                    <span>${task.submissions_count}/${task.total_students} submitted</span>
+                    <span>${task.score} points</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Close modals on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeTeacherProgressModal();
+        closeTeacherTasksModal();
+      }
+    });
+
+    // Close modals when clicking on backdrop
+    document.addEventListener('click', function(e) {
+      const progressModal = document.getElementById('teacherProgressModal');
+      const tasksModal = document.getElementById('teacherTasksModal');
+      
+      if (e.target === progressModal) {
+        closeTeacherProgressModal();
+      }
+      if (e.target === tasksModal) {
+        closeTeacherTasksModal();
+      }
+    });
+  </script>
 </div>
 {% endblock %}

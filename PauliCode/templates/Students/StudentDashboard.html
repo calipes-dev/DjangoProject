@@ -2,9 +2,12 @@
 {% load static %}
 
 {% block content %}
-<!--StudentDashboard.html-->
+<!--StudentDashboard.html - Enhanced with Progress & Tasks Modals-->
 
 <style>
+  /* ============================================
+     BASE STYLES
+     ============================================ */
   body {
     background-color: #111827 !important;
   }
@@ -30,7 +33,11 @@
     filter: invert(1);
   }
 
-  /* 🌿 Programming Classes - Blue outline */
+  /* ============================================
+     CLASS CARD STYLES
+     ============================================ */
+  
+  /* Programming Classes - Blue outline */
   .border-programming {
     background-color: #1f2937;
     color: rgb(137, 216, 255);
@@ -42,7 +49,7 @@
     transition: all 0.3s ease;
   }
 
-  /* 🔴 Cybersecurity Classes - Red outline */
+  /* Cybersecurity Classes - Red outline */
   .border-cybersecurity {
     background-color: #1f2937;
     color: rgb(252, 165, 165);
@@ -54,7 +61,6 @@
     transition: all 0.3s ease;
   }
 
-  /* Legacy classes for backward compatibility */
   .border-green {
     background-color: #1f2937;
     color: #00ff9d;
@@ -79,7 +85,6 @@
     transition: all 0.3s ease;
   }
 
-  /* Hover effects */
   .border-programming:hover,
   .border-cybersecurity:hover,
   .border-green:hover,
@@ -88,7 +93,10 @@
     box-shadow: 0 0 15px currentColor;
   }
 
-  /* 📊 Total EXP Badge - Below welcome text */
+  /* ============================================
+     EXP BADGE & RANK CARD STYLES
+     ============================================ */
+  
   .exp-badge {
     background: linear-gradient(135deg, #1e3a8a, #3b82f6);
     border: 2px solid #2563eb;
@@ -116,7 +124,6 @@
     letter-spacing: 0.3px;
   }
 
-  /* 🏅 Rank Card in Leaderboard */
   .rank-card-leaderboard {
     background: linear-gradient(135deg, #059669, #10b981);
     border: 3px solid #10b981;
@@ -152,40 +159,493 @@
     }
   }
 
-  /* Responsive text hiding for "View All" buttons */
   .view-all-text {
     display: inline;
   }
 
+  /* ============================================
+     MODAL BACKDROP & CONTAINER
+     ============================================ */
+  
+  .modal-backdrop-custom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    display: none;
+    overflow-y: auto;
+    }
+
+    .modal-backdrop-custom.show {
+      display: block;
+      animation: fadeIn 0.15s ease;
+    }
+
+    .modal-container-custom {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
+    .modal-content-custom {
+      position: relative;
+      background-color: #1f2937;
+      border-radius: 1rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 80rem;
+      max-height: 90vh;
+      overflow-y: auto;
+      margin: 2rem auto;
+      transform: scale(0.7);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      /* Hide default scrollbar but keep functionality */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+    }
+
+    .modal-backdrop-custom.show .modal-content-custom {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+  /* Hide scrollbar for Chrome/Safari/Opera */
+  .modal-content-custom::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Prevent body scroll when modal is open */
+  body.modal-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ============================================
+     MODAL HEADERS
+     ============================================ */
+  
+  .modal-content-custom .sticky-top {
+    z-index: 10;
+  }
+
+  /* Progress Modal Header */
+  #progressModal .sticky-top {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-radius: 1rem 1rem 0 0;
+    padding: 1.5rem;
+  }
+
+  #progressModal .sticky-top h2,
+  #progressModal .sticky-top p,
+  #progressModal .sticky-top i {
+    color: #ffffff;
+  }
+
+  /* Tasks Modal Header */
+  #tasksModal .sticky-top {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border-radius: 1rem 1rem 0 0;
+    padding: 1.5rem;
+  }
+
+  #tasksModal .sticky-top h2,
+  #tasksModal .sticky-top p,
+  #tasksModal .sticky-top i {
+    color: #ffffff;
+  }
+
+  /* ============================================
+     FILTER DROPDOWNS
+     ============================================ */
+  
+  /* Progress Modal Filter */
+  #progressModal .form-select {
+    background-color: #2563eb;
+    color: white;
+    border: 1px solid #1e40af;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+  }
+
+  #progressModal .form-select:focus {
+    background-color: #2563eb;
+    color: white;
+    border-color: #1e3a8a;
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.3);
+  }
+
+  #progressModal .form-select option {
+    background-color: #1f2937;
+    color: #f9fafb;
+  }
+
+  /* Tasks Modal Filter */
+  #tasksModal .form-select {
+    background-color: #d97706;
+    color: white;
+    border: 1px solid #b45309;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+  }
+
+  #tasksModal .form-select:focus {
+    background-color: #d97706;
+    color: white;
+    border-color: #92400e;
+    box-shadow: 0 0 0 0.2rem rgba(217, 119, 6, 0.3);
+  }
+
+  #tasksModal .form-select option {
+    background-color: #1f2937;
+    color: #f9fafb;
+  }
+
+  /* ============================================
+     PROGRESS MODAL CONTENT
+     ============================================ */
+  
+  #progressContent .card {
+    background-color: #374151;
+    border: none;
+    border-radius: 0.75rem;
+    color: #f9fafb;
+  }
+
+  #progressContent .card h3,
+  #progressContent .card h5 {
+    color: #f9fafb;
+    font-weight: 600;
+  }
+
+  #progressContent .card p,
+  #progressContent .card .small {
+    color: #d1d5db;
+  }
+
+  #progressContent .text-muted {
+    color: #9ca3af !important;
+  }
+
+  /* Circular Progress */
+  .circular-progress {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+  }
+
+  .circular-progress svg circle {
+    transition: stroke-dashoffset 1s ease;
+  }
+
+  .circular-progress > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .circular-progress > div > div:first-child {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #f9fafb;
+  }
+
+  .circular-progress > div > div:last-child {
+    font-size: 0.75rem;
+    color: #9ca3af;
+  }
+
+  /* Progress Icons */
+  #progressContent .card i {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+
+  #progressContent .card i.fa-check-circle {
+    color: #10b981;
+  }
+
+  #progressContent .card i.fa-hourglass-half {
+    color: #f59e0b;
+  }
+
+  #progressContent .card i.fa-book-open {
+    color: #3b82f6;
+  }
+
+  #progressContent .card i.fa-chart-line {
+    color: #10b981;
+  }
+
+  #progressContent .card i.fa-chart-bar {
+    color: #6b7280;
+  }
+
+  /* Progress Bars */
+  .progress {
+    background-color: #4b5563;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    transition: width 1s ease;
+  }
+
+  .progress-bar.bg-success {
+    background-color: #10b981 !important;
+  }
+
+  .progress-bar.bg-warning {
+    background-color: #f59e0b !important;
+  }
+
+  .progress-bar-animated {
+    transition: width 1s ease;
+  }
+
+  /* Class Progress Items */
+  #progressContent .card .card {
+    background-color: #1f2937;
+    border: none;
+  }
+
+  #progressContent .card .card .fw-semibold {
+    color: #f3f4f6;
+    font-weight: 600;
+  }
+
+  #progressContent .card .card .text-muted {
+    color: #9ca3af !important;
+  }
+
+  /* Loading State - Progress */
+  .spinner-border.text-primary {
+    color: #3b82f6 !important;
+  }
+
+  #progressContent .text-center p {
+    color: #d1d5db;
+  }
+
+  /* Empty State - Progress */
+  #progressContent .text-center i.fa-chart-bar {
+    color: #6b7280;
+    opacity: 0.3;
+  }
+
+  #progressContent .text-center p.mt-3 {
+    color: #9ca3af;
+  }
+
+  /* ============================================
+     TASKS MODAL CONTENT
+     ============================================ */
+  
+  .task-card {
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background-color: #374151;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .task-card:hover {
+    background-color: #4b5563;
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .task-card h5 {
+    color: #f9fafb;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .task-card .text-muted {
+    color: #d1d5db !important;
+  }
+
+  .task-card .badge {
+    background-color: #4b5563;
+    color: #f3f4f6;
+    font-weight: 500;
+  }
+
+  /* Type Badges */
+  .badge.bg-danger {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+  }
+
+  .badge.bg-success {
+    background-color: #16a34a !important;
+    color: #ffffff !important;
+  }
+
+  .badge.bg-warning {
+    background-color: #d97706 !important;
+    color: #ffffff !important;
+  }
+
+  /* Time Remaining Colors */
+  .text-danger {
+    color: #fca5a5 !important;
+    font-weight: 600;
+  }
+
+  .text-warning {
+    color: #fbbf24 !important;
+    font-weight: 600;
+  }
+
+  .text-success {
+    color: #86efac !important;
+    font-weight: 600;
+  }
+
+  /* Score Display */
+  .task-card .h4 {
+    color: #fbbf24;
+    font-weight: 700;
+  }
+
+  .task-card .small {
+    color: #d1d5db;
+  }
+
+  /* Button Styling */
+  .task-card .btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: #ffffff;
+    font-weight: 500;
+  }
+
+  .task-card .btn-primary:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+  }
+
+  .task-card .btn-danger {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    color: #ffffff;
+    font-weight: 500;
+  }
+
+  .task-card .btn-danger:hover {
+    background-color: #b91c1c;
+    border-color: #b91c1c;
+  }
+
+  /* Icon Styling in Task Cards */
+  .task-card i {
+    color: #d1d5db;
+  }
+
+  /* Empty State - Tasks */
+  .text-center i.fa-check-circle {
+    color: #10b981;
+  }
+
+  .text-center h4 {
+    color: #f9fafb;
+  }
+
+  .text-center .text-muted {
+    color: #9ca3af !important;
+  }
+
+  /* Loading State - Tasks */
+  .spinner-border.text-warning {
+    color: #f59e0b !important;
+  }
+
+  /* ============================================
+     CLOSE BUTTONS
+     ============================================ */
+  
+  .modal-content-custom .btn-link {
+    text-decoration: none;
+    transition: transform 0.2s ease;
+    color: #ffffff;
+  }
+
+  .modal-content-custom .btn-link:hover {
+    transform: scale(1.1);
+    color: #ffffff;
+  }
+
+  /* ============================================
+     CHART STYLING
+     ============================================ */
+  
+  #weeklyProgressChart {
+    max-height: 300px;
+  }
+
+  /* ============================================
+     RESPONSIVE DESIGN
+     ============================================ */
+  
   @media (max-width: 768px) {
-    .card .position-absolute {
-      position: static !important;
-      margin: 10px auto 0;
-      display: inline-flex;
-    }
-    .card .card-body {
-      text-align: center;
-      padding-top: 1rem !important;
-    }
-    
-    /* Hide text on small screens, keep arrow */
     .view-all-text {
       display: none;
     }
     
-    /* Adjust badge padding when text is hidden */
-    .badge.d-flex {
-      padding: 0.5rem !important;
-    }
-    
-    /* Center welcome text on mobile */
-    .welcome-text-container {
-      text-align: center !important;
-      margin: 0 auto !important;
-    }
-    
     .exp-badge {
       margin: 1rem auto 0 !important;
+    }
+
+    .rank-number {
+      font-size: 2rem;
+    }
+    
+    .rank-label {
+      font-size: 1rem;
+    }
+
+    .modal-content-custom {
+      max-width: 95%;
+      margin: 1rem auto;
+    }
+
+    .modal-content-custom .sticky-top {
+      padding: 1rem;
+    }
+    
+    .task-card,
+    #progressContent .card {
+      padding: 1rem;
+    }
+    
+    .circular-progress {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .circular-progress > div > div:first-child {
+      font-size: 1.25rem;
     }
   }
 
@@ -202,13 +662,26 @@
     .exp-badge i {
       font-size: 1rem;
     }
-    
-    .rank-number {
-      font-size: 2rem;
+
+    .modal-container-custom {
+      padding: 0.5rem;
     }
     
-    .rank-label {
+    .task-card,
+    #progressContent .card {
+      padding: 0.75rem;
+    }
+    
+    .task-card h5 {
       font-size: 1rem;
+    }
+    
+    .task-card .h4 {
+      font-size: 1.25rem;
+    }
+    
+    #progressContent .card h3 {
+      font-size: 1.5rem;
     }
   }
 </style>
@@ -218,7 +691,7 @@
 
   <main class="main-content position-relative border-radius-lg">
   
-    <div class="container-fluid p-5">
+    <div class="container-fluid p-5 px-3 px-md-5">
 
       <!-- Welcome Section -->
       <div class="card text-white border-0 rounded-4 shadow-sm position-relative mx-auto"  
@@ -245,12 +718,11 @@
           </span>
         </div>
 
-        <!-- Welcome Text + EXP Badge - Left Side -->
+        <!-- Welcome Text + EXP Badge -->
         <div class="welcome-text-container d-flex flex-column justify-content-start text-start px-3 py-3 ms-4" style="height: 100%; margin-top: 10px;">
           <h3 class="fw-bold text-white mb-2">Welcome back, {{ user.first_name }}!</h3>
           <h6 class="text-white small m-0 mb-3">Explore your classes and start learning today.</h6>
           
-          <!-- 📊 Total EXP Badge -->
           <div class="exp-badge">
             <i class="fas fa-star"></i>
             <span class="exp-value" id="totalExp">0 EXP</span>
@@ -284,7 +756,7 @@
         </div>
 
         <div class="col-md-3">
-          <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card">
+          <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card" onclick="showProgressModal()">
             <div class="card-body">
               <i class="fas fa-chart-line mb-2" style="font-size: 2.5rem; color: #10b981;"></i>
               <h6 class="fw-bold">View Progress</h6>
@@ -294,7 +766,7 @@
         </div>
 
         <div class="col-md-3">
-          <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card">
+          <div class="card text-center button-gray border-0 rounded-4 shadow-sm h-100 action-card" onclick="showTasksModal()">
             <div class="card-body">
               <i class="fas fa-tasks mb-2" style="font-size: 2.5rem; color: #f59e0b;"></i>
               <h6 class="fw-bold">Pending Task</h6>
@@ -316,7 +788,7 @@
       </div>
 
       <div class="row g-4 justify-content-start">
-        <!-- 🏅 YOUR RANK CARD (First Card) -->
+        <!-- YOUR RANK CARD -->
         <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
           <div class="card text-center rounded-4 shadow-sm flex-fill action-card rank-card-leaderboard"
                style="min-height: 100%;">
@@ -338,7 +810,7 @@
           </div>
         </div>
 
-        <!-- TOP SCORERS (Remaining Cards) -->
+        <!-- TOP SCORERS -->
         {% if top_scorers %}
           {% for entry in top_scorers %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
@@ -347,7 +819,6 @@
                 style="background-color: rgb(34, 36, 55); min-height: 100%;"
               >
                 <div class="card-body position-relative d-flex flex-column align-items-center">
-                  <!-- 🏷️ Class Title Badge -->
                   <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-1 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
                     style="border: 1.5px solid #D68022; transform: scale(0.9); white-space: nowrap; width: fit-content; flex-shrink: 0;">
                     <h6 style="background: linear-gradient(90deg, #324254 35%, #8e500f);
@@ -360,11 +831,9 @@
                     </h6>
                   </div>
 
-                  <!-- 🏆 Trophy Image -->
                   <img src="{% static 'img/1stCup.svg' %}" 
                       alt="cup" width="180" height="180" class="mt-4 rounded img-fluid">
 
-                  <!-- ⭐ Star + Label -->
                   <div class="d-flex align-items-center justify-content-center mt-2 mb-2">
                     <img src="{% static 'img/star.png' %}" alt="star" 
                       style="width: 22px; height: 22px; margin-right: 6px;">
@@ -379,7 +848,6 @@
                     </h5>
                   </div>
 
-                  <!-- 👤 Top Scorer Name -->
                   {% if entry.top_scorer %}
                     <span class="badge px-3 py-2 rounded-3 shadow-sm border-{{ entry.class.class_type }}" 
                       style="border: 1px solid currentColor !important; white-space: nowrap;">
@@ -416,7 +884,6 @@
                 <div class="card text-center rounded-4 shadow-sm flex-fill text-dark action-card position-relative border-{{ class.class_type }}"
                      style="background-color: rgb(1, 45, 35); min-height: 180px; width: 100%;">
                   <div class="card-body d-flex flex-column align-items-center justify-content-center position-relative p-3">
-                    <!-- 🏷️ Class Code Badge -->
                     <div class="fw-bold position-absolute top-0 start-0 mt-2 ms-2 bg-white d-flex align-items-center px-2 py-0 rounded-pill shadow-sm text-center"
                          style="border: 1.5px solid #D68022; transform: scale(0.85); white-space: nowrap; width: fit-content;">
                       <h6 style="background: linear-gradient(90deg, #324254 35%, #8e500f);
@@ -429,7 +896,6 @@
                       </h6>
                     </div>
 
-                    <!-- 🖼️ Class Icon -->
                     {% if class.upload_icon %}
                       <img src="{{ class.upload_icon.url }}" 
                            alt="Class Icon" class="mb-2 rounded mt-4" style="width: 80px; height: 80px; object-fit: cover;">
@@ -438,7 +904,6 @@
                            alt="Default Class Icon" class="mb-2 rounded mt-4" style="width: 80px; height: 80px; object-fit: cover;">
                     {% endif %}
 
-                    <!-- 📘 Class Title Badge -->
                     <span class="badge px-2 py-1 rounded-3 shadow-sm text-truncate border-{{ class.class_type }}"
                           style="border: 1px solid currentColor !important; max-width: 100%; font-size: clamp(0.7rem, 2vw, 0.85rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block;">
                       {{ class.title }}
@@ -489,10 +954,89 @@
     </div>
   </div>
 
+  <!-- Progress Modal -->
+  <div id="progressModal" class="modal-backdrop-custom" style="display: none;">
+    <div class="modal-container-custom">
+      <div class="modal-content-custom">
+        <div class="sticky-top p-4" style="background: linear-gradient(135deg, #3b82f6, #2563eb); border-radius: 1rem 1rem 0 0;">
+          <div class="d-flex align-items-center justify-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3 flex-grow-1">
+              <i class="fas fa-chart-line" style="font-size: 2rem;"></i>
+              <div>
+                <h2 class="mb-0 fw-bold">Your Progress</h2>
+                <p class="mb-0 small" style="opacity: 0.9;">Track your learning journey</p>
+              </div>
+            </div>
+            <button onclick="closeProgressModal()" class="btn btn-link text-white p-2">
+              <i class="fas fa-times" style="font-size: 1.5rem;"></i>
+            </button>
+          </div>
+
+          <div class="mt-3 d-flex align-items-center gap-2 flex-wrap">
+            <i class="fas fa-filter"></i>
+            <select id="progressClassFilter" onchange="loadProgressData()" 
+                    class="form-select" style="background-color: #2563eb; color: white; border: 1px solid #1e40af; max-width: 300px;">
+              <option value="all">All Classes</option>
+              {% for class in classes %}
+                <option value="{{ class.class_id }}">{{ class.title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="p-4" id="progressContent">
+          <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Loading progress data...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending Tasks Modal -->
+  <div id="tasksModal" class="modal-backdrop-custom" style="display: none;">
+    <div class="modal-container-custom">
+      <div class="modal-content-custom">
+        <div class="sticky-top p-4" style="background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 1rem 1rem 0 0;">
+          <div class="d-flex align-items-center justify-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3 flex-grow-1">
+              <i class="fas fa-tasks" style="font-size: 2rem;"></i>
+              <div>
+                <h2 class="mb-0 fw-bold">Pending Tasks</h2>
+                <p class="mb-0 small" style="opacity: 0.9;" id="tasksCount">Loading...</p>
+              </div>
+            </div>
+            <button onclick="closeTasksModal()" class="btn btn-link text-white p-2">
+              <i class="fas fa-times" style="font-size: 1.5rem;"></i>
+            </button>
+          </div>
+
+          <div class="mt-3 d-flex align-items-center gap-2 flex-wrap">
+            <i class="fas fa-filter"></i>
+            <select id="tasksClassFilter" onchange="loadPendingTasks()" 
+                    class="form-select" style="background-color: #d97706; color: white; border: 1px solid #b45309; max-width: 300px;">
+              <option value="all">All Classes</option>
+              {% for class in classes %}
+                <option value="{{ class.class_id }}">{{ class.title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="p-4" id="tasksContent">
+          <div class="text-center py-5">
+            <div class="spinner-border text-warning" role="status"></div>
+            <p class="mt-2">Loading pending tasks...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Calculate and display total EXP and Rank from all submissions
+    // Total EXP and Rank
     document.addEventListener('DOMContentLoaded', function() {
-      // Fetch Total EXP
       fetch('/api/student/total-exp/')
         .then(response => response.json())
         .then(data => {
@@ -504,7 +1048,6 @@
           document.getElementById('totalExp').textContent = '0 EXP';
         });
       
-      // Fetch Current Rank (using existing leaderboard API)
       fetch('/api/leaderboard-data/')
         .then(response => response.json())
         .then(data => {
@@ -516,6 +1059,427 @@
           document.getElementById('studentRank').textContent = '#N/A';
         });
     });
+
+    // Progress Modal Functions
+    function showProgressModal() {
+      const modal = document.getElementById('progressModal');
+      modal.style.display = 'block';
+      
+      // Add class to body to prevent scrolling and stretching
+      document.body.classList.add('modal-open');
+      
+      // Trigger animation after display
+      setTimeout(() => {
+        modal.classList.add('show');
+      }, 10);
+      
+      loadProgressData();
+    }
+
+    function closeProgressModal() {
+      const modal = document.getElementById('progressModal');
+      modal.classList.remove('show');
+      
+      // Wait for animation to complete before hiding
+      setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }, 300);
+    }
+    function loadProgressData() {
+      const classId = document.getElementById('progressClassFilter').value;
+      const content = document.getElementById('progressContent');
+      
+      content.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2">Loading...</p></div>';
+      
+      // TODO: Replace with actual API call
+      fetch(`/api/student/progress/?class_id=${classId}`)
+        .then(response => response.json())
+        .then(data => {
+          renderProgressData(data);
+        })
+        .catch(error => {
+          content.innerHTML = `
+            <div class="text-center py-5">
+              <i class="fas fa-exclamation-circle text-danger" style="font-size: 3rem;"></i>
+              <p class="mt-3">Error loading progress data. Please try again.</p>
+            </div>
+          `;
+        });
+    }
+
+    function renderProgressData(data) {
+      const content = document.getElementById('progressContent');
+      const percentage = Math.round((data.completed / data.total) * 100) || 0;
+      const scorePercentage = Math.round((data.total_score / data.max_score) * 100) || 0;
+      
+      content.innerHTML = `
+        <!-- Overall Stats - Equal Width Cards -->
+        <div class="row g-4 mb-4">
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 p-4 text-center" style="background-color: #374151; border: none;">
+              <div class="circular-progress mx-auto mb-3" style="position: relative; width: 120px; height: 120px;">
+                <svg width="120" height="120" style="transform: rotate(-90deg);">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#4b5563" stroke-width="8"/>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#3b82f6" stroke-width="8"
+                          stroke-dasharray="${2 * Math.PI * 50}"
+                          stroke-dashoffset="${2 * Math.PI * 50 * (1 - percentage / 100)}"
+                          stroke-linecap="round"
+                          style="transition: stroke-dashoffset 1s ease;"/>
+                </svg>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                  <div style="font-size: 1.5rem; font-weight: bold; color: #f9fafb;">${percentage}%</div>
+                  <div style="font-size: 0.75rem; color: #9ca3af;">Complete</div>
+                </div>
+              </div>
+              <p class="mb-0" style="color: #9ca3af; font-weight: 500;">Overall Completion</p>
+              <p class="small mb-0" style="color: #9ca3af;">${data.completed} of ${data.total} challenges</p>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 p-4" style="background-color: #374151; border: none;">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <i class="fas fa-check-circle" style="font-size: 2rem; color: #10b981;"></i>
+                <div>
+                  <h3 class="mb-0" style="color: #f9fafb;">${data.completed}</h3>
+                  <p class="small mb-0" style="color: #9ca3af;">Completed</p>
+                </div>
+              </div>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between small mb-2">
+                  <span style="color: #9ca3af;">Total Score</span>
+                  <span style="color: #f9fafb; font-weight: 600;">${data.total_score}</span>
+                </div>
+                <div class="progress" style="height: 8px; background-color: #4b5563;">
+                  <div class="progress-bar bg-success progress-bar-animated" 
+                      style="width: ${scorePercentage}%; background-color: #10b981;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 p-4" style="background-color: #374151; border: none;">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <i class="fas fa-hourglass-half" style="font-size: 2rem; color: #f59e0b;"></i>
+                <div>
+                  <h3 class="mb-0" style="color: #f9fafb;">${data.total - data.completed}</h3>
+                  <p class="small mb-0" style="color: #9ca3af;">Remaining</p>
+                </div>
+              </div>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between small mb-2">
+                  <span style="color: #9ca3af;">Possible Score</span>
+                  <span style="color: #f9fafb; font-weight: 600;">${data.max_score - data.total_score}</span>
+                </div>
+                <div class="progress" style="height: 8px; background-color: #4b5563;">
+                  <div class="progress-bar bg-warning progress-bar-animated" 
+                      style="width: ${100 - scorePercentage}%; background-color: #f59e0b;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress by Class -->
+        ${data.by_class && data.by_class.length > 0 ? `
+        <div class="card p-4 mb-4" style="background-color: #374151; border: none;">
+          <h5 class="mb-4" style="color: #f9fafb;"><i class="fas fa-book-open me-2" style="color: #3b82f6;"></i>Progress by Class</h5>
+          <div class="row g-3">
+            ${data.by_class.map((cls, idx) => {
+              const classPercentage = Math.round((cls.completed / cls.total) * 100);
+              const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+              const color = colors[idx % colors.length];
+              return `
+                <div class="col-12">
+                  <div class="card p-3" style="background-color: #1f2937; border: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="fw-semibold" style="color: #f3f4f6;">${cls.class_name}</span>
+                      <span class="small" style="color: #9ca3af;">${cls.completed}/${cls.total} completed</span>
+                    </div>
+                    <div class="progress mb-2" style="height: 12px; background-color: #4b5563;">
+                      <div class="progress-bar progress-bar-animated" 
+                          style="width: ${classPercentage}%; background-color: ${color};"></div>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                      <span style="color: #9ca3af;">Score: ${cls.score}/${cls.max_score}</span>
+                      <span style="color: #9ca3af;">${classPercentage}%</span>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        ` : ''}
+
+        <!-- Weekly Progress Chart -->
+        ${data.weekly_progress && data.weekly_progress.length > 0 ? `
+        <div class="card p-4" style="background-color: #374151; border: none;">
+          <h5 class="mb-3" style="color: #f9fafb;"><i class="fas fa-chart-line me-2" style="color: #10b981;"></i>Weekly Progress</h5>
+          <div style="width: 100%; height: 300px; position: relative;">
+            <canvas id="weeklyProgressChart"></canvas>
+          </div>
+        </div>
+        ` : `
+        <div class="card p-4" style="background-color: #374151; border: none;">
+          <h5 class="mb-3" style="color: #f9fafb;"><i class="fas fa-chart-line me-2" style="color: #10b981;"></i>Weekly Progress</h5>
+          <div class="text-center py-4">
+            <i class="fas fa-chart-bar" style="font-size: 3rem; color: #6b7280; opacity: 0.3;"></i>
+            <p class="mt-3" style="color: #9ca3af;">No weekly data available yet</p>
+          </div>
+        </div>
+        `}
+      `;
+
+      // Render chart if data exists
+      if (data.weekly_progress && data.weekly_progress.length > 0) {
+        setTimeout(() => renderWeeklyChart(data.weekly_progress), 100);
+      }
+    }
+
+
+    // Tasks Modal Functions
+    function showTasksModal() {
+      const modal = document.getElementById('tasksModal');
+      modal.style.display = 'block';
+      
+      // Add class to body to prevent scrolling and stretching
+      document.body.classList.add('modal-open');
+      
+      // Trigger animation after display
+      setTimeout(() => {
+        modal.classList.add('show');
+      }, 10);
+      
+      loadPendingTasks();
+    }
+
+    function closeTasksModal() {
+      const modal = document.getElementById('tasksModal');
+      modal.classList.remove('show');
+      
+      // Wait for animation to complete before hiding
+      setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }, 300);
+    }
+
+    function loadPendingTasks() {
+      const classId = document.getElementById('tasksClassFilter').value;
+      const content = document.getElementById('tasksContent');
+      
+      content.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-warning"></div><p class="mt-2">Loading...</p></div>';
+      
+      fetch(`/api/student/pending-tasks/?class_id=${classId}`)
+        .then(response => response.json())
+        .then(data => {
+          renderPendingTasks(data);
+        })
+        .catch(error => {
+          content.innerHTML = `
+            <div class="text-center py-5">
+              <i class="fas fa-exclamation-circle text-danger" style="font-size: 3rem;"></i>
+              <p class="mt-3">Error loading pending tasks. Please try again.</p>
+            </div>
+          `;
+        });
+    }
+
+    function renderPendingTasks(data) {
+      const content = document.getElementById('tasksContent');
+      const countEl = document.getElementById('tasksCount');
+      
+      countEl.textContent = `${data.tasks.length} task${data.tasks.length !== 1 ? 's' : ''} remaining`;
+      
+      if (data.tasks.length === 0) {
+        content.innerHTML = `
+          <div class="text-center py-5">
+            <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+            <h4 class="mt-3 mb-2">All caught up!</h4>
+            <p class="text-muted">No pending tasks for the selected filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      content.innerHTML = data.tasks.map(task => {
+        const timeInfo = getTimeRemaining(task.due_date);
+        const borderColor = task.class_type === 'cybersecurity' ? '#ef4444' : '#3b82f6';
+        const typeColor = task.type === 'CTF' ? 'danger' : task.type === 'Quiz' ? 'success' : 'warning';
+        
+        return `
+          <div class="card task-card p-4 mb-3" 
+              style="background-color: #374151; border-left: 4px solid ${borderColor}; border-radius: 0.75rem;"
+              onclick="window.location.href='/student/class/${task.class_id}/'">
+            <div class="row align-items-center g-3">
+              <div class="col-12 col-md-8">
+                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                  <h5 class="mb-0">${task.title}</h5>
+                  <span class="badge bg-${typeColor} small">${task.type}</span>
+                </div>
+                <div class="d-flex flex-wrap gap-3 small text-muted">
+                  <span><i class="fas fa-book-open me-1"></i>${task.class_name}</span>
+                  <span class="${timeInfo.color}">
+                    <i class="fas fa-clock me-1"></i>${timeInfo.text}
+                  </span>
+                </div>
+              </div>
+              <div class="col-12 col-md-4 text-md-end">
+                <div class="d-flex align-items-center justify-content-md-end gap-3">
+                  <div class="text-center">
+                    <div class="h4 mb-0 text-warning">${task.score}</div>
+                    <div class="small text-muted">points</div>
+                  </div>
+                  <button class="btn btn-${timeInfo.urgent ? 'danger' : 'primary'} btn-sm" 
+                          onclick="event.stopPropagation(); window.location.href='/student/class/${task.class_id}/'">
+                    Start
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getTimeRemaining(dueDate) {
+      const now = new Date();
+      const due = new Date(dueDate);
+      const diff = due - now;
+      
+      if (diff < 0) {
+        return { text: 'Overdue', color: 'text-danger', urgent: true };
+      }
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      
+      if (days === 0 && hours < 24) {
+        return { text: `${hours}h remaining`, color: 'text-danger', urgent: true };
+      }
+      if (days <= 2) {
+        return { text: `${days}d ${hours}h remaining`, color: 'text-warning', urgent: false };
+      }
+      return { text: `${days} days remaining`, color: 'text-success', urgent: false };
+    }
+
+    // Close modals on Escape key
+    document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            closeProgressModal();
+            closeTasksModal();
+          }
+        });
+
+        document.addEventListener('click', function(e) {
+      const progressModal = document.getElementById('progressModal');
+      const tasksModal = document.getElementById('tasksModal');
+      
+      if (e.target === progressModal) {
+        closeProgressModal();
+      }
+      if (e.target === tasksModal) {
+        closeTasksModal();
+      }
+    });
+
+    // Weekly Progress Chart Rendering
+    let weeklyChartInstance = null;
+
+    function renderWeeklyChart(weeklyData) {
+      const canvas = document.getElementById('weeklyProgressChart');
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      
+      // Destroy previous chart if exists
+      if (weeklyChartInstance) {
+        weeklyChartInstance.destroy();
+      }
+
+      // Prepare data
+      const labels = weeklyData.map(item => item.week);
+      const completedData = weeklyData.map(item => item.completed);
+
+      weeklyChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Completed Challenges',
+            data: completedData,
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 3,
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: '#3b82f6',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              labels: {
+                color: '#9ca3af',
+                font: {
+                  size: 12
+                }
+              }
+            },
+            tooltip: {
+              backgroundColor: '#1f2937',
+              titleColor: '#fff',
+              bodyColor: '#9ca3af',
+              borderColor: '#374151',
+              borderWidth: 1,
+              padding: 12,
+              displayColors: false
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: 'rgba(75, 85, 99, 0.3)',
+                drawBorder: false
+              },
+              ticks: {
+                color: '#9ca3af',
+                font: {
+                  size: 11
+                }
+              }
+            },
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(75, 85, 99, 0.3)',
+                drawBorder: false
+              },
+              ticks: {
+                color: '#9ca3af',
+                font: {
+                  size: 11
+                },
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
+    }
   </script>
+
+  <!-- Load Chart.js from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </div>
 {% endblock %}

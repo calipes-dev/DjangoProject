@@ -14085,3 +14085,368 @@ Could not reverse url from User.problem
 Not Found: /favicon.ico
 "GET /favicon.ico HTTP/1.1" 404 10595
 "GET /media/problem_resources/Story.pdf HTTP/1.1" 200 3981759
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 52788
+"GET /static/img/loadingIcon.webp HTTP/1.1" 304 0
+"GET /media/profile_pic/a8765073-1e46-4fbe-89c6-2f7944f4454c.jpg HTTP/1.1" 304 0
+"GET /static/img/studenthaticon.png HTTP/1.1" 304 0
+"GET /static/img/star.png HTTP/1.1" 304 0
+"GET /static/img/1stCup.svg HTTP/1.1" 304 0
+"GET /static/img/classroom.png HTTP/1.1" 304 0
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /media/class_icons/Gemini_Generated_Image_u9j027u9j027u9j0.png HTTP/1.1" 304 0
+"GET /code-playground/ HTTP/1.1" 200 75218
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 52788
+"GET /static/img/loadingIcon.webp HTTP/1.1" 304 0
+"GET /media/profile_pic/a8765073-1e46-4fbe-89c6-2f7944f4454c.jpg HTTP/1.1" 304 0
+"GET /static/img/studenthaticon.png HTTP/1.1" 304 0
+"GET /static/img/1stCup.svg HTTP/1.1" 304 0
+"GET /static/img/star.png HTTP/1.1" 304 0
+"GET /static/img/classroom.png HTTP/1.1" 304 0
+"GET /media/class_icons/Gemini_Generated_Image_u9j027u9j027u9j0.png HTTP/1.1" 304 0
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /code-playground/ HTTP/1.1" 200 75218
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /StudentDashboard/ HTTP/1.1" 200 68133
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 324
+"GET /api/student/progress/?class_id=4 HTTP/1.1" 200 196
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /student/class/3/ HTTP/1.1" 200 94491
+"GET /classes/ HTTP/1.1" 200 36720
+"GET /static/img/search.png HTTP/1.1" 304 0
+"GET /StudentDashboard/ HTTP/1.1" 200 68133
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=4 HTTP/1.1" 200 25
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11110
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 324
+"GET /classes/ HTTP/1.1" 200 36720
+"GET /student/class/4/ HTTP/1.1" 200 57770
+"GET /student/class/4/unenroll/ HTTP/1.1" 302 0
+"GET /classes/ HTTP/1.1" 200 34686
+"GET /StudentDashboard/ HTTP/1.1" 200 63711
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 205
+"GET /api/student/progress/?class_id=3 HTTP/1.1" 200 205
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /StudentDashboard/ HTTP/1.1" 200 67461
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /api/student/progress/?class_id=3 HTTP/1.1" 200 373
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /student/class/3/ HTTP/1.1" 200 94491
+"GET /StudentDashboard/ HTTP/1.1" 200 67461
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /classes/ HTTP/1.1" 200 34221
+"GET /StudentDashboard/ HTTP/1.1" 200 67461
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /StudentDashboard/ HTTP/1.1" 200 75926
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /code-playground/ HTTP/1.1" 200 75218
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /StudentDashboard/ HTTP/1.1" 200 77037
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /StudentDashboard/ HTTP/1.1" 200 77524
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 373
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11110
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"POST /student/join-class/ HTTP/1.1" 302 0
+"GET /classes/ HTTP/1.1" 200 37184
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11110
+"GET /StudentDashboard/ HTTP/1.1" 200 81946
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11110
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 492
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=4 HTTP/1.1" 200 25
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=4 HTTP/1.1" 200 25
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=4 HTTP/1.1" 200 25
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=3 HTTP/1.1" 200 2147
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 492
+"GET /api/student/progress/?class_id=4 HTTP/1.1" 200 364
+"GET /api/student/progress/?class_id=3 HTTP/1.1" 200 373
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 492
+"GET /api/student/progress/?class_id=4 HTTP/1.1" 200 364
+"GET /api/student/progress/?class_id=3 HTTP/1.1" 200 373
+"GET /media/challenge_files/web_inject.html HTTP/1.1" 200 15854
+"GET /media/challenge_files/web_inject.html HTTP/1.1" 200 15854
+"GET / HTTP/1.1" 200 14872
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET / HTTP/1.1" 200 14872
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET / HTTP/1.1" 200 14872
+"GET / HTTP/1.1" 200 14872
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 82400
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /media/profile_pic/a8765073-1e46-4fbe-89c6-2f7944f4454c.jpg HTTP/1.1" 200 45932
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /media/class_icons/Gemini_Generated_Image_u9j027u9j027u9j0.png HTTP/1.1" 200 1363148
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 492
+"GET /classes/ HTTP/1.1" 200 36720
+"GET /StudentDashboard/ HTTP/1.1" 200 81946
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET / HTTP/1.1" 200 14872
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 304 0
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET / HTTP/1.1" 200 14872
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 50868
+"GET /static/img/classroom.png HTTP/1.1" 304 0
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /static/img/teacherwand.png HTTP/1.1" 200 16015
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f.png HTTP/1.1" 304 0
+"GET /media/class_icons/Gemini_Generated_Image_u9j027u9j027u9j0.png HTTP/1.1" 304 0
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /dashboard/ HTTP/1.1" 200 50412
+"GET /MyClasses/ HTTP/1.1" 200 44315
+"GET /MyClasses/ HTTP/1.1" 200 44315
+"GET /dashboard/ HTTP/1.1" 200 50412
+"GET /dashboard/ HTTP/1.1" 200 50412
+"GET /dashboard/ HTTP/1.1" 200 50409
+"GET /dashboard/ HTTP/1.1" 200 50409
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /dashboard/ HTTP/1.1" 200 65228
+"GET /dashboard/ HTTP/1.1" 200 65228
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /dashboard/ HTTP/1.1" 200 65228
+"GET /dashboard/ HTTP/1.1" 200 65228
+"GET /code-playground/ HTTP/1.1" 200 75245
+"GET /dashboard/ HTTP/1.1" 200 65228
+"GET /dashboard/ HTTP/1.1" 200 65228
+"GET /dashboard/ HTTP/1.1" 200 71146
+"GET /dashboard/ HTTP/1.1" 200 71146
+"GET /api/teacher/progress/?class_id=all HTTP/1.1" 200 1190
+"GET /media/profile_pic/default.png HTTP/1.1" 304 0
+"GET /media/profile_pic/a8765073-1e46-4fbe-89c6-2f7944f4454c.jpg HTTP/1.1" 304 0
+"GET /api/teacher/progress/?class_id=4 HTTP/1.1" 200 369
+"GET /api/teacher/progress/?class_id=3 HTTP/1.1" 200 990
+"GET /api/teacher/progress/?class_id=all HTTP/1.1" 200 1190
+"GET /api/teacher/tasks/?class_id=all HTTP/1.1" 200 3429
+"GET /api/teacher/tasks/?class_id=3 HTTP/1.1" 200 3146
+"GET /api/teacher/tasks/?class_id=all HTTP/1.1" 200 3429
+"GET /api/teacher/tasks/?class_id=4 HTTP/1.1" 200 306
+"GET /api/teacher/progress/?class_id=all HTTP/1.1" 200 1190
+"GET /api/teacher/progress/?class_id=3 HTTP/1.1" 200 990
+"GET /api/teacher/progress/?class_id=4 HTTP/1.1" 200 369
+"GET /MyClasses/ HTTP/1.1" 200 44315
+"GET /MyClasses/ HTTP/1.1" 200 44315
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /dashboard/ HTTP/1.1" 200 71146
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /dashboard/ HTTP/1.1" 200 71146
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 492
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 2147
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 492
+"GET /dashboard/ HTTP/1.1" 200 73132
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /dashboard/ HTTP/1.1" 200 73132
+"POST /create-class/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 77797
+"GET /dashboard/ HTTP/1.1" 200 77310
+"GET /MyClasses/ HTTP/1.1" 200 46800
+"GET /MyClasses/ HTTP/1.1" 200 46800
+"GET /class/5/ HTTP/1.1" 200 96778
+"GET /MyClasses/ HTTP/1.1" 200 46800
+"GET /MyClasses/ HTTP/1.1" 200 46800
+"GET /class/5/ HTTP/1.1" 200 96778
+"GET /delete-class/5/ HTTP/1.1" 302 0
+"GET /MyClasses/ HTTP/1.1" 200 44772
+"GET /MyClasses/ HTTP/1.1" 200 44315
+"GET /dashboard/ HTTP/1.1" 200 73132
+"GET /dashboard/ HTTP/1.1" 200 73132
+"GET /MyClasses/ HTTP/1.1" 200 44315
+"GET /MyClasses/ HTTP/1.1" 200 44315
+"GET /dashboard/ HTTP/1.1" 200 73132
+"GET /dashboard/ HTTP/1.1" 200 73132
+"GET /api/teacher/tasks/?class_id=all HTTP/1.1" 200 3429
+"GET /api/teacher/progress/?class_id=all HTTP/1.1" 200 1190
+"GET /dashboard/ HTTP/1.1" 200 76347
+"GET /dashboard/ HTTP/1.1" 200 76347
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /dashboard/ HTTP/1.1" 200 76342
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /dashboard/ HTTP/1.1" 200 76342
+"GET /dashboard/ HTTP/1.1" 200 76347
+"GET /dashboard/ HTTP/1.1" 200 76347
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /report/ HTTP/1.1" 200 131278
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /MyClasses/ HTTP/1.1" 200 44315
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /MyClasses/ HTTP/1.1" 200 44315
+"GET /dashboard/ HTTP/1.1" 200 76347
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /dashboard/ HTTP/1.1" 200 76347
+"GET /dashboard/ HTTP/1.1" 200 76352
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /dashboard/ HTTP/1.1" 200 76352
+"GET /dashboard/ HTTP/1.1" 200 76352
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /dashboard/ HTTP/1.1" 200 76352
+"GET /dashboard/ HTTP/1.1" 200 76352
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /dashboard/ HTTP/1.1" 200 76352
+"GET /MyClasses/ HTTP/1.1" 200 44320
+"GET /MyClasses/ HTTP/1.1" 200 44320
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /MyClasses/ HTTP/1.1" 200 44325
+"GET /MyClasses/ HTTP/1.1" 200 44325
+"GET /MyClasses/ HTTP/1.1" 200 44325
+"GET /MyClasses/ HTTP/1.1" 200 44325
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /dashboard/ HTTP/1.1" 200 76352
+"GET /dashboard/ HTTP/1.1" 200 76352
+"GET /StudentDashboard/ HTTP/1.1" 200 81951
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /StudentDashboard/ HTTP/1.1" 200 81964
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498
+"GET /StudentDashboard/ HTTP/1.1" 200 81964
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"GET /StudentDashboard/ HTTP/1.1" 200 81964
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 15345
+"GET / HTTP/1.1" 200 14877
+"GET /signup/ HTTP/1.1" 200 12537
+"GET /static/img/bgIndex.png HTTP/1.1" 200 7594234
+"GET /signup/ HTTP/1.1" 200 12537
+"GET /StudentDashboard/ HTTP/1.1" 200 81964
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 525
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 14877
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 304 0
+"GET / HTTP/1.1" 200 14877
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /signup/ HTTP/1.1" 200 12537
+"GET /static/img/bgIndex.png HTTP/1.1" 200 7594234
+"GET /signup/ HTTP/1.1" 200 12537
+"POST /signup/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 15351
+"GET / HTTP/1.1" 200 14877
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 73665
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11498

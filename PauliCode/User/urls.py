@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
@@ -7,10 +7,10 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('signup/', views.signup, name='signup'),
 
     #--------------Teacher Part--------------------#
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('signup/', views.signup, name='signup'),
     path('create-class/', views.create_class, name='create_class'),
     path('MyClasses/', views.MyClasses, name='MyClasses'),
     path('delete-class/<int:class_id>/', views.delete_class, name='delete_class'),
@@ -22,6 +22,8 @@ urlpatterns = [
     path('report/', views.report, name='report'),
     path('delete_student/<str:school_id>/<int:class_id>/', views.delete_student, name='delete_student'),
     path('delete_submission/<int:submission_id>/', views.delete_submission, name='delete_submission'),
+    path('api/teacher/progress/', views.teacher_progress_api, name='teacher_progress_api'),
+    path('api/teacher/tasks/', views.teacher_tasks_api, name='teacher_tasks_api'),
     
     # ✅ FIXED: Changed from 'submission/view/' to 'submission/' to match report.html
     path('submission/<int:submission_id>/view-code/', views.view_submission_code, name='view_submission_code'),
@@ -43,6 +45,8 @@ urlpatterns = [
     path('student/join-class/', views.join_class, name='join_class'),
     path('student/class/<int:class_id>/', views.student_class_details, name='student_class_details'),
     path('student/class/<int:class_id>/unenroll/', views.unenroll_class, name='unenroll_class'),
+    path('api/student/progress/', views.student_progress_api, name='student_progress_api'),
+    path('api/student/pending-tasks/', views.student_pending_tasks_api, name='student_pending_tasks_api'),
 
     #--------------Student Playground (Programming Only)---------------#
     path('playground/<int:problem_id>/', views.playground, name='playground'),

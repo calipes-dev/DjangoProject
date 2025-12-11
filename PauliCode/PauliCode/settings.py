@@ -175,163 +175,46 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ============================================
 
 JAZZMIN_SETTINGS = {
-    # Site branding
     "site_title": "PauliCode Admin",
-    "site_header": "PauliCode Administration",
+    "site_header": "PauliCode",
     "site_brand": "PauliCode",
-    "site_logo": None,  # Path to your logo: "images/logo.png"
-    "login_logo": None,  # Logo on login page
-    "login_logo_dark": None,
-    "site_logo_classes": "img-circle",
-    "site_icon": None,  # Favicon path
-    
-    # Welcome message
-    "welcome_sign": "Welcome to PauliCode Admin Dashboard",
-    "copyright": "PauliCode © 2024 | Developed by Bryan Kim Calipes",
-    
-    # Search model in navbar
-    "search_model": ["User.User", "User.Class", "User.Problem"],
-    
-    # User menu on top right
-    "user_avatar": "user_image",  # Field name from your User model
-    
-    # Top menu links
-    "topmenu_links": [
-        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
-        {"name": "Visit Site", "url": "/", "new_window": True},
-        {"name": "Dashboard", "url": "/dashboard/", "new_window": True},
-        {"model": "User.User"},
-        {"app": "User"},
-    ],
-    
-    # Side menu ordering and icons
-    "show_sidebar": True,
-    "navigation_expanded": True,
-    "hide_apps": [],
-    "hide_models": [],
-    
-    # Custom ordering and icons for models
-    "order_with_respect_to": [
-        "User",
-        "User.user",
-        "User.class",
-        "User.enrollment", 
-        "User.problem",
-        "User.problemtestcase",
-        "User.submission",
-        "User.chathistory",
-        "User.problemresource",
-    ],
-    
-    # Custom icons for models (Font Awesome)
-    "icons": {
-        "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
-        "auth.Group": "fas fa-users",
-        
-        "User.user": "fas fa-user-graduate",
-        "User.class": "fas fa-chalkboard-teacher",
-        "User.enrollment": "fas fa-user-check",
-        "User.problem": "fas fa-code",
-        "User.problemtestcase": "fas fa-flask",
-        "User.submission": "fas fa-file-code",
-        "User.chathistory": "fas fa-comments",
-        "User.problemresource": "fas fa-folder-open",
-    },
-    
-    # Icons for default groups and users
-    "default_icon_parents": "fas fa-chevron-circle-right",
-    "default_icon_children": "fas fa-circle",
-    
-    # Related modal (popup windows for foreign keys)
-    "related_modal_active": True,
-    
-    # UI Builder - allows customization through admin interface
+    "welcome_sign": "Welcome to the PauliCode Admin",
     "show_ui_builder": True,
-    
-    # Custom CSS/JS
-    "custom_css": None,
-    "custom_js": None,
-    
-    # Change form options
-    "changeform_format": "horizontal_tabs",  # Options: "horizontal_tabs", "vertical_tabs", "collapsible", "carousel"
-    "changeform_format_overrides": {
-        "User.user": "horizontal_tabs",
-        "User.class": "horizontal_tabs",
-        "User.problem": "vertical_tabs",
-    },
-    
-    # Language chooser
-    "language_chooser": False,
 }
 
 JAZZMIN_UI_TWEAKS = {
-    # Overall theme
-    "theme": "flatly",  # Options: "default", "cerulean", "cosmo", "cyborg", "darkly", "flatly", "journal", "litera", "lumen", "lux", "materia", "minty", "pulse", "sandstone", "simplex", "slate", "solar", "spacelab", "superhero", "united", "yeti"
-    "dark_mode_theme": "cyborg",  # Theme for dark mode
-    
-    # Navbar
-    "navbar": "navbar-white navbar-light",  # Options: "navbar-white navbar-light", "navbar-dark navbar-dark"
-    "navbar_fixed": False,
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-cyan",
+    "accent": "accent-lightblue",
+    "navbar": "navbar-dark",
     "no_navbar_border": False,
-    
-    # Sidebar
-    "sidebar": "sidebar-dark-primary",  # Options: "sidebar-dark-primary", "sidebar-light-primary", "sidebar-dark-warning", etc.
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
     "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-info",
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
-    "sidebar_nav_child_indent": True,
+    "sidebar_nav_child_indent": False,
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    
-    # Body and text
-    "body_small_text": False,
-    "brand_small_text": False,
-    "brand_colour": "navbar-primary",  # Options: "navbar-primary", "navbar-secondary", "navbar-info", "navbar-warning", "navbar-danger", "navbar-success"
-    "accent": "accent-primary",  # Options: "accent-primary", "accent-warning", "accent-info", etc.
-    
-    # Footer
-    "footer_small_text": False,
-    "footer_fixed": False,
-    
-    # Layout
-    "layout_boxed": False,
-    
-    # Buttons
+    "theme": "cyborg",
+    "dark_mode_theme": "solar",
     "button_classes": {
         "primary": "btn-primary",
         "secondary": "btn-secondary",
         "info": "btn-info",
         "warning": "btn-warning",
         "danger": "btn-danger",
-        "success": "btn-success",
+        "success": "btn-success"
     },
-    
-    # Actions
-    "actions_sticky_top": True,  # Keep action buttons visible when scrolling
+    "actions_sticky_top": False
 }
 
-JAZZMIN_SETTINGS["show_ui_builder"] = True
-
-# Add custom links to sidebar
-JAZZMIN_SETTINGS["usermenu_links"] = [
-    {"name": "Support", "url": "https://github.com/your-repo/issues", "new_window": True},
-    {"model": "auth.user"}
-]
-
-# Custom app and model labels
-JAZZMIN_SETTINGS["custom_links"] = {
-    "User": [{
-        "name": "Generate Report", 
-        "url": "/report/",
-        "icon": "fas fa-chart-line",
-        "permissions": ["User.view_submission"]
-    }]
-}
-
-# Statistics cards on homepage
-JAZZMIN_SETTINGS["show_dashboard_summary"] = True
 
 # ============================================
 # SECURITY SETTINGS (for Production)
@@ -348,13 +231,7 @@ JAZZMIN_SETTINGS["show_dashboard_summary"] = True
 # CSRF Settings
 CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to read CSRF token
 CSRF_COOKIE_SAMESITE = 'Lax'
-
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-    'https://flamboyantly-clammy-roselia.ngrok-free.dev',
-]
-
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 
 
 # ============================================
