@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'User',
     'channels',
+    'Announcement',
 ]
 
 MIDDLEWARE = [
@@ -160,7 +161,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / "User/static"]
+STATICFILES_DIRS = [
+    BASE_DIR / "static",        # Root static folder (for announcement.css, announcement.js),   # User app static folder
+]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # For production
 
 # Media files (User uploads)

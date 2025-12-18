@@ -305,30 +305,36 @@
 }
 
   @media (max-width: 576px) {
-    .btn-custom span {
-      display: none;
-    }
-
-    .btn-custom {
-      padding: 0.4rem;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-    }
-
-    .btn-custom img {
-      width: 14px;
-      height: 14px;
-    }
-
-    .page-title {
-      font-size: 0.938rem;
-    }
-
-    .search-wrapper {
-      max-width: 160px;
-    }
+  /* Hide only text content inside spans, keep icons */
+  .btn-custom span {
+    font-size: 0;
   }
+  
+  .btn-custom span i {
+    font-size: 14px;
+    margin: 0 !important;  /* Remove all margins from icons */
+  }
+  
+  .btn-custom {
+    padding: 0.4rem;
+    justify-content: center;
+    min-width: 30px;
+    height: 30px;
+  }
+
+  .btn-custom img {
+    width: 14px;
+    height: 14px;
+  }
+
+  .page-title {
+    font-size: 0.938rem;
+  }
+
+  .search-wrapper {
+    max-width: 160px;
+  }
+}
 </style>
 
 <!-- Navbar -->
@@ -435,8 +441,7 @@
           <button class="btn btn-success btn-custom me-4"
                   data-bs-toggle="modal" 
                   data-bs-target="#createClassModal">
-            <img src="{% static 'img/plusIcon.png' %}" alt="">
-            <span>Create Class</span>
+            <span><i class="fa fa-plus me-1"></i> Create Class</span>
           </button>
 
         {% elif currentpage == 'report' %}

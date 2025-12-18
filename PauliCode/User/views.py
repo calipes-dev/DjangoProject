@@ -63,11 +63,11 @@ def login_view(request):
 
         # Use Django's authenticate with custom backend
         user = authenticate(request, school_id=school_id, password=password)
-        
+
         if user is not None:
             # Use Django's login function
             login(request, user)
-            
+
             # Store additional session data for convenience
             request.session['school_id'] = user.school_id
             request.session['first_name'] = user.first_name
@@ -95,7 +95,7 @@ def login_view(request):
 def dashboard(request):
     """Teacher dashboard with classes and leaderboard"""
     user = request.user
-    
+
     # Permission check
     if user.user_type != 'Teacher':
         messages.error(request, "Access denied. Teachers only.")
@@ -158,16 +158,16 @@ def teacher_progress_api(request):
     Returns completion statistics filtered by class
     """
     user = request.user
-    
+
     # Only teachers can access this
     if user.user_type != 'Teacher':
         return JsonResponse({'error': 'Access denied'}, status=403)
-    
+
     class_id = request.GET.get('class_id', 'all')
-    
+
     # Get all classes taught by this teacher
     teacher_classes = Class.objects.filter(teacher=user)
-    
+
     # Filter by specific class if requested
     if class_id != 'all':
         try:
@@ -175,51 +175,51 @@ def teacher_progress_api(request):
             teacher_classes = [selected_class]
         except Class.DoesNotExist:
             return JsonResponse({'error': 'Class not found'}, status=404)
-    
+
     # Get all problems for these classes (exclude resources)
     all_problems = Problem.objects.filter(
         class_id__in=teacher_classes
     ).exclude(
         problem_title="Class Resources"
     )
-    
+
     # Get all students enrolled in these classes
     enrolled_students = User.objects.filter(
         user_type='Student',
         enrollments__class_id__in=teacher_classes
     ).distinct()
-    
+
     # Get all submissions for these classes
     all_submissions = Submission.objects.filter(
         problem_id__in=all_problems
     )
-    
+
     # Calculate overall stats
     total_problems = all_problems.count()
     total_students = enrolled_students.count()
     total_possible_submissions = total_problems * total_students
     total_actual_submissions = all_submissions.values('student_id', 'problem_id').distinct().count()
-    
+
     completion_percentage = 0
     if total_possible_submissions > 0:
         completion_percentage = round((total_actual_submissions / total_possible_submissions) * 100, 1)
-    
+
     # Progress by class
     progress_by_class = []
     for cls in teacher_classes:
         class_problems = all_problems.filter(class_id=cls)
         class_students = enrolled_students.filter(enrollments__class_id=cls).distinct()
         class_submissions = all_submissions.filter(problem_id__in=class_problems)
-        
+
         cls_total_problems = class_problems.count()
         cls_total_students = class_students.count()
         cls_possible = cls_total_problems * cls_total_students
         cls_actual = class_submissions.values('student_id', 'problem_id').distinct().count()
-        
+
         cls_percentage = 0
         if cls_possible > 0:
             cls_percentage = round((cls_actual / cls_possible) * 100, 1)
-        
+
         progress_by_class.append({
             'class_id': cls.class_id,
             'class_name': cls.title,
@@ -230,20 +230,20 @@ def teacher_progress_api(request):
             'total_possible': cls_possible,
             'completion_percentage': cls_percentage
         })
-    
+
     # Students who haven't completed all tasks
     incomplete_students = []
     for student in enrolled_students:
         student_submissions = all_submissions.filter(student_id=student)
         submitted_problem_ids = set(student_submissions.values_list('problem_id', flat=True))
         all_problem_ids = set(all_problems.values_list('problem_id', flat=True))
-        
+
         missing_count = len(all_problem_ids - submitted_problem_ids)
         if missing_count > 0:
             completion_rate = 0
             if total_problems > 0:
                 completion_rate = round(((total_problems - missing_count) / total_problems) * 100, 1)
-            
+
             incomplete_students.append({
                 'student_id': student.school_id,
                 'first_name': student.first_name,
@@ -254,10 +254,10 @@ def teacher_progress_api(request):
                 'missing': missing_count,
                 'completion_rate': completion_rate
             })
-    
+
     # Sort by completion rate (lowest first)
     incomplete_students.sort(key=lambda x: x['completion_rate'])
-    
+
     response_data = {
         'total_problems': total_problems,
         'total_students': total_students,
@@ -267,7 +267,7 @@ def teacher_progress_api(request):
         'progress_by_class': progress_by_class,
         'incomplete_students': incomplete_students[:20]  # Top 20 students with incomplete work
     }
-    
+
     return JsonResponse(response_data)
 
 
@@ -278,16 +278,16 @@ def teacher_tasks_api(request):
     Returns list of tasks filtered by class
     """
     user = request.user
-    
+
     # Only teachers can access this
     if user.user_type != 'Teacher':
         return JsonResponse({'error': 'Access denied'}, status=403)
-    
+
     class_id = request.GET.get('class_id', 'all')
-    
+
     # Get all classes taught by this teacher
     teacher_classes = Class.objects.filter(teacher=user)
-    
+
     # Filter by specific class if requested
     if class_id != 'all':
         try:
@@ -295,14 +295,14 @@ def teacher_tasks_api(request):
             teacher_classes = [selected_class]
         except Class.DoesNotExist:
             return JsonResponse({'error': 'Class not found'}, status=404)
-    
+
     # Get all problems for these classes (exclude resources)
     all_problems = Problem.objects.filter(
         class_id__in=teacher_classes
     ).exclude(
         problem_title="Class Resources"
     ).select_related('class_id').order_by('-due_date')
-    
+
     # Format tasks data
     tasks = []
     for problem in all_problems:
@@ -311,18 +311,18 @@ def teacher_tasks_api(request):
             user_type='Student',
             enrollments__class_id=problem.class_id
         ).distinct().count()
-        
+
         submissions_count = Submission.objects.filter(
             problem_id=problem
         ).values('student_id').distinct().count()
-        
+
         completion_rate = 0
         if total_students > 0:
             completion_rate = round((submissions_count / total_students) * 100, 1)
-        
+
         # Check if task is overdue
         is_overdue = timezone.now() > problem.due_date
-        
+
         tasks.append({
             'problem_id': problem.problem_id,
             'title': problem.problem_title,
@@ -337,12 +337,12 @@ def teacher_tasks_api(request):
             'completion_rate': completion_rate,
             'is_overdue': is_overdue
         })
-    
+
     return JsonResponse({
         'tasks': tasks,
         'count': len(tasks)
     })
-    
+
 
 def logout_view(request):
     """Handle user logout"""
@@ -397,7 +397,7 @@ def signup(request):
             password=password,  # This will be hashed by set_password()
             user_type=user_type.capitalize(),
         )
-        
+
         # Add profile image if provided
         if user_image:
             user.user_image = user_image
@@ -417,18 +417,18 @@ def create_class(request):
     """Create a new class with class_type support"""
     school_id = request.session.get('school_id')
     teacher = get_object_or_404(User, school_id=school_id)
-    
+
     # Permission check
     if teacher.user_type != 'Teacher':
         messages.error(request, "Only teachers can create classes.")
         return redirect('StudentDashboard')
-    
+
     if request.method == "POST":
         class_code = request.POST.get("class_code", "").strip()
         title = request.POST.get("title", "").strip()
         description = request.POST.get("description", "").strip()
         upload_icon = request.FILES.get("upload_icon")
-        
+
         # âœ… GET THE CLASS TYPE FROM FORM
         class_type = request.POST.get("class_type", "programming").strip()
 
@@ -456,7 +456,7 @@ def create_class(request):
             teacher=teacher,
             class_type=class_type  # âœ… THIS WAS MISSING!
         )
-        
+
         # Success message with class type
         class_type_display = "Programming" if class_type == "programming" else "Cybersecurity"
         messages.success(request, f"{class_type_display} class '{title}' created successfully!")
@@ -490,14 +490,14 @@ def MyClasses(request):
 def delete_class(request, class_id):
     school_id = request.session.get('school_id')
     teacher = get_object_or_404(User, school_id=school_id)
-    
+
     # Use ORM with permission check
     class_obj = get_object_or_404(Class, pk=class_id, teacher=teacher)
-    
+
     if class_obj.teacher != teacher:
         messages.error(request, "You don't have permission to delete this class.")
         return redirect('MyClasses')
-    
+
     class_obj.delete()
     messages.success(request, 'Class deleted successfully!')
 
@@ -515,32 +515,32 @@ def classDetails(request, class_id):
     """Teacher class details with resources - handles both programming and cybersecurity"""
     school_id = request.session.get('school_id')
     teacher = get_object_or_404(User, school_id=school_id)
-    
+
     if teacher.user_type != 'Teacher':
         messages.error(request, "Access denied.")
         return redirect('StudentDashboard')
 
     class_obj = get_object_or_404(Class, class_id=class_id, teacher=teacher)
-    
+
     # Exclude "Class Resources" problem from problems list
     problems = Problem.objects.filter(
         class_id=class_obj
     ).exclude(
-        problem_title="Class Resources" 
+        problem_title="Class Resources"
     ).order_by('-problem_id')
 
     # Get all resources for this class and group by title
     from .models import ProblemResource
-    
+
     all_resources = ProblemResource.objects.filter(
         problem__class_id=class_obj
     ).select_related('problem').order_by('-uploaded_at')
-    
+
     # Group resources by title
     grouped_resources = defaultdict(list)
     for resource in all_resources:
         grouped_resources[resource.title].append(resource)
-    
+
     # Convert to list of dictionaries for template with JSON formatting
     resources_list = []
     for title, resource_list in grouped_resources.items():
@@ -555,7 +555,7 @@ def classDetails(request, class_id):
                 'file_extension': resource.file_extension,
                 'resource_id': resource.resource_id
             })
-        
+
         resources_list.append({
             'title': title,
             'description': resource_list[0].description,
@@ -637,7 +637,7 @@ def add_problem(request, class_id):
         total_score = request.POST.get("total_score", "").strip()
         time_limit = request.POST.get("time_limit", "").strip()
         due_date = request.POST.get("due_date", "").strip()
-        
+
         # Get uploaded file
         resource_file = request.FILES.get("resource_file")
 
@@ -664,7 +664,7 @@ def add_problem(request, class_id):
             if resource_file.size > 10 * 1024 * 1024:
                 messages.error(request, "File size exceeds 10MB limit.")
                 return redirect('classDetails', class_id=class_id)
-            
+
             # Check file extension
             allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg', 'docx', 'pptx', 'ppt', 'zip', 'txt']
             file_ext = resource_file.name.split('.')[-1].lower()
@@ -715,17 +715,17 @@ def delete_resource(request, resource_id):
     """Delete a problem resource"""
     if request.method != 'POST':
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-    
+
     school_id = request.session.get('school_id')
     teacher = get_object_or_404(User, school_id=school_id)
-    
+
     from .models import ProblemResource
     resource = get_object_or_404(ProblemResource, resource_id=resource_id)
-    
+
     # Check if teacher owns the class
     if resource.problem.class_id.teacher != teacher:
         return JsonResponse({'error': 'Permission denied'}, status=403)
-    
+
     try:
         resource.delete()
         return JsonResponse({'success': True, 'message': 'Resource deleted successfully'})
@@ -819,16 +819,16 @@ def delete_resource(request, resource_id):
     """Delete a resource"""
     if request.method != 'POST':
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-    
+
     school_id = request.session.get('school_id')
     teacher = get_object_or_404(User, school_id=school_id)
-    
+
     resource = get_object_or_404(ProblemResource, resource_id=resource_id)
-    
+
     # Check if teacher owns the class
     if resource.problem.class_id.teacher != teacher:
         return JsonResponse({'error': 'Permission denied'}, status=403)
-    
+
     try:
         resource.delete()
         return JsonResponse({'success': True, 'message': 'Resource deleted successfully'})
@@ -838,25 +838,25 @@ def delete_resource(request, resource_id):
 def get_resource_details(request, resource_id):
     """Get resource details for the modal"""
     resource = get_object_or_404(ProblemResource, resource_id=resource_id)
-    
+
     # Check permissions
     school_id = request.session.get('school_id')
     if not school_id:
         return JsonResponse({'error': 'Please log in first'}, status=401)
-    
+
     user = get_object_or_404(User, school_id=school_id)
-    
+
     # Check if user has access to this resource
     if user.user_type == 'Teacher':
         if resource.problem.class_id.teacher != user:
             return JsonResponse({'error': 'Permission denied'}, status=403)
     else:  # Student
         if not Enrollment.objects.filter(
-            student_id=user, 
+            student_id=user,
             class_id=resource.problem.class_id
         ).exists():
             return JsonResponse({'error': 'Permission denied'}, status=403)
-    
+
     data = {
         'resource_id': resource.resource_id,
         'title': resource.title,
@@ -869,7 +869,7 @@ def get_resource_details(request, resource_id):
         'problem_title': resource.problem.problem_title,
         'class_title': resource.problem.class_id.title
     }
-    
+
     return JsonResponse(data)
 #--------------------------Problem Details---------------------------------#
 
@@ -878,11 +878,11 @@ def get_resource_details(request, resource_id):
 def get_problem_details(request, problem_id):
     """Return problem details as JSON (handles both programming and cybersecurity)"""
     problem = get_object_or_404(Problem, pk=problem_id)
-    
+
     # Check if it's a cybersecurity challenge
     if problem.class_id.class_type == 'cybersecurity':
         return get_cybersecurity_problem_details(request, problem_id)
-    
+
     # Original code for programming challenges
     test_cases = ProblemTestCase.objects.filter(problem_id=problem)
 
@@ -964,7 +964,7 @@ def edit_problem(request, problem_id):
     return redirect('classDetails', class_id=class_id)
 
 
-# ---------- REPORT DASHBOARD ----------   
+# ---------- REPORT DASHBOARD ----------
 def report(request):
     if not request.session.get('school_id'):
         messages.warning(request, "Please log in first.")
@@ -1031,12 +1031,12 @@ def report(request):
 def delete_student(request, school_id, class_id):
     current_user_id = request.session.get('school_id')
     current_user = get_object_or_404(User, school_id=current_user_id)
-    
+
     # Permission check - only teachers can unenroll students
     if current_user.user_type != 'Teacher':
         messages.error(request, "Only teachers can unenroll students.")
         return redirect('StudentDashboard')
-    
+
     student = get_object_or_404(User, school_id=school_id, user_type__iexact='student')
     class_obj = get_object_or_404(Class, class_id=class_id, teacher=current_user)
 
@@ -1124,7 +1124,7 @@ def view_submission_code(request, submission_id):
 def StudentDashboard(request):
     """Student dashboard"""
     student = request.user
-    
+
     # Permission check
     if student.user_type != 'Student':
         messages.error(request, "Access denied. Students only.")
@@ -1209,12 +1209,12 @@ def join_class(request):
     if request.method == "POST":
         school_id = request.session.get('school_id')
         student = get_object_or_404(User, school_id=school_id)
-        
+
         # Permission check
         if student.user_type != 'Student':
             messages.error(request, "Only students can join classes.")
             return redirect('dashboard')
-        
+
         class_code = request.POST.get('class_code', '').strip()
 
         if not class_code:
@@ -1260,7 +1260,7 @@ def student_class_details(request, class_id):
     problems = Problem.objects.filter(class_id=class_instance).exclude(
         problem_title="Class Resources"  # Exclude resources problem
     ).order_by('-problem_id')
-    
+
     if query:
         problems = problems.filter(problem_title__icontains=query)
     if filter_type:
@@ -1280,19 +1280,19 @@ def student_class_details(request, class_id):
             'problem': p,
             'score': submission.score if submission else None,
             'answered': submission is not None,
-            'half_score': half_score, 
+            'half_score': half_score,
         })
 
     # âœ… Get all resources for this class and group by title (same as teacher view)
     all_resources = ProblemResource.objects.filter(
         problem__class_id=class_instance
     ).select_related('problem').order_by('-uploaded_at')
-    
+
     # Group resources by title
     grouped_resources = defaultdict(list)
     for resource in all_resources:
         grouped_resources[resource.title].append(resource)
-    
+
     # Convert to list of dictionaries for template with JSON formatting
     resources_list = []
     for title, resource_list in grouped_resources.items():
@@ -1307,7 +1307,7 @@ def student_class_details(request, class_id):
                 'file_extension': resource.file_extension,
                 'resource_id': resource.resource_id
             })
-        
+
         resources_list.append({
             'title': title,
             'description': resource_list[0].description,
@@ -1358,18 +1358,18 @@ def student_progress_api(request):
     Returns completion statistics filtered by class with weekly progress
     """
     user = request.user
-    
+
     # Only students can access this
     if user.user_type != 'Student':
         return JsonResponse({'error': 'Access denied'}, status=403)
-    
+
     class_id = request.GET.get('class_id', 'all')
-    
+
     # Get all classes student is enrolled in
     enrolled_classes = Class.objects.filter(
         enrollments__student_id=user
     ).distinct()
-    
+
     # Filter by specific class if requested
     if class_id != 'all':
         try:
@@ -1377,37 +1377,37 @@ def student_progress_api(request):
             enrolled_classes = [selected_class]
         except Class.DoesNotExist:
             return JsonResponse({'error': 'Class not found'}, status=404)
-    
+
     # Get all problems for these classes (exclude resources)
     all_problems = Problem.objects.filter(
         class_id__in=enrolled_classes
     ).exclude(
         problem_title="Class Resources"
     )
-    
+
     # Get student's submissions
     submissions = Submission.objects.filter(
         student_id=user,
         problem_id__in=all_problems
     )
-    
+
     # Calculate overall stats
     total_challenges = all_problems.count()
     completed_challenges = submissions.values('problem_id').distinct().count()
     total_score = submissions.aggregate(Sum('score'))['score__sum'] or 0
     max_score = all_problems.aggregate(Sum('total_score'))['total_score__sum'] or 0
-    
+
     # Progress by class
     progress_by_class = []
     for cls in enrolled_classes:
         class_problems = all_problems.filter(class_id=cls)
         class_submissions = submissions.filter(problem_id__in=class_problems)
-        
+
         cls_total = class_problems.count()
         cls_completed = class_submissions.values('problem_id').distinct().count()
         cls_score = class_submissions.aggregate(Sum('score'))['score__sum'] or 0
         cls_max_score = class_problems.aggregate(Sum('total_score'))['total_score__sum'] or 0
-        
+
         if cls_total > 0:  # Only include classes with problems
             progress_by_class.append({
                 'class_name': cls.title,
@@ -1417,29 +1417,29 @@ def student_progress_api(request):
                 'score': cls_score,
                 'max_score': cls_max_score
             })
-    
+
     # Calculate weekly progress (last 4 weeks)
     weekly_progress = []
     now = timezone.now()
-    
+
     for i in range(3, -1, -1):  # Last 4 weeks
         week_start = now - timedelta(weeks=i+1)
         week_end = now - timedelta(weeks=i)
-        
+
         week_submissions = submissions.filter(
             submitted_at__gte=week_start,
             submitted_at__lt=week_end
         ).values('problem_id').distinct().count()
-        
+
         week_label = f"Week {4-i}"
         if i == 0:
             week_label = "This Week"
-        
+
         weekly_progress.append({
             'week': week_label,
             'completed': week_submissions
         })
-    
+
     response_data = {
         'completed': completed_challenges,
         'total': total_challenges,
@@ -1448,7 +1448,7 @@ def student_progress_api(request):
         'by_class': progress_by_class,
         'weekly_progress': weekly_progress
     }
-    
+
     return JsonResponse(response_data)
 
 
@@ -1459,18 +1459,18 @@ def student_pending_tasks_api(request):
     Returns unanswered problems filtered by class
     """
     user = request.user
-    
+
     # Only students can access this
     if user.user_type != 'Student':
         return JsonResponse({'error': 'Access denied'}, status=403)
-    
+
     class_id = request.GET.get('class_id', 'all')
-    
+
     # Get all classes student is enrolled in
     enrolled_classes = Class.objects.filter(
         enrollments__student_id=user
     ).distinct()
-    
+
     # Filter by specific class if requested
     if class_id != 'all':
         try:
@@ -1478,23 +1478,23 @@ def student_pending_tasks_api(request):
             enrolled_classes = [selected_class]
         except Class.DoesNotExist:
             return JsonResponse({'error': 'Class not found'}, status=404)
-    
+
     # Get all problems for these classes (exclude resources)
     all_problems = Problem.objects.filter(
         class_id__in=enrolled_classes
     ).exclude(
         problem_title="Class Resources"
     ).select_related('class_id')
-    
+
     # Get problems that student hasn't completed yet
     submitted_problem_ids = Submission.objects.filter(
         student_id=user
     ).values_list('problem_id', flat=True)
-    
+
     pending_problems = all_problems.exclude(
         problem_id__in=submitted_problem_ids
     ).order_by('due_date')
-    
+
     # Format tasks data
     tasks = []
     for problem in pending_problems:
@@ -1504,7 +1504,7 @@ def student_pending_tasks_api(request):
             difficulty = 'Medium'
         if problem.total_score >= 150:
             difficulty = 'Hard'
-        
+
         tasks.append({
             'id': problem.problem_id,
             'title': problem.problem_title,
@@ -1516,7 +1516,7 @@ def student_pending_tasks_api(request):
             'score': problem.total_score,
             'difficulty': difficulty
         })
-    
+
     return JsonResponse({
         'tasks': tasks,
         'count': len(tasks)
@@ -1530,12 +1530,12 @@ PISTON_URL = "https://emkc.org/api/v2/piston/execute"
 def playground(request, problem_id):
     school_id = request.session.get('school_id')
     student = get_object_or_404(User, school_id=school_id)
-    
+
     # Permission check
     if student.user_type != 'Student':
         messages.error(request, "Access denied.")
         return redirect('dashboard')
-    
+
     problem = get_object_or_404(Problem, pk=problem_id)
 
     # Check if already submitted using ORM
@@ -1564,7 +1564,7 @@ def submit_problem(request, problem_id):
 
     logger.info(f"Submission attempt for problem {problem_id}")
     logger.info(f"Content-Type: {request.headers.get('Content-Type', 'Not set')}")
-    
+
     school_id = request.session.get("school_id")
     if not school_id:
         logger.warning("No school_id in session")
@@ -1578,10 +1578,10 @@ def submit_problem(request, problem_id):
 
     # âœ… CRITICAL: Check for existing submission FIRST
     existing_submission = Submission.objects.filter(
-        problem_id=problem, 
+        problem_id=problem,
         student_id=student
     ).first()
-    
+
     if existing_submission:
         logger.info(f"Duplicate submission blocked for student {school_id}")
         return JsonResponse({
@@ -1597,16 +1597,16 @@ def submit_problem(request, problem_id):
         content_type = request.headers.get('Content-Type', '')
         body_content = request.body.decode('utf-8')
         logger.info(f"Request body preview: {body_content[:200]}")
-        
+
         data = json.loads(body_content)
-            
+
         code = (data.get("code") or "").strip()
         language = (data.get("language") or "python").lower()
         is_auto_submit = data.get("auto_submit", False)
         reason = data.get("reason", "Manual submission")
-        
+
         logger.info(f"Parsed - Auto-submit: {is_auto_submit}, Reason: {reason}, Code length: {len(code)}")
-        
+
     except (json.JSONDecodeError, UnicodeDecodeError) as e:
         logger.error(f"JSON decode error: {str(e)}")
         return JsonResponse({
@@ -1671,12 +1671,12 @@ def submit_problem(request, problem_id):
         }
         try:
             response = requests.post(
-                "https://emkc.org/api/v2/piston/execute", 
-                json=payload, 
+                "https://emkc.org/api/v2/piston/execute",
+                json=payload,
                 timeout=10
             )
             result = response.json()
-            
+
             run_data = result.get("run", {})
             output = (run_data.get("output", "") or "").strip()
             expected = (tc.expected_output or "").strip()
@@ -1686,7 +1686,7 @@ def submit_problem(request, problem_id):
                 result_lines.append(f"âœ… Test {i}: Passed")
             else:
                 result_lines.append(f"âŒ Test {i}: Failed")
-                
+
         except requests.RequestException as e:
             result_lines.append(f"âŒ Test {i}: Error (Execution failed)")
 
@@ -1705,7 +1705,7 @@ def submit_problem(request, problem_id):
                 'submitted_at': timezone.now()
             }
         )
-        
+
         if not created:
             return JsonResponse({
                 "success": False,
@@ -1714,7 +1714,7 @@ def submit_problem(request, problem_id):
                 "already_submitted": True,
                 "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id])
             }, status=400)
-            
+
     except Exception as e:
         return JsonResponse({
             "error": f"Database error: {str(e)}",
@@ -1770,13 +1770,13 @@ def run_playground_code(request):
         if check_mode:
             testcases = list(ProblemTestCase.objects.filter(problem_id=problem))
             total_cases = len(testcases)
-            
+
             if total_cases == 0:
                 return JsonResponse({
                     "success": False,
                     "error": "No test cases found for this problem."
                 }, status=404)
-            
+
             results = []
             passed_count = 0
 
@@ -1836,7 +1836,7 @@ def run_playground_code(request):
 
         # Manual Run Mode (not check mode)
         exec_res = execute_source(language, source_path, stdin_data=stdin_data + "\n")
-        
+
         return JsonResponse({
             "success": True,  # â† Also add here for consistency
             "output": exec_res.get("stdout", "No output."),
@@ -1955,21 +1955,21 @@ def code_testing_playground(request):
 
 
 
-@csrf_exempt  
+@csrf_exempt
 def run_test_code(request):
     """Execute code with CodeChum-style output formatting"""
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=400)
-    
+
     try:
         data = json.loads(request.body)
         code = data.get("code", "").strip()
         language = (data.get("language", "python") or "python").lower()
         stdin_data = data.get("stdin", "")
-        
+
         if not code:
             return JsonResponse({"error": "Code cannot be empty."}, status=400)
-        
+
         # Parse input values
         input_values = []
         if stdin_data:
@@ -1977,11 +1977,11 @@ def run_test_code(request):
                 input_values = [v.strip() for v in stdin_data.split('\n') if v.strip()]
             else:
                 input_values = [v.strip() for v in stdin_data.split() if v.strip()]
-        
+
         # Fix Java class name
         if language == "java":
             code = fix_java_class_name(code)
-        
+
         # Language configurations
         lang_config = {
             "python": {"lang": "python", "version": "3.10.0", "file": "main.py"},
@@ -1990,7 +1990,7 @@ def run_test_code(request):
             "java": {"lang": "java", "version": "15.0.2", "file": "Main.java"},
         }
         config = lang_config.get(language, lang_config["python"])
-        
+
         # Execute via Piston API
         payload = {
             "language": config["lang"],
@@ -2002,26 +2002,26 @@ def run_test_code(request):
             "compile_memory_limit": -1,
             "run_memory_limit": -1
         }
-        
+
         PISTON_URL = "https://emkc.org/api/v2/piston/execute"
         response = requests.post(PISTON_URL, json=payload, timeout=15)
-        
+
         if "application/json" not in response.headers.get("Content-Type", ""):
             return JsonResponse({
                 "error": f"Non-JSON response ({response.status_code})"
             }, status=500)
-        
+
         result = response.json()
         if response.status_code != 200:
             return JsonResponse({"error": f"Execution error: {result}"}, status=500)
-        
+
         run_data = result.get("run", {})
         compile_data = result.get("compile", {})
         raw_output = run_data.get("stdout", "")
-        
+
         # Format output like CodeChum
         formatted_output = format_codechum_style(raw_output, input_values, code, language)
-        
+
         return JsonResponse({
             "success": True,
             "output": formatted_output,
@@ -2029,7 +2029,7 @@ def run_test_code(request):
             "compile_error": compile_data.get("stderr", ""),
             "exit_code": run_data.get("code", 0)
         })
-        
+
     except requests.Timeout:
         return JsonResponse({"error": "Code execution timed out."}, status=408)
     except requests.RequestException as e:
@@ -2062,39 +2062,39 @@ def format_codechum_style(raw_output, input_values, code, language):
     """Format output exactly like CodeChum - show user's exact code output"""
     if not raw_output:
         return ""
-    
+
     if not input_values:
         return raw_output
-    
+
     lines = raw_output.split('\n')
     result = []
     input_index = 0
     num_expected_inputs = count_inputs_in_code(code, language)
     prompt_lines = []
-    
+
     # Strategy 1: Lines ending with : or ?
     for i, line in enumerate(lines):
         stripped = line.rstrip()
         if (stripped.endswith(':') or stripped.endswith('?')) and input_index < len(input_values):
             prompt_lines.append(i)
             input_index += 1
-    
+
     # Strategy 2: Keyword-based detection
     if len(prompt_lines) < min(num_expected_inputs, len(input_values)):
         input_index = len(prompt_lines)
         keywords = ['enter', 'input', 'type', 'give', 'provide', 'number', 'value', 'element', 'size', 'name', 'age', 'data', 'num']
-        
+
         for i, line in enumerate(lines):
             if i not in prompt_lines:
                 if any(kw in line.strip().lower() for kw in keywords) and input_index < len(input_values):
                     prompt_lines.append(i)
                     input_index += 1
-    
+
     # Strategy 3: First N non-output lines
     if len(prompt_lines) < min(num_expected_inputs, len(input_values)):
         input_index = len(prompt_lines)
         output_words = ['sum', 'result', 'total', 'answer', 'output', 'product', 'difference', 'quotient']
-        
+
         for i, line in enumerate(lines):
             if i not in prompt_lines and line.strip() and input_index < len(input_values):
                 is_output = (
@@ -2105,10 +2105,10 @@ def format_codechum_style(raw_output, input_values, code, language):
                 if not is_output:
                     prompt_lines.append(i)
                     input_index += 1
-    
+
     prompt_lines.sort()
     input_index = 0
-    
+
     # Format output
     for i, line in enumerate(lines):
         if i in prompt_lines and input_index < len(input_values):
@@ -2116,7 +2116,7 @@ def format_codechum_style(raw_output, input_values, code, language):
             input_index += 1
         else:
             result.append(line)
-    
+
     return '\n'.join(result)
 
 
@@ -2155,7 +2155,7 @@ def get_total_users():
 def get_per_user_limits():
     """Calculate per-user limits by dividing API limits by total users"""
     total_users = get_total_users()
-    
+
     return {
         'requests_per_minute': max(1, API_LIMITS['requests_per_minute'] // total_users),
         'requests_per_day': max(1, API_LIMITS['requests_per_day'] // total_users),
@@ -2170,34 +2170,34 @@ def check_rate_limit(user_id):
     """
     now = datetime.now()
     limits = get_per_user_limits()
-    
+
     # Per-minute check
     minute_key = f"ai_rate_limit_minute_{user_id}_{now.strftime('%Y%m%d%H%M')}"
     minute_count = cache.get(minute_key, 0)
-    
+
     if minute_count >= limits['requests_per_minute']:
         wait_seconds = 60 - now.second
         return False, f"Rate limit: {limits['requests_per_minute']} requests/minute (shared among {limits['total_users']} users). Wait {wait_seconds}s.", wait_seconds
-    
+
     # Per-day check
     day_key = f"ai_rate_limit_day_{user_id}_{now.strftime('%Y%m%d')}"
     day_count = cache.get(day_key, 0)
-    
+
     if day_count >= limits['requests_per_day']:
         return False, f"Daily limit reached ({limits['requests_per_day']} requests per user). Try tomorrow.", 0
-    
+
     return True, "OK", 0
 
 
 def increment_rate_limit(user_id):
     """Increment rate limit counters"""
     now = datetime.now()
-    
+
     # Increment minute counter
     minute_key = f"ai_rate_limit_minute_{user_id}_{now.strftime('%Y%m%d%H%M')}"
     minute_count = cache.get(minute_key, 0)
     cache.set(minute_key, minute_count + 1, 70)  # Expire after 70 seconds
-    
+
     # Increment day counter
     day_key = f"ai_rate_limit_day_{user_id}_{now.strftime('%Y%m%d')}"
     day_count = cache.get(day_key, 0)
@@ -2208,13 +2208,13 @@ def get_user_usage_stats(user_id):
     """Get current usage statistics for user with dynamic limits"""
     now = datetime.now()
     limits = get_per_user_limits()
-    
+
     minute_key = f"ai_rate_limit_minute_{user_id}_{now.strftime('%Y%m%d%H%M')}"
     day_key = f"ai_rate_limit_day_{user_id}_{now.strftime('%Y%m%d')}"
-    
+
     minute_count = cache.get(minute_key, 0)
     day_count = cache.get(day_key, 0)
-    
+
     return {
         'requests_this_minute': minute_count,
         'requests_today': day_count,
@@ -2288,7 +2288,7 @@ def ai_chat_stream(request):
     """
   #  from .models import User, ChatHistory
    # from google import genai
-    
+
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request"}, status=400)
 
@@ -2313,14 +2313,14 @@ def ai_chat_stream(request):
     try:
         data = json.loads(request.body)
         user_message = data.get("message", "").strip()
-        
+
         if not user_message:
             return JsonResponse({"error": "Message cannot be empty."}, status=400)
 
         # Calculate dynamic max message length based on per-user token limit
         limits = get_per_user_limits()
         max_message_length = min(500, limits['tokens_per_minute'] // 500)  # Conservative estimate
-        
+
         if len(user_message) > max_message_length:
             return JsonResponse({
                 "error": f"Message too long. Please keep it under {max_message_length} characters."
@@ -2340,7 +2340,7 @@ def ai_chat_stream(request):
         conversation_history = ChatHistory.objects.filter(
             school_id=user
         ).order_by('-timestamp')[:4]
-        
+
         conversation_history = list(reversed(conversation_history))
 
         def stream_response():
@@ -2349,10 +2349,10 @@ def ai_chat_stream(request):
                 # Calculate max tokens based on per-user TPM allocation
                 per_user_limits = get_per_user_limits()
                 max_output_tokens = min(800, per_user_limits['tokens_per_minute'] // 20)
-                
+
                 # Build minimal prompt
                 full_prompt = SYSTEM_PROMPT_OPTIMIZED + "\n\n"
-                
+
                 if conversation_history:
                     full_prompt += "Recent context:\n"
                     for msg in conversation_history[-4:]:
@@ -2360,10 +2360,10 @@ def ai_chat_stream(request):
                         msg_text = msg.message[:150] + "..." if len(msg.message) > 150 else msg.message
                         full_prompt += f"{prefix}: {msg_text}\n"
                     full_prompt += "\n"
-                
+
                 full_prompt += f"Student: {user_message}\nPaulibot: (Keep response under 200 words)"
 
-                
+
                 # âœ… Stream using Gemini 2.5 Flash-Lite
                 for chunk in client.models.generate_content_stream(
                     model="gemini-2.5-flash-lite",
@@ -2379,7 +2379,7 @@ def ai_chat_stream(request):
                     if hasattr(chunk, "text") and chunk.text:
                         ai_response += chunk.text
                         yield json.dumps({"ai_message_partial": chunk.text}) + "\n"
-                
+
                 # Save AI's complete response
                 if ai_response:
                     ChatHistory.objects.create(
@@ -2387,11 +2387,11 @@ def ai_chat_stream(request):
                         sender='ai',
                         message=ai_response
                     )
-                        
+
             except Exception as e:
                 error_msg = f"Error: {str(e)}"
                 yield json.dumps({"ai_message_partial": error_msg}) + "\n"
-                
+
                 ChatHistory.objects.create(
                     school_id=user,
                     sender='ai',
@@ -2413,11 +2413,11 @@ def get_usage_stats(request):
     API endpoint to get current user's usage statistics with dynamic limits
     """
    # from .models import User
-    
+
     school_id = request.session.get('school_id')
     if not school_id:
         return JsonResponse({"error": "Not logged in"}, status=401)
-    
+
     try:
         user = User.objects.get(school_id=school_id)
         stats = get_user_usage_stats(user.school_id)
@@ -2429,19 +2429,19 @@ def get_usage_stats(request):
 def load_chat_history(request):
     """Load user's private chat history from database"""
    # from .models import User, ChatHistory
-    
+
     school_id_value = request.session.get('school_id')
     if not school_id_value:
         return JsonResponse({"error": "Please log in first."}, status=401)
 
     try:
         user = User.objects.get(school_id=school_id_value)
-        
+
         # Get user's chat history (last 30 messages)
         chat_history = ChatHistory.objects.filter(
             school_id=user
         ).order_by('timestamp')[:30]
-        
+
         # Format for frontend
         messages = [
             {
@@ -2451,9 +2451,9 @@ def load_chat_history(request):
             }
             for msg in chat_history
         ]
-        
+
         return JsonResponse({"messages": messages})
-        
+
     except User.DoesNotExist:
         return JsonResponse({"error": "User not found."}, status=404)
     except Exception as e:
@@ -2463,25 +2463,25 @@ def load_chat_history(request):
 def clear_chat_history(request):
     """Clear user's private chat history"""
     #from .models import User, ChatHistory
-    
+
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=400)
-    
+
     school_id_value = request.session.get('school_id')
     if not school_id_value:
         return JsonResponse({"error": "Please log in first."}, status=401)
 
     try:
         user = User.objects.get(school_id=school_id_value)
-        
+
         # Delete all chat history for this user
         deleted_count = ChatHistory.objects.filter(school_id=user).delete()[0]
-        
+
         return JsonResponse({
             "success": True,
             "message": f"Deleted {deleted_count} messages."
         })
-        
+
     except User.DoesNotExist:
         return JsonResponse({"error": "User not found."}, status=404)
     except Exception as e:
@@ -2503,7 +2503,7 @@ def add_cybersecurity_challenge(request, class_id):
 
     teacher = get_object_or_404(User, school_id=school_id)
     class_obj = get_object_or_404(Class, class_id=class_id, teacher=teacher)
-    
+
     # Verify it's a cybersecurity class
     if class_obj.class_type != 'cybersecurity':
         messages.error(request, "This endpoint is only for cybersecurity classes.")
@@ -2530,44 +2530,43 @@ def add_cybersecurity_challenge(request, class_id):
             messages.error(request, "Invalid input values.")
             return redirect('classDetails', class_id=class_id)
 
-        # âœ… Handle file upload (including HTML files)
+        # Handle file upload (including HTML files)
         if challenge_file:
             # Check file size (10MB max)
             if challenge_file.size > 10 * 1024 * 1024:
                 messages.error(request, "File size exceeds 10MB limit.")
                 return redirect('classDetails', class_id=class_id)
-            
+
             # Get file extension
             file_ext = challenge_file.name.split('.')[-1].lower()
-            
+
             # Check file extension
             allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg', 'docx', 'pptx', 'ppt', 'zip', 'txt', 'html', 'htm']
             if file_ext not in allowed_extensions:
                 messages.error(request, "Invalid file type. Allowed: PDF, Images, DOCX, PPTX, ZIP, TXT, HTML")
                 return redirect('classDetails', class_id=class_id)
-            
-            # âœ… Special handling for HTML files
+
+            # Special handling for HTML files
             if file_ext in ['html', 'htm']:
-                # Define the challenges directory
-                challenges_dir = os.path.join(settings.BASE_DIR, 'User', 'static', 'challenges')
-                
+                # Use MEDIA_ROOT instead of hardcoded path
+                challenges_dir = os.path.join(settings.MEDIA_ROOT, 'challenges')
+
                 # Create directory if it doesn't exist
                 os.makedirs(challenges_dir, exist_ok=True)
-                
-                # Check if file with same name already exists
-                file_path = os.path.join(challenges_dir, challenge_file.name)
-                if os.path.exists(file_path):
-                    messages.error(request, f"A file named '{challenge_file.name}' already exists. Please rename your file.")
-                    return redirect('classDetails', class_id=class_id)
-                
-                # Save HTML file to static/challenges
+
+                # Generate unique filename to avoid conflicts
+                import uuid
+                unique_filename = f"{uuid.uuid4().hex}_{challenge_file.name}"
+                file_path = os.path.join(challenges_dir, unique_filename)
+
+                # Save HTML file to media/challenges
                 with open(file_path, 'wb+') as destination:
                     for chunk in challenge_file.chunks():
                         destination.write(chunk)
-                
+
                 # Store relative path for the model
-                challenge_file_path = f'challenges/{challenge_file.name}'
-                
+                challenge_file_path = f'challenges/{unique_filename}'
+
                 # Create Problem with HTML file path
                 problem = Problem.objects.create(
                     class_id=class_obj,
@@ -2581,10 +2580,10 @@ def add_cybersecurity_challenge(request, class_id):
                     challenge_file=challenge_file_path,  # Store path as string
                     correct_answer=correct_answer,
                 )
-                
+
                 messages.success(request, f"Challenge '{title}' created with HTML file '{challenge_file.name}'!")
                 return redirect('classDetails', class_id=class_id)
-            
+
             # Regular file upload (non-HTML)
             else:
                 problem = Problem.objects.create(
@@ -2618,29 +2617,33 @@ def add_cybersecurity_challenge(request, class_id):
 
     return redirect('classDetails', class_id=class_id)
 
+
 def get_challenge_file_url(problem):
     """
     Returns the appropriate URL for challenge files
-    Handles both regular uploads and HTML files in static/challenges
+    All files are now in media/challenges
     """
     if not problem.challenge_file:
         return None
-    
+
     file_path = str(problem.challenge_file)
-    
-    # Check if it's an HTML file in static/challenges
+
+    # All challenge files use MEDIA_URL
     if file_path.startswith('challenges/'):
-        return f"/static/{file_path}"
-    
-    # Regular uploaded file
-    return problem.challenge_file.url
+        return f"{settings.MEDIA_URL}{file_path}"
+
+    # Fallback for old files or regular uploads
+    try:
+        return problem.challenge_file.url
+    except:
+        return None
 
 @login_required(login_url='index')
 def edit_cybersecurity_challenge(request, problem_id):
     """Edit a cybersecurity challenge"""
     problem = get_object_or_404(Problem, pk=problem_id)
     class_id = problem.class_id.class_id
-    
+
     # Verify it's a cybersecurity challenge
     if problem.class_id.class_type != 'cybersecurity':
         messages.error(request, "This endpoint is only for cybersecurity challenges.")
@@ -2653,6 +2656,7 @@ def edit_cybersecurity_challenge(request, problem_id):
         total_score = request.POST.get("total_score", "").strip()
         due_date = request.POST.get("due_date", "").strip()
         challenge_file = request.FILES.get("challenge_file")
+        correct_answer = request.POST.get("correct_answer", "").strip()
 
         try:
             problem.problem_title = title
@@ -2660,11 +2664,57 @@ def edit_cybersecurity_challenge(request, problem_id):
             problem.problem_type = problem_type
             problem.total_score = int(total_score)
             problem.due_date = datetime.fromisoformat(due_date)
-            
+
+            # Update correct answer if provided
+            if correct_answer:
+                problem.correct_answer = correct_answer
+
             # Update file only if a new one is provided
             if challenge_file:
-                problem.challenge_file = challenge_file
-            
+                # Delete old file first if exists
+                if problem.challenge_file:
+                    old_file_path = str(problem.challenge_file)
+                    if old_file_path.startswith('challenges/'):
+                        full_path = os.path.join(settings.MEDIA_ROOT, old_file_path)
+                        if os.path.exists(full_path):
+                            os.remove(full_path)
+                    else:
+                        try:
+                            problem.challenge_file.delete(save=False)
+                        except:
+                            pass
+
+                # Check file size
+                if challenge_file.size > 10 * 1024 * 1024:
+                    messages.error(request, "File size exceeds 10MB limit.")
+                    return redirect('classDetails', class_id=class_id)
+
+                # Get file extension
+                file_ext = challenge_file.name.split('.')[-1].lower()
+                allowed_extensions = ['pdf', 'png', 'jpg', 'jpeg', 'docx', 'pptx', 'ppt', 'zip', 'txt', 'html', 'htm']
+
+                if file_ext not in allowed_extensions:
+                    messages.error(request, "Invalid file type.")
+                    return redirect('classDetails', class_id=class_id)
+
+                # Handle HTML files
+                if file_ext in ['html', 'htm']:
+                    challenges_dir = os.path.join(settings.MEDIA_ROOT, 'challenges')
+                    os.makedirs(challenges_dir, exist_ok=True)
+
+                    import uuid
+                    unique_filename = f"{uuid.uuid4().hex}_{challenge_file.name}"
+                    file_path = os.path.join(challenges_dir, unique_filename)
+
+                    with open(file_path, 'wb+') as destination:
+                        for chunk in challenge_file.chunks():
+                            destination.write(chunk)
+
+                    problem.challenge_file = f'challenges/{unique_filename}'
+                else:
+                    # Regular file
+                    problem.challenge_file = challenge_file
+
             problem.save()
 
             messages.success(request, f"Challenge '{problem.problem_title}' updated successfully!")
@@ -2677,7 +2727,7 @@ def edit_cybersecurity_challenge(request, problem_id):
 def get_cybersecurity_problem_details(request, problem_id):
     """Return cybersecurity challenge details as JSON with proper HTML file handling"""
     problem = get_object_or_404(Problem, pk=problem_id)
-    
+
     # Verify it's a cybersecurity challenge
     if problem.class_id.class_type != 'cybersecurity':
         return JsonResponse({"error": "Not a cybersecurity challenge"}, status=400)
@@ -2689,30 +2739,33 @@ def get_cybersecurity_problem_details(request, problem_id):
         user = User.objects.filter(school_id=school_id).first()
         if user and user.user_type == "Student":
             answered_correctly = Submission.objects.filter(
-                problem_id=problem, 
+                problem_id=problem,
                 student_id=user,
                 score=problem.total_score
             ).exists()
 
-    # âœ… Handle challenge file URL properly (including HTML files)
+    # Handle challenge file URL properly (including HTML files)
     challenge_file_url = None
     challenge_file_name = None
-    
+
     if problem.challenge_file:
         file_path = str(problem.challenge_file)
-        
-        # Check if it's an HTML file in User/static/challenges
+
+        # All files now use MEDIA_URL
         if file_path.startswith('challenges/'):
-            # For HTML files saved in User/static/challenges
-            challenge_file_url = f'/static/{file_path}'
+            challenge_file_url = f'{settings.MEDIA_URL}{file_path}'
             challenge_file_name = file_path.split('/')[-1]
+            # Remove UUID prefix from display name if present
+            if '_' in challenge_file_name:
+                parts = challenge_file_name.split('_', 1)
+                if len(parts) == 2 and len(parts[0]) == 32:  # UUID is 32 chars
+                    challenge_file_name = parts[1]
         else:
             # Regular uploaded file (uses MEDIA_URL)
             try:
                 challenge_file_url = problem.challenge_file.url
                 challenge_file_name = problem.challenge_file.name.split('/')[-1]
             except:
-                # Fallback if file doesn't exist
                 challenge_file_url = None
                 challenge_file_name = file_path.split('/')[-1]
 
@@ -2749,7 +2802,7 @@ def submit_cybersecurity_answer(request, problem_id):
 
     student = get_object_or_404(User, school_id=school_id)
     problem = get_object_or_404(Problem, pk=problem_id)
-    
+
     # Verify it's a cybersecurity challenge
     if problem.class_id.class_type != 'cybersecurity':
         return JsonResponse({"error": "Not a cybersecurity challenge"}, status=400)
@@ -2758,19 +2811,19 @@ def submit_cybersecurity_answer(request, problem_id):
     try:
         data = json.loads(request.body)
         answer_text = (data.get("answer") or "").strip()
-        
+
         if not answer_text:
             return JsonResponse({
                 "error": "Answer cannot be empty.",
             }, status=400)
 
-        # âœ… Check if already answered correctly
+        # Check if already answered correctly
         existing_correct_submission = Submission.objects.filter(
             problem_id=problem,
             student_id=student,
             score=problem.total_score  # Full score = correct answer
         ).first()
-        
+
         if existing_correct_submission:
             return JsonResponse({
                 "success": False,
@@ -2781,15 +2834,15 @@ def submit_cybersecurity_answer(request, problem_id):
                 "already_solved": True
             })
 
-        # âœ… Check if answer is correct (case-insensitive, strip whitespace)
+        # Check if answer is correct (case-insensitive, strip whitespace)
         correct_answer = (problem.correct_answer or "").strip().lower()
         student_answer = answer_text.strip().lower()
         is_correct = (student_answer == correct_answer)
-        
+
         # Calculate score based on correctness
         score = problem.total_score if is_correct else 0
 
-        # âœ… ONLY SAVE TO DATABASE IF CORRECT
+        # ONLY SAVE TO DATABASE IF CORRECT
         if is_correct:
             submission = Submission.objects.create(
                 problem_id=problem,
@@ -2800,7 +2853,7 @@ def submit_cybersecurity_answer(request, problem_id):
                 status='Graded',
                 submitted_at=timezone.now()
             )
-            
+
             return JsonResponse({
                 "success": True,
                 "is_correct": True,
@@ -2809,7 +2862,7 @@ def submit_cybersecurity_answer(request, problem_id):
                 "message": "Correct! Answer saved successfully!",
             })
         else:
-            # âŒ Wrong answer - DO NOT SAVE, just return feedback
+            # Wrong answer - DO NOT SAVE, just return feedback
             return JsonResponse({
                 "success": True,
                 "is_correct": False,
@@ -2817,7 +2870,7 @@ def submit_cybersecurity_answer(request, problem_id):
                 "total_score": problem.total_score,
                 "message": "Incorrect answer. Try again!",
             })
-        
+
     except json.JSONDecodeError as e:
         return JsonResponse({
             "error": f"Invalid data format: {str(e)}",
@@ -2826,7 +2879,8 @@ def submit_cybersecurity_answer(request, problem_id):
         return JsonResponse({
             "error": f"Server error: {str(e)}",
         }, status=500)
-    
+
+
 @login_required(login_url='index')
 def get_cybersecurity_submissions(request, problem_id):
     """Get all submissions for a student for a specific cybersecurity challenge"""
@@ -2836,13 +2890,13 @@ def get_cybersecurity_submissions(request, problem_id):
 
     student = get_object_or_404(User, school_id=school_id)
     problem = get_object_or_404(Problem, pk=problem_id)
-    
+
     # Get all submissions for this student and problem
     submissions = Submission.objects.filter(
         problem_id=problem,
         student_id=student
     ).order_by('-submitted_at')
-    
+
     submissions_data = [{
         'submission_id': sub.submission_id,
         'answer_text': sub.answer_text,
@@ -2851,10 +2905,11 @@ def get_cybersecurity_submissions(request, problem_id):
         'is_correct': sub.score == problem.total_score,
         'submitted_at': sub.submitted_at.isoformat(),
     } for sub in submissions]
-    
+
     return JsonResponse({
         "submissions": submissions_data
     })
+
 
 @login_required(login_url='index')
 def leaderboard(request):
@@ -2864,7 +2919,7 @@ def leaderboard(request):
     """
     user = request.user
     selected_class_id = request.GET.get('class_id', None)
-    
+
     # Get classes based on user type
     if user.user_type == 'Teacher':
         user_classes = Class.objects.filter(teacher=user).order_by('title')
@@ -2872,14 +2927,14 @@ def leaderboard(request):
         user_classes = Class.objects.filter(
             enrollments__student_id=user
         ).distinct().order_by('title')
-    
+
     # Get selected class if class_id is provided
     selected_class = None
     if selected_class_id:
         try:
             if user.user_type == 'Teacher':
                 selected_class = Class.objects.get(
-                    class_id=selected_class_id, 
+                    class_id=selected_class_id,
                     teacher=user
                 )
             else:
@@ -2889,10 +2944,10 @@ def leaderboard(request):
                 )
         except Class.DoesNotExist:
             selected_class = None
-    
+
     # Build leaderboard query - using student_id instead of values()
     leaderboard_query = Submission.objects.select_related('student_id')
-    
+
     # Filter by class if selected
     if selected_class:
         leaderboard_query = leaderboard_query.filter(
@@ -2908,10 +2963,10 @@ def leaderboard(request):
             leaderboard_query = leaderboard_query.filter(
                 problem_id__class_id__in=user_classes
             )
-    
+
     # Aggregate scores - Get distinct students with their total scores
-    
-    
+
+
     # Get all students with submissions
     student_scores = {}
     for submission in leaderboard_query:
@@ -2922,7 +2977,7 @@ def leaderboard(request):
                 'total_score': 0
             }
         student_scores[student_id]['total_score'] += submission.score or 0
-    
+
     # Convert to list and sort by score
     leaderboard_data = []
     for student_id, data in student_scores.items():
@@ -2934,10 +2989,10 @@ def leaderboard(request):
             'student_id__user_image': student.user_image.url if student.user_image else None,
             'total_score': data['total_score']
         })
-    
+
     # Sort by total score descending
     leaderboard_data.sort(key=lambda x: x['total_score'], reverse=True)
-    
+
     # Calculate current user's rank (only for students)
     user_rank = None
     if user.user_type == 'Student':
@@ -2945,7 +3000,7 @@ def leaderboard(request):
             if entry['student_id__school_id'] == user.school_id:
                 user_rank = index
                 break
-    
+
     context = {
         'currentpage': 'leaderboard',
         'user': user,
@@ -2955,7 +3010,7 @@ def leaderboard(request):
         'user_rank': user_rank,
         'sidebar': 'teacher' if user.user_type == 'Teacher' else 'student',
     }
-    
+
     return render(request, 'Universal/leaderboard.html', context)
 
 @login_required(login_url='index')
@@ -2965,7 +3020,7 @@ def leaderboard_data_api(request):
     """
     user = request.user
     selected_class_id = request.GET.get('class_id', None)
-    
+
     # Get classes based on user type
     if user.user_type == 'Teacher':
         user_classes = Class.objects.filter(teacher=user).order_by('title')
@@ -2973,14 +3028,14 @@ def leaderboard_data_api(request):
         user_classes = Class.objects.filter(
             enrollments__student_id=user
         ).distinct().order_by('title')
-    
+
     # Get selected class if class_id is provided
     selected_class = None
     if selected_class_id:
         try:
             if user.user_type == 'Teacher':
                 selected_class = Class.objects.get(
-                    class_id=selected_class_id, 
+                    class_id=selected_class_id,
                     teacher=user
                 )
             else:
@@ -2990,10 +3045,10 @@ def leaderboard_data_api(request):
                 )
         except Class.DoesNotExist:
             selected_class = None
-    
+
     # Build leaderboard query
     leaderboard_query = Submission.objects.select_related('student_id')
-    
+
     # Filter by class if selected
     if selected_class:
         leaderboard_query = leaderboard_query.filter(
@@ -3009,7 +3064,7 @@ def leaderboard_data_api(request):
             leaderboard_query = leaderboard_query.filter(
                 problem_id__class_id__in=user_classes
             )
-    
+
     # Aggregate scores - Get distinct students with their total scores
     student_scores = {}
     for submission in leaderboard_query:
@@ -3020,7 +3075,7 @@ def leaderboard_data_api(request):
                 'total_score': 0
             }
         student_scores[student_id]['total_score'] += submission.score or 0
-    
+
     # Convert to list and sort by score
     leaderboard_data = []
     for student_id, data in student_scores.items():
@@ -3032,10 +3087,10 @@ def leaderboard_data_api(request):
             'student_id__user_image': student.user_image.url if student.user_image else None,
             'total_score': data['total_score']
         })
-    
+
     # Sort by total score descending
     leaderboard_data.sort(key=lambda x: x['total_score'], reverse=True)
-    
+
     # Calculate current user's rank (only for students)
     user_rank = None
     if user.user_type == 'Student':
@@ -3043,7 +3098,7 @@ def leaderboard_data_api(request):
             if entry['student_id__school_id'] == user.school_id:
                 user_rank = index
                 break
-    
+
     # Prepare response data
     response_data = {
         'leaderboard_data': leaderboard_data,
@@ -3054,7 +3109,7 @@ def leaderboard_data_api(request):
         } if selected_class else None,
         'timestamp': timezone.now().isoformat()
     }
-    
+
     return JsonResponse(response_data, safe=False)
 
 @login_required(login_url='index')
@@ -3063,18 +3118,18 @@ def get_student_total_exp(request):
     API endpoint to get student's total EXP (sum of all submission scores)
     """
     user = request.user
-    
+
     # Only allow students to access this endpoint
     if user.user_type != 'Student':
         return JsonResponse({"error": "Only students can access this endpoint"}, status=403)
-    
+
     # Calculate total EXP from all submissions
     total_exp = Submission.objects.filter(
         student_id=user
     ).aggregate(
         total=Sum('score')
     )['total'] or 0
-    
+
     return JsonResponse({
         'total_exp': total_exp,
         'student_name': f"{user.first_name} {user.last_name}",
@@ -3087,43 +3142,44 @@ def delete_challenge_file(request, problem_id):
     """Delete the challenge file from a cybersecurity problem"""
     if request.method != 'POST':
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-    
+
     school_id = request.session.get('school_id')
     teacher = get_object_or_404(User, school_id=school_id)
-    
+
     # Get the problem and verify ownership
     problem = get_object_or_404(Problem, pk=problem_id)
-    
+
     if problem.class_id.teacher != teacher:
         return JsonResponse({'error': 'Permission denied'}, status=403)
-    
+
     if not problem.challenge_file:
         return JsonResponse({'error': 'No file to delete'}, status=400)
-    
+
     try:
         file_path = str(problem.challenge_file)
-        
-        # Check if it's an HTML file in User/static/challenges
+
+        # All files are now in media/challenges
         if file_path.startswith('challenges/'):
-            # Delete from User/static/challenges
-            full_path = os.path.join(settings.BASE_DIR, 'User', 'static', file_path)
+            full_path = os.path.join(settings.MEDIA_ROOT, file_path)
             if os.path.exists(full_path):
                 os.remove(full_path)
         else:
             # Delete regular uploaded file
             if problem.challenge_file:
-                # Delete the file from storage
-                problem.challenge_file.delete(save=False)
-        
+                try:
+                    problem.challenge_file.delete(save=False)
+                except:
+                    pass
+
         # Clear the challenge_file field
         problem.challenge_file = None
         problem.save()
-        
+
         return JsonResponse({
             'success': True,
             'message': 'File deleted successfully'
         })
-        
+
     except Exception as e:
         return JsonResponse({
             'error': f'Failed to delete file: {str(e)}'

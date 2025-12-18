@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Leo's Dungeon Arena - Login Obelisk</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="40" opacity="0.05">⚔️</text></svg>') repeat;
+            animation: float 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100px); }
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .shadow-figure {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 4rem;
+            text-shadow: 0 0 20px rgba(255, 69, 0, 0.8);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff4500;
+            margin-bottom: 10px;
+            font-size: 2em;
+            text-shadow: 0 0 15px rgba(255, 69, 0, 0.8);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ff8c42;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .card {
+            background: rgba(20, 20, 30, 0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7), 0 0 40px rgba(255, 69, 0, 0.2);
+            border: 2px solid rgba(255, 69, 0, 0.4);
+        }
+
+        .story-card {
+            border-left: 4px solid #ff4500;
+        }
+
+        .story-card h2 {
+            color: #ff4500;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .story-card p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            font-size: 0.95em;
+        }
+
+        .whisper {
+            color: #ff8c42;
+            font-style: italic;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 140, 66, 0.5);
+        }
+
+        .obelisk-card {
+            animation: obeliskGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes obeliskGlow {
+            0%, 100% {
+                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 69, 0, 0.2);
+            }
+            50% {
+                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7), 0 0 50px rgba(255, 69, 0, 0.5);
+            }
+        }
+
+        .obelisk-message {
+            text-align: center;
+            color: #ff4500;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.8);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ff8c42;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 69, 0, 0.5);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #ff4500;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #ff4500, #cc3700);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 69, 0, 0.6);
+            background: linear-gradient(135deg, #ff5722, #ff4500);
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.error {
+            background: rgba(239, 71, 111, 0.2);
+            border: 1px solid #ef476f;
+            color: #ef476f;
+        }
+
+        .message.success {
+            background: rgba(255, 69, 0, 0.2);
+            border: 1px solid #ff4500;
+            color: #ff8c42;
+        }
+
+        .transition-card {
+            background: rgba(255, 69, 0, 0.1);
+            border: 2px solid #ff4500;
+            display: none;
+            animation: fadeIn 0.8s;
+        }
+
+        .transition-card .content {
+            color: #ff8c42;
+            text-align: center;
+            font-style: italic;
+            line-height: 1.8;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        .hint {
+            color: #ffd60a;
+            font-size: 0.85em;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .runes {
+            text-align: center;
+            font-size: 1.5em;
+            letter-spacing: 10px;
+            color: #ff4500;
+            margin: 15px 0;
+            animation: runeGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes runeGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .shadow-figure {
+                font-size: 3rem;
+            }
+
+            .story-card h2 {
+                font-size: 1.2em;
+            }
+
+            .story-card p {
+                font-size: 0.9em;
+            }
+
+            .obelisk-message {
+                font-size: 1em;
+            }
+
+            .runes {
+                font-size: 1.2em;
+                letter-spacing: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="shadow-figure">🗡️</div>
+        
+        <h1>⚔️ Mr. Leo's Dungeon Arena ⚔️</h1>
+        <p class="subtitle">The Login Obelisk</p>
+        
+        <!-- STORY CARD -->
+        <div class="card story-card">
+            <h2>📜 The Story</h2>
+            <p>You arrive at the gates of <strong>Mr. Leo's Dungeon Arena</strong>, a massive stone structure covered in glowing runes. Mr. Leo greets you silently from the shadows — his eyes sharp, his cloak flickering with stealth magic.</p>
+            
+            <p>He reveals the next obstacle: an ancient <strong>Login Obelisk</strong> created by King Kharl.</p>
+            
+            <p>The Obelisk displays a glowing message:</p>
+            <p style="text-align: center; color: #ff4500; font-weight: bold; font-size: 1.1em; margin: 15px 0;">"ONLY TRUE HEROES MAY ENTER. PROVIDE VALID CREDENTIALS."</p>
+            
+            <p>A username and password field float magically in the air… but Mr. Leo leans close and whispers:</p>
+            
+            <p class="whisper">"King Kharl enchanted this obelisk badly… It trusts its own inputs a little too much."</p>
+            
+            <p>He smirks. You realize the obelisk is vulnerable — if this is a login, perhaps it can be <em>tricked</em>.</p>
+            
+            <p style="text-align: center; margin-top: 15px;">⚔️ The door rumbles, waiting for an attempt. ⚔️</p>
+        </div>
+
+        <!-- OBELISK LOGIN CARD -->
+        <div class="card obelisk-card">
+            <div class="runes">⚡ ᛟ ᚦ ᚱ ᛗ ⚡</div>
+
+            <div class="obelisk-message">
+                🔐 AUTHENTICATION REQUIRED 🔐
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">⚔️ Username:</label>
+                    <input type="text" id="username" name="username" placeholder="Enter hero name..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">🗝️ Password:</label>
+                    <input type="password" id="password" name="password" placeholder="Enter secret key..." required>
+                </div>
+                
+                <p class="hint">💡 Hint: Sometimes the old magic accepts... unusual commands.</p>
+                
+                <button type="submit">⚔️ Breach the Obelisk ⚔️</button>
+            </form>
+
+            <div id="message" class="message"></div>
+        </div>
+
+        <!-- TRANSITION CARD -->
+        <div class="card transition-card" id="transitionCard">
+            <div class="content">
+                <strong style="font-size: 1.3em;">🗡️ THE OBELISK CRUMBLES! 🗡️</strong><br><br>
+                The Obelisk glows bright gold, shakes violently, then collapses into dust. Behind it… a long staircase spirals downward into <strong>Dr. Karen's Enchanted Web Portal</strong> — now Card 8.<br><br>
+                Mr. Leo salutes you:<br>
+                <em>"You're learning fast. King Kharl should be worried."</em>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>⚔️ King Kharl's enchantments are not perfect... ⚔️</p>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const messageDiv = document.getElementById('message');
+        const transitionCard = document.getElementById('transitionCard');
+
+        const _x = [67, 84, 66, 123];
+        const _y = [76, 51, 111]; 
+        const _z = [95, 73, 110, 106, 101, 99, 116, 101, 100, 95, 84, 104, 51, 95, 70, 76, 52, 71];
+        const _end = [125]; 
+        const flag = String.fromCharCode(..._x) + String.fromCharCode(..._y) + String.fromCharCode(..._z) + String.fromCharCode(..._end);
+
+        const _p1 = String.fromCharCode(39, 32, 79, 82, 32, 39);
+        const _p2 = String.fromCharCode(39, 61, 39); 
+        const _p3 = String.fromCharCode(45, 45); 
+        const _p4 = String.fromCharCode(35); 
+        
+        function detectInjection(input) {
+            const lower = input.toLowerCase();
+            return (
+                (lower.includes(_p1.toLowerCase()) && lower.includes('1')) ||
+                (lower.includes(_p1.toLowerCase()) && lower.includes(_p2)) ||
+                (lower.includes("'") && lower.includes("or") && lower.includes("1=1")) ||
+                (lower.includes("'") && lower.includes(_p3)) ||
+                (lower.includes("'") && lower.includes(_p4)) ||
+                (lower.includes("admin'") && (lower.includes(_p3) || lower.includes("or"))) ||
+                (lower.includes("' or ") && (lower.includes("true") || lower.includes("'a'='a")))
+            );
+        }
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const usernameInjection = detectInjection(username);
+            const passwordInjection = detectInjection(password);
+
+            if (usernameInjection || passwordInjection) {
+                showSuccess();
+            } else {
+                showError();
+            }
+        });
+
+        function showSuccess() {
+            messageDiv.className = 'message success';
+            messageDiv.innerHTML = `
+                <strong>🎉 OBELISK BREACHED! 🎉</strong><br><br>
+                The ancient magic crumbles before your cleverness!<br>
+                <strong>Flag: ${flag}</strong>
+            `;
+            messageDiv.style.display = 'block';
+
+            setTimeout(() => {
+                transitionCard.style.display = 'block';
+                transitionCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 2000);
+
+            console.log('%c⚔️ SQL INJECTION SUCCESSFUL! ⚔️', 'color: #ff4500; font-size: 16px; font-weight: bold;');
+            console.log(`Flag: ${flag}`);
+            console.log('Vulnerable query bypassed using SQL injection!');
+        }
+
+        function showError() {
+            messageDiv.className = 'message error';
+            messageDiv.innerHTML = `
+                <strong>❌ ACCESS DENIED</strong><br>
+                The Obelisk rejects your credentials.<br>
+                Perhaps you need to think like a hacker... 🤔
+            `;
+            messageDiv.style.display = 'block';
+
+            console.log('%c🔍 Hint: Try SQL injection techniques...', 'color: #ffd60a; font-size: 12px;');
+            console.log("Research common SQL injection payloads...");
+        }
+
+        window.help = function() {
+            console.log('%c🗡️ Mr. Leo\'s Hint System 🗡️', 'color: #ff4500; font-size: 14px; font-weight: bold;');
+            console.log('This is an SQL Injection challenge!');
+            console.log('Research common SQL injection techniques...');
+            console.log('Think about how login queries work in databases.');
+            console.log('The obelisk trusts its inputs too much...');
+        };
+
+        console.log('%c⚔️ Welcome to Mr. Leo\'s Dungeon Arena ⚔️', 'color: #ff4500; font-size: 16px; font-weight: bold;');
+        console.log('%cThe Login Obelisk awaits...', 'color: #ff8c42; font-size: 12px;');
+        console.log('%cTip: Type help() for hints', 'color: #888; font-size: 10px; font-style: italic;');
+    </script>
+</body>
+</htm

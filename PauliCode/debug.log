@@ -14477,3 +14477,1391 @@ Watching for file changes with StatReloader
 "GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
 "GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 25
 "GET /api/student/progress/?class_id=all HTTP/1.1" 200 246
+Internal Server Error: /StudentDashboard/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\User\views.py", line 1175, in StudentDashboard
+    return render(request, 'Students/StudentDashboard.html', {
+        'currentpage': 'StudentDashboard',
+    ...<4 lines>...
+        'top_scorers': top_scorers,
+    })
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 132, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 129, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 107, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\engine.py", line 157, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 200, in compile_nodelist
+    return parser.parse()
+           ~~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 513, in parse
+    raise self.error(token, e)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 511, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\defaulttags.py", line 953, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 518, in parse
+    self.unclosed_block_tag(parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 581, in unclosed_block_tag
+    raise self.error(token, msg)
+django.template.exceptions.TemplateSyntaxError: Unclosed tag on line 148: 'if'. Looking for one of: elif, else, endif.
+"GET /StudentDashboard/ HTTP/1.1" 500 195887
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 11387
+Internal Server Error: /StudentDashboard/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\User\views.py", line 1175, in StudentDashboard
+    return render(request, 'Students/StudentDashboard.html', {
+        'currentpage': 'StudentDashboard',
+    ...<4 lines>...
+        'top_scorers': top_scorers,
+    })
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 132, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 129, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 107, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\engine.py", line 157, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 200, in compile_nodelist
+    return parser.parse()
+           ~~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 513, in parse
+    raise self.error(token, e)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 511, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\defaulttags.py", line 953, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 518, in parse
+    self.unclosed_block_tag(parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 581, in unclosed_block_tag
+    raise self.error(token, msg)
+django.template.exceptions.TemplateSyntaxError: Unclosed tag on line 148: 'if'. Looking for one of: elif, else, endif.
+"GET /StudentDashboard/ HTTP/1.1" 500 195889
+"GET /StudentDashboard/ HTTP/1.1" 200 73221
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14463
+"GET / HTTP/1.1" 200 13995
+"GET /signup/ HTTP/1.1" 200 11655
+"GET /signup/ HTTP/1.1" 200 11655
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14454
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14454
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 73675
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /StudentDashboard/ HTTP/1.1" 200 73232
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+Internal Server Error: /announcements/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\backends\mysql\base.py", line 75, in execute
+    return self.cursor.execute(query, args)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\connections.py", line 575, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\connections.py", line 826, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\connections.py", line 1203, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.ProgrammingError: (1146, "Table 'djangopaulicode.announcement_announcement' doesn't exist")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 388, in announcement_board
+    for announcement in announcements:
+                        ^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\models\query.py", line 398, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\models\query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\db\backends\mysql\base.py", line 75, in execute
+    return self.cursor.execute(query, args)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\connections.py", line 575, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\connections.py", line 826, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\connections.py", line 1203, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+django.db.utils.ProgrammingError: (1146, "Table 'djangopaulicode.announcement_announcement' doesn't exist")
+"GET /announcements/ HTTP/1.1" 500 234605
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 11501
+Watching for file changes with StatReloader
+Internal Server Error: /announcements/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 401, in announcement_board
+    return render(request, 'Announcement/announcement_board.html', context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: Announcement/announcement_board.html
+"GET /announcements/ HTTP/1.1" 500 102126
+Internal Server Error: /announcements/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 401, in announcement_board
+    return render(request, 'Announcement/announcement_board.html', context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: Announcement/announcement_board.html
+"GET /announcements/ HTTP/1.1" 500 102126
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /announcements/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 401, in announcement_board
+    return render(request, 'Announcement/announcement_board.html', context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: Announcement/announcement_board.html
+"GET /announcements/ HTTP/1.1" 500 102126
+Internal Server Error: /announcements/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 401, in announcement_board
+    return render(request, 'Announcement/announcement_board.html', context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: Announcement/announcement_board.html
+"GET /announcements/ HTTP/1.1" 500 102126
+Internal Server Error: /announcements/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 401, in announcement_board
+    return render(request, 'Announcement/announcement_board.html', context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: Announcement/announcement_board.html
+"GET /announcements/ HTTP/1.1" 500 102126
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /announcements/ HTTP/1.1" 200 33026
+"GET /static/css/announcement.css HTTP/1.1" 404 1819
+"GET /static/js/announcement.js HTTP/1.1" 404 1813
+"GET /StudentDashboard/ HTTP/1.1" 200 73232
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /classes/ HTTP/1.1" 200 31831
+"GET /static/img/search.png HTTP/1.1" 404 1801
+"GET /code-playground/ HTTP/1.1" 200 75244
+"GET /announcements/ HTTP/1.1" 200 33026
+"GET /static/css/announcement.css HTTP/1.1" 404 1819
+"GET /static/js/announcement.js HTTP/1.1" 404 1813
+"GET /announcements/ HTTP/1.1" 200 33026
+"GET /static/js/announcement.js HTTP/1.1" 404 1813
+"GET /static/css/announcement.css HTTP/1.1" 404 1819
+"GET /announcements/ HTTP/1.1" 200 33026
+"GET /static/css/announcement.css HTTP/1.1" 404 1819
+"GET /static/js/announcement.js HTTP/1.1" 404 1813
+"GET /announcements/ HTTP/1.1" 200 33026
+"GET /static/css/announcement.css HTTP/1.1" 404 1819
+"GET /static/js/announcement.js HTTP/1.1" 404 1813
+"GET /announcements/ HTTP/1.1" 200 33026
+"GET /static/css/announcement.css HTTP/1.1" 404 1819
+"GET /static/js/announcement.js HTTP/1.1" 404 1813
+"GET /announcements/ HTTP/1.1" 200 33026
+"GET /static/css/announcement.css HTTP/1.1" 404 1819
+"GET /static/js/announcement.js HTTP/1.1" 404 1813
+"GET /announcements/ HTTP/1.1" 200 29619
+"GET /static/css/announcement.css HTTP/1.1" 404 1819
+"GET /static/js/announcement.js HTTP/1.1" 404 1813
+"GET /StudentDashboard/ HTTP/1.1" 200 73232
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14463
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14454
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14454
+"GET / HTTP/1.1" 200 13995
+"GET /signup/ HTTP/1.1" 200 11655
+"GET /static/img/bgIndex.png HTTP/1.1" 404 1804
+"GET /signup/ HTTP/1.1" 200 11655
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /signup/ HTTP/1.1" 200 11655
+"GET /signup/ HTTP/1.1" 200 11655
+"GET /static/img/bgIndex.png HTTP/1.1" 200 7594234
+"POST /signup/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14469
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 68100
+"GET /static/img/teacherwand.png HTTP/1.1" 200 16015
+"GET /dashboard/ HTTP/1.1" 200 67651
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 200 1629875
+"GET /announcements/ HTTP/1.1" 200 33735
+"GET /static/css/announcement.css HTTP/1.1" 200 7504
+"GET /static/js/announcement.js HTTP/1.1" 200 12809
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 39412
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 39412
+"GET /static/img/plusIcon.png HTTP/1.1" 404 1807
+"GET /MyClasses/ HTTP/1.1" 200 39451
+"GET /static/img/plusIcon.png HTTP/1.1" 404 1807
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 39451
+"GET /MyClasses/ HTTP/1.1" 200 39484
+"GET /static/img/plusIcon.png HTTP/1.1" 404 1807
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 39484
+"GET /MyClasses/ HTTP/1.1" 200 39456
+"GET /static/img/plusIcon.png HTTP/1.1" 404 1807
+"GET /MyClasses/ HTTP/1.1" 200 39456
+"GET /MyClasses/ HTTP/1.1" 200 39457
+"GET /static/img/plusIcon.png HTTP/1.1" 404 1807
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 39457
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /MyClasses/ HTTP/1.1" 200 39409
+"GET /static/img/plusIcon.png HTTP/1.1" 404 1807
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /MyClasses/ HTTP/1.1" 200 39409
+"GET /MyClasses/ HTTP/1.1" 200 0
+"GET /MyClasses/ HTTP/1.1" 200 39412
+"GET /static/img/plusIcon.png HTTP/1.1" 404 1807
+"GET /MyClasses/ HTTP/1.1" 200 39412
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /MyClasses/ HTTP/1.1" 200 0
+"GET /MyClasses/ HTTP/1.1" 200 0
+"GET /MyClasses/ HTTP/1.1" 200 0
+"GET /MyClasses/ HTTP/1.1" 200 0
+"GET /MyClasses/ HTTP/1.1" 200 0
+"GET /MyClasses/ HTTP/1.1" 200 0
+"GET /MyClasses/ HTTP/1.1" 200 0
+"GET /report/ HTTP/1.1" 200 60200
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 0
+"GET /MyClasses/ HTTP/1.1" 200 39412
+"GET /static/img/plusIcon.png HTTP/1.1" 404 1807
+"GET /MyClasses/ HTTP/1.1" 200 39412
+"GET /MyClasses/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14445
+"GET / HTTP/1.1" 200 13995
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 68100
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/img/teacherwand.png HTTP/1.1" 200 16015
+"GET /dashboard/ HTTP/1.1" 200 67651
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 200 1629875
+"GET /MyClasses/ HTTP/1.1" 200 39412
+"GET /static/img/plusIcon.png HTTP/1.1" 404 1807
+"GET /MyClasses/ HTTP/1.1" 200 39412
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /MyClasses/ HTTP/1.1" 200 39401
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 39401
+"GET /MyClasses/ HTTP/1.1" 200 39403
+"GET /MyClasses/ HTTP/1.1" 200 39403
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /MyClasses/ HTTP/1.1" 200 39390
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 39390
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /MyClasses/ HTTP/1.1" 200 39403
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /MyClasses/ HTTP/1.1" 200 39403
+"GET /MyClasses/ HTTP/1.1" 200 39415
+"GET /MyClasses/ HTTP/1.1" 200 39415
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /MyClasses/ HTTP/1.1" 200 39468
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 39468
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /MyClasses/ HTTP/1.1" 200 39481
+"GET /MyClasses/ HTTP/1.1" 200 39481
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /MyClasses/ HTTP/1.1" 200 39460
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 39460
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /MyClasses/ HTTP/1.1" 200 39523
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 39523
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"POST /create-class/ HTTP/1.1" 302 0
+"GET /MyClasses/ HTTP/1.1" 200 42404
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /MyClasses/ HTTP/1.1" 200 41906
+"GET /class/1/ HTTP/1.1" 200 96932
+"GET /announcements/ HTTP/1.1" 200 34033
+"GET /static/css/announcement.css HTTP/1.1" 200 7504
+"GET /static/js/announcement.js HTTP/1.1" 200 12809
+Internal Server Error: /announcements/create/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 448, in create_announcement
+    return redirect('announcement_board')
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 48, in redirect
+    return redirect_class(resolve_url(to, *args, **kwargs))
+                          ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 145, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'announcement_board' not found. 'announcement_board' is not a valid view function or pattern name.
+"POST /announcements/create/ HTTP/1.1" 500 106823
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /announcements/create/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 105, in create_announcement
+    return redirect('announcement_board')
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 48, in redirect
+    return redirect_class(resolve_url(to, *args, **kwargs))
+                          ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 145, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'announcement_board' not found. 'announcement_board' is not a valid view function or pattern name.
+"POST /announcements/create/ HTTP/1.1" 500 107087
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\urls.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /announcements/create/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 105, in create_announcement
+    return redirect('announcement_board')
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 48, in redirect
+    return redirect_class(resolve_url(to, *args, **kwargs))
+                          ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 145, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'announcement_board' not found. 'announcement_board' is not a valid view function or pattern name.
+"POST /announcements/create/ HTTP/1.1" 500 107102
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+"POST /announcements/create/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 54366
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/files/Story_YznwVin.pdf HTTP/1.1" 200 3981759
+"GET /announcements/ HTTP/1.1" 200 34033
+"POST /announcements/create/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 38931
+"GET /announcements/5/details/ HTTP/1.1" 200 677
+"GET /announcements/5/details/ HTTP/1.1" 200 677
+"GET /dashboard/ HTTP/1.1" 200 71892
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /dashboard/ HTTP/1.1" 200 71892
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14463
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 73821
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /announcements/ HTTP/1.1" 200 29754
+"GET /classes/ HTTP/1.1" 200 31966
+"GET /static/img/search.png HTTP/1.1" 200 30429
+"POST /student/join-class/ HTTP/1.1" 302 0
+"GET /classes/ HTTP/1.1" 200 34818
+"GET /announcements/ HTTP/1.1" 200 29848
+"GET /announcements/?class_id=1 HTTP/1.1" 200 29848
+"GET /announcements/?class_id=1 HTTP/1.1" 200 29848
+"GET /StudentDashboard/ HTTP/1.1" 200 77519
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14463
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 72341
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /dashboard/ HTTP/1.1" 200 71892
+"GET /announcements/ HTTP/1.1" 200 38468
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\urls.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /announcements/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 90, in announcement_board
+    return render(request, 'Universal/announcement_board.html', context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 208, in render
+    return template.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 177, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'board' not found. 'board' is not a valid view function or pattern name.
+"GET /announcements/ HTTP/1.1" 500 213598
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /announcements/ HTTP/1.1" 200 39570
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 200 8320
+"GET /static/js/announcement.js HTTP/1.1" 200 14818
+"GET /announcements/?class_id=1 HTTP/1.1" 200 39570
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/?class_id=all HTTP/1.1" 200 39570
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET / HTTP/1.1" 200 13995
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 304 0
+"GET / HTTP/1.1" 200 13995
+"GET /static/img/favicon.ico HTTP/1.1" 304 0
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 77973
+"GET /static/img/loadingIcon.webp HTTP/1.1" 304 0
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /static/img/star.png HTTP/1.1" 304 0
+"GET /static/img/1stCup.svg HTTP/1.1" 304 0
+"GET /static/img/classroom.png HTTP/1.1" 304 0
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /announcements/ HTTP/1.1" 200 35020
+"GET /static/css/announcement.css HTTP/1.1" 200 8320
+"GET /static/js/announcement.js HTTP/1.1" 200 14818
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 200 1629875
+"GET /announcements/?class_id=1 HTTP/1.1" 200 35020
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"POST /announcements/5/react/ HTTP/1.1" 200 83
+"GET /announcements/?class_id=1 HTTP/1.1" 200 35020
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/?class_id=all HTTP/1.1" 200 39570
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/5/details/ HTTP/1.1" 200 721
+"GET /announcements/?class_id=all HTTP/1.1" 200 39515
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 200 8453
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/5/details/ HTTP/1.1" 200 721
+"POST /announcements/5/react/ HTTP/1.1" 200 88
+"GET /announcements/?class_id=all HTTP/1.1" 200 39515
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/?class_id=1 HTTP/1.1" 200 35015
+"GET /static/css/announcement.css HTTP/1.1" 200 8453
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/partials/scripts.html HTTP/1.1" 404 1822
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/?class_id=1 HTTP/1.1" 200 34961
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /announcements/?class_id=1 HTTP/1.1" 200 35848
+"GET /static/css/announcement.css HTTP/1.1" 200 8731
+"GET /static/js/announcement.js HTTP/1.1" 200 14922
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/?class_id=1 HTTP/1.1" 200 35848
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/?class_id=all HTTP/1.1" 200 39514
+"GET /static/css/announcement.css HTTP/1.1" 200 8731
+"GET /static/js/announcement.js HTTP/1.1" 200 14922
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/?class_id=all HTTP/1.1" 200 40401
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/?class_id=all HTTP/1.1" 200 40401
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 200 14822
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /media/announcements/files/Story_YznwVin_aGW2ojs.pdf HTTP/1.1" 200 3981759
+"POST /announcements/5/react/ HTTP/1.1" 200 60
+"GET /announcements/?class_id=all HTTP/1.1" 200 40401
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"POST /announcements/5/react/ HTTP/1.1" 200 88
+"GET /announcements/?class_id=all HTTP/1.1" 200 40401
+"POST /announcements/5/react/ HTTP/1.1" 200 60
+"GET /announcements/?class_id=all HTTP/1.1" 200 40401
+"POST /announcements/5/react/ HTTP/1.1" 200 86
+"GET /announcements/?class_id=all HTTP/1.1" 200 40401
+"GET /announcements/5/details/ HTTP/1.1" 200 770
+"GET /announcements/5/details/ HTTP/1.1" 200 770
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /dashboard/ HTTP/1.1" 200 71892
+"GET /dashboard/ HTTP/1.1" 200 71892
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14463
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 77973
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /announcements/ HTTP/1.1" 200 35848
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/5/details/ HTTP/1.1" 200 768
+"POST /announcements/5/comment/ HTTP/1.1" 200 255
+"GET /announcements/5/details/ HTTP/1.1" 200 972
+"POST /announcements/5/comment/ HTTP/1.1" 200 253
+"GET /announcements/5/details/ HTTP/1.1" 200 1176
+"GET /announcements/?class_id=1 HTTP/1.1" 200 35848
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 200 14822
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /announcements/5/details/ HTTP/1.1" 200 1176
+"POST /announcements/comment/2/delete/ HTTP/1.1" 200 38
+"GET /announcements/5/details/ HTTP/1.1" 200 972
+"GET /announcements/ HTTP/1.1" 200 35848
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/5/details/ HTTP/1.1" 200 972
+"GET /announcements/?class_id=1 HTTP/1.1" 200 37566
+"GET /static/css/announcement.css HTTP/1.1" 200 8997
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/ HTTP/1.1" 200 37566
+"GET /static/css/announcement.css HTTP/1.1" 200 8997
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/?class_id=1 HTTP/1.1" 200 37784
+"GET /static/css/announcement.css HTTP/1.1" 200 9417
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 11501
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/?class_id=1 HTTP/1.1" 200 37784
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/?class_id=1 HTTP/1.1" 200 37784
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/5/details/ HTTP/1.1" 200 972
+"GET /announcements/ HTTP/1.1" 200 37784
+"GET /static/css/announcement.css HTTP/1.1" 200 9417
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/ HTTP/1.1" 200 36852
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 200 9430
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"POST /announcements/5/report/ HTTP/1.1" 200 48
+"GET /announcements/ HTTP/1.1" 200 36852
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"POST /announcements/5/pin/ HTTP/1.1" 200 56
+"GET /announcements/ HTTP/1.1" 200 36852
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/?class_id=1 HTTP/1.1" 200 36852
+"GET /static/css/announcement.css HTTP/1.1" 200 9430
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /StudentDashboard/ HTTP/1.1" 200 77519
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14463
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 72341
+"GET /static/img/teacherwand.png HTTP/1.1" 304 0
+"GET /dashboard/ HTTP/1.1" 200 71892
+"GET /announcements/ HTTP/1.1" 200 41430
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"POST /announcements/5/teacher-pin/ HTTP/1.1" 200 36
+"GET /announcements/ HTTP/1.1" 200 41552
+"POST /announcements/5/teacher-pin/ HTTP/1.1" 200 37
+"GET /announcements/ HTTP/1.1" 200 41430
+"GET /announcements/?class_id=1 HTTP/1.1" 200 41430
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /announcements/5/details/ HTTP/1.1" 200 975
+"GET /announcements/ HTTP/1.1" 200 36852
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /announcements/?class_id=1 HTTP/1.1" 200 41430
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /announcements/5/details/ HTTP/1.1" 200 975
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+"GET /announcements/ HTTP/1.1" 200 36852
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"POST /announcements/5/pin/ HTTP/1.1" 200 59
+"GET /announcements/ HTTP/1.1" 200 36852
+"GET /announcements/?class_id=1 HTTP/1.1" 200 41430
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"POST /announcements/5/teacher-pin/ HTTP/1.1" 200 36
+"GET /announcements/?class_id=1 HTTP/1.1" 200 41552
+"POST /announcements/5/teacher-pin/ HTTP/1.1" 200 37
+"GET /announcements/?class_id=1 HTTP/1.1" 200 41430
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /announcements/ HTTP/1.1" 200 36663
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 200 18383
+"GET /announcements/?class_id=1 HTTP/1.1" 200 36663
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"POST /announcements/5/pin/ HTTP/1.1" 200 56
+"GET /announcements/?class_id=1 HTTP/1.1" 200 36663
+"GET /announcements/?class_id=1 HTTP/1.1" 200 44970
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 200 18383
+"POST /announcements/5/teacher-pin/ HTTP/1.1" 200 36
+"GET /announcements/?class_id=1 HTTP/1.1" 200 45103
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/5/details/ HTTP/1.1" 200 993
+Internal Server Error: /announcements/5/edit/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 482, in edit_announcement
+    return redirect('announcement:announcement_board')
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 48, in redirect
+    return redirect_class(resolve_url(to, *args, **kwargs))
+                          ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 145, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'announcement_board' not found. 'announcement_board' is not a valid view function or pattern name.
+"POST /announcements/5/edit/ HTTP/1.1" 500 107159
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+"POST /announcements/5/edit/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 46083
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /announcements/?class_id=1 HTTP/1.1" 200 36962
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"POST /announcements/5/pin/ HTTP/1.1" 200 59
+"GET /announcements/?class_id=1 HTTP/1.1" 200 36962
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+Internal Server Error: /announcements/5/report/
+"POST /announcements/5/report/ HTTP/1.1" 500 53
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /announcements/?class_id=1 HTTP/1.1" 200 38615
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 200 20641
+"GET /announcements/?class_id=all HTTP/1.1" 200 38615
+"GET /announcements/?class_id=1 HTTP/1.1" 200 38615
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/?class_id=all HTTP/1.1" 200 38615
+"GET /announcements/ HTTP/1.1" 200 45466
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 200 20641
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /announcements/5/details/ HTTP/1.1" 200 1009
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"POST /announcements/5/report/ HTTP/1.1" 200 89
+"POST /announcements/5/teacher-pin/ HTTP/1.1" 200 37
+"GET /announcements/ HTTP/1.1" 200 45333
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/?class_id=all HTTP/1.1" 200 38486
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /announcements/?class_id=1 HTTP/1.1" 200 38486
+"GET /dashboard/ HTTP/1.1" 200 71892
+"GET /dashboard/ HTTP/1.1" 200 71892
+"POST /create-class/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 76601
+"GET /dashboard/ HTTP/1.1" 200 76106
+"GET /classes/ HTTP/1.1" 200 34353
+"POST /student/join-class/ HTTP/1.1" 302 0
+"GET /classes/ HTTP/1.1" 200 37316
+"GET /announcements/ HTTP/1.1" 200 38579
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/?class_id=2 HTTP/1.1" 200 38579
+"GET /announcements/?class_id=1 HTTP/1.1" 200 38579
+"GET /announcements/?class_id=all HTTP/1.1" 200 38579
+"GET /announcements/?class_id=1 HTTP/1.1" 200 38579
+"GET /announcements/?class_id=2 HTTP/1.1" 200 38579
+"GET /dashboard/ HTTP/1.1" 200 76106
+"GET /dashboard/ HTTP/1.1" 200 76106
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /announcements/?class_id=2 HTTP/1.1" 200 38973
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/?class_id=1 HTTP/1.1" 200 38973
+"GET /announcements/?class_id=2 HTTP/1.1" 200 38973
+"GET /classes/ HTTP/1.1" 200 36852
+"GET /announcements/ HTTP/1.1" 200 38973
+"GET /announcements/?class_id=2 HTTP/1.1" 200 38973
+"GET /announcements/ HTTP/1.1" 200 45956
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /announcements/?class_id=1 HTTP/1.1" 200 45956
+"GET /announcements/?class_id=2 HTTP/1.1" 200 45956
+"GET /announcements/?class_id=1 HTTP/1.1" 200 45956
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /announcements/?class_id=1 HTTP/1.1" 200 40066
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/?class_id=all HTTP/1.1" 200 45956
+"GET /announcements/?class_id=1 HTTP/1.1" 200 40066
+"GET /announcements/?class_id=2 HTTP/1.1" 200 40066
+"GET /announcements/?class_id=all HTTP/1.1" 200 45956
+"GET /announcements/?class_id=2 HTTP/1.1" 200 33792
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/?class_id=all HTTP/1.1" 200 38973
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"POST /announcements/5/delete/ HTTP/1.1" 200 17
+"GET /announcements/?class_id=all HTTP/1.1" 200 40066
+"GET /announcements/?class_id=1 HTTP/1.1" 200 40066
+Internal Server Error: /announcements/create/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 141, in create_announcement
+    return redirect('announcement:announcement_board')
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 48, in redirect
+    return redirect_class(resolve_url(to, *args, **kwargs))
+                          ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 145, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'announcement_board' not found. 'announcement_board' is not a valid view function or pattern name.
+"POST /announcements/create/ HTTP/1.1" 500 107502
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /announcements/create/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 141, in create_announcement
+    return redirect('announcement:announcement_board')
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 48, in redirect
+    return redirect_class(resolve_url(to, *args, **kwargs))
+                          ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 145, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\urls\resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'announcement_board' not found. 'announcement_board' is not a valid view function or pattern name.
+"POST /announcements/create/ HTTP/1.1" 500 107767
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+"POST /announcements/create/ HTTP/1.1" 302 0
+Internal Server Error: /announcements/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 94, in announcement_board
+    return render(request, 'announcement:board', context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: announcement:board
+"GET /announcements/ HTTP/1.1" 500 102917
+Internal Server Error: /announcements/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 94, in announcement_board
+    return render(request, 'announcement:board', context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: announcement:board
+"GET /announcements/ HTTP/1.1" 500 102917
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /announcements/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 94, in announcement_board
+    return render(request, 'templates/Universal/announcement_board', context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: templates/Universal/announcement_board
+"GET /announcements/ HTTP/1.1" 500 103317
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /announcements/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\Announcement\views.py", line 94, in announcement_board
+    return render(request, 'Universal/announcement_board', context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\Paulicode\env\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: Universal/announcement_board
+"GET /announcements/ HTTP/1.1" 500 103117
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /announcements/ HTTP/1.1" 200 58463
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987.jpg HTTP/1.1" 200 280985
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 200 280985
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_ib17LKd.jpg HTTP/1.1" 200 280985
+"POST /announcements/6/delete/ HTTP/1.1" 200 17
+"POST /announcements/7/delete/ HTTP/1.1" 200 17
+"GET /announcements/?class_id=1 HTTP/1.1" 200 45650
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /announcements/?class_id=2 HTTP/1.1" 200 40066
+"GET /announcements/?class_id=all HTTP/1.1" 200 45650
+"GET /announcements/?class_id=2 HTTP/1.1" 200 40066
+"POST /announcements/create/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 51893
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 200 28394433
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+"GET /static/img/apple-icon.png HTTP/1.1" 404 1813
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+"GET /announcements/?class_id=all HTTP/1.1" 200 43740
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 200 280985
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 200 28394433
+"GET /static/img/apple-icon.png HTTP/1.1" 404 1813
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+"GET /announcements/?class_id=all HTTP/1.1" 200 43736
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+"GET /StudentDashboard/ HTTP/1.1" 200 81785
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /announcements/ HTTP/1.1" 200 43736
+"GET /announcements/ HTTP/1.1" 200 43744
+"GET /StudentDashboard/ HTTP/1.1" 200 81793
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /announcements/ HTTP/1.1" 200 43744
+"GET /announcements/?class_id=1 HTTP/1.1" 200 38671
+"GET /announcements/?class_id=2 HTTP/1.1" 200 38617
+"GET /StudentDashboard/ HTTP/1.1" 200 81793
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /leaderboard/ HTTP/1.1" 200 47276
+"GET /api/leaderboard-data/? HTTP/1.1" 200 116
+"GET /classes/ HTTP/1.1" 200 36860
+"GET /student/class/1/ HTTP/1.1" 200 72209
+"GET /classes/ HTTP/1.1" 200 36860
+"GET /announcements/ HTTP/1.1" 200 43744
+"GET /StudentDashboard/ HTTP/1.1" 200 81793
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /announcements/ HTTP/1.1" 200 43744
+"GET /announcements/?class_id=1 HTTP/1.1" 200 38671
+"GET /announcements/?class_id=2 HTTP/1.1" 200 38617
+"GET /announcements/?class_id=all HTTP/1.1" 200 43744
+"GET /announcements/?class_id=2 HTTP/1.1" 200 38617
+"GET /announcements/?class_id=2 HTTP/1.1" 200 38621
+"GET /classes/ HTTP/1.1" 200 36860
+"GET /leaderboard/ HTTP/1.1" 200 47276
+"GET /api/leaderboard-data/? HTTP/1.1" 200 116
+"GET /api/leaderboard-data/? HTTP/1.1" 200 116
+"GET /code-playground/ HTTP/1.1" 200 75387
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+"GET /load-chat-history/ HTTP/1.1" 200 16
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+AFC is enabled with max remote calls: 10.
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+"POST /ai-chat-stream/ HTTP/1.1" 200 284
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+AFC is enabled with max remote calls: 10.
+"POST /ai-chat-stream/ HTTP/1.1" 200 125
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+AFC is enabled with max remote calls: 10.
+HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+"POST /ai-chat-stream/ HTTP/1.1" 200 1095
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+"POST /run-test-code/ HTTP/1.1" 200 92
+"POST /run-test-code/ HTTP/1.1" 200 157
+"POST /run-test-code/ HTTP/1.1" 200 147
+"GET /load-chat-history/ HTTP/1.1" 200 1740
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+"GET /load-chat-history/ HTTP/1.1" 200 1740
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+"GET /announcements/ HTTP/1.1" 200 43748
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0

@@ -500,6 +500,17 @@ document.addEventListener('click', function(event) {
         </a>
       </li>
 
+      <!--Announcements-->
+    <li class="nav-item">
+      <a class="nav-link {% if currentpage == 'announcement' %}active{% endif %}" 
+        href="{% url 'announcement:board' %}">
+        <div class="icon-container">
+          <span class="code-icon"><i class="fa fa-bullhorn"></i></span>
+        </div>
+        <span class="nav-link-text">Announcements</span>
+      </a>
+    </li>
+
       <!-- Classes -->
       <li class="nav-item">
         <a class="nav-link {% if currentpage == 'MyClasses' %}active{% endif %}" href="{% url 'MyClasses' %}">
@@ -540,15 +551,7 @@ document.addEventListener('click', function(event) {
         </a>
       </li>
       
-
-      <li class="nav-item">
-        <a class="nav-link" href="http://192.168.8.127:8000/" target="_blank">
-          <div class="icon-container">
-            <span class="code-icon"><i class="fa fa-comments"></i></i></span>
-          </div>
-          <span class="nav-link-text">Communicate</span>
-        </a>
-      </li>
+     
 
     </ul>
   </div>

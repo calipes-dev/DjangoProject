@@ -1,0 +1,528 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Link external CSS -->
+<link rel="stylesheet" href="{% static 'css/announcement.css' %}">
+<style>
+.alert {
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.alert-success {
+  background-color: #10b981;
+  color: white;
+  border: none;
+}
+</style>
+
+<div class="g-sidenav-show text-white">
+  <main class="main-content position-relative border-radius-lg">
+    <div class="container-fluid py-4 px-3 px-md-5">
+      
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h3 class="fw-bold mb-1">
+            <i class="fas fa-bullhorn me-2" style="color: #10b981;"></i>Announcements
+          </h3>
+          <p class="text-muted mb-0">Stay updated with class announcements</p>
+        </div>
+        
+        <!-- Filter by Class -->
+        <select id="classFilter" class="form-select form-select-custom" 
+                style="max-width: 250px;"
+                onchange="filterByClass()">
+        <option value="all" {% if selected_class_id == 'all' %}selected{% endif %}>
+            All Classes
+        </option>
+        {% for class in user_classes %}
+            <!-- ✅ FIXED: Convert class_id to string for comparison -->
+            <option value="{{ class.class_id }}" 
+                    {% if selected_class_id|stringformat:"s" == class.class_id|stringformat:"s" %}selected{% endif %}>
+            {{ class.title }}
+            </option>
+        {% endfor %}
+        </select>
+      </div>
+
+      <!-- Create Post Card (Teachers Only) -->
+      {% if user.user_type == 'Teacher' %}
+      <div class="card create-post-card p-4 mb-4" onclick="showCreateAnnouncementModal()" style="cursor: pointer;">
+        <div class="d-flex align-items-center gap-3">
+          <img src="{% if user.user_image %}{{ user.user_image.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}" 
+               alt="Profile" 
+               class="profile-img-lg">
+          <div class="flex-grow-1">
+            <h5 class="mb-0 text-white">Share an announcement with your students</h5>
+            <p class="mb-0 text-white small opacity-75">Post updates, resources, or important information</p>
+          </div>
+          <i class="fas fa-plus-circle text-white" style="font-size: 2rem;"></i>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Announcements Feed -->
+      <div id="announcementsFeed">
+        {% if announcements %}
+          {% for announcement in announcements %}
+          <div class="card announcement-card p-4 mb-3" id="announcement-{{ announcement.announcement_id }}">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-start mb-3">
+
+              <div class="d-flex align-items-center gap-3">
+                <img src="{% if announcement.teacher.user_image %}{{ announcement.teacher.user_image.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}" 
+                    alt="Teacher" 
+                    class="profile-img-md">
+                <div>
+                    <h6 class="mb-0 text-white">{{ announcement.teacher.first_name }} {{ announcement.teacher.last_name }}</h6>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <small class="text-muted">{{ announcement.created_at|date:"M d, Y - h:i A" }}</small>
+                    
+                    <!-- ✅ FIXED: Class Badge Display -->
+                    {% if announcement.class_id %}
+                        <span class="badge badge-primary-custom">
+                        {{ announcement.class_id.title }}
+                        </span>
+                    {% else %}
+                        <span class="badge badge-warning-custom">
+                        <i class="fas fa-globe me-1"></i>All Classes
+                        </span>
+                    {% endif %}
+                    
+                    {% if announcement.is_pinned %}
+                        <span class="pin-badge">
+                        <i class="fas fa-thumbtack me-1"></i>Pinned by Teacher
+                        </span>
+                    {% endif %}
+                    </div>
+                </div>
+                </div>
+              
+              <!-- Action Dropdown -->
+              <div class="dropdown">
+                <button class="btn btn-link dropdown-toggle-no-caret" 
+                        type="button"
+                        id="dropdownMenuButton{{ announcement.announcement_id }}"
+                        onclick="toggleAnnouncementDropdown(event, {{ announcement.announcement_id }})">
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" 
+                    id="dropdownMenu{{ announcement.announcement_id }}">
+                  
+                  {% if user.user_type == 'Student' %}
+                    <!-- Student Options -->
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0);" 
+                         onclick="event.stopPropagation(); reportAnnouncement({{ announcement.announcement_id }})">
+                        <i class="fas fa-flag me-2"></i>Report
+                      </a>
+                    </li>
+                  {% endif %}
+                  
+                  {% if announcement.teacher == user %}
+                    <!-- Teacher Options -->
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0);" 
+                         onclick="event.stopPropagation(); showEditAnnouncementModal({{ announcement.announcement_id }})">
+                        <i class="fas fa-edit me-2"></i>Edit
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0);" 
+                         onclick="event.stopPropagation(); toggleTeacherPin({{ announcement.announcement_id }})">
+                        <i class="fas fa-thumbtack me-2"></i>
+                        {% if announcement.is_pinned %}Unpin from Top{% else %}Pin to Top{% endif %}
+                      </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <a class="dropdown-item text-danger" href="javascript:void(0);" 
+                         onclick="event.stopPropagation(); deleteAnnouncement({{ announcement.announcement_id }})">
+                        <i class="fas fa-trash me-2"></i>Delete
+                      </a>
+                    </li>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="mb-3">
+              <h5 class="text-white mb-2">{{ announcement.title }}</h5>
+              <p class="text-white mb-0" style="white-space: pre-wrap;">{{ announcement.content }}</p>
+            </div>
+
+            <!-- Attachments -->
+            {% if announcement.link %}
+              <a href="{{ announcement.link }}" target="_blank" class="link-button mb-2">
+                <i class="fas fa-link"></i>View Link
+              </a>
+            {% endif %}
+            
+            {% if announcement.image %}
+              <img src="{{ announcement.image.url }}" alt="Announcement Image" class="attachment-preview">
+            {% endif %}
+            
+            {% if announcement.video %}
+              <video controls class="attachment-preview">
+                <source src="{{ announcement.video.url }}" type="video/mp4">
+                Your browser does not support video playback.
+              </video>
+            {% endif %}
+            
+            {% if announcement.file %}
+              <div class="file-attachment-alert">
+                <i class="fas fa-file-alt"></i>
+                <a href="{{ announcement.file.url }}" download>
+                  {{ announcement.file.name|slice:"30:" }}
+                </a>
+              </div>
+            {% endif %}
+
+            <!-- Reactions & Comments Bar -->
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top-custom">
+              <div class="d-flex gap-3">
+                <!-- React Button with Picker -->
+                <div class="position-relative">
+                  <button class="btn reaction-btn {% if announcement.user_reaction %}active{% endif %}" 
+                          onclick="toggleReactionPicker({{ announcement.announcement_id }})">
+                    {% if announcement.user_reaction %}
+                      {{ announcement.user_reaction.get_reaction_type_display }}
+                    {% else %}
+                      <i class="fas fa-thumbs-up me-1"></i>React
+                    {% endif %}
+                    <span class="ms-1">{{ announcement.total_reactions }}</span>
+                  </button>
+                  
+                  <!-- Reaction Picker -->
+                  <div id="reactionPicker-{{ announcement.announcement_id }}" class="reaction-picker">
+                    <span class="reaction-option" onclick="reactToAnnouncement({{ announcement.announcement_id }}, 'like')" title="Like">👍</span>
+                    <span class="reaction-option" onclick="reactToAnnouncement({{ announcement.announcement_id }}, 'love')" title="Love">❤️</span>
+                    <span class="reaction-option" onclick="reactToAnnouncement({{ announcement.announcement_id }}, 'celebrate')" title="Celebrate">🎉</span>
+                    <span class="reaction-option" onclick="reactToAnnouncement({{ announcement.announcement_id }}, 'insightful')" title="Insightful">💡</span>
+                    <span class="reaction-option" onclick="reactToAnnouncement({{ announcement.announcement_id }}, 'curious')" title="Curious">🤔</span>
+                  </div>
+                </div>
+                
+                <button class="btn reaction-btn" onclick="showComments({{ announcement.announcement_id }})">
+                  <i class="fas fa-comment me-1"></i>Comment
+                  <span class="ms-1">{{ announcement.total_comments }}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Comments Section (Hidden by default) -->
+            <div id="comments-{{ announcement.announcement_id }}" class="comment-section" style="display: none;">
+              <div id="commentsList-{{ announcement.announcement_id }}" class="mb-3">
+                <!-- Comments will be loaded here -->
+              </div>
+              
+              <!-- Add Comment Form -->
+              <div class="d-flex gap-2">
+                <input type="text" 
+                       id="commentInput-{{ announcement.announcement_id }}" 
+                       class="form-control comment-input" 
+                       placeholder="Write a comment...">
+                <button class="btn btn-success" onclick="addComment({{ announcement.announcement_id }})">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="card announcement-card p-5 empty-state">
+            <i class="fas fa-inbox"></i>
+            <h5 class="mt-3">No announcements yet</h5>
+            <p class="text-muted">{% if user.user_type == 'Teacher' %}Create your first announcement to get started!{% else %}Check back later for updates from your teachers.{% endif %}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Create Announcement Modal (Teachers Only) -->
+{% if user.user_type == 'Teacher' %}
+<div id="createAnnouncementModal" class="modal-backdrop-custom">
+  <div class="modal-content-custom">
+    <div class="p-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0 text-white"><i class="fas fa-bullhorn me-2"></i>Create Announcement</h4>
+        <button class="btn btn-link text-white p-0" onclick="closeCreateAnnouncementModal()">
+          <i class="fas fa-times" style="font-size: 1.5rem;"></i>
+        </button>
+      </div>
+
+      <form id="createAnnouncementForm" method="POST" action="{% url 'announcement:create' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Class Selection -->
+        <div class="mb-3">
+          <label class="form-label text-white">Post to Class</label>
+          <select name="class_id" class="form-select form-select-custom">
+            <option value="all">All Classes</option>
+            {% for class in user_classes %}
+              <option value="{{ class.class_id }}">{{ class.title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Title -->
+        <div class="mb-3">
+          <label class="form-label text-white">Title <span class="text-danger">*</span></label>
+          <input type="text" name="title" class="form-control form-control-custom" required
+                 placeholder="Enter announcement title">
+        </div>
+
+        <!-- Content -->
+        <div class="mb-3">
+          <label class="form-label text-white">Content <span class="text-danger">*</span></label>
+          <textarea name="content" rows="5" class="form-control form-control-custom" required
+                    placeholder="What would you like to share?"></textarea>
+        </div>
+
+        <!-- Link -->
+        <div class="mb-3">
+          <label class="form-label text-white">Link (Optional)</label>
+          <input type="url" name="link" class="form-control form-control-custom"
+                 placeholder="https://example.com">
+        </div>
+
+        <!-- File Attachments -->
+        <div class="mb-3">
+          <label class="form-label text-white">Attachments (Optional)</label>
+          <div class="row g-2">
+            <div class="col-12 col-md-4">
+              <label class="btn btn-outline-secondary w-100">
+                <i class="fas fa-image me-2"></i>Image
+                <input type="file" name="image" accept="image/*" class="d-none">
+              </label>
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="btn btn-outline-secondary w-100">
+                <i class="fas fa-video me-2"></i>Video
+                <input type="file" name="video" accept="video/*" class="d-none">
+              </label>
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="btn btn-outline-secondary w-100">
+                <i class="fas fa-file me-2"></i>File
+                <input type="file" name="file" class="d-none">
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-outline-secondary" onclick="closeCreateAnnouncementModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-paper-plane me-2"></i>Post Announcement
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Announcement Modal (Teachers Only) -->
+<div id="editAnnouncementModal" class="modal-backdrop-custom">
+  <div class="modal-content-custom">
+    <div class="p-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0 text-white"><i class="fas fa-edit me-2"></i>Edit Announcement</h4>
+        <button class="btn btn-link text-white p-0" onclick="closeEditAnnouncementModal()">
+          <i class="fas fa-times" style="font-size: 1.5rem;"></i>
+        </button>
+      </div>
+
+      <form id="editAnnouncementForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" id="edit_announcement_id" name="announcement_id">
+        
+        <!-- Class Selection -->
+        <div class="mb-3">
+          <label class="form-label text-white">Post to Class</label>
+          <select name="class_id" id="edit_class_id" class="form-select form-select-custom">
+            <option value="all">All Classes</option>
+            {% for class in user_classes %}
+              <option value="{{ class.class_id }}">{{ class.title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Title -->
+        <div class="mb-3">
+          <label class="form-label text-white">Title <span class="text-danger">*</span></label>
+          <input type="text" name="title" id="edit_title" class="form-control form-control-custom" required
+                 placeholder="Enter announcement title">
+        </div>
+
+        <!-- Content -->
+        <div class="mb-3">
+          <label class="form-label text-white">Content <span class="text-danger">*</span></label>
+          <textarea name="content" id="edit_content" rows="5" class="form-control form-control-custom" required
+                    placeholder="What would you like to share?"></textarea>
+        </div>
+
+        <!-- Link -->
+        <div class="mb-3">
+          <label class="form-label text-white">Link (Optional)</label>
+          <input type="url" name="link" id="edit_link" class="form-control form-control-custom"
+                 placeholder="https://example.com">
+        </div>
+
+        <!-- Current Attachments Display -->
+        <div id="currentAttachments" class="mb-3"></div>
+
+        <!-- File Attachments -->
+        <div class="mb-3">
+          <label class="form-label text-white">Replace Attachments (Optional)</label>
+          <div class="row g-2">
+            <div class="col-12 col-md-4">
+              <label class="btn btn-outline-secondary w-100">
+                <i class="fas fa-image me-2"></i>Image
+                <input type="file" name="image" accept="image/*" class="d-none">
+              </label>
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="btn btn-outline-secondary w-100">
+                <i class="fas fa-video me-2"></i>Video
+                <input type="file" name="video" accept="video/*" class="d-none">
+              </label>
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="btn btn-outline-secondary w-100">
+                <i class="fas fa-file me-2"></i>File
+                <input type="file" name="file" class="d-none">
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-outline-secondary" onclick="closeEditAnnouncementModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save me-2"></i>Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Report Announcement Modal (Students Only) -->
+{% if user.user_type == 'Student' %}
+<div id="reportAnnouncementModal" class="modal-backdrop-custom">
+  <div class="modal-content-custom" style="max-width: 500px;">
+    <div class="p-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0 text-white"><i class="fas fa-flag me-2 text-danger"></i>Report Announcement</h4>
+        <button class="btn btn-link text-white p-0" onclick="closeReportModal()">
+          <i class="fas fa-times" style="font-size: 1.5rem;"></i>
+        </button>
+      </div>
+
+      <div class="mb-3">
+        <p class="text-muted mb-0">
+          <i class="fas fa-info-circle me-2"></i>
+          Please help us understand why you're reporting this announcement. Your report will be reviewed by our team.
+        </p>
+      </div>
+
+      <form id="reportAnnouncementForm" onsubmit="submitReport(event)">
+        <input type="hidden" id="report_announcement_id" name="announcement_id">
+        
+        <!-- Reason -->
+        <div class="mb-3">
+          <label class="form-label text-white">Reason <span class="text-danger">*</span></label>
+          <textarea name="reason" id="report_reason" rows="4" class="form-control form-control-custom" required
+                    placeholder="Please describe the issue..."></textarea>
+          <small class="text-muted">Be specific about what you find inappropriate or concerning.</small>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-outline-secondary" onclick="closeReportModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-danger">
+            <i class="fas fa-flag me-2"></i>Submit Report
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Link external JavaScript -->
+<script src="{% static 'js/announcement.js' %}"></script>
+
+<!-- Pure JavaScript Dropdown Toggle -->
+<script>
+function toggleAnnouncementDropdown(event, announcementId) {
+  event.preventDefault();
+  event.stopPropagation();
+  
+  const menu = document.getElementById('dropdownMenu' + announcementId);
+  const button = document.getElementById('dropdownMenuButton' + announcementId);
+  
+  if (!menu) {
+    console.error('Dropdown menu not found:', 'dropdownMenu' + announcementId);
+    return;
+  }
+  
+  const isOpen = menu.classList.contains('show');
+  
+  // Close all other dropdowns
+  document.querySelectorAll('.dropdown-menu').forEach(m => {
+    if (m.id !== 'dropdownMenu' + announcementId) {
+      m.classList.remove('show');
+      const btn = m.previousElementSibling;
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+  
+  // Toggle current dropdown
+  if (isOpen) {
+    menu.classList.remove('show');
+    button.setAttribute('aria-expanded', 'false');
+  } else {
+    menu.classList.add('show');
+    button.setAttribute('aria-expanded', 'true');
+  }
+}
+
+// Close all dropdowns when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.dropdown')) {
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+      menu.classList.remove('show');
+      const button = menu.previousElementSibling;
+      if (button) button.setAttribute('aria-expanded', 'false');
+    });
+  }
+});
+
+// Prevent dropdown from closing when clicking inside menu
+document.addEventListener('click', function(e) {
+  if (e.target.closest('.dropdown-menu')) {
+    e.stopPropagation();
+  }
+});
+</script>
+
+{% include "partials/scripts.html" %}
+{% endblock %}

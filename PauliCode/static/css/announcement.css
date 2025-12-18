@@ -1,0 +1,481 @@
+/* announcement.css */
+
+/* Base Styles */
+body {
+  background-color: #111827 !important;
+}
+
+/* Announcement Card */
+.announcement-card {
+  background-color: #1f2937;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  z-index: 1;
+  overflow: visible !important;
+}
+
+.announcement-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Reaction Button */
+.reaction-btn {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.reaction-btn:hover {
+  background-color: #4b5563;
+  transform: scale(1.05);
+}
+
+.reaction-btn.active {
+  background-color: #10b981;
+  border-color: #10b981;
+}
+
+/* Comment Section */
+.comment-section {
+  background-color: #374151;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+/* Create Post Card */
+.create-post-card {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.create-post-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Attachment Preview */
+.attachment-preview {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+/* Pin Badge */
+.pin-badge {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #1f2937;
+  font-weight: bold;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.85rem;
+}
+
+/* Modal Backdrop */
+.modal-backdrop-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9998;
+  display: none;
+  overflow-y: auto;
+}
+
+.modal-backdrop-custom.show {
+  display: block;
+}
+
+/* Modal Content */
+.modal-content-custom {
+  background-color: #1f2937;
+  border-radius: 1rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Reaction Picker */
+.reaction-picker {
+  display: none;
+  position: absolute;
+  background-color: #374151;
+  border-radius: 30px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 8px;
+}
+
+.reaction-picker.show {
+  display: flex;
+  gap: 8px;
+}
+
+.reaction-option {
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  padding: 4px;
+}
+
+.reaction-option:hover {
+  transform: scale(1.3);
+}
+
+/* FIXED: Dropdown Menu Styling for Bootstrap 5 */
+.dropdown {
+  position: relative !important;
+  z-index: 1000;
+}
+
+.dropdown-toggle-no-caret::after {
+  display: none !important;
+}
+
+.dropdown button.btn-link {
+  text-decoration: none !important;
+  padding: 0.5rem !important;
+  background: transparent !important;
+  border: none !important;
+  color: #9ca3af !important;
+  cursor: pointer !important;
+  position: relative !important;
+  z-index: 1001 !important;
+}
+
+.dropdown button.btn-link:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0.375rem !important;
+  color: #ffffff !important;
+}
+
+.dropdown button.btn-link:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.dropdown-menu {
+  background-color: #374151 !important;
+  border: 1px solid #4b5563 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.5rem 0 !important;
+  min-width: 180px !important;
+  z-index: 1050 !important;
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  left: auto !important;
+  margin-top: 0.25rem !important;
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(-10px) !important;
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s !important;
+}
+
+.dropdown-menu.show {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+  z-index: 1050 !important;
+}
+
+.dropdown-item {
+  color: #e5e7eb !important;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.2s ease !important;
+  font-size: 0.875rem !important;
+  display: flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: #4b5563 !important;
+  color: #ffffff !important;
+}
+
+.dropdown-item.text-danger {
+  color: #ef4444 !important;
+}
+
+.dropdown-item.text-danger:hover,
+.dropdown-item.text-danger:focus {
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
+}
+
+.dropdown-divider {
+  border-top: 1px solid #4b5563 !important;
+  margin: 0.5rem 0 !important;
+}
+
+/* Form Controls */
+.form-control-custom {
+  background-color: #374151;
+  color: white;
+  border: 1px solid #4b5563;
+}
+
+.form-control-custom:focus {
+  background-color: #374151;
+  color: white;
+  border-color: #10b981;
+  box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+}
+
+.form-select-custom {
+  background-color: #374151;
+  color: white;
+  border: 1px solid #4b5563;
+}
+
+.form-select-custom:focus {
+  background-color: #374151;
+  color: white;
+  border-color: #10b981;
+  box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+}
+
+/* Comment Input Styling */
+.comment-input {
+  background-color: #1f2937;
+  color: white;
+  border: 1px solid #4b5563;
+  border-radius: 20px;
+  padding: 8px 16px;
+}
+
+.comment-input:focus {
+  background-color: #1f2937;
+  color: white;
+  border-color: #10b981;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+}
+
+/* Comment Display */
+.comment-container {
+  background-color: #111827;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.comment-user-name {
+  color: #f3f4f6;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.comment-text {
+  color: #d1d5db;
+  font-size: 0.9rem;
+  word-wrap: break-word;
+}
+
+.comment-timestamp {
+  color: #9ca3af;
+  font-size: 0.75rem;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-state i {
+  font-size: 4rem;
+  color: #6b7280;
+  opacity: 0.3;
+}
+
+.empty-state h5 {
+  margin-top: 1rem;
+  color: white;
+}
+
+.empty-state p {
+  color: #9ca3af;
+}
+
+/* Badge Styles */
+.badge-primary-custom {
+  background-color: #3b82f6;
+  color: white;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.badge-warning-custom {
+  background-color: #f59e0b;
+  color: #1f2937;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+/* File Attachment Alert */
+.file-attachment-alert {
+  background-color: #3b82f6;
+  border: 1px solid #2563eb;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-attachment-alert a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.file-attachment-alert a:hover {
+  text-decoration: underline;
+}
+
+/* Link Button */
+.link-button {
+  background-color: transparent;
+  border: 2px solid #3b82f6;
+  color: #3b82f6;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.link-button:hover {
+  background-color: #3b82f6;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-content-custom {
+    max-width: 95%;
+    margin: 1rem auto;
+  }
+  
+  .attachment-preview {
+    max-height: 300px;
+  }
+  
+  .reaction-picker {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .create-post-card {
+    padding: 1rem !important;
+  }
+  
+  .announcement-card {
+    padding: 1rem !important;
+  }
+}
+
+/* Loading State */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #10b981;
+  animation: spinner 0.6s linear infinite;
+}
+
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}
+
+/* Scrollbar Styling */
+.modal-backdrop-custom::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-backdrop-custom::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.modal-backdrop-custom::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 4px;
+}
+
+.modal-backdrop-custom::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Profile Image Styles */
+.profile-img-sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-img-md {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-img-lg {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Action Buttons */
+.action-button {
+  background-color: transparent;
+  border: none;
+  color: #9ca3af;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.action-button:hover {
+  color: #10b981;
+}
+
+.action-button.text-danger:hover {
+  color: #ef4444;
+}
+
+/* Border Top for Interactions */
+.border-top-custom {
+  border-top: 1px solid #4b5563 !important;
+}
