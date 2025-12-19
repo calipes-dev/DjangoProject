@@ -14,11 +14,9 @@ class Announcement(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     
-    # Attachments
+    # Single attachments
     image = models.ImageField(upload_to='announcements/images/', null=True, blank=True)
     video = models.FileField(upload_to='announcements/videos/', null=True, blank=True)
-    file = models.FileField(upload_to='announcements/files/', null=True, blank=True)
-    link = models.URLField(max_length=500, null=True, blank=True)
     
     # Metadata
     created_at = models.DateTimeField(default=timezone.now)
@@ -38,6 +36,48 @@ class Announcement(models.Model):
     @property
     def total_comments(self):
         return self.comments.count()
+
+
+# NEW: Separate model for multiple files
+class AnnouncementFile(models.Model):
+    """Multiple file attachments for announcements"""
+    file_id = models.AutoField(primary_key=True)
+    announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE, related_name='files')
+    file = models.FileField(upload_to='announcements/files/')
+    file_name = models.CharField(max_length=255)
+    file_size = models.IntegerField(default=0)  # Size in bytes
+    uploaded_at = models.DateTimeField(default=timezone.now)
+    
+    class Meta:
+        ordering = ['uploaded_at']
+    
+    def __str__(self):
+        return f"{self.file_name} - {self.announcement.title}"
+    
+    def get_file_size_display(self):
+        """Convert bytes to human readable format"""
+        size = self.file_size
+        for unit in ['B', 'KB', 'MB', 'GB']:
+            if size < 1024.0:
+                return f"{size:.1f} {unit}"
+            size /= 1024.0
+        return f"{size:.1f} TB"
+
+
+# NEW: Separate model for multiple links
+class AnnouncementLink(models.Model):
+    """Multiple link attachments for announcements"""
+    link_id = models.AutoField(primary_key=True)
+    announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE, related_name='links')
+    url = models.URLField(max_length=500)
+    title = models.CharField(max_length=200, blank=True)  # Optional custom title
+    added_at = models.DateTimeField(default=timezone.now)
+    
+    class Meta:
+        ordering = ['added_at']
+    
+    def __str__(self):
+        return f"{self.title or self.url} - {self.announcement.title}"
 
 
 class AnnouncementReaction(models.Model):
@@ -94,6 +134,7 @@ class AnnouncementPin(models.Model):
     def __str__(self):
         return f"{self.user.first_name} pinned {self.announcement.title}"
 
+
 class AnnouncementReport(models.Model):
     """Student reports on announcements"""
     report_id = models.AutoField(primary_key=True)
@@ -117,8 +158,7 @@ class AnnouncementReport(models.Model):
     class Meta:
         db_table = 'announcement_report'
         ordering = ['-reported_at']
-        unique_together = ('announcement', 'reporter')  # One report per student per announcement
+        unique_together = ('announcement', 'reporter')
     
     def __str__(self):
         return f"Report by {self.reporter.first_name} on {self.announcement.title}"
-    

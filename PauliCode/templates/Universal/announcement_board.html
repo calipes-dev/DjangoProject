@@ -4,20 +4,6 @@
 {% block content %}
 <!-- Link external CSS -->
 <link rel="stylesheet" href="{% static 'css/announcement.css' %}">
-<style>
-.alert {
-  padding: 1rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.alert-success {
-  background-color: #10b981;
-  color: white;
-  border: none;
-}
-</style>
 
 <div class="g-sidenav-show text-white">
   <main class="main-content position-relative border-radius-lg">
@@ -36,16 +22,15 @@
         <select id="classFilter" class="form-select form-select-custom" 
                 style="max-width: 250px;"
                 onchange="filterByClass()">
-        <option value="all" {% if selected_class_id == 'all' %}selected{% endif %}>
+          <option value="all" {% if selected_class_id == 'all' %}selected{% endif %}>
             All Classes
-        </option>
-        {% for class in user_classes %}
-            <!-- ✅ FIXED: Convert class_id to string for comparison -->
+          </option>
+          {% for class in user_classes %}
             <option value="{{ class.class_id }}" 
                     {% if selected_class_id|stringformat:"s" == class.class_id|stringformat:"s" %}selected{% endif %}>
-            {{ class.title }}
+              {{ class.title }}
             </option>
-        {% endfor %}
+          {% endfor %}
         </select>
       </div>
 
@@ -72,7 +57,6 @@
           <div class="card announcement-card p-4 mb-3" id="announcement-{{ announcement.announcement_id }}">
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-start mb-3">
-
               <div class="d-flex align-items-center gap-3">
                 <img src="{% if announcement.teacher.user_image %}{{ announcement.teacher.user_image.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}" 
                     alt="Teacher" 
@@ -80,27 +64,27 @@
                 <div>
                     <h6 class="mb-0 text-white">{{ announcement.teacher.first_name }} {{ announcement.teacher.last_name }}</h6>
                     <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <small class="text-muted">{{ announcement.created_at|date:"M d, Y - h:i A" }}</small>
-                    
-                    <!-- ✅ FIXED: Class Badge Display -->
-                    {% if announcement.class_id %}
+                      <small class="text-muted">{{ announcement.created_at|date:"M d, Y - h:i A" }}</small>
+                      
+                      <!-- Class Badge Display -->
+                      {% if announcement.class_id %}
                         <span class="badge badge-primary-custom">
-                        {{ announcement.class_id.title }}
+                          {{ announcement.class_id.title }}
                         </span>
-                    {% else %}
+                      {% else %}
                         <span class="badge badge-warning-custom">
-                        <i class="fas fa-globe me-1"></i>All Classes
+                          <i class="fas fa-globe me-1"></i>All Classes
                         </span>
-                    {% endif %}
-                    
-                    {% if announcement.is_pinned %}
+                      {% endif %}
+                      
+                      {% if announcement.is_pinned %}
                         <span class="pin-badge">
-                        <i class="fas fa-thumbtack me-1"></i>Pinned by Teacher
+                          <i class="fas fa-thumbtack me-1"></i>Pinned by Teacher
                         </span>
-                    {% endif %}
+                      {% endif %}
                     </div>
                 </div>
-                </div>
+              </div>
               
               <!-- Action Dropdown -->
               <div class="dropdown">
@@ -156,50 +140,79 @@
               <p class="text-white mb-0" style="white-space: pre-wrap;">{{ announcement.content }}</p>
             </div>
 
-            <!-- Attachments -->
-            {% if announcement.link %}
-              <a href="{{ announcement.link }}" target="_blank" class="link-button mb-2">
-                <i class="fas fa-link"></i>View Link
-              </a>
+            <!-- ✅ NEW: Multiple Links Display -->
+            {% if announcement.links.all %}
+              <div class="announcement-links">
+                {% for link in announcement.links.all %}
+                  <a href="{{ link.url }}" target="_blank" class="announcement-link-item">
+                    <div class="announcement-link-info">
+                      <i class="fas fa-link link-icon"></i>
+                      <div class="link-text">
+                        <div class="link-title">{{ link.title|default:link.url }}</div>
+                        <div class="link-url">{{ link.url|truncatechars:50 }}</div>
+                      </div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color: white;"></i>
+                  </a>
+                {% endfor %}
+              </div>
             {% endif %}
             
+            <!-- ✅ NEW: Multiple Files Display -->
+            {% if announcement.files.all %}
+              <div class="announcement-files">
+                {% for file in announcement.files.all %}
+                  <a href="{{ file.file.url }}" download class="announcement-file-item">
+                    <div class="announcement-file-info">
+                      <i class="fas fa-file-alt file-icon-large"></i>
+                      <div class="file-details">
+                        <div class="file-name-display">{{ file.file_name }}</div>
+                        <div class="file-size-display">{{ file.get_file_size_display }}</div>
+                      </div>
+                    </div>
+                    <i class="fas fa-download download-icon"></i>
+                  </a>
+                {% endfor %}
+              </div>
+            {% endif %}
+            
+            <!-- Keep existing single image and video display -->
             {% if announcement.image %}
-              <img src="{{ announcement.image.url }}" alt="Announcement Image" class="attachment-preview">
+              <div class="image-container">
+                <img src="{{ announcement.image.url }}" alt="Announcement Image" class="media-attachment">
+              </div>
             {% endif %}
             
             {% if announcement.video %}
-              <video controls class="attachment-preview">
-                <source src="{{ announcement.video.url }}" type="video/mp4">
-                Your browser does not support video playback.
-              </video>
-            {% endif %}
-            
-            {% if announcement.file %}
-              <div class="file-attachment-alert">
-                <i class="fas fa-file-alt"></i>
-                <a href="{{ announcement.file.url }}" download>
-                  {{ announcement.file.name|slice:"30:" }}
-                </a>
+              <div class="video-container">
+                <video controls class="media-attachment">
+                  <source src="{{ announcement.video.url }}" type="video/mp4">
+                  Your browser does not support video playback.
+                </video>
               </div>
             {% endif %}
 
-            <!-- Reactions & Comments Bar -->
+            <!-- ✅ NEW: Reactions & Comments Bar with Hover -->
             <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top-custom">
-              <div class="d-flex gap-3">
-                <!-- React Button with Picker -->
-                <div class="position-relative">
+              <div class="d-flex gap-3 align-items-center">
+                <!-- ✅ NEW: React Button with Hover Picker -->
+                <div class="reaction-wrapper">
                   <button class="btn reaction-btn {% if announcement.user_reaction %}active{% endif %}" 
-                          onclick="toggleReactionPicker({{ announcement.announcement_id }})">
+                          onclick="toggleReactionPicker({{ announcement.announcement_id }})"
+                          onmouseenter="showReactionPickerOnHover({{ announcement.announcement_id }})"
+                          onmouseleave="hideReactionPickerOnHover({{ announcement.announcement_id }})">
                     {% if announcement.user_reaction %}
                       {{ announcement.user_reaction.get_reaction_type_display }}
                     {% else %}
                       <i class="fas fa-thumbs-up me-1"></i>React
                     {% endif %}
-                    <span class="ms-1">{{ announcement.total_reactions }}</span>
                   </button>
                   
                   <!-- Reaction Picker -->
-                  <div id="reactionPicker-{{ announcement.announcement_id }}" class="reaction-picker">
+                  <div id="reactionPicker-{{ announcement.announcement_id }}" 
+                       class="reaction-picker"
+                       onmouseenter="keepReactionPickerOpen({{ announcement.announcement_id }})"
+                       onmouseleave="hideReactionPickerOnHover({{ announcement.announcement_id }})">
                     <span class="reaction-option" onclick="reactToAnnouncement({{ announcement.announcement_id }}, 'like')" title="Like">👍</span>
                     <span class="reaction-option" onclick="reactToAnnouncement({{ announcement.announcement_id }}, 'love')" title="Love">❤️</span>
                     <span class="reaction-option" onclick="reactToAnnouncement({{ announcement.announcement_id }}, 'celebrate')" title="Celebrate">🎉</span>
@@ -207,6 +220,27 @@
                     <span class="reaction-option" onclick="reactToAnnouncement({{ announcement.announcement_id }}, 'curious')" title="Curious">🤔</span>
                   </div>
                 </div>
+                
+                <!-- ✅ NEW: Reaction Summary Display -->
+                {% if announcement.total_reactions > 0 %}
+                  <button class="reaction-summary-btn" onclick="showReactionModal({{ announcement.announcement_id }})">
+                    <div class="reaction-avatars">
+                      {% for reaction in announcement.recent_reactions|slice:":3" %}
+                        <img src="{% if reaction.user.user_image %}{{ reaction.user.user_image.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}" 
+                             alt="{{ reaction.user.first_name }}" 
+                             class="reaction-avatar"
+                             title="{{ reaction.user.first_name }} {{ reaction.user.last_name }}">
+                      {% endfor %}
+                    </div>
+                    <span class="reaction-count">
+                      {% if announcement.total_reactions > 3 %}
+                        +{{ announcement.total_reactions|add:"-3" }} others
+                      {% else %}
+                        {{ announcement.total_reactions }} reaction{{ announcement.total_reactions|pluralize }}
+                      {% endif %}
+                    </span>
+                  </button>
+                {% endif %}
                 
                 <button class="btn reaction-btn" onclick="showComments({{ announcement.announcement_id }})">
                   <i class="fas fa-comment me-1"></i>Comment
@@ -258,7 +292,7 @@
         </button>
       </div>
 
-      <form id="createAnnouncementForm" method="POST" action="{% url 'announcement:create' %}" enctype="multipart/form-data">
+      <form id="createAnnouncementForm" method="POST" action="{% url 'announcement:create' %}" enctype="multipart/form-data" onsubmit="return submitAnnouncementForm(event, 'create')">
         {% csrf_token %}
         
         <!-- Class Selection -->
@@ -286,34 +320,77 @@
                     placeholder="What would you like to share?"></textarea>
         </div>
 
-        <!-- Link -->
+        <!-- ✅ NEW: Multiple Links Section -->
         <div class="mb-3">
-          <label class="form-label text-white">Link (Optional)</label>
-          <input type="url" name="link" class="form-control form-control-custom"
-                 placeholder="https://example.com">
+          <label class="form-label text-white">Links (Multiple)</label>
+          <div class="link-input-section">
+            <div class="row g-2 mb-2">
+              <div class="col-12 col-md-7">
+                <input type="url" id="linkUrl" class="form-control form-control-custom" 
+                       placeholder="https://example.com">
+              </div>
+              <div class="col-12 col-md-3">
+                <input type="text" id="linkTitle" class="form-control form-control-custom" 
+                       placeholder="Link title (optional)">
+              </div>
+              <div class="col-12 col-md-2">
+                <button type="button" class="btn add-link-btn w-100" onclick="addLink('create')">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Links List -->
+            <div id="linksList">
+              <p class="text-muted small mb-0">No links added yet</p>
+            </div>
+          </div>
         </div>
 
-        <!-- File Attachments -->
+        <!-- ✅ NEW: File Attachments with Multiple Files -->
         <div class="mb-3">
           <label class="form-label text-white">Attachments (Optional)</label>
-          <div class="row g-2">
-            <div class="col-12 col-md-4">
-              <label class="btn btn-outline-secondary w-100">
-                <i class="fas fa-image me-2"></i>Image
-                <input type="file" name="image" accept="image/*" class="d-none">
-              </label>
+          
+          <!-- Single Image -->
+          <div class="mb-2">
+            <label class="btn btn-outline-secondary w-100 file-upload-btn">
+              <i class="fas fa-image me-2"></i>Image (Single)
+              <input type="file" name="image" accept="image/*" class="d-none">
+            </label>
+          </div>
+          
+          <!-- Single Video -->
+          <div class="mb-2">
+            <label class="btn btn-outline-secondary w-100 file-upload-btn">
+              <i class="fas fa-video me-2"></i>Video (Single)
+              <input type="file" name="video" accept="video/*" class="d-none">
+            </label>
+          </div>
+          
+          <!-- Multiple Files -->
+          <div class="mb-2">
+            <label for="multiFileInput" class="multi-file-upload-btn d-block">
+              <i class="fas fa-file me-2"></i>
+              <span>Upload Files (Multiple)</span>
+              <br>
+              <small>Click to select multiple files</small>
+            </label>
+            <input type="file" id="multiFileInput" name="files" multiple class="d-none">
+          </div>
+          
+          <!-- Selected Files Display -->
+          <div id="selectedFilesList"></div>
+        </div>
+
+        <!-- ✅ NEW: Upload Progress Bar -->
+        <div id="uploadProgress" class="upload-progress-container">
+          <div class="progress-wrapper">
+            <div class="progress-bar-custom">
+              <div class="progress-fill" style="width: 0%;"></div>
             </div>
-            <div class="col-12 col-md-4">
-              <label class="btn btn-outline-secondary w-100">
-                <i class="fas fa-video me-2"></i>Video
-                <input type="file" name="video" accept="video/*" class="d-none">
-              </label>
-            </div>
-            <div class="col-12 col-md-4">
-              <label class="btn btn-outline-secondary w-100">
-                <i class="fas fa-file me-2"></i>File
-                <input type="file" name="file" class="d-none">
-              </label>
+            <div class="progress-text">
+              <span class="progress-filename">Uploading...</span>
+              <span class="progress-percentage">0%</span>
             </div>
           </div>
         </div>
@@ -343,7 +420,7 @@
         </button>
       </div>
 
-      <form id="editAnnouncementForm" method="POST" enctype="multipart/form-data">
+      <form id="editAnnouncementForm" method="POST" enctype="multipart/form-data" onsubmit="return submitAnnouncementForm(event, 'edit')">
         {% csrf_token %}
         <input type="hidden" id="edit_announcement_id" name="announcement_id">
         
@@ -372,39 +449,69 @@
                     placeholder="What would you like to share?"></textarea>
         </div>
 
-        <!-- Link -->
+        <!-- ✅ NEW: Multiple Links Section -->
         <div class="mb-3">
-          <label class="form-label text-white">Link (Optional)</label>
-          <input type="url" name="link" id="edit_link" class="form-control form-control-custom"
-                 placeholder="https://example.com">
+          <label class="form-label text-white">Links (Multiple)</label>
+          <div class="link-input-section">
+            <div class="row g-2 mb-2">
+              <div class="col-12 col-md-7">
+                <input type="url" id="editLinkUrl" class="form-control form-control-custom" 
+                       placeholder="https://example.com">
+              </div>
+              <div class="col-12 col-md-3">
+                <input type="text" id="editLinkTitle" class="form-control form-control-custom" 
+                       placeholder="Link title (optional)">
+              </div>
+              <div class="col-12 col-md-2">
+                <button type="button" class="btn add-link-btn w-100" onclick="addLink('edit')">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Links List -->
+            <div id="editLinksList">
+              <p class="text-muted small mb-0">No links added yet</p>
+            </div>
+          </div>
         </div>
 
         <!-- Current Attachments Display -->
         <div id="currentAttachments" class="mb-3"></div>
 
-        <!-- File Attachments -->
+        <!-- ✅ NEW: File Attachments with Multiple Files -->
         <div class="mb-3">
           <label class="form-label text-white">Replace Attachments (Optional)</label>
-          <div class="row g-2">
-            <div class="col-12 col-md-4">
-              <label class="btn btn-outline-secondary w-100">
-                <i class="fas fa-image me-2"></i>Image
-                <input type="file" name="image" accept="image/*" class="d-none">
-              </label>
-            </div>
-            <div class="col-12 col-md-4">
-              <label class="btn btn-outline-secondary w-100">
-                <i class="fas fa-video me-2"></i>Video
-                <input type="file" name="video" accept="video/*" class="d-none">
-              </label>
-            </div>
-            <div class="col-12 col-md-4">
-              <label class="btn btn-outline-secondary w-100">
-                <i class="fas fa-file me-2"></i>File
-                <input type="file" name="file" class="d-none">
-              </label>
-            </div>
+          
+          <!-- Single Image -->
+          <div class="mb-2">
+            <label class="btn btn-outline-secondary w-100 file-upload-btn">
+              <i class="fas fa-image me-2"></i>Image (Single)
+              <input type="file" name="image" accept="image/*" class="d-none">
+            </label>
           </div>
+          
+          <!-- Single Video -->
+          <div class="mb-2">
+            <label class="btn btn-outline-secondary w-100 file-upload-btn">
+              <i class="fas fa-video me-2"></i>Video (Single)
+              <input type="file" name="video" accept="video/*" class="d-none">
+            </label>
+          </div>
+          
+          <!-- Multiple Files -->
+          <div class="mb-2">
+            <label for="editMultiFileInput" class="multi-file-upload-btn d-block">
+              <i class="fas fa-file me-2"></i>
+              <span>Upload Files (Multiple)</span>
+              <br>
+              <small>Click to select multiple files</small>
+            </label>
+            <input type="file" id="editMultiFileInput" name="files" multiple class="d-none">
+          </div>
+          
+          <!-- Selected Files Display -->
+          <div id="editSelectedFilesList"></div>
         </div>
 
         <!-- Buttons -->
@@ -469,60 +576,6 @@
 
 <!-- Link external JavaScript -->
 <script src="{% static 'js/announcement.js' %}"></script>
-
-<!-- Pure JavaScript Dropdown Toggle -->
-<script>
-function toggleAnnouncementDropdown(event, announcementId) {
-  event.preventDefault();
-  event.stopPropagation();
-  
-  const menu = document.getElementById('dropdownMenu' + announcementId);
-  const button = document.getElementById('dropdownMenuButton' + announcementId);
-  
-  if (!menu) {
-    console.error('Dropdown menu not found:', 'dropdownMenu' + announcementId);
-    return;
-  }
-  
-  const isOpen = menu.classList.contains('show');
-  
-  // Close all other dropdowns
-  document.querySelectorAll('.dropdown-menu').forEach(m => {
-    if (m.id !== 'dropdownMenu' + announcementId) {
-      m.classList.remove('show');
-      const btn = m.previousElementSibling;
-      if (btn) btn.setAttribute('aria-expanded', 'false');
-    }
-  });
-  
-  // Toggle current dropdown
-  if (isOpen) {
-    menu.classList.remove('show');
-    button.setAttribute('aria-expanded', 'false');
-  } else {
-    menu.classList.add('show');
-    button.setAttribute('aria-expanded', 'true');
-  }
-}
-
-// Close all dropdowns when clicking outside
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.dropdown')) {
-    document.querySelectorAll('.dropdown-menu').forEach(menu => {
-      menu.classList.remove('show');
-      const button = menu.previousElementSibling;
-      if (button) button.setAttribute('aria-expanded', 'false');
-    });
-  }
-});
-
-// Prevent dropdown from closing when clicking inside menu
-document.addEventListener('click', function(e) {
-  if (e.target.closest('.dropdown-menu')) {
-    e.stopPropagation();
-  }
-});
-</script>
 
 {% include "partials/scripts.html" %}
 {% endblock %}

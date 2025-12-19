@@ -16,4 +16,5 @@ urlpatterns = [
     path('<int:announcement_id>/report/', views.report_announcement, name='report'),
     path('<int:announcement_id>/teacher-pin/', views.toggle_teacher_pin, name='teacher_pin'),
     path('<int:announcement_id>/edit/', views.edit_announcement, name='edit'),
+    path('file/<int:file_id>/delete/', views.delete_file, name='delete_file'),
 ]

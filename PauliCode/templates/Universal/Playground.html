@@ -854,6 +854,108 @@ body {
     opacity: 0;
   }
 }
+
+/* ========== STUDY RESOURCES STYLES ========== */
+
+.resource-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent !important;
+  padding: 0.75rem !important;
+  margin-bottom: 0.5rem !important;
+  font-size: 0.85rem;
+}
+
+.resource-card h6 {
+  font-size: 0.8rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.resource-card p {
+  font-size: 0.75rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.resource-card:hover {
+  transform: translateX(4px);
+  border-left-color: #10b981 !important;
+  background-color: #1e293b !important;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2) !important;
+}
+
+.resources-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.resources-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.resources-container::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 3px;
+}
+
+.resources-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+.files-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.files-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.files-list::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 3px;
+}
+
+.files-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+.file-item {
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  padding: 0.5rem !important;
+}
+
+.file-item:hover {
+  border-color: #334155;
+  transform: translateX(2px);
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .resource-card {
+    padding: 0.5rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+  
+  .resources-container {
+    max-height: 400px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .resource-card {
+    padding: 0.5rem !important;
+    font-size: 0.75rem;
+  }
+  
+  .resource-card h6 {
+    font-size: 0.7rem !important;
+  }
+}
 </style>
 
 <div class="g-sidenav-show text-white">
@@ -863,10 +965,62 @@ body {
    
 
     <div class="container-fluid mb-5">
-      <div class="row">
+      <div class="row g-4">
 
-        <!-- Code Editor Panel (Full Width) -->
-        <div class="col-md-12">
+        <!-- Study Resources Section (Left - Smaller) -->
+        <div class="col-lg-3 col-md-12">
+          <div class="card border-0 shadow-sm rounded-4 p-3" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-left: 4px solid #10b981 !important; height: 100%; max-height: 800px; display: flex; flex-direction: column;">
+            <div class="mb-3">
+              <h6 class="fw-bold text-white d-flex align-items-center mb-2">
+                <i class="fas fa-folder-open me-2" style="color: #10b981; font-size: 1.1rem;"></i>
+                Study Resources
+              </h6>
+              <span class="badge px-2 py-1" style="background-color: rgba(16, 185, 129, 0.2); color: #34d399; font-size: 0.7rem;">
+                <i class="fas fa-file me-1"></i><span id="resourceCount">0</span>
+              </span>
+            </div>
+
+            <!-- Class Filter -->
+            <div class="mb-3">
+              <label class="text-white-50 small mb-1 d-block">Filter</label>
+              <select id="classFilter" class="form-select text-white" 
+                      style="background-color: #0f172a; border: 1px solid #334155; height: 36px; font-size: 0.85rem;" 
+                      onchange="filterResourcesByClass()">
+                <option value="">All Classes</option>
+                {% for class in user_classes %}
+                  <option value="{{ class.class_id }}">{{ class.title }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Resource Search -->
+            <div class="mb-3">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-dark border-0" style="color: #64748b; font-size: 0.85rem;">
+                  <i class="fas fa-search fa-sm"></i>
+                </span>
+                <input type="text" id="resourceSearch" 
+                      class="form-control text-white border-0"
+                      placeholder="Search..."
+                      style="background-color: #0f172a; height: 36px; font-size: 0.85rem;"
+                      oninput="filterResources()">
+              </div>
+            </div>
+
+            <!-- Resources Grid -->
+            <div class="resources-container rounded-3 p-2" style="background-color: #0f172a; flex: 1; overflow-y: auto; min-height: 200px;">
+              <div id="resourcesList">
+                <div class="text-center text-muted py-4">
+                  <i class="fas fa-folder-open fa-2x mb-2 opacity-50" style="color: #64748b;"></i>
+                  <p class="mb-0 small">Loading...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Code Editor Panel (Right - Larger) -->
+        <div class="col-lg-9 col-md-12">
           <div class="card" style="max-height: 800px; overflow: hidden;">
             <div class="card-header p-2">
               <i class="fas fa-edit"></i> Code Editor
@@ -899,6 +1053,38 @@ if __name__ == "__main__":
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- Resource Details Modal -->
+    <div class="modal fade" id="resourceDetailsModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content text-white" style="background-color: #1e293b; border: 2px solid #10b981; border-radius: 15px;">
+          <div class="modal-header" style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+            <h4 class="fw-bold text-white d-flex align-items-center">
+              <i class="fas fa-folder-open me-2" style="color: #10b981;"></i>
+              <span id="modalResourceTitle"></span>
+            </h4>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body px-4">
+            <div class="mb-3">
+              <label class="text-white-50 small mb-2 d-block">From Class:</label>
+              <p class="text-white" id="modalResourceClass"></p>
+            </div>
+            <div class="mb-3">
+              <label class="text-white-50 small mb-2 d-block">Files in this resource:</label>
+              <div id="modalResourceFilesList" class="files-list rounded-2 p-3" style="background-color: #0f172a; max-height: 300px; overflow-y: auto;">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" style="border-top: 1px solid rgba(100, 116, 139, 0.3);">
+            <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-success px-4" onclick="downloadAllResourceFiles()">
+              <i class="fas fa-download me-1"></i>Download All
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1496,7 +1682,197 @@ window.addEventListener("DOMContentLoaded", async () => {
     sessionStorage.setItem('last_date', today);
     sessionStorage.removeItem('limit_warning_shown_today');
   }
+  
+  // Load resources on page load
+  loadStudyResources();
 });
+
+// ============================================
+// STUDY RESOURCES FUNCTIONS
+// ============================================
+
+let allResources = [];
+let currentResourceGroup = null;
+
+async function loadStudyResources() {
+  try {
+    const response = await fetch('{% url "get_playground_resources" %}');
+    const data = await response.json();
+    
+    if (data.success) {
+      allResources = data.resources;
+      displayResources(allResources);
+      document.getElementById('resourceCount').textContent = allResources.length;
+    } else {
+      document.getElementById('resourcesList').innerHTML = `
+        <div class="text-center text-muted py-5">
+          <i class="fas fa-exclamation-circle fa-3x mb-3" style="color: #ef4444;"></i>
+          <p class="mb-0">Error loading resources</p>
+        </div>
+      `;
+    }
+  } catch (error) {
+    console.error('Error loading resources:', error);
+    document.getElementById('resourcesList').innerHTML = `
+      <div class="text-center text-muted py-5">
+        <i class="fas fa-exclamation-circle fa-3x mb-3" style="color: #ef4444;"></i>
+        <p class="mb-0">Failed to load resources</p>
+      </div>
+    `;
+  }
+}
+
+function displayResources(resources) {
+  const container = document.getElementById('resourcesList');
+  
+  if (!resources || resources.length === 0) {
+    container.innerHTML = `
+      <div class="text-center text-muted py-3">
+        <i class="fas fa-folder-open fa-2x mb-2 opacity-50" style="color: #64748b;"></i>
+        <p class="mb-0 small">No resources</p>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = '';
+  
+  resources.forEach(resource => {
+    const resourceCard = document.createElement('div');
+    resourceCard.className = 'resource-card rounded-2';
+    resourceCard.style.cssText = 'background-color: #1a293b; border: 1px solid #334155; cursor: pointer; transition: all 0.2s;';
+    
+    const fileCount = resource.files ? resource.files.length : 0;
+    const fileIcon = getFileIcon(resource.file_extension);
+    
+    resourceCard.innerHTML = `
+      <div>
+        <div class="d-flex align-items-start gap-2 mb-1">
+          <i class="fas ${fileIcon}" style="color: #10b981; font-size: 0.9rem; min-width: 14px; margin-top: 2px;"></i>
+          <div style="min-width: 0; flex: 1;">
+            <h6 class="fw-bold text-white mb-0" title="${resource.title}" style="font-size: 0.8rem; word-break: break-word;">${resource.title}</h6>
+          </div>
+        </div>
+        <div class="d-flex gap-1 align-items-center flex-wrap">
+          <span class="badge" style="background-color: rgba(16, 185, 129, 0.2); color: #34d399; font-size: 0.65rem; padding: 0.25rem 0.5rem;">
+            <i class="fas fa-book" style="font-size: 0.6rem;"></i> ${resource.class_title.length > 10 ? resource.class_title.substring(0, 10) + '...' : resource.class_title}
+          </span>
+          <span class="badge" style="background-color: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 0.65rem; padding: 0.25rem 0.5rem;">
+            ${fileCount} file${fileCount !== 1 ? 's' : ''}
+          </span>
+        </div>
+      </div>
+    `;
+    
+    resourceCard.addEventListener('click', () => viewResourceDetails(resource));
+    container.appendChild(resourceCard);
+  });
+}
+
+function getFileIcon(extension) {
+  const iconMap = {
+    'pdf': 'fa-file-pdf',
+    'png': 'fa-file-image',
+    'jpg': 'fa-file-image',
+    'jpeg': 'fa-file-image',
+    'docx': 'fa-file-word',
+    'doc': 'fa-file-word',
+    'pptx': 'fa-file-powerpoint',
+    'ppt': 'fa-file-powerpoint',
+    'zip': 'fa-file-archive',
+    'txt': 'fa-file-alt',
+    'mp4': 'fa-file-video',
+    'mp3': 'fa-file-audio',
+    'xls': 'fa-file-excel',
+    'xlsx': 'fa-file-excel'
+  };
+  return iconMap[extension] || 'fa-file';
+}
+
+function filterResourcesByClass() {
+  const classFilter = document.getElementById('classFilter').value;
+  const searchTerm = document.getElementById('resourceSearch').value.toLowerCase();
+  
+  let filtered = allResources;
+  
+  if (classFilter) {
+    filtered = filtered.filter(r => r.class_id === parseInt(classFilter));
+  }
+  
+  if (searchTerm) {
+    filtered = filtered.filter(r => 
+      r.title.toLowerCase().includes(searchTerm) || 
+      r.description.toLowerCase().includes(searchTerm)
+    );
+  }
+  
+  displayResources(filtered);
+}
+
+function filterResources() {
+  filterResourcesByClass();
+}
+
+function viewResourceDetails(resource) {
+  currentResourceGroup = resource;
+  
+  document.getElementById('modalResourceTitle').textContent = resource.title;
+  document.getElementById('modalResourceClass').textContent = resource.class_title;
+  
+  const filesList = document.getElementById('modalResourceFilesList');
+  filesList.innerHTML = '';
+  
+  if (!resource.files || resource.files.length === 0) {
+    filesList.innerHTML = '<div class="text-white-50 text-center p-4">No files available</div>';
+  } else {
+    resource.files.forEach(file => {
+      const fileItem = document.createElement('div');
+      fileItem.className = 'file-item d-flex align-items-center justify-content-between p-3 rounded-2 mb-2';
+      fileItem.style.backgroundColor = '#0f172a';
+      
+      const ext = file.file_extension || '';
+      const iconClass = getFileIcon(ext);
+      
+      fileItem.innerHTML = `
+        <div class="d-flex align-items-center gap-3 flex-grow-1">
+          <i class="fas ${iconClass} fa-lg" style="color: #10b981;"></i>
+          <div style="min-width: 0;">
+            <div class="text-white fw-semibold text-truncate">${file.original_filename || 'Unknown file'}</div>
+            <small class="text-white-50">${file.file_size || 'Unknown size'} • ${new Date(file.uploaded_at).toLocaleDateString()}</small>
+          </div>
+        </div>
+        <div class="d-flex gap-2 ms-2">
+          <a href="${file.file_url}" target="_blank" class="btn btn-sm btn-outline-success" title="Download">
+            <i class="fas fa-download"></i>
+          </a>
+          <a href="${file.file_url}" target="_blank" class="btn btn-sm btn-outline-info" title="View">
+            <i class="fas fa-eye"></i>
+          </a>
+        </div>
+      `;
+      
+      filesList.appendChild(fileItem);
+    });
+  }
+  
+  const modal = new bootstrap.Modal(document.getElementById('resourceDetailsModal'));
+  modal.show();
+}
+
+function downloadAllResourceFiles() {
+  if (!currentResourceGroup || !currentResourceGroup.files) return;
+  
+  currentResourceGroup.files.forEach((file, index) => {
+    setTimeout(() => {
+      const link = document.createElement('a');
+      link.href = file.file_url;
+      link.download = file.original_filename;
+      link.target = '_blank';
+      link.click();
+    }, index * 500);
+  });
+}
+
 </script>
 
 {% include "partials/scripts.html" %}

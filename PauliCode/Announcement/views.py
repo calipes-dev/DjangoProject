@@ -1,4 +1,3 @@
-# Announcement/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -6,7 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.db.models import Q, Count, Exists, OuterRef
 from User.models import User, Class, Enrollment
-from .models import Announcement, AnnouncementReaction, AnnouncementComment, AnnouncementPin, AnnouncementReport
+from .models import (Announcement, AnnouncementReaction, AnnouncementComment, 
+                     AnnouncementPin, AnnouncementReport, AnnouncementFile, AnnouncementLink)
 import json
 
 
@@ -17,61 +17,44 @@ def announcement_board(request):
     
     # Get classes based on user type
     if user.user_type == 'Teacher':
-        # Get classes where user is the teacher
         user_classes = Class.objects.filter(teacher=user).order_by('title')
-        
-        # Get announcements from teacher's classes OR posted by this teacher
         announcements = Announcement.objects.filter(
             Q(class_id__in=user_classes) | Q(teacher=user) | Q(class_id__isnull=True, teacher=user)
         ).select_related('teacher', 'class_id').prefetch_related(
-            'reactions', 'comments', 'pins'
+            'reactions', 'comments', 'pins', 'files', 'links'
         ).distinct()
         
     else:  # Student
-        # Get classes where student is enrolled
         user_classes = Class.objects.filter(
             enrollments__student_id=user
         ).distinct().order_by('title')
         
-        # Get enrolled class IDs
         enrolled_class_ids = user_classes.values_list('class_id', flat=True)
-        
-        # Get announcements from:
-        # 1. Classes the student is enrolled in
-        # 2. Announcements posted to "All Classes" (class_id=NULL) by teachers of enrolled classes
         teacher_ids = user_classes.values_list('teacher_id', flat=True).distinct()
         
         announcements = Announcement.objects.filter(
             Q(class_id__in=enrolled_class_ids) | 
             Q(class_id__isnull=True, teacher_id__in=teacher_ids)
         ).select_related('teacher', 'class_id').prefetch_related(
-            'reactions', 'comments', 'pins'
+            'reactions', 'comments', 'pins', 'files', 'links'
         ).distinct()
     
-    # ✅ FIX: Filter by class if selected - ONLY show announcements for selected class
+    # Filter by class if selected
     selected_class_id = request.GET.get('class_id', 'all')
     
-    # Convert to int for comparison if not 'all'
     if selected_class_id != 'all':
         try:
             class_id_int = int(selected_class_id)
             
             if user.user_type == 'Teacher':
-                # ✅ STRICT FILTER: Only show announcements for THIS specific class
-                # Do NOT include "All Classes" announcements when a specific class is selected
                 announcements = announcements.filter(class_id__class_id=class_id_int)
-                
-            else:  # Student
-                # Check if student is enrolled in that class
+            else:
                 if user_classes.filter(class_id=class_id_int).exists():
-                    # ✅ STRICT FILTER: Only show announcements for THIS specific class
                     announcements = announcements.filter(class_id__class_id=class_id_int)
                 else:
-                    # Student not enrolled - show no announcements
                     announcements = announcements.none()
                     
         except (ValueError, Class.DoesNotExist):
-            # Invalid class_id - show all announcements
             pass
     
     # Add user-specific data to each announcement
@@ -79,14 +62,13 @@ def announcement_board(request):
         announcement.user_reaction = announcement.reactions.filter(user=user).first()
         announcement.is_pinned_by_user = announcement.pins.filter(user=user).exists()
     
-    # Order by pinned status and date
     announcements = announcements.order_by('-is_pinned', '-created_at')
     
     context = {
         'user': user,
         'announcements': announcements,
         'user_classes': user_classes,
-        'selected_class_id': selected_class_id,  # ✅ Keep as string for template comparison
+        'selected_class_id': selected_class_id,
         'currentpage': 'announcement',
         'sidebar': 'teacher' if user.user_type == 'Teacher' else 'student'
     }
@@ -105,11 +87,10 @@ def create_announcement(request):
         title = request.POST.get('title', '').strip()
         content = request.POST.get('content', '').strip()
         class_id = request.POST.get('class_id', '').strip()
-        link = request.POST.get('link', '').strip()
         
+        # Get single attachments
         image = request.FILES.get('image')
         video = request.FILES.get('video')
-        file = request.FILES.get('file')
         
         # Validation
         if not title or not content:
@@ -131,11 +112,33 @@ def create_announcement(request):
             class_id=class_obj,
             title=title,
             content=content,
-            link=link if link else None,
             image=image,
-            video=video,
-            file=file
+            video=video
         )
+        
+        # Handle multiple files
+        files = request.FILES.getlist('files')
+        for file in files:
+            AnnouncementFile.objects.create(
+                announcement=announcement,
+                file=file,
+                file_name=file.name,
+                file_size=file.size
+            )
+        
+        # Handle multiple links
+        links_data = request.POST.get('links_json', '[]')
+        try:
+            links = json.loads(links_data)
+            for link_item in links:
+                if link_item.get('url'):
+                    AnnouncementLink.objects.create(
+                        announcement=announcement,
+                        url=link_item['url'],
+                        title=link_item.get('title', '')
+                    )
+        except json.JSONDecodeError:
+            pass
         
         messages.success(request, "Announcement posted successfully!")
         return redirect('announcement:board')
@@ -305,7 +308,7 @@ def toggle_pin(request, announcement_id):
 @login_required(login_url='index')
 @csrf_exempt
 def delete_announcement(request, announcement_id):
-    """Delete an announcement (teacher only)"""
+    """Delete an announcement (teacher only) - also deletes all related files"""
     if request.method != 'POST':
         return JsonResponse({'error': 'Invalid method'}, status=400)
     
@@ -315,21 +318,38 @@ def delete_announcement(request, announcement_id):
         if announcement.teacher != request.user:
             return JsonResponse({'error': 'Permission denied'}, status=403)
         
+        # Get all associated files before deletion
+        associated_files = announcement.files.all()
+        file_count = associated_files.count()
+        
+        # Delete associated files from storage and database (cascade handles DB deletion)
+        for file_obj in associated_files:
+            if file_obj.file:
+                # Delete the file from storage
+                if file_obj.file.storage.exists(file_obj.file.name):
+                    file_obj.file.delete(save=False)
+        
+        # Delete the announcement (cascade will delete related AnnouncementFile, AnnouncementLink, etc.)
         announcement.delete()
         
-        return JsonResponse({'success': True})
+        return JsonResponse({
+            'success': True, 
+            'message': f'Announcement deleted successfully with {file_count} attached files'
+        })
     
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         return JsonResponse({'error': str(e)}, status=500)
 
 
 @login_required(login_url='index')
 def get_announcement_details(request, announcement_id):
-    """Get full announcement details with comments"""
+    """Get full announcement details with comments and reactions"""
     try:
         announcement = get_object_or_404(
             Announcement.objects.select_related('teacher', 'class_id')
-            .prefetch_related('comments__user', 'reactions'),
+            .prefetch_related('comments__user', 'reactions__user', 'files', 'links'),
             announcement_id=announcement_id
         )
         
@@ -344,14 +364,46 @@ def get_announcement_details(request, announcement_id):
         
         # Group reactions by type
         reactions_by_type = {}
-        for reaction in announcement.reactions.all():
+        for reaction in announcement.reactions.select_related('user').all():
             if reaction.reaction_type not in reactions_by_type:
                 reactions_by_type[reaction.reaction_type] = []
+            
+            user_image_url = None
+            if reaction.user.user_image:
+                if hasattr(reaction.user.user_image, 'url'):
+                    user_image_url = reaction.user.user_image.url
+            
             reactions_by_type[reaction.reaction_type].append({
-                'user_name': f"{reaction.user.first_name} {reaction.user.last_name}"
+                'user_name': f"{reaction.user.first_name} {reaction.user.last_name}",
+                'user_image': user_image_url
             })
         
+        # Get files
+        files = [{
+            'file_id': f.file_id,
+            'file_url': f.file.url,
+            'file_name': f.file_name,
+            'file_size': f.get_file_size_display()
+        } for f in announcement.files.all()]
+        
+        # Get links
+        links = [{
+            'link_id': link.link_id,
+            'url': link.url,
+            'title': link.title
+        } for link in announcement.links.all()]
+        
         user_reaction = announcement.reactions.filter(user=request.user).first()
+        
+        # Get image and video URLs
+        image_url = None
+        video_url = None
+        
+        if announcement.image:
+            image_url = announcement.image.url if hasattr(announcement.image, 'url') else str(announcement.image)
+        
+        if announcement.video:
+            video_url = announcement.video.url if hasattr(announcement.video, 'url') else str(announcement.video)
         
         data = {
             'announcement_id': announcement.announcement_id,
@@ -360,13 +412,12 @@ def get_announcement_details(request, announcement_id):
             'teacher_name': f"{announcement.teacher.first_name} {announcement.teacher.last_name}",
             'teacher_image': announcement.teacher.user_image.url if announcement.teacher.user_image else None,
             'class_name': announcement.class_id.title if announcement.class_id else 'General',
-            'class_id': announcement.class_id.class_id if announcement.class_id else None,  # FIX: Added class_id
+            'class_id': announcement.class_id.class_id if announcement.class_id else None,
             'created_at': announcement.created_at.strftime('%Y-%m-%d %H:%M'),
-            'link': announcement.link,
-            'image': announcement.image.url if announcement.image else None,
-            'video': announcement.video.url if announcement.video else None,
-            'file': announcement.file.url if announcement.file else None,
-            'file_name': announcement.file.name.split('/')[-1] if announcement.file else None,
+            'image': image_url,
+            'video': video_url,
+            'files': files,
+            'links': links,
             'comments': comments,
             'total_reactions': announcement.total_reactions,
             'reactions_by_type': reactions_by_type,
@@ -441,7 +492,6 @@ def edit_announcement(request, announcement_id):
     
     announcement = get_object_or_404(Announcement, announcement_id=announcement_id)
     
-    # Check ownership
     if announcement.teacher != request.user:
         messages.error(request, "You don't have permission to edit this announcement.")
         return redirect('announcement:board')
@@ -450,9 +500,7 @@ def edit_announcement(request, announcement_id):
         title = request.POST.get('title', '').strip()
         content = request.POST.get('content', '').strip()
         class_id = request.POST.get('class_id', '').strip()
-        link = request.POST.get('link', '').strip()
         
-        # Validation
         if not title or not content:
             messages.error(request, "Title and content are required.")
             return redirect('announcement:board')
@@ -470,17 +518,40 @@ def edit_announcement(request, announcement_id):
         announcement.title = title
         announcement.content = content
         announcement.class_id = class_obj
-        announcement.link = link if link else None
         
-        # Handle file uploads
+        # Handle single file uploads
         if 'image' in request.FILES:
             announcement.image = request.FILES['image']
         if 'video' in request.FILES:
             announcement.video = request.FILES['video']
-        if 'file' in request.FILES:
-            announcement.file = request.FILES['file']
         
         announcement.save()
+        
+        # Handle multiple files (append new ones)
+        files = request.FILES.getlist('files')
+        for file in files:
+            AnnouncementFile.objects.create(
+                announcement=announcement,
+                file=file,
+                file_name=file.name,
+                file_size=file.size
+            )
+        
+        # Handle links update
+        links_data = request.POST.get('links_json', '[]')
+        try:
+            links = json.loads(links_data)
+            # Delete existing links and recreate
+            announcement.links.all().delete()
+            for link_item in links:
+                if link_item.get('url'):
+                    AnnouncementLink.objects.create(
+                        announcement=announcement,
+                        url=link_item['url'],
+                        title=link_item.get('title', '')
+                    )
+        except json.JSONDecodeError:
+            pass
         
         messages.success(request, "Announcement updated successfully!")
         return redirect('announcement:board')
@@ -524,6 +595,27 @@ def report_announcement(request, announcement_id):
             'success': True,
             'message': 'Report submitted successfully. We will review it shortly.'
         })
+    
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+
+@login_required(login_url='index')
+@csrf_exempt
+def delete_file(request, file_id):
+    """Delete a specific file attachment"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid method'}, status=400)
+    
+    try:
+        file = get_object_or_404(AnnouncementFile, file_id=file_id)
+        
+        if file.announcement.teacher != request.user:
+            return JsonResponse({'error': 'Permission denied'}, status=403)
+        
+        file.delete()
+        
+        return JsonResponse({'success': True})
     
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)

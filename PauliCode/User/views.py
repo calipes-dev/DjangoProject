@@ -1940,9 +1940,16 @@ def code_testing_playground(request):
         return redirect('index')
 
     user = get_object_or_404(User, school_id=school_id)
+    
+    # Get classes for the user
+    if user.user_type.lower() == 'teacher':
+        user_classes = Class.objects.filter(teacher=user)
+    else:
+        user_classes = Class.objects.filter(enrollments__student_id=user).distinct()
 
     context = {
         'user': user,
+        'user_classes': user_classes,
         'nav': 'Playground',
         'currentpage': 'Playground',
     }
@@ -1953,6 +1960,62 @@ def code_testing_playground(request):
         return render(request, 'Universal/Playground.html', {**context, 'sidebar': 'student'})
 
 
+def get_playground_resources(request):
+    """API endpoint to get study resources for the playground"""
+    school_id = request.session.get('school_id')
+    if not school_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=401)
+    
+    try:
+        user = get_object_or_404(User, school_id=school_id)
+        
+        # Get classes the user is enrolled in/teaching
+        if user.user_type.lower() == 'teacher':
+            user_classes = Class.objects.filter(teacher=user)
+        else:
+            user_classes = Class.objects.filter(enrollments__student_id=user).distinct()
+        
+        # Get all resources for these classes
+        resources = ProblemResource.objects.filter(
+            problem__class_id__in=user_classes
+        ).select_related('problem').order_by('-uploaded_at')
+        
+        # Group resources by title
+        grouped_resources = {}
+        for resource in resources:
+            title = resource.title
+            if title not in grouped_resources:
+                grouped_resources[title] = {
+                    'resource_id': resource.resource_id,
+                    'title': resource.title,
+                    'description': resource.description,
+                    'class_id': resource.problem.class_id.class_id,
+                    'class_title': resource.problem.class_id.title,
+                    'uploaded_at': resource.uploaded_at.isoformat(),
+                    'file_extension': resource.file_extension,
+                    'files': []
+                }
+            
+            grouped_resources[title]['files'].append({
+                'resource_id': resource.resource_id,
+                'original_filename': resource.original_filename,
+                'file_url': resource.file.url,
+                'file_size': resource.file_size,
+                'file_extension': resource.file_extension,
+                'uploaded_at': resource.uploaded_at.isoformat()
+            })
+        
+        # Convert to list
+        resources_list = list(grouped_resources.values())
+        
+        return JsonResponse({
+            'success': True,
+            'resources': resources_list,
+            'count': len(resources_list)
+        })
+    
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
 @csrf_exempt

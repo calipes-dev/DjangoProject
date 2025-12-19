@@ -57,6 +57,7 @@ urlpatterns = [
     #--------------Universal---------------#
     path('code-playground/', views.code_testing_playground, name='code_testing_playground'),
     path('run-test-code/', views.run_test_code, name='run_test_code'),
+    path('api/playground-resources/', views.get_playground_resources, name='get_playground_resources'),
     path('leaderboard/', views.leaderboard, name='leaderboard'),
     path('api/leaderboard-data/', views.leaderboard_data_api, name='leaderboard_data_api'),
     path('api/student/total-exp/', views.get_student_total_exp, name='get_student_total_exp'),

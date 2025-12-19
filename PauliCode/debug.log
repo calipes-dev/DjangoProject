@@ -1,0 +1,409 @@
+Watching for file changes with StatReloader
+"GET /announcements/ HTTP/1.1" 200 43748
+"GET /static/js/announcement.js HTTP/1.1" 200 20641
+"GET /static/css/announcement.css HTTP/1.1" 200 9430
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 200 280985
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 200 1629875
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 200 28394433
+- Broken pipe from ('127.0.0.1', 20930)
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /announcements/ HTTP/1.1" 200 42791
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 200 15538
+"GET /static/js/announcement.js HTTP/1.1" 200 29069
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 200 28394433
+"GET /announcements/ HTTP/1.1" 200 51080
+"GET /static/css/announcement.css HTTP/1.1" 200 15538
+"GET /static/js/announcement.js HTTP/1.1" 200 29069
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 200 280985
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 200 1629875
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 200 28394433
+"POST /announcements/9/react/ HTTP/1.1" 200 83
+"GET /announcements/ HTTP/1.1" 200 51472
+- Broken pipe from ('127.0.0.1', 16148)
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 200 28394433
+"GET /announcements/9/details/ HTTP/1.1" 200 568
+"GET /static/img/default-avatar.png HTTP/1.1" 404 1825
+"GET /announcements/9/details/ HTTP/1.1" 200 568
+"GET /static/img/default-avatar.png HTTP/1.1" 404 1825
+"GET /announcements/ HTTP/1.1" 200 43183
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"POST /announcements/9/react/ HTTP/1.1" 200 83
+"GET /announcements/ HTTP/1.1" 200 43184
+"GET /announcements/9/details/ HTTP/1.1" 200 605
+"GET /static/img/default-avatar.png HTTP/1.1" 404 1825
+"POST /announcements/9/react/ HTTP/1.1" 200 90
+"GET /announcements/ HTTP/1.1" 200 43184
+"GET /announcements/9/details/ HTTP/1.1" 200 625
+"GET /static/img/default-avatar.png HTTP/1.1" 404 1825
+"GET /announcements/9/details/ HTTP/1.1" 200 625
+"GET /static/img/default-avatar.png HTTP/1.1" 404 1825
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /announcements/ HTTP/1.1" 200 51473
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 200 16433
+"GET /static/js/announcement.js HTTP/1.1" 200 29348
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+"GET /announcements/9/details/ HTTP/1.1" 200 784
+"GET /announcements/ HTTP/1.1" 200 51473
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 200 16160
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+"GET /announcements/ HTTP/1.1" 200 51473
+"GET /static/css/announcement.css HTTP/1.1" 200 16433
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"POST /announcements/create/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 58228
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/announcements/videos/PauliCodeVideo.mp4 HTTP/1.1" 200 373977289
+- Broken pipe from ('127.0.0.1', 35188)
+"GET /static/img/apple-icon.png HTTP/1.1" 404 1813
+"POST /announcements/create/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 64389
+- Broken pipe from ('127.0.0.1', 41049)
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+"GET /media/announcements/videos/PauliCodeVideo.mp4 HTTP/1.1" 200 373977289
+- Broken pipe from ('127.0.0.1', 2379)
+"GET /announcements/11/details/ HTTP/1.1" 200 481
+"POST /announcements/11/edit/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 64390
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /media/announcements/videos/PauliCodeVideo.mp4 HTTP/1.1" 200 373977289
+"POST /announcements/11/edit/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 64390
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /media/announcements/videos/PauliCodeVideo.mp4 HTTP/1.1" 200 373977289
+"GET /announcements/11/details/ HTTP/1.1" 200 481
+- Broken pipe from ('127.0.0.1', 39435)
+"POST /announcements/11/edit/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 64390
+- Broken pipe from ('127.0.0.1', 25612)
+- Broken pipe from ('127.0.0.1', 6306)
+"POST /announcements/11/delete/ HTTP/1.1" 200 17
+"POST /announcements/10/delete/ HTTP/1.1" 200 17
+"POST /announcements/create/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 58507
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\urls.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+"GET /announcements/ HTTP/1.1" 200 48790
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 200 20602
+"GET /static/js/announcement.js HTTP/1.1" 200 41291
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+"GET /announcements/ HTTP/1.1" 200 60227
+"GET /static/css/announcement.css HTTP/1.1" 200 20602
+"GET /static/js/announcement.js HTTP/1.1" 200 41291
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+"POST /announcements/create/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 69506
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"POST /announcements/13/delete/ HTTP/1.1" 200 17
+"POST /announcements/create/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 68909
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/14/details/ HTTP/1.1" 200 1332
+"GET /announcements/12/details/ HTTP/1.1" 200 438
+"POST /announcements/14/delete/ HTTP/1.1" 200 17
+"GET /announcements/9/details/ HTTP/1.1" 200 763
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /announcements/ HTTP/1.1" 200 60227
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 200 41240
+"GET /announcements/9/details/ HTTP/1.1" 200 763
+"POST /announcements/create/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 67991
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /media/announcements/videos/UIRecording.mp4 HTTP/1.1" 304 0
+"GET /announcements/15/details/ HTTP/1.1" 200 566
+"GET /announcements/12/details/ HTTP/1.1" 200 438
+"POST /announcements/12/edit/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 70562
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/ HTTP/1.1" 200 70098
+"GET /static/css/announcement.css HTTP/1.1" 200 20831
+"GET /static/js/announcement.js HTTP/1.1" 200 41358
+"GET /announcements/ HTTP/1.1" 200 70098
+"GET /static/css/announcement.css HTTP/1.1" 200 20799
+"GET /static/js/announcement.js HTTP/1.1" 200 41284
+"GET /announcements/ HTTP/1.1" 200 70098
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/ HTTP/1.1" 200 70098
+"GET /static/css/announcement.css HTTP/1.1" 200 21327
+"GET /static/js/announcement.js HTTP/1.1" 200 41062
+"GET /announcements/ HTTP/1.1" 200 70098
+"GET /static/css/announcement.css HTTP/1.1" 200 21386
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"POST /announcements/create/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 78053
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/16/details/ HTTP/1.1" 200 1178
+"POST /announcements/16/edit/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 77838
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"POST /announcements/9/delete/ HTTP/1.1" 200 87
+"POST /announcements/8/teacher-pin/ HTTP/1.1" 200 36
+"GET /announcements/ HTTP/1.1" 200 70785
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"POST /announcements/16/delete/ HTTP/1.1" 200 87
+"GET /announcements/12/details/ HTTP/1.1" 200 1044
+"GET /announcements/12/details/ HTTP/1.1" 200 1044
+"GET /announcements/12/details/ HTTP/1.1" 200 1044
+"GET /announcements/12/details/ HTTP/1.1" 200 1044
+"POST /announcements/12/edit/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 63969
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /announcements/12/details/ HTTP/1.1" 200 1044
+"GET /announcements/12/details/ HTTP/1.1" 200 1044
+"POST /announcements/12/edit/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 64030
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/15/details/ HTTP/1.1" 200 566
+"GET /announcements/15/details/ HTTP/1.1" 200 566
+"POST /announcements/15/edit/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 64073
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /announcements/ HTTP/1.1" 200 52166
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 200 21386
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"GET /announcements/?class_id=1 HTTP/1.1" 200 44153
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /announcements/?class_id=2 HTTP/1.1" 200 31859
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/?class_id=all HTTP/1.1" 200 52166
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /announcements/12/details/ HTTP/1.1" 200 1101
+"POST /announcements/12/edit/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 64042
+"GET /static/css/announcement.css HTTP/1.1" 200 21386
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"GET /announcements/?class_id=all HTTP/1.1" 200 52135
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/?class_id=2 HTTP/1.1" 200 39589
+"GET /announcements/ HTTP/1.1" 200 64484
+"GET /static/css/announcement.css HTTP/1.1" 200 22643
+"GET /static/js/announcement.js HTTP/1.1" 200 43015
+"GET /announcements/ HTTP/1.1" 200 64484
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/ HTTP/1.1" 200 63578
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"GET /static/css/announcement.css HTTP/1.1" 200 21386
+"GET /announcements/ HTTP/1.1" 200 64757
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/ HTTP/1.1" 200 64757
+"GET /announcements/ HTTP/1.1" 200 64832
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /dashboard/ HTTP/1.1" 200 76114
+"GET /dashboard/ HTTP/1.1" 200 76114
+"GET /MyClasses/ HTTP/1.1" 200 44405
+"GET /MyClasses/ HTTP/1.1" 200 44405
+"GET /announcements/ HTTP/1.1" 200 64832
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /announcements/ HTTP/1.1" 200 64837
+"GET /announcements/ HTTP/1.1" 200 64850
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/ HTTP/1.1" 200 65025
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /announcements/ HTTP/1.1" 200 64857
+"GET /announcements/ HTTP/1.1" 200 64860
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /announcements/ HTTP/1.1" 200 64851
+"POST /announcements/12/react/ HTTP/1.1" 200 83
+"GET /announcements/ HTTP/1.1" 200 65244
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /announcements/12/details/ HTTP/1.1" 200 1233
+"GET /announcements/12/details/ HTTP/1.1" 200 1233
+"GET /announcements/12/details/ HTTP/1.1" 200 1233
+"POST /announcements/12/comment/ HTTP/1.1" 200 257
+"GET /announcements/12/details/ HTTP/1.1" 200 1439
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11612
+"GET /announcements/ HTTP/1.1" 200 65743
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 200 25925
+"GET /announcements/ HTTP/1.1" 200 65244
+"GET /static/css/announcement.css HTTP/1.1" 200 21386
+"GET /announcements/ HTTP/1.1" 200 65244
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /code-playground/ HTTP/1.1" 200 75383
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /code-playground/ HTTP/1.1" 200 87957
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /api/playground-resources/ HTTP/1.1" 200 46
+"GET /code-playground/ HTTP/1.1" 200 88542
+"GET /api/playground-resources/ HTTP/1.1" 200 46
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /announcements/ HTTP/1.1" 200 65244
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 44405
+"GET /MyClasses/ HTTP/1.1" 200 44405
+"GET /class/2/ HTTP/1.1" 200 89971
+"POST /class/2/add-resources/ HTTP/1.1" 302 0
+"GET /class/2/ HTTP/1.1" 200 94869
+"GET /announcements/ HTTP/1.1" 200 65244
+"GET /code-playground/ HTTP/1.1" 200 88542
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /media/problem_resources/M1-MAKEUP-CALIPES.pdf HTTP/1.1" 200 127972
+"GET /code-playground/ HTTP/1.1" 200 88546
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /StudentDashboard/ HTTP/1.1" 200 81793
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /announcements/ HTTP/1.1" 200 53805
+"GET /static/css/announcement.css HTTP/1.1" 200 21386
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /StudentDashboard/ HTTP/1.1" 200 81793
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14463
+"GET / HTTP/1.1" 200 13995
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14454
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 82247
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /announcements/ HTTP/1.1" 200 53805
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /announcements/12/details/ HTTP/1.1" 200 1439
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /announcements/ HTTP/1.1" 200 53805
+"GET /static/css/announcement.css HTTP/1.1" 200 21490
+"POST /announcements/8/react/ HTTP/1.1" 200 86
+"GET /announcements/ HTTP/1.1" 200 54197
+"GET /static/css/announcement.css HTTP/1.1" 200 21490
+"GET /announcements/8/details/ HTTP/1.1" 200 811
+"GET /announcements/8/details/ HTTP/1.1" 200 811
+"GET /StudentDashboard/ HTTP/1.1" 200 81793
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /announcements/ HTTP/1.1" 200 54197
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /StudentDashboard/ HTTP/1.1" 200 81793
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /code-playground/ HTTP/1.1" 200 88546
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+"GET /load-chat-history/ HTTP/1.1" 200 1740
+"GET /load-chat-history/ HTTP/1.1" 200 1740
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+"GET /StudentDashboard/ HTTP/1.1" 200 81793
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /code-playground/ HTTP/1.1" 200 88546
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /code-playground/ HTTP/1.1" 200 88546
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /announcements/ HTTP/1.1" 200 54197
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"GET /announcements/ HTTP/1.1" 200 65636
+"GET /static/css/announcement.css HTTP/1.1" 200 21490
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 304 0
+"POST /announcements/create/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 72245
+"POST /announcements/8/teacher-pin/ HTTP/1.1" 200 37
+"GET /announcements/ HTTP/1.1" 200 71593
+"GET /announcements/8/details/ HTTP/1.1" 200 805
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /announcements/ HTTP/1.1" 200 71593
+Not Found: /media/announcements/files/M1-MAKEUP-CALIPES_ctdO4xN.pdf
+"GET /media/announcements/files/M1-MAKEUP-CALIPES_ctdO4xN.pdf HTTP/1.1" 404 12111
+"GET /announcements/ HTTP/1.1" 200 71593
+"GET /announcements/ HTTP/1.1" 200 59449

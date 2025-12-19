@@ -368,13 +368,17 @@
             Study Area
           {% elif currentpage == 'leaderboard' %}
             Hall of Fame
+           {% elif currentpage == 'announcement' %}
+           <i class="fas fa-circle-exclamation me-2 text-warning"></i> Heads-up!
+
+
           {% endif %}
         </h6>
       </div>
 
       <!-- Right Section: Dynamic Content -->
       <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
-        {% if currentpage == 'dashboard' or currentpage == 'StudentDashboard' or currentpage == 'leaderboard' %}
+        {% if currentpage == 'dashboard' or currentpage == 'StudentDashboard' or currentpage == 'leaderboard' or currentpage == 'announcement' %}
           <!-- User Info Card - Avatar Only -->
           <div class="user-info-card" id="userInfoCard" onclick="toggleProfileDropdown(event)">
             {% if user.user_image and user.user_image.url %}
@@ -455,6 +459,10 @@
                    aria-label="Search reports">
             <i class="fa fa-search text-white search-icon"></i>
           </form>
+        
+        {% elif currentpage == 'announcement' %}
+
+
         {% endif %}
       </div>
     </div>
