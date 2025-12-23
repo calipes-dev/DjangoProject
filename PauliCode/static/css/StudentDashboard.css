@@ -1,0 +1,777 @@
+/* ============================================
+   StudentDashboard.css - Complete Stylesheet
+   ============================================ */
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+body {
+  background-color: #111827 !important;
+}
+
+.color-green {
+  background-color: rgb(35, 103, 51) !important;
+}
+
+.card {
+  background-color: #1f2937;
+}
+
+.action-card:hover {
+  transform: scale(1.05);
+  transition: 0.2s ease;
+}
+
+h5, h6, p {
+  color: white;
+}
+
+.btn-close-white {
+  filter: invert(1);
+}
+
+/* ============================================
+   CLASS CARD STYLES
+   ============================================ */
+
+/* Programming Classes - Blue outline */
+.border-programming {
+  background-color: #1f2937;
+  color: rgb(137, 216, 255);
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  border: 2.5px dashed rgb(59, 130, 246) !important;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+/* Cybersecurity Classes - Red outline */
+.border-cybersecurity {
+  background-color: #1f2937;
+  color: rgb(252, 165, 165);
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  border: 2.5px dashed rgb(239, 68, 68) !important;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+  transition: all 0.3s ease;
+}
+
+.border-green {
+  background-color: #1f2937;
+  color: #00ff9d;
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  border: 1px dashed #00ff9d;
+  border-width: 1px !important;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 8px rgba(0, 255, 157, 0.3);
+  transition: all 0.3s ease;
+}
+
+.border-dark {
+  background-color: #1f2937;
+  color: rgb(137, 216, 255);
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  border: 1px dashed rgb(180, 230, 255);
+  border-width: 1px !important;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 8px rgba(13, 110, 253, 0.3);
+  transition: all 0.3s ease;
+}
+
+.border-programming:hover,
+.border-cybersecurity:hover,
+.border-green:hover,
+.border-dark:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 15px currentColor;
+}
+
+/* ============================================
+   EXP BADGE & RANK CARD STYLES
+   ============================================ */
+
+.exp-badge {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  border: 2px solid #2563eb;
+  padding: 8px 16px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+  animation: pulse-glow 2s ease-in-out infinite;
+  width: fit-content;
+}
+
+.exp-badge i {
+  font-size: 1.2rem;
+  color: #fbbf24;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.8));
+}
+
+.exp-value {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.3px;
+}
+
+.rank-card-leaderboard {
+  background: linear-gradient(135deg, #059669, #10b981);
+  border: 3px solid #10b981;
+  transition: all 0.3s ease;
+}
+
+.rank-card-leaderboard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+.rank-number {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #fbbf24;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.8));
+}
+
+.rank-label {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.7);
+  }
+}
+
+.view-all-text {
+  display: inline;
+}
+
+/* ============================================
+   WELCOME CARD STYLES
+   ============================================ */
+
+.welcome-card {
+  background: linear-gradient(135deg, #198754, #74c69d);
+  margin-top: -0.75rem;
+  margin-bottom: 0.75rem;
+  min-height: 130px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.student-badge {
+  border: 2px solid #D68022;
+  z-index: 2;
+}
+
+.student-badge-gradient {
+  background: linear-gradient(90deg, #324254 35%, #8e500f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
+.welcome-text-container {
+  height: 100%;
+  margin-top: 10px;
+}
+
+/* ============================================
+   ACTION CARD STYLES
+   ============================================ */
+
+.button-gray {
+  background-color: #374151;
+}
+
+/* ============================================
+   LEADERBOARD CARD STYLES
+   ============================================ */
+
+.class-title-badge {
+  border: 1.5px solid #D68022;
+  transform: scale(0.9);
+  white-space: nowrap;
+  width: fit-content;
+  flex-shrink: 0;
+}
+
+.class-title-gradient {
+  background: linear-gradient(90deg, #324254 35%, #8e500f);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.first-place-gradient {
+  background: linear-gradient(90deg, #FFD700, #FFB700, #FFA500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+/* ============================================
+   CLASS CARDS STYLES
+   ============================================ */
+
+.class-card-container {
+  background-color: rgb(1, 45, 35);
+  min-height: 180px;
+  width: 100%;
+}
+
+.class-code-badge {
+  border: 1.5px solid #D68022;
+  transform: scale(0.85);
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.class-code-gradient {
+  background: linear-gradient(90deg, #324254 35%, #8e500f);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  font-weight: bold;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* ============================================
+   MODAL BACKDROP & CONTAINER
+   ============================================ */
+
+.modal-backdrop-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  display: none;
+  overflow-y: auto;
+}
+
+.modal-backdrop-custom.show {
+  display: block;
+  animation: fadeIn 0.15s ease;
+}
+
+.modal-container-custom {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.modal-content-custom {
+  position: relative;
+  background-color: #1f2937;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 80rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: 2rem auto;
+  transform: scale(0.7);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.modal-backdrop-custom.show .modal-content-custom {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.modal-content-custom::-webkit-scrollbar {
+  display: none;
+}
+
+body.modal-open {
+  overflow: hidden !important;
+  position: fixed;
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ============================================
+   MODAL HEADERS
+   ============================================ */
+
+.modal-content-custom .sticky-top {
+  z-index: 10;
+}
+
+#progressModal .sticky-top {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-radius: 1rem 1rem 0 0;
+  padding: 1.5rem;
+}
+
+#progressModal .sticky-top h2,
+#progressModal .sticky-top p,
+#progressModal .sticky-top i {
+  color: #ffffff;
+}
+
+#tasksModal .sticky-top {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-radius: 1rem 1rem 0 0;
+  padding: 1.5rem;
+}
+
+#tasksModal .sticky-top h2,
+#tasksModal .sticky-top p,
+#tasksModal .sticky-top i {
+  color: #ffffff;
+}
+
+/* ============================================
+   JOIN CLASS MODAL
+   ============================================ */
+
+.join-class-modal-content {
+  background-color: #1E2835;
+  color: white;
+  border-radius: 16px;
+}
+
+.join-class-input {
+  background-color: #101826;
+  border: 1px solid #4CD964;
+  border-radius: 8px;
+  color: black !important
+}
+
+/* ============================================
+   FILTER DROPDOWNS
+   ============================================ */
+
+#progressModal .form-select {
+  background-color: #2563eb;
+  color: white;
+  border: 1px solid #1e40af;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  max-width: 300px;
+}
+
+#progressModal .form-select:focus {
+  background-color: #2563eb;
+  color: white;
+  border-color: #1e3a8a;
+  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.3);
+}
+
+#progressModal .form-select option {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+#tasksModal .form-select {
+  background-color: #d97706;
+  color: white;
+  border: 1px solid #b45309;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  max-width: 300px;
+}
+
+#tasksModal .form-select:focus {
+  background-color: #d97706;
+  color: white;
+  border-color: #92400e;
+  box-shadow: 0 0 0 0.2rem rgba(217, 119, 6, 0.3);
+}
+
+#tasksModal .form-select option {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+/* ============================================
+   PROGRESS MODAL CONTENT
+   ============================================ */
+
+#progressContent .card {
+  background-color: #374151;
+  border: none;
+  border-radius: 0.75rem;
+  color: #f9fafb;
+}
+
+#progressContent .card h3,
+#progressContent .card h5 {
+  color: #f9fafb;
+  font-weight: 600;
+}
+
+#progressContent .card p,
+#progressContent .card .small {
+  color: #d1d5db;
+}
+
+#progressContent .text-muted {
+  color: #9ca3af !important;
+}
+
+.circular-progress {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+}
+
+.circular-progress svg circle {
+  transition: stroke-dashoffset 1s ease;
+}
+
+.circular-progress > div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.circular-progress > div > div:first-child {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #f9fafb;
+}
+
+.circular-progress > div > div:last-child {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+#progressContent .card i {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+#progressContent .card i.fa-check-circle {
+  color: #10b981;
+}
+
+#progressContent .card i.fa-hourglass-half {
+  color: #f59e0b;
+}
+
+#progressContent .card i.fa-book-open {
+  color: #3b82f6;
+}
+
+#progressContent .card i.fa-chart-line {
+  color: #10b981;
+}
+
+#progressContent .card i.fa-chart-bar {
+  color: #6b7280;
+}
+
+.progress {
+  background-color: #4b5563;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  transition: width 1s ease;
+}
+
+.progress-bar.bg-success {
+  background-color: #10b981 !important;
+}
+
+.progress-bar.bg-warning {
+  background-color: #f59e0b !important;
+}
+
+.progress-bar-animated {
+  transition: width 1s ease;
+}
+
+#progressContent .card .card {
+  background-color: #1f2937;
+  border: none;
+}
+
+#progressContent .card .card .fw-semibold {
+  color: #f3f4f6;
+  font-weight: 600;
+}
+
+#progressContent .card .card .text-muted {
+  color: #9ca3af !important;
+}
+
+.spinner-border.text-primary {
+  color: #3b82f6 !important;
+}
+
+#progressContent .text-center p {
+  color: #d1d5db;
+}
+
+#progressContent .text-center i.fa-chart-bar {
+  color: #6b7280;
+  opacity: 0.3;
+}
+
+#progressContent .text-center p.mt-3 {
+  color: #9ca3af;
+}
+
+/* ============================================
+   TASKS MODAL CONTENT
+   ============================================ */
+
+.task-card {
+  transition: all 0.2s ease;
+  cursor: pointer;
+  background-color: #374151;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.task-card:hover {
+  background-color: #4b5563;
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.task-card h5 {
+  color: #f9fafb;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.task-card .text-muted {
+  color: #d1d5db !important;
+}
+
+.task-card .badge {
+  background-color: #4b5563;
+  color: #f3f4f6;
+  font-weight: 500;
+}
+
+.badge.bg-danger {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+.badge.bg-success {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+}
+
+.badge.bg-warning {
+  background-color: #d97706 !important;
+  color: #ffffff !important;
+}
+
+.text-danger {
+  color: #fca5a5 !important;
+  font-weight: 600;
+}
+
+.text-warning {
+  color: #fbbf24 !important;
+  font-weight: 600;
+}
+
+.text-success {
+  color: #86efac !important;
+  font-weight: 600;
+}
+
+.task-card .h4 {
+  color: #fbbf24;
+  font-weight: 700;
+}
+
+.task-card .small {
+  color: #d1d5db;
+}
+
+.task-card .btn-primary {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.task-card .btn-primary:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.task-card .btn-danger {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.task-card .btn-danger:hover {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.task-card i {
+  color: #d1d5db;
+}
+
+.text-center i.fa-check-circle {
+  color: #10b981;
+}
+
+.text-center h4 {
+  color: #f9fafb;
+}
+
+.text-center .text-muted {
+  color: #9ca3af !important;
+}
+
+.spinner-border.text-warning {
+  color: #f59e0b !important;
+}
+
+/* ============================================
+   CLOSE BUTTONS
+   ============================================ */
+
+.modal-content-custom .btn-link {
+  text-decoration: none;
+  transition: transform 0.2s ease;
+  color: #ffffff;
+}
+
+.modal-content-custom .btn-link:hover {
+  transform: scale(1.1);
+  color: #ffffff;
+}
+
+/* ============================================
+   CHART STYLING
+   ============================================ */
+
+#weeklyProgressChart {
+  max-height: 300px;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+  .view-all-text {
+    display: none;
+  }
+  
+  .exp-badge {
+    margin: 1rem auto 0 !important;
+  }
+
+  .rank-number {
+    font-size: 2rem;
+  }
+  
+  .rank-label {
+    font-size: 1rem;
+  }
+
+  .modal-content-custom {
+    max-width: 95%;
+    margin: 1rem auto;
+  }
+
+  .modal-content-custom .sticky-top {
+    padding: 1rem;
+  }
+  
+  .task-card,
+  #progressContent .card {
+    padding: 1rem;
+  }
+  
+  .circular-progress {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .circular-progress > div > div:first-child {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .exp-badge {
+    padding: 6px 12px;
+    gap: 6px;
+  }
+  
+  .exp-value {
+    font-size: 0.9rem;
+  }
+  
+  .exp-badge i {
+    font-size: 1rem;
+  }
+
+  .modal-container-custom {
+    padding: 0.5rem;
+  }
+  
+  .task-card,
+  #progressContent .card {
+    padding: 0.75rem;
+  }
+  
+  .task-card h5 {
+    font-size: 1rem;
+  }
+  
+  .task-card .h4 {
+    font-size: 1.25rem;
+  }
+  
+  #progressContent .card h3 {
+    font-size: 1.5rem;
+  }
+}

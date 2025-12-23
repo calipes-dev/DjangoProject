@@ -245,6 +245,26 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 # ============================================
+# EMAIL CONFIGURATION
+# ============================================
+# Gmail SMTP Configuration (for sending real emails)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'bryankimcalipes@gmail.com'
+EMAIL_HOST_PASSWORD = 'smea gqno felb djtr'
+DEFAULT_FROM_EMAIL = 'bryankimcalipes@gmail.com'
+
+# For development file backend (saves emails to file for inspection):
+# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+# For console backend (prints emails to console):
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# ============================================
 # LOGGING CONFIGURATION (Optional but Recommended)
 # ============================================
 

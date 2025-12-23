@@ -8,6 +8,8 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('signup/', views.signup, name='signup'),
+    path('send-verification-code/', views.send_verification_code, name='send-verification-code'),
+    path('verify-code-and-signup/', views.verify_code_and_signup, name='verify-code-and-signup'),
 
     #--------------Teacher Part--------------------#
     path('dashboard/', views.dashboard, name='dashboard'),

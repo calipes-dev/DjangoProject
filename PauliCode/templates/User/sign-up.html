@@ -1,193 +1,209 @@
 {% extends "base.html" %}
 {% load static %}
-<!--Register.html-->
+<!--Register.html - Minimalistic Single Card Design-->
 
 {% block content %}
-<div class="bg-gray-900 text-white font-sans flex flex-col md:flex-row min-h-screen">
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <!-- Left Section -->
-  <div class="md:w-2/5 w-full relative flex flex-col items-center justify-center overflow-hidden">
-    <img src="{% static 'img/bgIndex.png' %}" alt="Background" class="absolute inset-0 w-full h-full object-cover">
-    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
-
-    <div class="relative text-center px-10 z-10 py-10 md:py-0">
-      <div class="text-green-500 text-7xl font-bold mb-4">&lt;P&gt;</div>
-      <h1 class="text-green-400 text-3xl font-bold mb-2">PauliCode</h1>
-      <p class="text-lg font-semibold mt-4">Welcome to PauliCode!</p>
-      <p class="text-gray-300 mt-2 text-sm leading-relaxed">
-        A space where you can explore IT concepts,<br>
-        solve coding challenges,<br>
-        and grow your skills step by step.
-      </p>
-    </div>
-  </div>
-
-  <!-- Right Section -->
-  <div class="md:w-3/5 w-full flex flex-col justify-center px-10 md:px-28 py-10 bg-gray-900">
-
-    <h1 class="text-4xl font-bold mb-3 text-center">CREATE ACCOUNT</h1>
-    <p class="text-gray-400 mb-8 text-base text-center">Join the Community of IT Learners</p>
-
-    <!-- Social Buttons -->
-    <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 mb-8">
-      <button class="flex-1 bg-gray-800 hover:bg-gray-700 py-3 rounded-lg flex items-center justify-center border border-gray-700 transition">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/google.svg" alt="Google" class="w-5 h-5 mr-2">
-        Google
-      </button>
-      <button class="flex-1 bg-gray-800 hover:bg-gray-700 py-3 rounded-lg flex items-center justify-center border border-gray-700 transition">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub" class="w-5 h-5 mr-2">
-        GitHub
-      </button>
-    </div>
-
-    <div class="flex items-center mb-8">
-      <div class="flex-grow border-t border-gray-700"></div>
-      <span class="mx-4 text-gray-500 text-sm">or continue with School ID</span>
-      <div class="flex-grow border-t border-gray-700"></div>
-    </div>
-
-    <!-- Signup Form -->
-    <form method="POST" id="signupForm" class="space-y-6" enctype="multipart/form-data">
-      {% csrf_token %}
-
-      <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
-        <input type="text" name="first_name" placeholder="First Name"
-               value="{{ first_name|default:'' }}"
-               class="input-field w-full md:w-1/2 bg-gray-800 px-5 py-3 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-        <input type="text" name="last_name" placeholder="Last Name"
-               value="{{ last_name|default:'' }}"
-               class="input-field w-full md:w-1/2 bg-gray-800 px-5 py-3 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-      </div>
-
-      <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
-        <input type="text" name="school_id" placeholder="School ID (e.g. X-XXXX-XXXX)"
-               value="{{ school_id|default:'' }}"
-               class="input-field w-full md:w-1/2 bg-gray-800 px-5 py-3 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-        <select name="user_type"
-                class="input-field w-full md:w-1/2 bg-gray-800 px-5 py-3 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-400">
-          <option value="" disabled {% if not user_type %}selected{% endif %}>User Type</option>
-          <option value="student" {% if user_type == 'student' %}selected{% endif %}>Student</option>
-          <option value="teacher" {% if user_type == 'teacher' %}selected{% endif %}>Teacher</option>
-        </select>
-      </div>
-
-      <!-- Profile Picture + Password Fields Row -->
-      <div class="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
-
-        <!-- Left: Password Fields -->
-       
-
-       
-        <div class="flex-1 flex flex-col space-y-4" style = "margin-top: 5vh;">
-          <input type="password" name="password" placeholder="Password"
-                 class="input-field w-full bg-gray-800 px-5 py-3 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-
-          <input type="password" name="confirm_password" placeholder="Confirm Password"
-                 class="input-field w-full bg-gray-800 px-5 py-3 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-        </div>
-
-         <!-- Right: Profile Picture -->
-        <div class="flex-1 flex flex-col items-center">
-          <label class="block text-gray-400 font-semibold mb-2 text-center">Profile Picture</label>
-
-          <label for="profileImage" class="relative w-32 h-32 rounded-full border-2 border-dashed border-gray-600 overflow-hidden cursor-pointer bg-gray-800 flex items-center justify-center">
-            <!-- Placeholder -->
-            <div id="profilePlaceholder" class="flex flex-col items-center justify-center text-gray-500">
-              <i class="fa fa-camera mb-1 text-2xl"></i>
-              <span class="text-sm">Upload</span>
+<div>
+  <main class="main-content signup-layout">
+    <section class="signup-container">
+      <!-- Left Panel - Branding -->
+      <div class="signup-left-panel">
+        <div class="brand-content">
+          <div class="brand-logo-container">
+            <img src="{% static 'img/PCodeLogo.svg' %}" alt="PauliCode Logo" class="brand-logo">
+          </div>
+          <h2 class="brand-title">PauliCode</h2>
+          <p class="brand-subtitle">Master Coding Concepts Through Interactive Learning</p>
+          <div class="brand-features">
+            <div class="feature-item">
+              <i class="fas fa-graduation-cap"></i>
+              <span>Learn from Experts</span>
             </div>
-
-            <!-- Preview -->
-            <img id="profilePreview" src="#" alt="Preview"
-                class="hidden absolute inset-0 w-full h-full object-cover rounded-full">
-
-            <!-- Hidden File Input -->
-            <input type="file" id="profileImage" name="user_image" accept="image/*"
-                  class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-          </label>
-
-          <p class="text-gray-400 text-xs mt-2 text-center">
-            Recommended size: <strong>400×400px</strong> (JPG, PNG)
-          </p>
+            <div class="feature-item">
+              <i class="fas fa-code"></i>
+              <span>Write Real Code</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-chart-line"></i>
+              <span>Track Progress</span>
+            </div>
+          </div>
         </div>
-
-
       </div>
 
-      <button type="submit"
-              class="w-full bg-green-500 hover:bg-green-600 text-gray-900 font-semibold py-3 rounded-lg mt-4 transition">
-        Create Account
-      </button>
-    </form>
+      <!-- Right Panel - Sign Up Form -->
+      <div class="signup-right-panel">
+        <div class="card register-card">
+          <div class="card-body register-card-body">
+            <!-- Welcome Text -->
+            <div class="text-center mb-5">
+              <h4 class="page-title">Create Account</h4>
+              <p class="page-subtitle">Join the Community of IT Learners</p>
+            </div>
+            
+            <!-- Divider After Subtitle -->
+            <div class="subtitle-divider"></div>
+            
+            <!-- Form -->
+                  <form role="form" method="POST" id="signupForm" enctype="multipart/form-data"
+                        data-send-code-url="{% url 'send-verification-code' %}"
+                        data-verify-url="{% url 'verify-code-and-signup' %}">
+                    {% csrf_token %}
+                    
+                    <!-- First Name and Last Name -->
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label class="form-label-custom">First Name</label>
+                        <input type="text" 
+                              name="first_name" 
+                              id="first_name"
+                              class="form-control input-field-custom" 
+                              placeholder="Enter your first name" 
+                              value="{{ first_name|default:'' }}">
+                        <span class="error-message" id="first_name_error"></span>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label-custom">Last Name</label>
+                        <input type="text" 
+                              name="last_name" 
+                              id="last_name"
+                              class="form-control input-field-custom" 
+                              placeholder="Enter your last name" 
+                              value="{{ last_name|default:'' }}">
+                        <span class="error-message" id="last_name_error"></span>
+                      </div>
+                    </div>
 
-    <!-- Alert Section (unchanged) -->
-    {% if messages %}
-      {% for message in messages %}
-        <div id="alert-box"
-             class="fixed top-5 left-1/2 transform -translate-x-1/2 
-             {% if message.tags == 'success' %}bg-green-500{% else %}bg-red-500{% endif %}
-             text-white text-2xl font-bold px-10 py-5 rounded-xl shadow-2xl z-50 transition-all duration-500 opacity-100">
-          {{ message }}
-        </div>
-      {% endfor %}
+                    <!-- Email and School -->
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label class="form-label-custom">Email Address</label>
+                        <input type="email" 
+                              name="email" 
+                              id="email"
+                              class="form-control input-field-custom" 
+                              placeholder="Enter your email" 
+                              value="{{ email|default:'' }}">
+                        <span class="error-message" id="email_error"></span>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label-custom">School</label>
+                        <select name="school" 
+                                id="school"
+                                class="form-select select-field-custom">
+                          <option value="" disabled {% if not school %}selected{% endif %}>Select school</option>
+                          <option value="spus" {% if school == 'spus' %}selected{% endif %}>St. Paul University</option>
+                          <option value="others" {% if school == 'others' %}selected{% endif %}>Others</option>
+                        </select>
+                        <span class="error-message" id="school_error"></span>
+                      </div>
+                    </div>
 
-      <script>
-        setTimeout(() => {
-          const alert = document.getElementById("alert-box");
-          if (alert) {
-            alert.style.opacity = "0";
-            setTimeout(() => alert.remove(), 500);
-          }
-        }, 1000);
-      </script>
+                    <!-- School ID and User Type -->
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label class="form-label-custom">School ID</label>
+                        <input type="text" 
+                              name="school_id" 
+                              id="school_id"
+                              class="form-control input-field-custom" 
+                              placeholder="e.g. X-XXXX-XXXX" 
+                              value="{{ school_id|default:'' }}">
+                        <span class="error-message" id="school_id_error"></span>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label-custom">User Type</label>
+                        <select name="user_type" 
+                                id="user_type"
+                                class="form-select select-field-custom">
+                          <option value="" disabled {% if not user_type %}selected{% endif %}>Select user type</option>
+                          <option value="student" {% if user_type == 'student' %}selected{% endif %}>Student</option>
+                          <option value="teacher" {% if user_type == 'teacher' %}selected{% endif %}>Teacher</option>
+                        </select>
+                        <span class="error-message" id="user_type_error"></span>
+                      </div>
+                    </div>
 
-      {% if redirect %}
-        <script>
-          setTimeout(() => {
-            window.location.href = "{% url 'index' %}";
-          }, 1500);
-        </script>
-      {% endif %}
-    {% endif %}
+                    <!-- Password and Confirm Password -->
+                    <div class="row mb-4">
+                      <div class="col-md-6">
+                        <label class="form-label-custom">Password</label>
+                        <div class="password-wrapper">
+                          <input type="password" 
+                                name="password" 
+                                id="password"
+                                class="form-control input-field-custom" 
+                                placeholder="Enter password">
+                          <button type="button" class="toggle-password" data-target="password">
+                            <i class="far fa-eye"></i>
+                          </button>
+                        </div>
+                        <span class="error-message" id="password_error"></span>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label-custom">Confirm Password</label>
+                        <div class="password-wrapper">
+                          <input type="password" 
+                                name="confirm_password" 
+                                id="confirm_password"
+                                class="form-control input-field-custom" 
+                                placeholder="Confirm password">
+                          <button type="button" class="toggle-password" data-target="confirm_password">
+                            <i class="far fa-eye"></i>
+                          </button>
+                        </div>
+                        <span class="error-message" id="confirm_password_error"></span>
+                      </div>
+                    </div>
 
-    <script>
-      document.getElementById("signupForm").addEventListener("submit", function(e) {
-        const inputs = document.querySelectorAll(".input-field");
-        let hasEmpty = false;
+                    <!-- Verification Code Section (Hidden by default) -->
+                    <div id="verification-section" class="verification-section" style="display: none;">
+                      <div class="verification-info">
+                        <p class="verification-text">A verification code has been sent to your email. Please enter it below to complete your registration.</p>
+                      </div>
+                      <div class="row mb-4">
+                        <div class="col-12">
+                          <label class="form-label-custom">Verification Code</label>
+                          <input type="text" 
+                                name="verification_code" 
+                                id="verification_code"
+                                class="form-control input-field-custom" 
+                                placeholder="Enter 6-digit code" 
+                                maxlength="6"
+                                pattern="[0-9]{6}">
+                          <span class="error-message" id="verification_code_error"></span>
+                        </div>
+                      </div>
+                    </div>
 
-        inputs.forEach(input => {
-          if (!input.value.trim()) {
-            input.classList.add("border-red-500");
-            hasEmpty = true;
-          } else {
-            input.classList.remove("border-red-500");
-          }
-        });
+                    <!-- Submit Button -->
+                    <div class="text-center mb-4">
+                      <button type="button" class="btn submit-btn-custom" id="signup-btn">
+                        Create Account
+                      </button>
+                    </div>
 
-        if (hasEmpty) e.preventDefault();
-      });
+                    <!-- Verify Button (Hidden by default) -->
+                    <div class="text-center mb-4" id="verify-btn-container" style="display: none;">
+                      <button type="submit" class="btn submit-btn-custom" id="verify-btn">
+                        Verify & Complete
+                      </button>
+                    </div>
+                  </form>
 
-      const profileInput = document.getElementById("profileImage");
-      const profilePreview = document.getElementById("profilePreview");
-      const profilePlaceholder = document.getElementById("profilePlaceholder");
+                  <!-- Divider with Sign In Link -->
+                  <div class="divider-section">
+                    <p class="divider-text">Already have an account? <a href="{% url 'login' %}" class="signin-link">Sign in</a></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </section>
+      </main>
+    </div>
 
-      profileInput.addEventListener("change", function() {
-        const file = this.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            profilePreview.src = e.target.result;
-            profilePreview.classList.remove("hidden");
-            profilePlaceholder.classList.add("hidden");
-          }
-          reader.readAsDataURL(file);
-        } else {
-          profilePreview.classList.add("hidden");
-          profilePlaceholder.classList.remove("hidden");
-        }
-      });
-    </script>
-
-  </div>
-</div>
-{% endblock %}
+    <script src="{% static 'js/register.js' %}"></script>
+    {% endblock %}

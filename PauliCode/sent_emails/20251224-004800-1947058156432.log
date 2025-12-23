@@ -1,0 +1,68 @@
+Content-Type: multipart/alternative;
+ boundary="===============1612007412488105511=="
+MIME-Version: 1.0
+Subject: Welcome to PauliCode
+From: noreply@paulicode.local
+To: student@spus.edu.ph
+Date: Tue, 23 Dec 2025 16:48:00 -0000
+Message-ID: <176650848075.5700.12272896629229581094@Ritchel>
+
+--===============1612007412488105511==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+
+            <html>
+                <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+                    <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h2 style="color: #4CD964; text-align: center;">Welcome to PauliCode!</h2>
+                        <p>Hi John Doe,</p>
+                        <p>Your account has been successfully created! You can now log in with your credentials.</p>
+                        <p><strong>Your Details:</strong></p>
+                        <ul>
+                            <li>School ID: AS-1234-5678</li>
+                            <li>Email: student@spus.edu.ph</li>
+                            <li>User Type: student</li>
+                        </ul>
+                        <p><a href="http://testserver/" style="display: inline-block; background-color: #4CD964; color: black; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to PauliCode</a></p>
+                        <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                        <p style="color: #888; font-size: 12px; text-align: center;">
+                            PauliCode - Interactive Coding Platform<br>
+                            © 2025 All rights reserved.
+                        </p>
+                    </div>
+                </body>
+            </html>
+            
+--===============1612007412488105511==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+
+            <html>
+                <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+                    <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h2 style="color: #4CD964; text-align: center;">Welcome to PauliCode!</h2>
+                        <p>Hi John Doe,</p>
+                        <p>Your account has been successfully created! You can now log in with your credentials.</p>
+                        <p><strong>Your Details:</strong></p>
+                        <ul>
+                            <li>School ID: AS-1234-5678</li>
+                            <li>Email: student@spus.edu.ph</li>
+                            <li>User Type: student</li>
+                        </ul>
+                        <p><a href="http://testserver/" style="display: inline-block; background-color: #4CD964; color: black; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to PauliCode</a></p>
+                        <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                        <p style="color: #888; font-size: 12px; text-align: center;">
+                            PauliCode - Interactive Coding Platform<br>
+                            © 2025 All rights reserved.
+                        </p>
+                    </div>
+                </body>
+            </html>
+            
+--===============1612007412488105511==--
+
+-------------------------------------------------------------------------------

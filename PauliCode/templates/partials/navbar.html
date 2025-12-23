@@ -356,115 +356,132 @@
         </button>
         
         <h6 class="page-title mb-0">
-          {% if nav == 'student_class_details' or nav == 'classDetails' %}
-            Challenges
-          {% elif currentpage == 'dashboard' or currentpage == 'StudentDashboard' %}
+          
+          
+          {% if currentpage == 'dashboard' or currentpage == 'StudentDashboard' %}
             Dashboard
-          {% elif currentpage == 'StudentClass' or currentpage == 'MyClasses' %}
+          {% endif %}
+
+          {% if currentpage == 'StudentClass' or currentpage == 'MyClasses' %}
+
+            {% if nav != 'student_class_details' and nav != 'classDetails' %}
             My Classes
-          {% elif currentpage == 'report' %}
+            {% else %}
+            Challenges
+            {% endif %}
+
+          {% endif %}
+
+          {% if currentpage == 'report' %}
             Report
-          {% elif currentpage == 'Playground' %}
+          {% endif %}
+
+          {% if currentpage == 'Playground' %}
             Study Area
-          {% elif currentpage == 'leaderboard' %}
+          {% endif %}
+
+          {% if currentpage == 'leaderboard' %}
             Hall of Fame
-           {% elif currentpage == 'announcement' %}
+          {% endif %}
+
+           {% if currentpage == 'announcement' %}
            <i class="fas fa-circle-exclamation me-2 text-warning"></i> Heads-up!
-
-
           {% endif %}
         </h6>
       </div>
 
       <!-- Right Section: Dynamic Content -->
       <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
-        {% if currentpage == 'dashboard' or currentpage == 'StudentDashboard' or currentpage == 'leaderboard' or currentpage == 'announcement' %}
-          <!-- User Info Card - Avatar Only -->
-          <div class="user-info-card" id="userInfoCard" onclick="toggleProfileDropdown(event)">
-            {% if user.user_image and user.user_image.url %}
-              <img src="{{ user.user_image.url }}" 
-                   alt="Profile Picture" 
-                   class="rounded-circle profile-img">
-            {% else %}
-              <img src="{% static 'img/image.png' %}" 
-                   alt="Default Profile Picture" 
-                   class="rounded-circle profile-img">
-            {% endif %}
+  
+  <!-- Search Form - Show on specific pages -->
+  {% if currentpage == 'StudentClass' and nav != 'student_class_details' and nav != 'classDetails' %}
+    <form class="search-wrapper" method="GET">
+      <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
+             type="search" 
+             name="q" 
+             placeholder="Search classes..." 
+             value="{{ request.GET.q|default:'' }}"
+             aria-label="Search classes">
+      <button type="submit" class="border-0 bg-transparent search-icon" aria-label="Search">
+        <img src="{% static 'img/search.png' %}" alt="" style="width: 16px; height: 16px;">
+      </button>
+    </form>
+  {% endif %}
 
-            <!-- Dropdown Menu -->
-            <div class="profile-dropdown" id="profileDropdown">
-              <div class="dropdown-header">
-                <p class="user-name">{{ user.first_name }} {{ user.last_name }}</p>
-                <p class="user-id">{{ user.school_id }}</p>
-              </div>
-              <div class="dropdown-menu-custom">
-                <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
-                  {% csrf_token %}
-                  <button type="submit" class="dropdown-item-custom logout">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
+  {% if currentpage == 'MyClasses' and nav != 'student_class_details' and nav != 'classDetails' %}
+    <form class="search-wrapper" method="GET">
+      <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
+             type="search" 
+             name="q" 
+             placeholder="Search classes..." 
+             value="{{ request.GET.q|default:'' }}"
+             aria-label="Search classes">
+      <i class="fa fa-search text-secondary search-icon"></i>
+    </form>
+  {% endif %}
 
-        {% elif currentpage == 'StudentClass' and nav != 'student_class_details' and nav != 'classDetails' %}
-          <!-- Search + Join Class Button -->
-          <form class="search-wrapper" method="GET">
-            <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
-                   type="search" 
-                   name="q" 
-                   placeholder="Search classes..." 
-                   value="{{ request.GET.q|default:'' }}"
-                   aria-label="Search classes">
-            <button type="submit" class="border-0 bg-transparent search-icon" aria-label="Search">
-              <img src="{% static 'img/search.png' %}" alt="" style="width: 16px; height: 16px;">
-            </button>
-          </form>
+  {% if currentpage == 'report' %}
+    <form class="search-wrapper" method="GET" action="{% url 'report' %}">
+      <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
+             type="search" 
+             name="search" 
+             placeholder="Search by class title or code" 
+             value="{{ request.GET.search|default:'' }}"
+             aria-label="Search reports">
+      <i class="fa fa-search text-white search-icon"></i>
+    </form>
+  {% endif %}
 
-          <button class="btn btn-primary btn-custom"
-                  data-bs-toggle="modal" 
-                  data-bs-target="#joinClassModal">
-            <i class="fa fa-plus"></i>
-            <span>Join Class</span>
-          </button>
+  <!-- Action Buttons - Show on specific pages -->
+  {% if currentpage == 'StudentClass' and nav != 'student_class_details' and nav != 'classDetails' %}
+    <button class="btn btn-primary btn-custom"
+            data-bs-toggle="modal" 
+            data-bs-target="#joinClassModal">
+      <i class="fa fa-plus"></i>
+      <span>Join Class</span>
+    </button>
+  {% endif %}
 
-        {% elif currentpage == 'MyClasses' and nav != 'student_class_details' and nav != 'classDetails' %}
-          <!-- Search + Create Class Button -->
-          <form class="search-wrapper" method="GET">
-            <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
-                   type="search" 
-                   name="q" 
-                   placeholder="Search classes..." 
-                   value="{{ request.GET.q|default:'' }}"
-                   aria-label="Search classes">
-            <i class="fa fa-search text-secondary search-icon"></i>
-          </form>
+  {% if currentpage == 'MyClasses' and nav != 'student_class_details' and nav != 'classDetails' %}
+    <button class="btn btn-success btn-custom me-4"
+            data-bs-toggle="modal" 
+            data-bs-target="#createClassModal">
+      <span><i class="fa fa-plus me-1"></i> Create Class</span>
+    </button>
+  {% endif %}
 
-          <button class="btn btn-success btn-custom me-4"
-                  data-bs-toggle="modal" 
-                  data-bs-target="#createClassModal">
-            <span><i class="fa fa-plus me-1"></i> Create Class</span>
-          </button>
+  <!-- User Profile - Show on ALL pages -->
+  <div class="user-info-card" id="userInfoCard" onclick="toggleProfileDropdown(event)">
+    {% if user.user_image and user.user_image.url %}
+      <img src="{{ user.user_image.url }}" 
+           alt="Profile Picture" 
+           class="rounded-circle profile-img">
+    {% else %}
+      <img src="{% static 'img/image.png' %}" 
+           alt="Default Profile Picture" 
+           class="rounded-circle profile-img">
+    {% endif %}
 
-        {% elif currentpage == 'report' %}
-          <!-- Search Only -->
-          <form class="search-wrapper" method="GET" action="{% url 'report' %}">
-            <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
-                   type="search" 
-                   name="search" 
-                   placeholder="Search by class title or code" 
-                   value="{{ request.GET.search|default:'' }}"
-                   aria-label="Search reports">
-            <i class="fa fa-search text-white search-icon"></i>
-          </form>
-        
-        {% elif currentpage == 'announcement' %}
-
-
-        {% endif %}
+    <!-- Dropdown Menu -->
+    <div class="profile-dropdown" id="profileDropdown">
+      <div class="dropdown-header">
+        <p class="user-name">{{ user.first_name }} {{ user.last_name }}</p>
+        <p class="user-id">{{ user.school_id }}</p>
       </div>
+      <div class="dropdown-menu-custom">
+        <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+          {% csrf_token %}
+          <button type="submit" class="dropdown-item-custom logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
     </div>
   </div>
 </nav>

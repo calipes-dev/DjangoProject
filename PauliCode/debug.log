@@ -407,3 +407,1451 @@ Not Found: /media/announcements/files/M1-MAKEUP-CALIPES_ctdO4xN.pdf
 "GET /media/announcements/files/M1-MAKEUP-CALIPES_ctdO4xN.pdf HTTP/1.1" 404 12111
 "GET /announcements/ HTTP/1.1" 200 71593
 "GET /announcements/ HTTP/1.1" 200 59449
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 82247
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 304 0
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /announcements/ HTTP/1.1" 200 59449
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+Not Found: /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 404 12191
+Not Found: /media/announcements/files/MIDTERM-GROUP2-CALIPES_Vnnh261.pdf
+"GET /media/announcements/files/MIDTERM-GROUP2-CALIPES_Vnnh261.pdf HTTP/1.1" 404 12131
+"GET /leaderboard/ HTTP/1.1" 200 47277
+"GET /api/leaderboard-data/? HTTP/1.1" 200 116
+"GET /classes/ HTTP/1.1" 200 36860
+"GET /static/img/search.png HTTP/1.1" 200 30429
+"GET /leaderboard/ HTTP/1.1" 200 47277
+"GET /api/leaderboard-data/? HTTP/1.1" 200 116
+"GET /code-playground/ HTTP/1.1" 200 88546
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /code-playground/ HTTP/1.1" 200 88546
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /classes/ HTTP/1.1" 200 36860
+"GET /student/class/2/ HTTP/1.1" 200 60029
+"GET /student/class/2/ HTTP/1.1" 200 60146
+"GET /StudentDashboard/ HTTP/1.1" 200 81876
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /announcements/ HTTP/1.1" 200 59530
+Not Found: /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 404 12191
+"GET /classes/ HTTP/1.1" 200 36943
+"GET /leaderboard/ HTTP/1.1" 200 47359
+"GET /api/leaderboard-data/? HTTP/1.1" 200 116
+"GET /code-playground/ HTTP/1.1" 200 88629
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /classes/ HTTP/1.1" 200 36943
+"GET /student/class/2/ HTTP/1.1" 200 60146
+"GET /student/class/2/ HTTP/1.1" 200 60146
+"GET /student/class/2/ HTTP/1.1" 200 60146
+"GET /classes/ HTTP/1.1" 200 36943
+"GET /student/class/2/ HTTP/1.1" 200 60146
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /student/class/2/ HTTP/1.1" 200 60146
+"GET /student/class/2/ HTTP/1.1" 200 60170
+"GET /student/class/2/ HTTP/1.1" 200 60136
+"GET /student/class/2/ HTTP/1.1" 200 60136
+"GET /classes/ HTTP/1.1" 200 36969
+"GET /student/class/2/ HTTP/1.1" 200 60136
+"GET /student/class/1/ HTTP/1.1" 200 72316
+"GET /classes/ HTTP/1.1" 200 37912
+"GET /leaderboard/ HTTP/1.1" 200 47270
+"GET /api/leaderboard-data/? HTTP/1.1" 200 116
+"GET /api/leaderboard-data/? HTTP/1.1" 200 116
+"GET /code-playground/ HTTP/1.1" 200 89723
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /code-playground/ HTTP/1.1" 200 89728
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /code-playground/ HTTP/1.1" 200 89728
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /code-playground/ HTTP/1.1" 200 89728
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /classes/ HTTP/1.1" 200 37912
+"GET /announcements/ HTTP/1.1" 200 59441
+Not Found: /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 404 12191
+"GET /StudentDashboard/ HTTP/1.1" 200 81787
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /StudentDashboard/ HTTP/1.1" 200 81787
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /StudentDashboard/ HTTP/1.1" 200 46515
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /static/css/StudentDashboard.css HTTP/1.1" 200 15504
+"GET /static/js/StudentDashboard.js HTTP/1.1" 200 17118
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"POST /student/join-class/ HTTP/1.1" 302 0
+"GET /classes/ HTTP/1.1" 200 38380
+"GET /StudentDashboard/ HTTP/1.1" 200 46515
+"GET /static/js/StudentDashboard.js HTTP/1.1" 304 0
+"GET /static/css/StudentDashboard.css HTTP/1.1" 304 0
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /StudentDashboard/ HTTP/1.1" 200 46515
+"GET /static/css/StudentDashboard.css HTTP/1.1" 200 15531
+"GET /static/js/StudentDashboard.js HTTP/1.1" 304 0
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /api/student/pending-tasks/?class_id=all HTTP/1.1" 200 25
+"GET /api/student/progress/?class_id=all HTTP/1.1" 200 246
+"GET / HTTP/1.1" 200 13995
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14454
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14454
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14454
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14454
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 76557
+"GET /static/img/teacherwand.png HTTP/1.1" 200 16015
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 304 0
+"GET /dashboard/ HTTP/1.1" 200 76108
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /MyClasses/ HTTP/1.1" 200 45469
+"GET /MyClasses/ HTTP/1.1" 200 45469
+"GET /class/2/ HTTP/1.1" 200 95604
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 304 0
+"POST /class/2/add-problem/ HTTP/1.1" 302 0
+"GET /class/2/ HTTP/1.1" 200 97168
+"POST /class/2/add-problem/ HTTP/1.1" 302 0
+"GET /class/2/ HTTP/1.1" 200 98460
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /StudentDashboard/ HTTP/1.1" 200 46515
+"GET /static/css/StudentDashboard.css HTTP/1.1" 304 0
+"GET /static/js/StudentDashboard.js HTTP/1.1" 304 0
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /classes/ HTTP/1.1" 200 37912
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /playground/3/ HTTP/1.1" 200 15468
+"GET /static/css/StudentPlayground.css HTTP/1.1" 200 21780
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 40205
+Not Found: /run_test_code/
+"POST /run_test_code/ HTTP/1.1" 404 11716
+Submission attempt for problem 3
+Content-Type: application/json
+Request body preview: {"problem_id":"3","code":"\npublic class Main {\n    public static void main(String[] args) {\n        print(\"Hello World\")\n\n    }\n}","language":"java","auto_submit":true,"reason":"Tab switched o
+Parsed - Auto-submit: True, Reason: Tab switched or window covered, Code length: 102
+Not Found: /student/classes/
+"GET /student/classes/ HTTP/1.1" 404 11721
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 11706
+"POST /submit_problem/3/ HTTP/1.1" 200 201
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\urls.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /student/classes/
+"GET /student/classes/ HTTP/1.1" 404 11721
+Not Found: /student/classes/
+"GET /student/classes/ HTTP/1.1" 404 11721
+Submission attempt for problem 3
+Content-Type: application/json
+Duplicate submission blocked for student C-2023-0395
+Bad Request: /submit_problem/3/
+"POST /submit_problem/3/ HTTP/1.1" 400 147
+Not Found: /student/classes/
+"GET /student/classes/ HTTP/1.1" 404 11721
+Not Found: /student/classes/
+"GET /student/classes/ HTTP/1.1" 404 11721
+Not Found: /student/classes/
+"GET /student/classes/ HTTP/1.1" 404 11721
+Not Found: /student/classes/
+"GET /student/classes/ HTTP/1.1" 404 11721
+Not Found: /student/classes/
+"GET /student/classes/ HTTP/1.1" 404 11721
+"GET /problem/3/details/ HTTP/1.1" 200 230
+"GET /student/class/2/ HTTP/1.1" 200 64631
+"GET /problem/2/details/ HTTP/1.1" 200 338
+"GET /playground/2/ HTTP/1.1" 200 16109
+"GET /static/css/StudentPlayground.css HTTP/1.1" 304 0
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 40201
+"POST /run_playground_code/ HTTP/1.1" 200 292
+Not Found: /run_test_code/
+"POST /run_test_code/ HTTP/1.1" 404 11716
+"POST /run_playground_code/ HTTP/1.1" 200 200
+"POST /run_playground_code/ HTTP/1.1" 200 200
+Not Found: /run_test_code/
+"POST /run_test_code/ HTTP/1.1" 404 11716
+Submission attempt for problem 2
+Content-Type: application/json
+Request body preview: {"problem_id":"2","code":"# Write your code here\ndef main():\n    a = int(input(\"\"))\n    b = int(input(\"\"))\n    \n    print(f\"{a} x {b} = {a*b}\")\n\nif __name__ == \"__main__\":\n    main()",
+Parsed - Auto-submit: True, Reason: Window lost focus, Code length: 156
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+"POST /submit_problem/2/ HTTP/1.1" 200 273
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+"GET /class/2/ HTTP/1.1" 200 97983
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Not Found: /student/class/
+"GET /student/class/ HTTP/1.1" 404 11715
+Submission attempt for problem 2
+Content-Type: application/json
+Duplicate submission blocked for student C-2023-0395
+Bad Request: /submit_problem/2/
+"POST /submit_problem/2/ HTTP/1.1" 400 148
+"GET /report/ HTTP/1.1" 200 100757
+Not Found: /submission/2/delete/
+"GET /submission/2/delete/ HTTP/1.1" 404 11733
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 11706
+Not Found: /submission/2/delete/
+"GET /submission/2/delete/ HTTP/1.1" 404 11733
+Not Found: /submission/1/delete/
+"GET /submission/1/delete/ HTTP/1.1" 404 11733
+Not Found: /submission/1/delete/
+"GET /submission/1/delete/ HTTP/1.1" 404 11733
+Not Found: /submission/1/delete/
+"GET /submission/1/delete/ HTTP/1.1" 404 11733
+"GET /report/ HTTP/1.1" 200 100755
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 200 1629875
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"GET /delete_submission/2/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 99337
+"GET /delete_submission/1/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 85011
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /playground/3/ HTTP/1.1" 200 15493
+"GET /static/css/StudentPlayground.css HTTP/1.1" 200 21780
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 40839
+"GET /student/class/2/ HTTP/1.1" 200 64343
+Submission attempt for problem 3
+Content-Type: application/json
+Request body preview: {"problem_id":"3","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Multiple wind
+Parsed - Auto-submit: True, Reason: Multiple windows detected, Code length: 102
+"POST /submit_problem/3/ HTTP/1.1" 200 201
+"GET /student/class/2/ HTTP/1.1" 200 64631
+"GET /report/ HTTP/1.1" 200 98897
+"GET /delete_submission/3/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 85011
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /playground/3/ HTTP/1.1" 200 15493
+Submission attempt for problem 3
+Content-Type: application/json
+Request body preview: {"problem_id":"3","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Multiple wind
+Parsed - Auto-submit: True, Reason: Multiple windows detected, Code length: 102
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"POST /submit_problem/3/ HTTP/1.1" 200 201
+"GET /problem/3/details/ HTTP/1.1" 200 230
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /playground/3/ HTTP/1.1" 200 15493
+"GET /static/js/StudentPlayground.js HTTP/1.1" 304 0
+"GET /student/class/2/ HTTP/1.1" 200 64343
+Submission attempt for problem 3
+Content-Type: application/json
+Request body preview: {"problem_id":"3","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Multiple wind
+Parsed - Auto-submit: True, Reason: Multiple windows detected, Code length: 102
+"POST /submit_problem/3/ HTTP/1.1" 200 201
+"GET /report/ HTTP/1.1" 200 98897
+"GET /delete_submission/5/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 85011
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"GET /problem/2/details/ HTTP/1.1" 200 338
+"GET /playground/2/ HTTP/1.1" 200 16134
+"GET /static/js/StudentPlayground.js HTTP/1.1" 304 0
+Submission attempt for problem 2
+Content-Type: application/json
+Request body preview: {"problem_id":"2","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Multiple wind
+Parsed - Auto-submit: True, Reason: Multiple windows detected, Code length: 102
+- Broken pipe from ('127.0.0.1', 19206)
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"POST /submit_problem/2/ HTTP/1.1" 200 271
+"GET /problem/2/details/ HTTP/1.1" 200 337
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /playground/3/ HTTP/1.1" 200 15493
+"GET /student/class/2/ HTTP/1.1" 200 64631
+Submission attempt for problem 3
+Content-Type: application/json
+Request body preview: {"problem_id":"3","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Multiple wind
+Parsed - Auto-submit: True, Reason: Multiple windows detected, Code length: 102
+"POST /submit_problem/3/ HTTP/1.1" 200 201
+"GET /student/class/2/ HTTP/1.1" 200 64919
+"GET /report/ HTTP/1.1" 200 100565
+"GET /delete_submission/6/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 99367
+"GET /delete_submission/7/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 85011
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /playground/3/ HTTP/1.1" 200 15493
+Submission attempt for problem 3
+Content-Type: application/json
+Request body preview: {"problem_id":"3","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Multiple wind
+Parsed - Auto-submit: True, Reason: Multiple windows detected, Code length: 102
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"POST /submit_problem/3/ HTTP/1.1" 200 201
+"GET /problem/2/details/ HTTP/1.1" 200 338
+"GET /playground/2/ HTTP/1.1" 200 16134
+"GET /static/js/StudentPlayground.js HTTP/1.1" 304 0
+Submission attempt for problem 2
+Content-Type: application/json
+Request body preview: {"problem_id":"2","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Multiple wind
+Parsed - Auto-submit: True, Reason: Multiple windows detected, Code length: 102
+- Broken pipe from ('127.0.0.1', 23808)
+"GET /student/class/2/ HTTP/1.1" 200 64631
+"POST /submit_problem/2/ HTTP/1.1" 200 271
+"GET /student/class/2/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14445
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET / HTTP/1.1" 200 13995
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 47123
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/css/StudentDashboard.css HTTP/1.1" 200 15531
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /static/js/StudentDashboard.js HTTP/1.1" 200 17118
+"GET /api/leaderboard-data/ HTTP/1.1" 200 335
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /classes/ HTTP/1.1" 200 37912
+"GET /static/img/search.png HTTP/1.1" 200 30429
+"GET /student/class/2/ HTTP/1.1" 200 64919
+"GET /report/ HTTP/1.1" 200 100565
+"GET /delete_submission/8/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 99393
+"GET /delete_submission/9/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 85011
+"GET /announcements/ HTTP/1.1" 200 71585
+"GET /static/css/announcement.css HTTP/1.1" 200 21490
+Not Found: /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 404 12191
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"GET /MyClasses/ HTTP/1.1" 200 45469
+"GET /MyClasses/ HTTP/1.1" 200 45469
+"GET /class/2/ HTTP/1.1" 200 97983
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /problem/2/details/ HTTP/1.1" 200 338
+"POST /problem/2/edit/ HTTP/1.1" 302 0
+"GET /class/2/ HTTP/1.1" 200 98473
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /playground/3/ HTTP/1.1" 200 15493
+"GET /static/css/StudentPlayground.css HTTP/1.1" 200 21780
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 40839
+Not Found: /run_test_code/
+"POST /run_test_code/ HTTP/1.1" 404 11716
+"POST /run_playground_code/ HTTP/1.1" 200 130
+Not Found: /run_test_code/
+"POST /run_test_code/ HTTP/1.1" 404 11716
+Submission attempt for problem 3
+Content-Type: application/json
+Request body preview: {"problem_id":"3","code":"# Write your code here\ndef main():\n    print(\"Hello World\")\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Window
+Parsed - Auto-submit: True, Reason: Window lost focus, Code length: 107
+"POST /submit_problem/3/ HTTP/1.1" 200 203
+"GET /student/class/2/ HTTP/1.1" 200 64626
+"GET /problem/2/details/ HTTP/1.1" 200 338
+"GET /student/class/2/ HTTP/1.1" 200 64626
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /problem/2/details/ HTTP/1.1" 200 338
+"GET /class/2/ HTTP/1.1" 200 97983
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"POST /problem/3/edit/ HTTP/1.1" 302 0
+"GET /class/2/ HTTP/1.1" 200 98460
+"GET /problem/2/details/ HTTP/1.1" 200 338
+"POST /problem/2/edit/ HTTP/1.1" 302 0
+"GET /class/2/ HTTP/1.1" 200 98473
+"GET /student/class/2/ HTTP/1.1" 200 64626
+"GET /problem/2/details/ HTTP/1.1" 200 338
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /playground/2/ HTTP/1.1" 200 16134
+"GET /static/css/StudentPlayground.css HTTP/1.1" 304 0
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 40839
+"POST /run-test-code/ HTTP/1.1" 200 93
+"POST /run-test-code/ HTTP/1.1" 200 93
+"POST /run_playground_code/ HTTP/1.1" 200 310
+Submission attempt for problem 2
+Content-Type: application/json
+Request body preview: {"problem_id":"2","code":"# Write your code here\ndef main():\n    print(\"3 x 5 = 8\")# Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"re
+Parsed - Auto-submit: True, Reason: Multiple windows detected, Code length: 120
+"GET /playground/2/ HTTP/1.1" 200 16134
+"GET /static/js/StudentPlayground.js HTTP/1.1" 304 0
+"GET /student/class/2/ HTTP/1.1" 200 64626
+Submission attempt for problem 2
+Content-Type: application/json
+Request body preview: {"problem_id":"2","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Page closed"}
+Parsed - Auto-submit: True, Reason: Page closed, Code length: 102
+"POST /submit_problem/2/ HTTP/1.1" 200 271
+"GET /problem/2/details/ HTTP/1.1" 200 337
+Bad Request: /submit_problem/2/
+"POST /submit_problem/2/ HTTP/1.1" 400 158
+"GET /student/class/2/ HTTP/1.1" 200 64914
+"GET /problem/2/details/ HTTP/1.1" 200 337
+"GET /report/ HTTP/1.1" 200 100667
+"GET /delete_submission/10/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 99461
+"GET /delete_submission/11/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 85011
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /playground/3/ HTTP/1.1" 200 15493
+"GET /static/js/StudentPlayground.js HTTP/1.1" 304 0
+Submission attempt for problem 3
+Content-Type: application/json
+Request body preview: {"problem_id":"3","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Time limit ex
+Parsed - Auto-submit: True, Reason: Time limit exceeded, Code length: 102
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"POST /submit_problem/3/ HTTP/1.1" 200 201
+"GET /report/ HTTP/1.1" 200 98899
+"GET /delete_submission/12/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 85011
+"GET /student/class/2/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14445
+"GET / HTTP/1.1" 200 13995
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 46969
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/css/StudentDashboard.css HTTP/1.1" 200 15531
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /static/js/StudentDashboard.js HTTP/1.1" 200 17118
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /classes/ HTTP/1.1" 200 37912
+"GET /static/img/search.png HTTP/1.1" 200 30429
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /playground/3/ HTTP/1.1" 200 15493
+"GET /static/css/StudentPlayground.css HTTP/1.1" 200 21780
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 40839
+"POST /run_playground_code/ HTTP/1.1" 200 130
+Submission attempt for problem 3
+Content-Type: application/json
+Request body preview: {"problem_id":"3","code":"# Write your code here\ndef main():\n    print(\"Hello World\")\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Window
+Parsed - Auto-submit: True, Reason: Window lost focus, Code length: 107
+"POST /submit_problem/3/ HTTP/1.1" 200 203
+"GET /student/class/2/ HTTP/1.1" 200 64626
+"GET /student/class/2/ HTTP/1.1" 200 64626
+"GET /problem/2/details/ HTTP/1.1" 200 338
+"GET /playground/2/ HTTP/1.1" 200 16134
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 41153
+"POST /run_playground_code/ HTTP/1.1" 200 259
+Submission attempt for problem 2
+Content-Type: application/json
+Request body preview: {"problem_id":"2","code":"# Write your code here\ndef main():\n    print(\"3 x 5 = 15\")\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Tab swi
+Parsed - Auto-submit: True, Reason: Tab switched or window covered, Code length: 106
+"POST /submit_problem/2/ HTTP/1.1" 200 273
+"GET /static/css/StudentPlayground.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /student/class/2/ HTTP/1.1" 200 64915
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /report/ HTTP/1.1" 200 100641
+"GET /delete_submission/13/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 99435
+"GET /delete_submission/14/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 85011
+"GET /student/class/2/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14445
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET / HTTP/1.1" 200 13995
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14454
+"GET / HTTP/1.1" 200 13995
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 46969
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /static/js/StudentDashboard.js HTTP/1.1" 200 17118
+"GET /static/css/StudentDashboard.css HTTP/1.1" 200 15531
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /classes/ HTTP/1.1" 200 37912
+"GET /static/img/search.png HTTP/1.1" 200 30429
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /playground/3/ HTTP/1.1" 200 15493
+"GET /static/css/StudentPlayground.css HTTP/1.1" 200 21780
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 41488
+"POST /run_playground_code/ HTTP/1.1" 200 130
+"POST /run-test-code/ HTTP/1.1" 200 95
+"POST /run_playground_code/ HTTP/1.1" 200 130
+Submission attempt for problem 3
+Content-Type: application/json
+Request body preview: {"problem_id":"3","code":"# Write your code here\ndef main():\n    print(\"Hello World\")\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Tab sw
+Parsed - Auto-submit: True, Reason: Tab switched or window covered, Code length: 107
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"POST /submit_problem/3/ HTTP/1.1" 200 203
+"GET /problem/2/details/ HTTP/1.1" 200 338
+"GET /playground/2/ HTTP/1.1" 200 16134
+"GET /static/js/StudentPlayground.js HTTP/1.1" 304 0
+"POST /run_playground_code/ HTTP/1.1" 200 259
+Submission attempt for problem 2
+Content-Type: application/json
+Request body preview: {"problem_id":"2","code":"# Write your code here\ndef main():\n    print(\"3 x 5 = 15\")\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Window 
+Parsed - Auto-submit: True, Reason: Window lost focus, Code length: 106
+"POST /submit_problem/2/ HTTP/1.1" 200 273
+"GET /student/class/2/ HTTP/1.1" 200 64915
+"GET /report/ HTTP/1.1" 200 100641
+"GET /delete_submission/15/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 99435
+"GET /delete_submission/16/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 85011
+"GET /student/class/2/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14445
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET / HTTP/1.1" 200 13995
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 46969
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/css/StudentDashboard.css HTTP/1.1" 200 15531
+"GET /static/js/StudentDashboard.js HTTP/1.1" 200 17118
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 200 242152
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /classes/ HTTP/1.1" 200 37912
+"GET /static/img/search.png HTTP/1.1" 200 30429
+"GET /student/class/2/ HTTP/1.1" 200 64343
+"GET /problem/3/details/ HTTP/1.1" 200 231
+"GET /playground/3/ HTTP/1.1" 200 15493
+"GET /static/css/StudentPlayground.css HTTP/1.1" 200 21780
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 41706
+"POST /run_playground_code/ HTTP/1.1" 200 130
+Submission attempt for problem 3
+Content-Type: application/json
+Request body preview: {"problem_id":"3","code":"# Write your code here\ndef main():\n    print(\"Hello World\")\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python"}
+Parsed - Auto-submit: False, Reason: Manual submission, Code length: 107
+"POST /submit_problem/3/ HTTP/1.1" 200 198
+"GET /student/class/2/ HTTP/1.1" 200 64626
+"GET /student/class/2/ HTTP/1.1" 200 64626
+"GET /problem/2/details/ HTTP/1.1" 200 338
+"GET /playground/2/ HTTP/1.1" 200 16134
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 41937
+"POST /run-test-code/ HTTP/1.1" 200 94
+"POST /run_playground_code/ HTTP/1.1" 200 200
+Submission attempt for problem 2
+Content-Type: application/json
+Request body preview: {"problem_id":"2","code":"# Write your code here\ndef main():\n    a = int(input(\"\"))\n    b = int(input(\"\"))\n    \n    print(f\"{a} x {b} = {a*b}\")\n    pass\n\nif __name__ == \"__main__\":\n  
+Parsed - Auto-submit: False, Reason: Manual submission, Code length: 165
+"POST /submit_problem/2/ HTTP/1.1" 200 268
+"GET /student/class/2/ HTTP/1.1" 200 64909
+"GET /leaderboard/ HTTP/1.1" 200 47268
+"GET /static/img/loadingIcon.webp HTTP/1.1" 304 0
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 304 0
+"GET /media/profile_pic/433b65c2-c82c-4ba7-80a6-fc570ad8dabe.jpg HTTP/1.1" 304 0
+"GET /api/leaderboard-data/? HTTP/1.1" 200 336
+"GET /api/leaderboard-data/? HTTP/1.1" 200 336
+"GET /code-playground/ HTTP/1.1" 200 89728
+"GET /api/playground-resources/ HTTP/1.1" 200 712
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+"GET /load-chat-history/ HTTP/1.1" 200 1740
+AFC is enabled with max remote calls: 10.
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+"POST /ai-chat-stream/ HTTP/1.1" 200 206
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+AFC is enabled with max remote calls: 10.
+HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+"POST /ai-chat-stream/ HTTP/1.1" 200 178
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+"GET /announcements/ HTTP/1.1" 200 59441
+"GET /static/css/announcement.css HTTP/1.1" 200 21490
+Not Found: /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 404 12191
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"GET /media/profile_pic/Gemini_Generated_Image_p38fdxp38fdxp38f_EVXObvy.png HTTP/1.1" 200 1629875
+"GET /classes/ HTTP/1.1" 200 37912
+"GET /static/img/search.png HTTP/1.1" 304 0
+"GET /static/img/classroom.png HTTP/1.1" 304 0
+"GET /student/class/2/ HTTP/1.1" 200 64909
+"GET /problem/3/details/ HTTP/1.1" 200 230
+"GET /leaderboard/ HTTP/1.1" 200 47268
+"GET /api/leaderboard-data/? HTTP/1.1" 200 336
+"GET /api/leaderboard-data/? HTTP/1.1" 200 336
+"GET /api/leaderboard-data/? HTTP/1.1" 200 336
+"GET /api/leaderboard-data/? HTTP/1.1" 200 336
+"GET /api/leaderboard-data/? HTTP/1.1" 200 336
+"GET /announcements/ HTTP/1.1" 200 59441
+Not Found: /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 404 12191
+"GET /announcements/ HTTP/1.1" 200 59441
+Not Found: /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg
+"GET /media/announcements/images/537b99f0-edc5-42ff-bbae-df7bbad3a987_1j4veMj.jpg HTTP/1.1" 404 12191
+"GET /static/img/favicon.ico HTTP/1.1" 304 0
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 13995
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 304 0
+"GET / HTTP/1.1" 200 13995
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET / HTTP/1.1" 200 14037
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET / HTTP/1.1" 200 14037
+"GET /static/img/favicon.ico HTTP/1.1" 304 0
+"GET / HTTP/1.1" 200 14037
+"GET / HTTP/1.1" 200 14037
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET / HTTP/1.1" 200 14174
+"GET / HTTP/1.1" 200 14174
+"GET / HTTP/1.1" 200 14174
+"GET / HTTP/1.1" 200 14174
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET / HTTP/1.1" 200 14258
+"GET / HTTP/1.1" 200 14258
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET / HTTP/1.1" 200 14377
+"GET / HTTP/1.1" 200 14377
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET / HTTP/1.1" 200 14377
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET / HTTP/1.1" 200 14377
+"GET / HTTP/1.1" 200 14258
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET / HTTP/1.1" 200 14258
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET / HTTP/1.1" 200 14258
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET / HTTP/1.1" 200 14258
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET / HTTP/1.1" 200 14263
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET / HTTP/1.1" 200 14263
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET / HTTP/1.1" 200 14263
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET / HTTP/1.1" 200 14263
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11655
+"GET /static/img/bgIndex.png HTTP/1.1" 200 7594234
+"GET /signup/ HTTP/1.1" 200 11655
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /signup/ HTTP/1.1" 200 8009
+"GET /static/js/register.js HTTP/1.1" 200 4029
+"GET /static/css/register.css HTTP/1.1" 200 4873
+"GET /signup/ HTTP/1.1" 200 8009
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 200 6834
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 8009
+"GET /static/css/register.css HTTP/1.1" 200 7168
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 8588
+"GET /static/css/register.css HTTP/1.1" 200 8130
+"GET /static/js/register.js HTTP/1.1" 200 4787
+"GET /signup/ HTTP/1.1" 200 7821
+"GET /static/css/register.css HTTP/1.1" 200 5662
+"GET /static/js/register.js HTTP/1.1" 200 5494
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11641
+"GET /static/css/register.css HTTP/1.1" 200 5620
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 10758
+"GET /static/css/register.css HTTP/1.1" 200 6203
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /login/ HTTP/1.1" 200 37867
+"GET /static/img/loadingIcon.webp HTTP/1.1" 304 0
+"GET /static/img/image.png HTTP/1.1" 404 1798
+"GET /login/ HTTP/1.1" 200 37867
+"GET /static/img/image.png HTTP/1.1" 404 1798
+"GET /signup/ HTTP/1.1" 200 10758
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /login/ HTTP/1.1" 200 37867
+"GET /login/ HTTP/1.1" 200 37867
+"GET /static/img/image.png HTTP/1.1" 404 1798
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14731
+"GET / HTTP/1.1" 200 14263
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 10758
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /login/ HTTP/1.1" 200 37867
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /login/ HTTP/1.1" 200 37867
+"GET /static/img/image.png HTTP/1.1" 404 1798
+"GET /StudentDashboard/ HTTP/1.1" 302 0
+"GET /?next=/StudentDashboard/ HTTP/1.1" 200 14263
+"GET /?next=/StudentDashboard/ HTTP/1.1" 200 14263
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /?next=/StudentDashboard/ HTTP/1.1" 200 14263
+"GET /?next=/StudentDashboard/ HTTP/1.1" 200 14263
+"GET /signup/ HTTP/1.1" 200 10831
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 200 8096
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /login/ HTTP/1.1" 200 37867
+"GET /static/img/image.png HTTP/1.1" 404 1798
+"GET /login/ HTTP/1.1" 200 37867
+"GET /static/img/image.png HTTP/1.1" 404 1798
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /login/ HTTP/1.1" 200 37867
+"GET /login/ HTTP/1.1" 200 37867
+"GET /static/img/image.png HTTP/1.1" 404 1798
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /login/ HTTP/1.1" 200 14263
+"GET /login/ HTTP/1.1" 200 14263
+"GET /signup/ HTTP/1.1" 200 10831
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 200 8096
+"GET /login/ HTTP/1.1" 200 14263
+"GET /login/ HTTP/1.1" 200 14263
+"GET /signup/ HTTP/1.1" 200 10831
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /login/ HTTP/1.1" 200 14263
+"GET /login/ HTTP/1.1" 200 14263
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /login/ HTTP/1.1" 200 14263
+"GET /login/ HTTP/1.1" 200 14263
+"GET /signup/ HTTP/1.1" 200 10831
+"GET /static/js/register.js HTTP/1.1" 200 6341
+"GET /static/css/register.css HTTP/1.1" 200 13679
+"GET /login/ HTTP/1.1" 200 14263
+"GET /login/ HTTP/1.1" 200 14263
+"GET /signup/ HTTP/1.1" 200 10927
+"GET /static/css/register.css HTTP/1.1" 200 13928
+"GET /static/js/register.js HTTP/1.1" 200 6341
+"GET /signup/ HTTP/1.1" 200 10927
+"GET /static/css/register.css HTTP/1.1" 200 14222
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 10775
+"GET /static/css/register.css HTTP/1.1" 200 13194
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 10775
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 10775
+"GET /static/css/register.css HTTP/1.1" 200 13413
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 10927
+"GET /static/css/register.css HTTP/1.1" 200 14222
+"GET /signup/ HTTP/1.1" 200 10927
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 200 13795
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 10895
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /login/ HTTP/1.1" 200 14263
+"GET /login/ HTTP/1.1" 200 14263
+"GET /signup/ HTTP/1.1" 200 10895
+"GET /signup/ HTTP/1.1" 200 10895
+"GET /static/css/register.css HTTP/1.1" 200 13927
+"GET /signup/ HTTP/1.1" 200 10895
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 10895
+"GET /static/css/register.css HTTP/1.1" 200 13944
+"GET /static/js/register.js HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /login/ HTTP/1.1" 200 14263
+"GET /login/ HTTP/1.1" 200 14263
+"GET /signup/ HTTP/1.1" 200 10895
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 10895
+"GET /static/css/register.css HTTP/1.1" 200 13576
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 11431
+"GET /static/css/register.css HTTP/1.1" 200 13576
+"GET /signup/ HTTP/1.1" 200 11431
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 11431
+"GET /static/css/register.css HTTP/1.1" 200 13719
+"GET /signup/ HTTP/1.1" 200 11419
+"GET /static/css/register.css HTTP/1.1" 200 16178
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 11419
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 200 16178
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 200 16504
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 200 16333
+"GET /static/js/register.js HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 200 16333
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 200 16333
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 200 16355
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 200 16355
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11394
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /static/css/register.css HTTP/1.1" 200 16355
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 200 16355
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 200 16337
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 200 16415
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11394
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /static/css/register.css HTTP/1.1" 200 16538
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 200 16538
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 11817
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /static/css/register.css HTTP/1.1" 200 16538
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 11394
+"GET /signup/ HTTP/1.1" 200 11394
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /signup/ HTTP/1.1" 200 14236
+"GET /static/css/register.css HTTP/1.1" 200 16970
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\models.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /signup/ HTTP/1.1" 200 14236
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /static/js/register.js HTTP/1.1" 200 12225
+Not Found: /signup/{% url "send-verification-code" %}
+"POST /signup/%7B%%20url%20%22send-verification-code%22%20%%7D HTTP/1.1" 404 12237
+Not Found: /signup/{% url "send-verification-code" %}
+"POST /signup/%7B%%20url%20%22send-verification-code%22%20%%7D HTTP/1.1" 404 12237
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+Error in send_verification_code: (1054, "Unknown column 'user.email' in 'where clause'")
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\backends\mysql\base.py", line 75, in execute
+    return self.cursor.execute(query, args)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\connections.py", line 575, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\connections.py", line 826, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\connections.py", line 1203, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'user.email' in 'where clause'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py", line 391, in send_verification_code
+    if User.objects.filter(email=email).exists():
+       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\models\query.py", line 1241, in exists
+    return self.query.has_results(using=self.db)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\models\sql\query.py", line 598, in has_results
+    return compiler.has_results()
+           ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1530, in has_results
+    return bool(self.execute_sql(SINGLE))
+                ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\django\db\backends\mysql\base.py", line 75, in execute
+    return self.cursor.execute(query, args)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\connections.py", line 575, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\connections.py", line 826, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\connections.py", line 1203, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\env\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+django.db.utils.OperationalError: (1054, "Unknown column 'user.email' in 'where clause'")
+
+Verification code 545192 sent to test2@spus.edu.ph
+Verification code 873979 sent to student@spus.edu.ph
+"GET /signup/ HTTP/1.1" 200 14236
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /signup/{% url "send-verification-code" %}
+"POST /signup/%7B%%20url%20%22send-verification-code%22%20%%7D HTTP/1.1" 404 12237
+Not Found: /signup/{% url "send-verification-code" %}
+"POST /signup/%7B%%20url%20%22send-verification-code%22%20%%7D HTTP/1.1" 404 12237
+Not Found: /signup/{% url "send-verification-code" %}
+"POST /signup/%7B%%20url%20%22send-verification-code%22%20%%7D HTTP/1.1" 404 12237
+Not Found: /signup/{% url "send-verification-code" %}
+"POST /signup/%7B%%20url%20%22send-verification-code%22%20%%7D HTTP/1.1" 404 12237
+Not Found: /signup/{% url "send-verification-code" %}
+"POST /signup/%7B%%20url%20%22send-verification-code%22%20%%7D HTTP/1.1" 404 12237
+Not Found: /signup/{% url "send-verification-code" %}
+"POST /signup/%7B%%20url%20%22send-verification-code%22%20%%7D HTTP/1.1" 404 12237
+"GET /signup/ HTTP/1.1" 200 14236
+Not Found: /signup/{% url "send-verification-code" %}
+"POST /signup/%7B%%20url%20%22send-verification-code%22%20%%7D HTTP/1.1" 404 12237
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /static/js/register.js HTTP/1.1" 200 12338
+"GET /signup/ HTTP/1.1" 200 14373
+Verification code 932705 sent to bryankimcalipes@students.spus.edu.ph
+"POST /send-verification-code/ HTTP/1.1" 200 54
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /static/js/register.js HTTP/1.1" 304 0
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 14263
+"GET / HTTP/1.1" 200 14263
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /static/js/register.js HTTP/1.1" 304 0
+Verification code 850452 sent to bryankim.calipes@students.spus.edu.ph
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /signup/ HTTP/1.1" 200 14373
+Verification code 253107 sent to bryankim.calipes@students.spus.edu.ph
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /signup/ HTTP/1.1" 200 14373
+Verification code 092924 sent to bryankim.calipes@students.spus.edu.ph
+"POST /send-verification-code/ HTTP/1.1" 200 54
+Looking for verification: email=, code=092924, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code=092924
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/js/register.js HTTP/1.1" 304 0
+Verification code 841009 sent to bryankim.calipes@students.spus.edu.ph
+"POST /send-verification-code/ HTTP/1.1" 200 54
+POST data received: {'verification_code': ['841009', '841009']}
+Verification code from form: '841009', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=841009, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='841009'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+POST data received: {'verification_code': ['841009', '841009']}
+Verification code from form: '841009', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=841009, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='841009'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+POST data received: {'verification_code': ['841009', '841009']}
+Verification code from form: '841009', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=841009, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='841009'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+POST data received: {'verification_code': ['841009', '841009']}
+Verification code from form: '841009', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=841009, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='841009'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+POST data received: {'verification_code': ['841009', '841009']}
+Verification code from form: '841009', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=841009, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='841009'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+POST data received: {'verification_code': ['841009', '841009']}
+Verification code from form: '841009', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=841009, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='841009'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 12219
+POST data received: {'verification_code': ['841009', '841009']}
+Verification code from form: '841009', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=841009, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='841009'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+POST data received: {'verification_code': ['841009', '841009']}
+Verification code from form: '841009', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=841009, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='841009'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+POST data received: {'verification_code': ['841009', '841009']}
+Verification code from form: '841009', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=841009, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='841009'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+POST data received: {'verification_code': ['841009', '841009']}
+Verification code from form: '841009', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=841009, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='841009'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /signup/ HTTP/1.1" 200 14373
+Verification code 120914 sent to bryankim.calipes@students.spus.edu.ph
+"POST /send-verification-code/ HTTP/1.1" 200 54
+POST data received: {'verification_code': ['120914', '120914']}
+Verification code from form: '120914', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=120914, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='120914'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+POST data received: {'verification_code': ['120914', '120914']}
+Verification code from form: '120914', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=120914, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='120914'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+POST data received: {'verification_code': ['120914', '120914']}
+Verification code from form: '120914', Length: 6, Type: <class 'str'>
+Looking for verification: email=, code=120914, code_type=<class 'str'>
+Found 0 verification records for 
+No matching verification code found for email=, provided code='120914'
+Available codes: []
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 200 16970
+"GET /static/js/register.js HTTP/1.1" 200 13149
+Verification code 532171 sent to bryankim.calipes@students.spus.edu.ph
+"POST /send-verification-code/ HTTP/1.1" 200 54
+POST data received: {'csrfmiddlewaretoken': ['q8DzwNyUoimwKbI0pl3HzVML6o4JcSimxDzWEntdgFAmTc6BSFOMwgS0EvJs14cM'], 'first_name': ['Bryan Kim'], 'last_name': ['Calipes'], 'email': ['bryankim.calipes@students.spus.edu.ph'], 'school': ['spus'], 'school_id': ['C-2023-0395'], 'user_type': ['student'], 'password': ['Iambryan.1'], 'confirm_password': ['Iambryan.1'], 'verification_code': ['532171']}
+Email: bryankim.calipes@students.spus.edu.ph
+Verification code: '532171' (length: 6)
+Found verification: code='532171' vs input='532171'
+Match: True
+Expired: False, Used: False
+User created successfully: C-2023-0395 (bryankim.calipes@students.spus.edu.ph)
+"POST /verify-code-and-signup/ HTTP/1.1" 200 81
+"GET / HTTP/1.1" 200 14263
+"GET / HTTP/1.1" 200 14263
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 40951
+"GET /static/css/StudentDashboard.css HTTP/1.1" 200 15531
+"GET /static/js/StudentDashboard.js HTTP/1.1" 200 17118
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /media/profile_pic/default.png HTTP/1.1" 200 298184
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"GET /announcements/ HTTP/1.1" 200 32841
+"GET /static/css/announcement.css HTTP/1.1" 200 21490
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"GET /StudentDashboard/ HTTP/1.1" 200 40497
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14731
+"GET / HTTP/1.1" 200 14263
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /static/js/register.js HTTP/1.1" 304 0
+Verification code 916155 sent to d05225795@gmail.com
+"POST /send-verification-code/ HTTP/1.1" 200 54
+POST data received: {'csrfmiddlewaretoken': ['HFmyt1Lhp8tdgksrekZPSIGSv2rlf8S4ig3UVD8nzvAFwneYnIpctrTCXsZFMLbv'], 'first_name': ['Code '], 'last_name': ['Phantom'], 'email': ['d05225795@gmail.com'], 'school': ['others'], 'school_id': ['C-0000-0000'], 'user_type': ['teacher'], 'password': ['Iamadmin.1'], 'confirm_password': ['Iamadmin.1'], 'verification_code': ['412345']}
+Email: d05225795@gmail.com
+Verification code: '412345' (length: 6)
+Found verification: code='916155' vs input='412345'
+Match: False
+Expired: False, Used: False
+Code mismatch: DB='916155' vs Input='412345'
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+POST data received: {'csrfmiddlewaretoken': ['HFmyt1Lhp8tdgksrekZPSIGSv2rlf8S4ig3UVD8nzvAFwneYnIpctrTCXsZFMLbv'], 'first_name': ['Code '], 'last_name': ['Phantom'], 'email': ['d05225795@gmail.com'], 'school': ['others'], 'school_id': ['C-0000-0000'], 'user_type': ['teacher'], 'password': ['Iamadmin.1'], 'confirm_password': ['Iamadmin.1'], 'verification_code': ['412345']}
+Email: d05225795@gmail.com
+Verification code: '412345' (length: 6)
+Found verification: code='916155' vs input='412345'
+Match: False
+Expired: False, Used: False
+Code mismatch: DB='916155' vs Input='412345'
+"POST /verify-code-and-signup/ HTTP/1.1" 200 58
+POST data received: {'csrfmiddlewaretoken': ['HFmyt1Lhp8tdgksrekZPSIGSv2rlf8S4ig3UVD8nzvAFwneYnIpctrTCXsZFMLbv'], 'first_name': ['Code '], 'last_name': ['Phantom'], 'email': ['d05225795@gmail.com'], 'school': ['others'], 'school_id': ['C-0000-0000'], 'user_type': ['teacher'], 'password': ['Iamadmin.1'], 'confirm_password': ['Iamadmin.1'], 'verification_code': ['916155']}
+Email: d05225795@gmail.com
+Verification code: '916155' (length: 6)
+Found verification: code='916155' vs input='916155'
+Match: True
+Expired: False, Used: False
+User created successfully: C-0000-0000 (d05225795@gmail.com)
+"POST /verify-code-and-signup/ HTTP/1.1" 200 81
+"GET / HTTP/1.1" 200 14263
+"GET / HTTP/1.1" 200 14263
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 68177
+"GET /static/img/teacherwand.png HTTP/1.1" 200 16015
+"GET /dashboard/ HTTP/1.1" 200 67728
+"GET /announcements/ HTTP/1.1" 200 41833
+"GET /MyClasses/ HTTP/1.1" 200 40535
+"GET /MyClasses/ HTTP/1.1" 200 40535
+"POST /create-class/ HTTP/1.1" 302 0
+"GET /MyClasses/ HTTP/1.1" 200 43416
+"GET /static/img/classroom.png HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 42918
+"GET /class/3/ HTTP/1.1" 200 98092
+"GET /dashboard/ HTTP/1.1" 200 71834
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /dashboard/ HTTP/1.1" 200 71834
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14731
+"GET / HTTP/1.1" 200 14263
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 40951
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"POST /student/join-class/ HTTP/1.1" 302 0
+"GET /classes/ HTTP/1.1" 200 35820
+"GET /static/img/search.png HTTP/1.1" 304 0
+"GET /student/class/3/ HTTP/1.1" 200 73377
+"GET /StudentDashboard/ HTTP/1.1" 200 43420
+"GET /api/student/total-exp/ HTTP/1.1" 200 81
+"GET /api/leaderboard-data/ HTTP/1.1" 200 116
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14731
+"GET / HTTP/1.1" 200 14263
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 200 16994
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 200 16993
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 200 16991
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 200 16992
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 200 16992
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 200 16992
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 200 17258
+Verification code 377036 sent to obligadoritchelo@gmail.com
+"POST /send-verification-code/ HTTP/1.1" 200 54
+POST data received: {'csrfmiddlewaretoken': ['OL1rWBfS6c3V2E3qJ99IUF2v3y07RhFDlUCeuHyaBMfAnrQLLJrA9TBre3zEXEIz'], 'first_name': ['Ritchel'], 'last_name': ['Obligado'], 'email': ['obligadoritchelo@gmail.com'], 'school': ['others'], 'school_id': ['C-2023-1234'], 'user_type': ['student'], 'password': ['Iamritchel.123'], 'confirm_password': ['Iamritchel.123'], 'verification_code': ['377036']}
+Email: obligadoritchelo@gmail.com
+Verification code: '377036' (length: 6)
+Found verification: code='377036' vs input='377036'
+Match: True
+Expired: False, Used: False
+User created successfully: C-2023-1234 (obligadoritchelo@gmail.com)
+"POST /verify-code-and-signup/ HTTP/1.1" 200 81
+"GET / HTTP/1.1" 200 14263
+"GET / HTTP/1.1" 200 14263
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /static/js/register.js HTTP/1.1" 304 0
+Verification code 586467 sent to bryankimcalipes@gmail.com
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 200 17344
+Verification code 087047 sent to bryankimcalipes@gmail.com
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/css/register.css HTTP/1.1" 200 17371
+"GET /static/js/register.js HTTP/1.1" 304 0
+Verification code 957153 sent to bryankimcalipes@gmail.com
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"GET /static/css/register.css HTTP/1.1" 304 0
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 12219
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 12108
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 12219

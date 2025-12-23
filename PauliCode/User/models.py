@@ -57,12 +57,19 @@ class User(AbstractBaseUser, PermissionsMixin):
         ('Student', 'Student'),
     ]
     
+    SCHOOL_CHOICES = [
+        ('spus', 'St. Paul University'),
+        ('others', 'Others'),
+    ]
+    
     # Primary Key - school_id
     school_id = models.CharField(max_length=50, unique=True, primary_key=True)
     
     # User Information
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=254, unique=True, null=True, blank=True)
+    school = models.CharField(max_length=20, choices=SCHOOL_CHOICES, default='others')
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
     user_image = models.ImageField(upload_to='profile_pic/', blank=True, null=True, default='profile_pic/default.png')
     
@@ -361,3 +368,32 @@ class ProblemResource(models.Model):
             if os.path.isfile(self.file.path):
                 os.remove(self.file.path)
         super().delete(*args, **kwargs)
+
+
+# ============================================
+# Email Verification Model
+# ============================================
+class EmailVerification(models.Model):
+    """Model to store email verification codes"""
+    
+    email = models.EmailField()
+    code = models.CharField(max_length=6)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    created_at = models.DateTimeField(default=timezone.now)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"Verification for {self.email}"
+    
+    def is_expired(self):
+        """Check if verification code has expired (15 minutes)"""
+        return timezone.now() > self.expires_at
+    
+    def is_valid(self):
+        """Check if code is still valid and not used"""
+        return not self.is_expired() and not self.is_used
