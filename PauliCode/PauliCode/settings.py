@@ -9,9 +9,14 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import pymysql
+pymysql.install_as_MySQLdb()
+pymysql.version_info = (2, 2, 4, "final", 0)
 
 from pathlib import Path
 import os
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +33,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '*',
-    '4GOTT3N.pythonanywhere.com'
+    'paulicode.pythonanywhere.com'
                  ]
 
 
@@ -45,6 +50,7 @@ INSTALLED_APPS = [
     'User',
     'channels',
     'Announcement',
+    
 ]
 
 MIDDLEWARE = [
@@ -154,13 +160,13 @@ TIME_ZONE = 'Asia/Manila'  # Philippine Time Zone
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'static/'  
 STATICFILES_DIRS = [
     BASE_DIR / "static",        # Root static folder (for announcement.css, announcement.js),   # User app static folder
 ]
@@ -177,39 +183,172 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # ============================================
-# JAZZMIN ADMIN CUSTOMIZATION
+# JAZZMIN ADMIN CUSTOMIZATION - FIXED VERSION
 # ============================================
 
 JAZZMIN_SETTINGS = {
+    # ============================================
+    # SITE BRANDING
+    # ============================================
     "site_title": "PauliCode Admin",
-    "site_header": "PauliCode",
-    "site_brand": "PauliCode",
-    "welcome_sign": "Welcome to the PauliCode Admin",
+    "site_header": "PauliCode Administration",
+    "site_brand": "PauliCode Platform",
+    "site_logo": None,
+    "site_logo_classes": "img-circle",
+    "site_icon": None,
+    "welcome_sign": "Welcome to PauliCode Admin Dashboard",
+    "copyright": "PauliCode © 2025 - Developed by Bryan Kim Calipes",
+    
+    # ============================================
+    # USER MENU
+    # ============================================
+    "user_avatar": None,
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": ["Announcement"],  # ✅ Hide Announcement from sidebar
+    "hide_models": [],
+    
+    # ============================================
+    # TOP MENU
+    # ============================================
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "View Site", "url": "/", "new_window": True},
+        {"model": "User.User"},
+        {"app": "User"},
+        {"app": "Announcement"},  # ✅ Adds Announcement dropdown to navbar
+    ],
+    
+    # ============================================
+    # SIDE MENU ORDERING - FIXED
+    # ============================================
+    "order_with_respect_to": [
+        "User",
+        "User.user",
+        "User.class",
+        "User.problem",
+        "User.problemtestcase",
+        "User.submission",
+        "User.enrollment",
+        "User.chathistory",
+        "User.problemresource",
+        "User.emailverification",
+        "auth",
+    ],
+    
+    # ============================================
+    # CUSTOM LINKS IN SIDEBAR
+    # ============================================
+    "custom_links": {
+        "User": [
+            {
+                "name": "View All Students",
+                "url": "admin:User_user_changelist",
+                "icon": "fas fa-users",
+                "permissions": ["User.view_user"]
+            },
+            {
+                "name": "View All Classes",
+                "url": "admin:User_class_changelist",
+                "icon": "fas fa-chalkboard",
+                "permissions": ["User.view_class"]
+            },
+            {
+                "name": "System Reports",
+                "url": "report",
+                "icon": "fas fa-chart-line",
+                "permissions": ["User.view_submission"]
+            },
+        ],
+    },
+    
+    # ============================================
+    # ICONS FOR MODELS
+    # ============================================
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        
+        "User.User": "fas fa-user-graduate",
+        "User.Class": "fas fa-chalkboard-teacher",
+        "User.Problem": "fas fa-code",
+        "User.ProblemTestCase": "fas fa-flask",
+        "User.Submission": "fas fa-file-code",
+        "User.Enrollment": "fas fa-user-plus",
+        "User.ChatHistory": "fas fa-comments",
+        "User.ProblemResource": "fas fa-file-pdf",
+        "User.EmailVerification": "fas fa-envelope-open-text",
+        
+        "Announcement": "fas fa-bullhorn",
+        "Announcement.Announcement": "fas fa-bullhorn",
+        "Announcement.AnnouncementFile": "fas fa-file-alt",
+        "Announcement.AnnouncementLink": "fas fa-link",
+        "Announcement.AnnouncementReaction": "fas fa-heart",
+        "Announcement.AnnouncementComment": "fas fa-comment",
+        "Announcement.AnnouncementPin": "fas fa-thumbtack",
+        "Announcement.AnnouncementReport": "fas fa-flag",
+    },
+    
+    # ============================================
+    # DEFAULT ICON PARENTS
+    # ============================================
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+    
+    # ============================================
+    # RELATED MODAL
+    # ============================================
+    "related_modal_active": True,
+    
+    # ============================================
+    # CUSTOM CSS/JS
+    # ============================================
+    "custom_css": None,
+    "custom_js": None,
+    
+    # ============================================
+    # SHOW UI BUILDER
+    # ============================================
     "show_ui_builder": True,
+    
+    # ============================================
+    # CHANGE VIEW LINKS
+    # ============================================
+    "changeform_format": "horizontal_tabs",
+    "changeform_format_overrides": {
+        "auth.user": "collapsible",
+        "auth.group": "vertical_tabs"
+    },
+    
+    # ============================================
+    # LANGUAGE CHOOSER
+    # ============================================
+    "language_chooser": False,
 }
 
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
     "footer_small_text": False,
-    "body_small_text": False,
+    "body_small_text": True,
     "brand_small_text": False,
-    "brand_colour": "navbar-cyan",
-    "accent": "accent-lightblue",
+    "brand_colour": "navbar-teal",
+    "accent": "accent-info",
     "navbar": "navbar-dark",
     "no_navbar_border": False,
     "navbar_fixed": False,
     "layout_boxed": False,
     "footer_fixed": False,
-    "sidebar_fixed": True,
-    "sidebar": "sidebar-dark-info",
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-olive",
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
-    "sidebar_nav_child_indent": False,
+    "sidebar_nav_child_indent": True,
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "cyborg",
-    "dark_mode_theme": "solar",
+    "theme": "darkly",
+    "dark_mode_theme": "darkly",
     "button_classes": {
         "primary": "btn-primary",
         "secondary": "btn-secondary",
@@ -240,7 +379,7 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
-    'https://4GOTT3N.pythonanywhere.com',
+    'https://paulicode.pythonanywhere.com',
 ]
 
 
