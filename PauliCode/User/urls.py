@@ -9,7 +9,8 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('signup/', views.signup, name='signup'),
     path('send-verification-code/', views.send_verification_code, name='send-verification-code'),
-    path('verify-code-and-signup/', views.verify_code_and_signup, name='verify-code-and-signup'),
+    path('verify-code/', views.verify_code, name='verify-code'),
+    path('resend-verification-code/', views.resend_verification_code, name='resend-verification-code'),
 
     #--------------Teacher Part--------------------#
     path('dashboard/', views.dashboard, name='dashboard'),
@@ -27,9 +28,8 @@ urlpatterns = [
     path('api/teacher/progress/', views.teacher_progress_api, name='teacher_progress_api'),
     path('api/teacher/tasks/', views.teacher_tasks_api, name='teacher_tasks_api'),
     
-    # ✅ FIXED: Changed from 'submission/view/' to 'submission/' to match report.html
+
     path('submission/<int:submission_id>/view-code/', views.view_submission_code, name='view_submission_code'),
-    
     path('class/<int:class_id>/add-resources/', views.add_resources, name='add_resources'),
     path('resource/<int:resource_id>/details/', views.get_resource_details, name='get_resource_details'),
     path('resource/<int:resource_id>/delete/', views.delete_resource, name='delete_resource'),

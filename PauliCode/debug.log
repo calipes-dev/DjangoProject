@@ -5449,3 +5449,1136 @@ Traceback (most recent call last):
     raise PermissionDenied
 django.core.exceptions.PermissionDenied
 "GET /admin/User/user/ HTTP/1.1" 403 135
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 14263
+"GET / HTTP/1.1" 200 14263
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 304 0
+"GET / HTTP/1.1" 200 14263
+"GET / HTTP/1.1" 200 14263
+"GET /static/img/favicon.ico HTTP/1.1" 304 0
+"GET /admin HTTP/1.1" 301 0
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 3374
+"GET /static/vendor/fontawesome-free/css/all.min.css HTTP/1.1" 200 103009
+"GET /static/vendor/bootswatch/darkly/bootstrap.min.css HTTP/1.1" 200 164202
+"GET /static/vendor/adminlte/img/AdminLTELogo.png HTTP/1.1" 200 2637
+"GET /static/jazzmin/css/main.css HTTP/1.1" 200 16969
+"GET /static/vendor/bootstrap/js/bootstrap.min.js HTTP/1.1" 200 62440
+"GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+"GET /static/vendor/adminlte/js/adminlte.min.js HTTP/1.1" 200 44244
+"GET /static/vendor/adminlte/css/adminlte.min.css HTTP/1.1" 200 1382975
+"GET /static/vendor/fontawesome-free/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 156400
+"POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /static/jazzmin/js/main.js HTTP/1.1" 200 2391
+"GET /static/jazzmin/js/ui-builder.js HTTP/1.1" 200 13873
+"GET /static/vendor/fontawesome-free/webfonts/fa-regular-400.woff2 HTTP/1.1" 200 25392
+"GET /admin/ HTTP/1.1" 200 24794
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\admin.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /admin/ HTTP/1.1" 200 24778
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 14263
+"GET / HTTP/1.1" 200 14263
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET /admin HTTP/1.1" 301 0
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 3096
+"GET /static/vendor/fontawesome-free/css/all.min.css HTTP/1.1" 200 103009
+"GET /static/vendor/adminlte/img/AdminLTELogo.png HTTP/1.1" 200 2637
+"GET /static/jazzmin/css/main.css HTTP/1.1" 200 16969
+"GET /static/vendor/bootstrap/js/bootstrap.min.js HTTP/1.1" 200 62440
+"GET /static/vendor/adminlte/js/adminlte.min.js HTTP/1.1" 200 44244
+"GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+"GET /static/vendor/adminlte/css/adminlte.min.css HTTP/1.1" 200 1382975
+"GET /static/vendor/fontawesome-free/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 156400
+"POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 7670
+"GET /static/jazzmin/js/main.js HTTP/1.1" 200 2391
+"GET /static/vendor/fontawesome-free/webfonts/fa-regular-400.woff2 HTTP/1.1" 200 25392
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /admin/ HTTP/1.1" 200 9738
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /admin/ HTTP/1.1" 200 9909
+Forbidden (Permission denied): /admin/Announcement/announcement/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\admin\options.py", line 710, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\admin\sites.py", line 247, in inner
+    return view(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\admin\options.py", line 1979, in changelist_view
+    raise PermissionDenied
+django.core.exceptions.PermissionDenied
+"GET /admin/Announcement/announcement/?q= HTTP/1.1" 403 135
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 16506
+"GET /admin/ HTTP/1.1" 200 9909
+Forbidden (Permission denied): /admin/Announcement/announcement/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\admin\options.py", line 710, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\admin\sites.py", line 247, in inner
+    return view(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\admin\options.py", line 1979, in changelist_view
+    raise PermissionDenied
+django.core.exceptions.PermissionDenied
+"GET /admin/Announcement/announcement/?q=sdsad HTTP/1.1" 403 135
+"GET /admin/ HTTP/1.1" 200 9909
+"GET /admin/password_change/ HTTP/1.1" 200 14211
+"GET /admin/ HTTP/1.1" 200 9909
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /admin/ HTTP/1.1" 200 10047
+"GET /static/vendor/bootswatch/flatly/bootstrap.min.css HTTP/1.1" 200 164819
+"GET /admin/ HTTP/1.1" 200 10047
+"GET /admin/ HTTP/1.1" 200 10047
+"GET /admin/ HTTP/1.1" 200 10047
+"GET /admin/ HTTP/1.1" 200 10047
+"GET /admin/ HTTP/1.1" 200 10047
+"GET /admin/ HTTP/1.1" 200 10047
+"GET /admin/ HTTP/1.1" 200 10047
+"GET /admin/ HTTP/1.1" 200 10047
+"GET /admin/ HTTP/1.1" 200 10047
+Forbidden (Permission denied): /admin/User/user/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\admin\options.py", line 710, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\admin\sites.py", line 247, in inner
+    return view(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\admin\options.py", line 1979, in changelist_view
+    raise PermissionDenied
+django.core.exceptions.PermissionDenied
+"GET /admin/User/user/?q=Bryan+Kim+Calipes HTTP/1.1" 403 135
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 16506
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /static/vendor/bootswatch/journal/bootstrap.min.css HTTP/1.1" 200 161735
+"GET /static/vendor/bootswatch/cosmo/bootstrap.min.css HTTP/1.1" 200 154456
+"GET /static/vendor/bootswatch/cerulean/bootstrap.min.css HTTP/1.1" 200 163350
+"GET /static/vendor/bootswatch/sandstone/bootstrap.min.css HTTP/1.1" 200 163543
+"GET /static/vendor/bootswatch/sketchy/bootstrap.min.css HTTP/1.1" 200 167043
+"GET /admin/ HTTP/1.1" 200 24778
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16617
+"GET /static/vendor/bootstrap/js/bootstrap.min.js.map HTTP/1.1" 200 187646
+"GET /static/vendor/adminlte/js/adminlte.min.js.map HTTP/1.1" 200 129651
+"GET /static/vendor/adminlte/css/adminlte.min.css.map HTTP/1.1" 200 3783134
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /admin/ HTTP/1.1" 200 24778
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16617
+Forbidden (Permission denied): /admin/User/user/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\admin\options.py", line 710, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\admin\sites.py", line 247, in inner
+    return view(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\admin\options.py", line 1979, in changelist_view
+    raise PermissionDenied
+django.core.exceptions.PermissionDenied
+"GET /admin/User/user/?q=Bryan+Kim+Calipes HTTP/1.1" 403 135
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/password_change/ HTTP/1.1" 200 29080
+"GET / HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 72001
+"GET /static/img/loadingIcon.webp HTTP/1.1" 304 0
+"GET /dashboard/ HTTP/1.1" 200 72001
+"GET /static/img/teacherwand.png HTTP/1.1" 200 16015
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /media/profile_pic/default.png HTTP/1.1" 200 298184
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /admin/ HTTP/1.1" 200 24778
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\apps.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\apps.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /dashboard/ HTTP/1.1" 200 72001
+"GET /dashboard/ HTTP/1.1" 200 72001
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\Announcement\apps.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /announcements/ HTTP/1.1" 200 42086
+"GET /static/css/announcement.css HTTP/1.1" 200 21490
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14731
+"GET / HTTP/1.1" 200 14263
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/css/register.css HTTP/1.1" 200 17371
+"POST /send-verification-code/ HTTP/1.1" 200 57
+"GET /login/ HTTP/1.1" 200 14263
+"GET /login/ HTTP/1.1" 200 14263
+"POST /login/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 72450
+"GET /dashboard/ HTTP/1.1" 200 72001
+"GET /announcements/ HTTP/1.1" 200 42086
+"GET /admin/ HTTP/1.1" 200 24778
+"POST /announcements/create/ HTTP/1.1" 302 0
+"GET /announcements/ HTTP/1.1" 200 48383
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 14263
+"GET / HTTP/1.1" 200 14263
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"GET / HTTP/1.1" 200 14263
+"GET / HTTP/1.1" 200 14263
+"GET / HTTP/1.1" 200 14263
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET / HTTP/1.1" 200 14263
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14722
+"GET / HTTP/1.1" 200 14263
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14722
+"GET / HTTP/1.1" 200 14263
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 14722
+"GET / HTTP/1.1" 200 14263
+"GET / HTTP/1.1" 200 10426
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 10885
+"GET / HTTP/1.1" 200 11522
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 11981
+"GET /signup/ HTTP/1.1" 200 14373
+"GET /static/js/register.js HTTP/1.1" 200 13149
+"GET /static/css/register.css HTTP/1.1" 200 17371
+Verification code 105929 sent to bryankimcalipes@gmail.com
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"GET /login/ HTTP/1.1" 200 11522
+"POST /login/ HTTP/1.1" 302 0
+"GET /StudentDashboard/ HTTP/1.1" 200 43975
+"GET /static/css/StudentDashboard.css HTTP/1.1" 200 15531
+"GET /static/js/StudentDashboard.js HTTP/1.1" 200 17118
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /media/profile_pic/default.png HTTP/1.1" 200 298184
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 301
+"GET /classes/ HTTP/1.1" 200 35355
+"GET /static/img/search.png HTTP/1.1" 200 30429
+"GET /student/class/3/ HTTP/1.1" 200 75332
+"GET /problem/4/details/ HTTP/1.1" 200 252
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 11990
+"GET /admin HTTP/1.1" 301 0
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 3374
+"GET /static/vendor/adminlte/img/AdminLTELogo.png HTTP/1.1" 200 2637
+"GET /static/jazzmin/css/main.css HTTP/1.1" 200 16969
+"GET /static/vendor/bootswatch/darkly/bootstrap.min.css HTTP/1.1" 200 164202
+"GET /static/vendor/fontawesome-free/css/all.min.css HTTP/1.1" 200 103009
+"GET /static/vendor/adminlte/css/adminlte.min.css HTTP/1.1" 200 1382975
+"GET /static/vendor/adminlte/js/adminlte.min.js HTTP/1.1" 200 44244
+"GET /static/vendor/bootstrap/js/bootstrap.min.js HTTP/1.1" 200 62440
+"GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+"GET /static/vendor/fontawesome-free/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 156400
+"GET / HTTP/1.1" 200 11522
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\User\views.py", line 65, in index
+    return render(request, 'User/index.html', {'currentpage': 'index'})
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 174, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 160, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 66, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\defaulttags.py", line 511, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\urls\resolvers.py", line 842, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'verify_login_code' not found. 'verify_login_code' is not a valid view function or pattern name.
+"GET / HTTP/1.1" 500 175705
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 16775
+"GET / HTTP/1.1" 200 16133
+Internal Server Error: /signup/
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\User\views.py", line 887, in signup
+    return render(request, 'User/sign-up.html', {'currentpage': 'sign-up'})
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 174, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 160, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 66, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\defaulttags.py", line 511, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\urls\resolvers.py", line 842, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'verify-code-and-signup' not found. 'verify-code-and-signup' is not a valid view function or pattern name.
+"GET /signup/ HTTP/1.1" 500 177971
+"GET /signup/ HTTP/1.1" 200 14362
+Verification code sent to bryancalipez28@gmail.com for signup
+"POST /send-verification-code/ HTTP/1.1" 200 54
+User created: C-1001-1001 (bryancalipez28@gmail.com)
+"POST /verify-code/ HTTP/1.1" 200 81
+"GET / HTTP/1.1" 200 16133
+"POST /login/ HTTP/1.1" 200 16637
+Error resending code: Expecting value: line 1 column 1 (char 0)
+"POST /resend-verification-code/ HTTP/1.1" 200 71
+Error resending code: Expecting value: line 1 column 1 (char 0)
+"POST /resend-verification-code/ HTTP/1.1" 200 71
+Error resending code: Expecting value: line 1 column 1 (char 0)
+"POST /resend-verification-code/ HTTP/1.1" 200 71
+"POST /login/ HTTP/1.1" 200 16620
+"POST /resend-verification-code/ HTTP/1.1" 200 58
+Error in verify_code: You have multiple authentication backends configured and therefore must provide the `backend` argument or set the `backend` attribute on the user.
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\auth\__init__.py", line 57, in _get_backend_from_user
+    backend = backend or user.backend
+                         ^^^^^^^^^^^^
+AttributeError: 'User' object has no attribute 'backend'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\User\views.py", line 328, in verify_code
+    login(request, user)
+    ~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\auth\__init__.py", line 189, in login
+    backend = _get_backend_from_user(user=user, backend=backend)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\auth\__init__.py", line 63, in _get_backend_from_user
+    raise ValueError(
+    ...<3 lines>...
+    )
+ValueError: You have multiple authentication backends configured and therefore must provide the `backend` argument or set the `backend` attribute on the user.
+"POST /verify-code/ HTTP/1.1" 200 69
+Error in verify_code: You have multiple authentication backends configured and therefore must provide the `backend` argument or set the `backend` attribute on the user.
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\auth\__init__.py", line 57, in _get_backend_from_user
+    backend = backend or user.backend
+                         ^^^^^^^^^^^^
+AttributeError: 'User' object has no attribute 'backend'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\User\views.py", line 328, in verify_code
+    login(request, user)
+    ~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\auth\__init__.py", line 189, in login
+    backend = _get_backend_from_user(user=user, backend=backend)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\auth\__init__.py", line 63, in _get_backend_from_user
+    raise ValueError(
+    ...<3 lines>...
+    )
+ValueError: You have multiple authentication backends configured and therefore must provide the `backend` argument or set the `backend` attribute on the user.
+"POST /verify-code/ HTTP/1.1" 200 69
+Watching for file changes with StatReloader
+Error in verify_code: You have multiple authentication backends configured and therefore must provide the `backend` argument or set the `backend` attribute on the user.
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\auth\__init__.py", line 57, in _get_backend_from_user
+    backend = backend or user.backend
+                         ^^^^^^^^^^^^
+AttributeError: 'User' object has no attribute 'backend'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\User\views.py", line 328, in verify_code
+    login(request, user)
+    ~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\auth\__init__.py", line 189, in login
+    backend = _get_backend_from_user(user=user, backend=backend)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\auth\__init__.py", line 63, in _get_backend_from_user
+    raise ValueError(
+    ...<3 lines>...
+    )
+ValueError: You have multiple authentication backends configured and therefore must provide the `backend` argument or set the `backend` attribute on the user.
+"POST /verify-code/ HTTP/1.1" 200 69
+Error in verify_code: You have multiple authentication backends configured and therefore must provide the `backend` argument or set the `backend` attribute on the user.
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\auth\__init__.py", line 57, in _get_backend_from_user
+    backend = backend or user.backend
+                         ^^^^^^^^^^^^
+AttributeError: 'User' object has no attribute 'backend'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\User\views.py", line 328, in verify_code
+    login(request, user)
+    ~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\auth\__init__.py", line 189, in login
+    backend = _get_backend_from_user(user=user, backend=backend)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\contrib\auth\__init__.py", line 63, in _get_backend_from_user
+    raise ValueError(
+    ...<3 lines>...
+    )
+ValueError: You have multiple authentication backends configured and therefore must provide the `backend` argument or set the `backend` attribute on the user.
+"POST /verify-code/ HTTP/1.1" 200 69
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+"POST /verify-code/ HTTP/1.1" 200 86
+"GET /StudentDashboard/ HTTP/1.1" 200 40449
+"GET /api/student/total-exp/ HTTP/1.1" 200 83
+"GET /api/leaderboard-data/ HTTP/1.1" 200 110
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16584
+"POST /login/ HTTP/1.1" 200 16646
+"POST /verify-code/ HTTP/1.1" 200 58
+"POST /verify-code/ HTTP/1.1" 200 86
+"GET /StudentDashboard/ HTTP/1.1" 200 43521
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 301
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16584
+"GET /signup/ HTTP/1.1" 200 14362
+Verification code sent to nameless200320@gmail.com for signup
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"GET /signup/ HTTP/1.1" 200 14362
+"POST /send-verification-code/ HTTP/1.1" 200 57
+Verification code sent to nameless200320@gmail.com for signup
+"POST /send-verification-code/ HTTP/1.1" 200 54
+Watching for file changes with StatReloader
+Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\User\views.py", line 65, in index
+    return render(request, 'User/index.html', {'currentpage': 'index'})
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: User/index.html
+"GET / HTTP/1.1" 500 103991
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 16775
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 174, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 135, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 132, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 110, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\User\views.py", line 65, in index
+    return render(request, 'Portal/index.html', {'currentpage': 'index'})
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+"GET / HTTP/1.1" 500 150911
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 174, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 135, in render
+    compiled_parent = self.get_parent(context)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 132, in get_parent
+    return self.find_template(parent, context)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader_tags.py", line 110, in find_template
+    template, origin = context.template.engine.find_template(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        template_name,
+        ^^^^^^^^^^^^^^
+        skip=history,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\User\views.py", line 65, in index
+    return render(request, 'Portal/index.html', {'currentpage': 'index'})
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\backends\django.py", line 109, in render
+    reraise(exc, self.backend)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\paulicode\env\Lib\site-packages\django\template\backends\django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: base.html
+"GET / HTTP/1.1" 500 150911
+"GET / HTTP/1.1" 200 16116
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 304 0
+"GET /signup/ HTTP/1.1" 200 14362
+"GET /static/css/register.css HTTP/1.1" 304 0
+"GET /static/js/register.js HTTP/1.1" 200 13067
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16575
+"POST /login/ HTTP/1.1" 200 16646
+"POST /login/ HTTP/1.1" 200 16646
+"GET /signup/ HTTP/1.1" 200 14362
+"POST /send-verification-code/ HTTP/1.1" 200 57
+"POST /send-verification-code/ HTTP/1.1" 200 57
+Verification code sent to nameless200320@gmail.com for signup
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"GET /signup/ HTTP/1.1" 200 14362
+"GET /static/img/favicon.ico HTTP/1.1" 304 0
+Verification code sent to nameless200320@gmail.com for signup
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"POST /login/ HTTP/1.1" 200 16646
+"POST /verify-code/ HTTP/1.1" 200 58
+"POST /resend-verification-code/ HTTP/1.1" 200 58
+"POST /verify-code/ HTTP/1.1" 200 86
+"GET /StudentDashboard/ HTTP/1.1" 200 43521
+"GET /static/img/loadingIcon.webp HTTP/1.1" 304 0
+"GET /static/img/studenthaticon.png HTTP/1.1" 304 0
+"GET /static/css/StudentDashboard.css HTTP/1.1" 200 15531
+"GET /static/img/1stCup.svg HTTP/1.1" 304 0
+"GET /static/js/StudentDashboard.js HTTP/1.1" 200 17118
+"GET /static/img/star.png HTTP/1.1" 304 0
+"GET /static/img/classroom.png HTTP/1.1" 304 0
+"GET /media/profile_pic/default.png HTTP/1.1" 304 0
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 301
+"GET /announcements/ HTTP/1.1" 200 38079
+"GET /static/css/announcement.css HTTP/1.1" 200 21490
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"GET /classes/ HTTP/1.1" 200 35355
+"GET /static/img/search.png HTTP/1.1" 200 30429
+"GET /student/class/3/ HTTP/1.1" 200 75332
+"GET /problem/4/details/ HTTP/1.1" 200 252
+"GET /leaderboard/ HTTP/1.1" 200 46941
+"GET /api/leaderboard-data/? HTTP/1.1" 200 301
+"GET /api/leaderboard-data/? HTTP/1.1" 200 301
+"GET /api/leaderboard-data/? HTTP/1.1" 200 301
+"GET /api/leaderboard-data/? HTTP/1.1" 200 301
+"GET /api/leaderboard-data/? HTTP/1.1" 200 301
+"GET /code-playground/ HTTP/1.1" 200 89594
+"GET /api/playground-resources/ HTTP/1.1" 200 46
+"GET /get-usage-stats/ HTTP/1.1" 200 241
+"GET /load-chat-history/ HTTP/1.1" 200 16
+"GET /get-usage-stats/ HTTP/1.1" 200 241
+"GET / HTTP/1.1" 200 16116
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16575
+"POST /login/ HTTP/1.1" 200 16610
+"POST /verify-code/ HTTP/1.1" 200 79
+"GET /dashboard/ HTTP/1.1" 200 72001
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/img/teacherwand.png HTTP/1.1" 200 16015
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /dashboard/ HTTP/1.1" 200 72001
+"GET /media/profile_pic/default.png HTTP/1.1" 200 298184
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /announcements/ HTTP/1.1" 200 38079
+"POST /create-class/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 76710
+"GET /dashboard/ HTTP/1.1" 200 76215
+"GET /announcements/ HTTP/1.1" 200 48170
+"GET /static/css/announcement.css HTTP/1.1" 200 21490
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"GET /MyClasses/ HTTP/1.1" 200 45409
+"GET /MyClasses/ HTTP/1.1" 200 45409
+"GET /class/4/ HTTP/1.1" 200 90385
+"POST /class/4/add-problem/ HTTP/1.1" 302 0
+"GET /class/4/ HTTP/1.1" 200 91941
+"GET /classes/ HTTP/1.1" 200 35355
+"POST /student/join-class/ HTTP/1.1" 302 0
+"GET /classes/ HTTP/1.1" 200 38318
+"GET /student/class/4/ HTTP/1.1" 200 58798
+"POST /class/4/add-resources/ HTTP/1.1" 302 0
+"GET /class/4/ HTTP/1.1" 200 96381
+"GET /student/class/4/ HTTP/1.1" 200 61971
+"GET /media/problem_resources/Calipes_IR02.pdf HTTP/1.1" 200 1832007
+"GET /media/problem_resources/Calipes_IR02.pdf HTTP/1.1" 200 1832007
+"GET /problem/5/details/ HTTP/1.1" 200 242
+"GET /playground/5/ HTTP/1.1" 200 15499
+"GET /static/css/StudentPlayground.css HTTP/1.1" 200 21780
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 41937
+Submission attempt for problem 5
+Content-Type: application/json
+Request body preview: {"problem_id":"5","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Window lost f
+Parsed - Auto-submit: True, Reason: Window lost focus, Code length: 102
+"GET /student/class/4/ HTTP/1.1" 200 61971
+"POST /submit_problem/5/ HTTP/1.1" 200 201
+"GET /problem/5/details/ HTTP/1.1" 200 241
+"GET /student/class/4/ HTTP/1.1" 200 62259
+"GET /problem/5/details/ HTTP/1.1" 200 241
+"GET /report/ HTTP/1.1" 200 100250
+"GET /delete_submission/20/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 99058
+"GET /student/class/4/ HTTP/1.1" 200 61971
+"GET /problem/5/details/ HTTP/1.1" 200 242
+"GET /playground/5/ HTTP/1.1" 200 15499
+"GET /student/class/4/ HTTP/1.1" 200 61971
+Submission attempt for problem 5
+Content-Type: application/json
+Request body preview: {"problem_id":"5","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Multiple wind
+Parsed - Auto-submit: True, Reason: Multiple windows detected, Code length: 102
+"POST /submit_problem/5/ HTTP/1.1" 200 201
+"GET /report/ HTTP/1.1" 200 100250
+"GET /delete_submission/21/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 99058
+"GET /student/class/4/ HTTP/1.1" 200 61971
+"GET /problem/5/details/ HTTP/1.1" 200 242
+"GET /playground/5/ HTTP/1.1" 200 15499
+Submission attempt for problem 5
+Content-Type: application/json
+Request body preview: {"problem_id":"5","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Multiple wind
+Parsed - Auto-submit: True, Reason: Multiple windows detected, Code length: 102
+"GET /student/class/4/ HTTP/1.1" 200 61971
+"POST /submit_problem/5/ HTTP/1.1" 200 201
+"GET /report/ HTTP/1.1" 200 100250
+"GET /delete_submission/22/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 99058
+"GET /student/class/4/ HTTP/1.1" 200 61971
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET /media/profile_pic/default.png HTTP/1.1" 200 298184
+"GET /student/class/4/ HTTP/1.1" 200 61971
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"GET /problem/5/details/ HTTP/1.1" 200 242
+"GET /playground/5/ HTTP/1.1" 200 15499
+"GET /static/css/StudentPlayground.css HTTP/1.1" 200 21780
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 41937
+Submission attempt for problem 5
+Content-Type: application/json
+Request body preview: {"problem_id":"5","code":"# Write your code here\ndef main():\n    # Your solution\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Multiple wind
+Parsed - Auto-submit: True, Reason: Multiple windows detected, Code length: 102
+"GET /student/class/4/ HTTP/1.1" 200 61971
+"GET /report/ HTTP/1.1" 200 98588
+"GET /report/ HTTP/1.1" 200 98588
+"POST /submit_problem/5/ HTTP/1.1" 200 201
+"GET /student/class/4/ HTTP/1.1" 200 62259
+"GET /problem/5/details/ HTTP/1.1" 200 241
+"GET /report/ HTTP/1.1" 200 100250
+"GET /delete_submission/23/ HTTP/1.1" 302 0
+"GET /report/ HTTP/1.1" 200 99058
+"GET /problem/5/details/ HTTP/1.1" 200 242
+"GET /student/class/4/ HTTP/1.1" 200 61971
+"GET /student/class/4/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16566
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET / HTTP/1.1" 200 16116
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+Failed to send login verification email: Connection unexpectedly closed
+- Broken pipe from ('127.0.0.1', 35137)
+"POST /login/ HTTP/1.1" 200 16646
+"POST /verify-code/ HTTP/1.1" 200 58
+"POST /verify-code/ HTTP/1.1" 200 86
+"GET /StudentDashboard/ HTTP/1.1" 200 46558
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/css/StudentDashboard.css HTTP/1.1" 200 15531
+"GET /static/js/StudentDashboard.js HTTP/1.1" 200 17118
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /media/profile_pic/default.png HTTP/1.1" 200 298184
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 301
+"GET /classes/ HTTP/1.1" 200 37854
+"GET /static/img/search.png HTTP/1.1" 200 30429
+"GET /student/class/4/ HTTP/1.1" 200 61971
+"GET /problem/5/details/ HTTP/1.1" 200 242
+"GET /playground/5/ HTTP/1.1" 200 15499
+"GET /static/css/StudentPlayground.css HTTP/1.1" 200 21780
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 41937
+"POST /run-test-code/ HTTP/1.1" 200 99
+"POST /run-test-code/ HTTP/1.1" 200 99
+"POST /run_playground_code/ HTTP/1.1" 200 130
+"POST /run-test-code/ HTTP/1.1" 200 99
+"POST /run-test-code/ HTTP/1.1" 200 99
+Submission attempt for problem 5
+Content-Type: application/json
+Request body preview: {"problem_id":"5","code":"# Write your code here\ndef main():\n    print(\"Hello, Sir Leo!\")\n    pass\n\nif __name__ == \"__main__\":\n    main()","language":"python","auto_submit":true,"reason":"Wi
+Parsed - Auto-submit: True, Reason: Window lost focus, Code length: 111
+"POST /submit_problem/5/ HTTP/1.1" 200 203
+"GET /student/class/4/ HTTP/1.1" 200 62254
+"GET /report/ HTTP/1.1" 200 100290
+"GET /MyClasses/ HTTP/1.1" 200 45409
+"GET /MyClasses/ HTTP/1.1" 200 45409
+"GET /class/3/ HTTP/1.1" 200 101108
+"GET /MyClasses/ HTTP/1.1" 200 45409
+"GET /MyClasses/ HTTP/1.1" 200 45409
+"GET /class/3/ HTTP/1.1" 200 101108
+"GET /class/4/ HTTP/1.1" 200 95915
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 16116
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET / HTTP/1.1" 200 16056
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16886
+"GET / HTTP/1.1" 200 15608
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16886
+"GET / HTTP/1.1" 200 15674
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16886
+"GET / HTTP/1.1" 200 15674
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16886
+"GET / HTTP/1.1" 200 15608
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\settings.py changed, reloading.
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 15608
+Failed attempt recorded for 127.0.0.1: 1 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16089
+Failed attempt recorded for 127.0.0.1: 2 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16089
+Failed attempt recorded for 127.0.0.1: 3 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16089
+Failed attempt recorded for 127.0.0.1: 4 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16089
+Failed attempt recorded for 127.0.0.1: 5 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16089
+Too Many Requests: /login/
+"POST /login/ HTTP/1.1" 429 82
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 16775
+Too Many Requests: /login/
+"POST /login/ HTTP/1.1" 429 82
+Too Many Requests: /login/
+"POST /login/ HTTP/1.1" 429 82
+Too Many Requests: /login/
+"POST /login/ HTTP/1.1" 429 82
+Too Many Requests: /login/
+"POST /login/ HTTP/1.1" 429 82
+Too Many Requests: /login/
+"POST /login/ HTTP/1.1" 429 82
+Too Many Requests: /login/
+"POST /login/ HTTP/1.1" 429 82
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\User\rate_limit_config.py changed, reloading.
+Watching for file changes with StatReloader
+Failed attempt recorded for 127.0.0.1: 1 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16089
+"GET / HTTP/1.1" 200 15608
+"POST /login/ HTTP/1.1" 200 16138
+"POST /verify-code/ HTTP/1.1" 200 58
+"POST /verify-code/ HTTP/1.1" 200 58
+"POST /verify-code/ HTTP/1.1" 200 58
+"POST /verify-code/ HTTP/1.1" 200 58
+"POST /verify-code/ HTTP/1.1" 200 58
+"POST /verify-code/ HTTP/1.1" 200 58
+"GET / HTTP/1.1" 200 15608
+"GET /signup/ HTTP/1.1" 200 14362
+"GET /static/css/register.css HTTP/1.1" 200 17371
+"GET /static/js/register.js HTTP/1.1" 200 13067
+"GET /admin HTTP/1.1" 301 0
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 3374
+"GET /static/vendor/fontawesome-free/css/all.min.css HTTP/1.1" 200 103009
+"GET /static/vendor/bootswatch/darkly/bootstrap.min.css HTTP/1.1" 200 164202
+"GET /static/jazzmin/css/main.css HTTP/1.1" 200 16969
+"GET /static/vendor/adminlte/css/adminlte.min.css HTTP/1.1" 200 1382975
+"GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+"GET /static/vendor/adminlte/img/AdminLTELogo.png HTTP/1.1" 200 2637
+"GET /static/vendor/adminlte/js/adminlte.min.js HTTP/1.1" 200 44244
+"GET /static/vendor/bootstrap/js/bootstrap.min.js HTTP/1.1" 200 62440
+"GET /static/vendor/fontawesome-free/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 156400
+"POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /static/jazzmin/js/main.js HTTP/1.1" 200 2391
+"GET /static/jazzmin/js/ui-builder.js HTTP/1.1" 200 13873
+"GET /static/vendor/fontawesome-free/webfonts/fa-regular-400.woff2 HTTP/1.1" 200 25392
+"GET /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 24778
+"GET /admin/ HTTP/1.1" 200 24778
+"POST /admin/logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 15608
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 3374
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\urls.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /admin/login/
+"GET /admin/login/?next=/admin/ HTTP/1.1" 404 16819
+Not Found: /admin/
+"GET /admin/ HTTP/1.1" 404 16788
+Not Found: /secret-paulicode-admin-panel-2026/
+"GET /secret-paulicode-admin-panel-2026/ HTTP/1.1" 404 16872
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /secret-paulicode-admin-panel-2026/ HTTP/1.1" 302 0
+"GET /secret-paulicode-admin-panel-2026/login/?next=/secret-paulicode-admin-panel-2026/ HTTP/1.1" 200 3430
+"GET /secret-paulicode-admin-panel-2026/ HTTP/1.1" 302 0
+"GET /secret-paulicode-admin-panel-2026/login/?next=/secret-paulicode-admin-panel-2026/ HTTP/1.1" 200 3430
+Not Found: /admin/
+"GET /admin/ HTTP/1.1" 404 16788
+Failed attempt recorded for 127.0.0.1: 1 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16089
+"POST /login/ HTTP/1.1" 200 16138
+"POST /verify-code/ HTTP/1.1" 200 58
+"POST /resend-verification-code/ HTTP/1.1" 200 58
+"POST /verify-code/ HTTP/1.1" 200 86
+"GET /StudentDashboard/ HTTP/1.1" 200 46714
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/css/StudentDashboard.css HTTP/1.1" 200 15531
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /media/profile_pic/default.png HTTP/1.1" 200 298184
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /static/js/StudentDashboard.js HTTP/1.1" 200 17118
+"GET /api/student/total-exp/ HTTP/1.1" 200 82
+"GET /api/leaderboard-data/ HTTP/1.1" 200 301
+"GET /announcements/ HTTP/1.1" 200 38193
+"GET /static/css/announcement.css HTTP/1.1" 200 21490
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16076
+"GET /signup/ HTTP/1.1" 200 14362
+"GET /static/css/register.css HTTP/1.1" 200 17371
+"GET /static/js/register.js HTTP/1.1" 200 13067
+"GET /signup/ HTTP/1.1" 200 14362
+"GET / HTTP/1.1" 200 15608
+Verification code sent to bryankimcalipes@gmail.com for signup
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"GET /signup/ HTTP/1.1" 200 14362
+Verification code sent to bryankimcalipes@gmail.com for signup
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"POST /verify-code/ HTTP/1.1" 200 57
+Too Many Requests: /signup/
+"GET /signup/ HTTP/1.1" 429 82
+Too Many Requests: /signup/
+"GET /signup/ HTTP/1.1" 429 82
+Too Many Requests: /signup/
+"GET /signup/ HTTP/1.1" 429 82
+Too Many Requests: /signup/
+"GET /signup/ HTTP/1.1" 429 82
+Too Many Requests: /signup/
+"GET /signup/ HTTP/1.1" 429 82
+Too Many Requests: /signup/
+"GET /signup/ HTTP/1.1" 429 82
+Too Many Requests: /signup/
+"GET /signup/ HTTP/1.1" 429 82
+Too Many Requests: /signup/
+"GET /signup/ HTTP/1.1" 429 82
+"GET /signup/ HTTP/1.1" 200 14362
+"GET /login/ HTTP/1.1" 200 15608
+Not Found: /admin/
+"GET /admin/ HTTP/1.1" 404 16788
+Not Found: /admin/
+"GET /admin/ HTTP/1.1" 404 16788
+"GET /secret-paulicode-admin-panel-2026/ HTTP/1.1" 302 0
+"GET /secret-paulicode-admin-panel-2026/login/?next=/secret-paulicode-admin-panel-2026/ HTTP/1.1" 200 3430
+"POST /login/ HTTP/1.1" 200 16138
+"GET /login/ HTTP/1.1" 200 15608
+Failed attempt recorded for 127.0.0.1: 1 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16089
+Failed attempt recorded for 127.0.0.1: 2 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16089
+Failed attempt recorded for 127.0.0.1: 3 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16089
+Too Many Requests: /login/
+"POST /login/ HTTP/1.1" 429 82
+C:\Users\Chenchen\OneDrive\Documents\GitHub\DjangoProject\PauliCode\PauliCode\urls.py changed, reloading.
+Watching for file changes with StatReloader
+Failed attempt recorded for 127.0.0.1: 1 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 16089
+"GET /secret-paulicode-admin-panel-2026/login/?next=/secret-paulicode-admin-panel-2026/ HTTP/1.1" 200 3430

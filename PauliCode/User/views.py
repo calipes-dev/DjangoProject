@@ -12,6 +12,9 @@ from django.utils.safestring import mark_safe
 from django.core.files.storage import default_storage
 from django.conf import settings
 
+# Generate 6-digit verification code
+import random
+
 # Authentication & Security
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required, permission_required
@@ -45,6 +48,17 @@ from collections import defaultdict
 # Third-party
 from google import genai
 
+#----------------RATE LIMITING IMPORTS----------------#
+
+from .rate_limiter import (
+    rate_limit,
+    rate_limit_api,
+    record_failed_login,
+    clear_failed_login,
+    get_failed_login_count,
+    RateLimiter
+)
+from .rate_limit_config import RATE_LIMITS
 
 
 # ---------------- LOGIN & DASHBOARD ---------------- #
@@ -59,42 +73,578 @@ def index(request):
     context = {
         'currentpage': 'index',
     }
-    return render(request, 'User/index.html', {'currentpage': 'index'})
+    return render(request, 'Portal/index.html', {'currentpage': 'index'})
 
 
 
+@rate_limit('login', max_requests=5, time_window=60)
 def login_view(request):
-    """Handle user login with Django's authentication system"""
+    """Handle user login - initial authentication with rate limiting"""
     if request.method == 'POST':
         school_id = request.POST.get('school_id', '').strip()
         password = request.POST.get('password', '').strip()
+
+        # ✅ Get identifier for failed attempt tracking
+        identifier = RateLimiter.get_client_ip(request)
+        
+        # ✅ Check failed login attempts
+        failed_count = get_failed_login_count(identifier)
+        if failed_count >= 5:
+            messages.error(request, 'Too many failed login attempts. Please try again in 30 minutes.')
+            return redirect('index')
 
         # Use Django's authenticate with custom backend
         user = authenticate(request, school_id=school_id, password=password)
 
         if user is not None:
-            # Use Django's login function
-            login(request, user)
+            # ✅ Clear failed attempts on successful authentication
+            clear_failed_login(identifier)
+            
+            # Generate 6-digit verification code
+            code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+            
+            # Delete any existing unverified login codes for this user
+            EmailVerification.objects.filter(
+                email=user.email, 
+                is_used=False,
+                first_name='LOGIN_2FA'
+            ).delete()
+            
+            # Create new verification record for login
+            expiry_time = timezone.now() + timedelta(minutes=15)
+            EmailVerification.objects.create(
+                email=user.email,
+                code=code,
+                first_name='LOGIN_2FA',
+                last_name=user.school_id,
+                expires_at=expiry_time
+            )
+            
+            # Send verification email
+            subject = 'PauliCode - Login Verification Code'
+            message = f"""
+            <html>
+                <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+                    <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h2 style="color: #4CD964; text-align: center;">Login Verification</h2>
+                        <p>Hi {user.first_name},</p>
+                        <p>Someone is trying to log in to your PauliCode account. To complete the login process, please use the verification code below:</p>
+                        <div style="background-color: #f0f0f0; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
+                            <h1 style="color: #4CD964; letter-spacing: 5px; margin: 0;">{code}</h1>
+                        </div>
+                        <p>This code will expire in 15 minutes.</p>
+                        <p>If you didn't try to log in, please ignore this email and consider changing your password.</p>
+                        <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                        <p style="color: #888; font-size: 12px; text-align: center;">
+                            PauliCode - Interactive Coding Platform<br>
+                            © 2025 All rights reserved.
+                        </p>
+                    </div>
+                </body>
+            </html>
+            """
+            
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    html_message=message,
+                    fail_silently=False,
+                )
+                
+                request.session['login_email'] = user.email
+                request.session['login_school_id'] = user.school_id
+                
+                messages.success(request, f"Verification code sent to {user.email}")
+                return render(request, 'Portal/index.html', {
+                    'currentpage': 'index',
+                    'show_verification': True,
+                    'email': user.email
+                })
+                
+            except Exception as e:
+                logger.error(f"Failed to send login verification email: {str(e)}")
+                messages.error(request, "Failed to send verification code. Please try again.")
+                return redirect('index')
+        else:
+            # ✅ Record failed attempt
+            attempts = record_failed_login(identifier)
+            remaining = max(0, 5 - attempts)
+            
+            messages.error(request, f"Invalid School ID or Password. {remaining} attempts remaining.")
+            return redirect('index')
 
-            # Store additional session data for convenience
+    return render(request, 'Portal/index.html', {'currentpage': 'index'})
+
+@csrf_exempt
+def send_verification_code(request):
+    """
+    ✅ NEW UNIFIED VERSION - Handles BOTH signup and login
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Method not allowed'}, status=405)
+    
+    try:
+        data = json.loads(request.body)
+        email = data.get('email', '').strip()
+        context = data.get('context', 'signup')  # 'signup' or 'login'
+        
+        # Validate email
+        if not email:
+            return JsonResponse({'success': False, 'message': 'Email is required'})
+        
+        # Context-specific logic
+        if context == 'login':
+            # LOGIN: Get user by email
+            try:
+                user = User.objects.get(email=email)
+                verification_first_name = 'LOGIN_2FA'
+                verification_last_name = user.school_id
+                email_subject = 'PauliCode - Login Verification Code'
+                email_greeting = f"Hi {user.first_name},"
+                email_body = "Someone is trying to log in to your PauliCode account. To complete the login process, please use the verification code below:"
+            except User.DoesNotExist:
+                return JsonResponse({'success': False, 'message': 'User not found'})
+        
+        else:  # context == 'signup'
+            # SIGNUP: Get details from request
+            first_name = data.get('first_name', '').strip()
+            last_name = data.get('last_name', '').strip()
+            
+            # Check if email already exists
+            if User.objects.filter(email=email).exists():
+                return JsonResponse({'success': False, 'message': 'Email already registered'})
+            
+            verification_first_name = first_name
+            verification_last_name = last_name
+            email_subject = 'PauliCode - Email Verification Code'
+            email_greeting = f"Hi {first_name},"
+            email_body = "Thank you for signing up! To complete your registration, please use the verification code below:"
+        
+        # Generate 6-digit code
+        code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+        
+        # Delete old unverified codes for this email/context
+        EmailVerification.objects.filter(
+            email=email,
+            first_name=verification_first_name,
+            is_used=False
+        ).delete()
+        
+        # Create new verification record
+        expiry_time = timezone.now() + timedelta(minutes=15)
+        verification = EmailVerification.objects.create(
+            email=email,
+            code=code,
+            first_name=verification_first_name,
+            last_name=verification_last_name,
+            expires_at=expiry_time
+        )
+        
+        # Send email
+        message = f"""
+        <html>
+            <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h2 style="color: #4CD964; text-align: center;">{email_subject.split(' - ')[1]}</h2>
+                    <p>{email_greeting}</p>
+                    <p>{email_body}</p>
+                    <div style="background-color: #f0f0f0; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
+                        <h1 style="color: #4CD964; letter-spacing: 5px; margin: 0;">{code}</h1>
+                    </div>
+                    <p>This code will expire in 15 minutes.</p>
+                    <p>If you didn't request this code, please ignore this email.</p>
+                    <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                    <p style="color: #888; font-size: 12px; text-align: center;">
+                        PauliCode - Interactive Coding Platform<br>
+                        © 2025 All rights reserved.
+                    </p>
+                </div>
+            </body>
+        </html>
+        """
+        
+        try:
+            send_mail(
+                email_subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [email],
+                html_message=message,
+                fail_silently=False,
+            )
+            logger.info(f"Verification code sent to {email} for {context}")
+        except Exception as e:
+            verification.delete()
+            error_msg = str(e)
+            logger.error(f"Failed to send email to {email}: {error_msg}")
+            return JsonResponse({'success': False, 'message': f'Failed to send email: {error_msg}'})
+        
+        return JsonResponse({'success': True, 'message': 'Verification code sent'})
+    
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON decode error: {str(e)}")
+        return JsonResponse({'success': False, 'message': 'Invalid request format'})
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"Error in send_verification_code: {error_msg}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return JsonResponse({'success': False, 'message': f'Error: {error_msg}'})
+
+
+@csrf_exempt
+@rate_limit_api('verify_code', max_requests=10, time_window=60)
+def verify_code(request):
+    """
+    Handles BOTH signup and login verification with rate limiting
+    Detects context automatically based on request type
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Method not allowed'}, status=405)
+    
+    try:
+        # Detect context: JSON = login, FormData = signup
+        content_type = request.content_type or ''
+        
+        if 'application/json' in content_type:
+            # ========== LOGIN VERIFICATION ==========
+            data = json.loads(request.body)
+            verification_code = ''.join(data.get('verification_code', '').strip().split())
+            
+            # Get session data
+            email = request.session.get('login_email')
+            school_id = request.session.get('login_school_id')
+            
+            if not email or not school_id:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Session expired. Please try logging in again.'
+                })
+            
+            # Look up verification
+            verification = EmailVerification.objects.filter(
+                email=email,
+                first_name='LOGIN_2FA',
+                last_name=school_id,
+                is_used=False
+            ).order_by('-created_at').first()
+            
+            if not verification:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'No verification code found. Please request a new one.'
+                })
+            
+            # Verify code
+            if verification.code != verification_code:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Invalid verification code'
+                })
+            
+            if not verification.is_valid():
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Verification code has expired'
+                })
+            
+            # Complete login
+            user = User.objects.get(school_id=school_id)
+            user.backend = 'User.auth_backend.SchoolIDBackend'
+            
+            login(request, user)
+            
+            # Mark as used
+            verification.is_used = True
+            verification.save()
+            
+            # Set session
             request.session['school_id'] = user.school_id
             request.session['first_name'] = user.first_name
             request.session['last_name'] = user.last_name
             request.session['user_image'] = user.user_image.url if user.user_image else None
             request.session['user_type'] = user.user_type
-
-            messages.success(request, f"Welcome back, {user.first_name}!")
-
-            if user.user_type == 'Teacher':
-                return redirect('dashboard')
-            else:
-                return redirect('StudentDashboard')
+            
+            # Clear temp session
+            request.session.pop('login_email', None)
+            request.session.pop('login_school_id', None)
+            
+            redirect_url = reverse('dashboard') if user.user_type == 'Teacher' else reverse('StudentDashboard')
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Login successful',
+                'redirect_url': redirect_url
+            })
+        
         else:
-            messages.error(request, "Invalid School ID or Password.")
-            return redirect('index')
+            # ========== SIGNUP VERIFICATION ==========
+            email = request.POST.get('email', '').strip()
+            first_name = request.POST.get('first_name', '').strip()
+            last_name = request.POST.get('last_name', '').strip()
+            school = request.POST.get('school', '').strip()
+            school_id = request.POST.get('school_id', '').strip()
+            user_type = request.POST.get('user_type', '').strip()
+            password = request.POST.get('password', '').strip()
+            verification_code_raw = request.POST.get('verification_code', '').strip()
+            confirmation_code = ''.join(verification_code_raw.split())
+            
+            # Validate
+            if not all([email, first_name, last_name, school, school_id, user_type, password, confirmation_code]):
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Missing required fields'
+                })
+            
+            # Email validation
+            if school == 'spus' and not email.endswith('spus.edu.ph'):
+                return JsonResponse({
+                    'success': False,
+                    'message': 'For St. Paul University, email must contain spus.edu.ph'
+                })
+            
+            # Look up verification
+            verification = EmailVerification.objects.filter(
+                email=email,
+                first_name=first_name,
+                is_used=False
+            ).order_by('-created_at').first()
+            
+            if not verification:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'No verification code found. Please request a new code.'
+                })
+            
+            # Verify code
+            if verification.code != confirmation_code:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Invalid verification code'
+                })
+            
+            if not verification.is_valid():
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Verification code has expired or already been used'
+                })
+            
+            # Check duplicates
+            if User.objects.filter(school_id=school_id).exists():
+                return JsonResponse({
+                    'success': False,
+                    'message': 'School ID already exists'
+                })
+            
+            if User.objects.filter(email=email).exists():
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Email already registered'
+                })
+            
+            # Create user
+            user = User.objects.create_user(
+                school_id=school_id,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                school=school,
+                password=password,
+                user_type=user_type.capitalize(),
+            )
+            
+            # Mark as used
+            verification.is_used = True
+            verification.save()
+            
+            logger.info(f"User created: {school_id} ({email})")
+            
+            # Send welcome email
+            try:
+                subject = 'Welcome to PauliCode'
+                welcome_message = f"""
+                <html>
+                    <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+                        <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <h2 style="color: #4CD964; text-align: center;">Welcome to PauliCode!</h2>
+                            <p>Hi {first_name} {last_name},</p>
+                            <p>Your account has been successfully created!</p>
+                            <p><strong>Your Details:</strong></p>
+                            <ul>
+                                <li>School ID: {school_id}</li>
+                                <li>Email: {email}</li>
+                                <li>User Type: {user_type}</li>
+                            </ul>
+                            <p><a href="{request.build_absolute_uri('/')}" style="display: inline-block; background-color: #4CD964; color: black; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to PauliCode</a></p>
+                            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                            <p style="color: #888; font-size: 12px; text-align: center;">
+                                PauliCode - Interactive Coding Platform<br>
+                                © 2025 All rights reserved.
+                            </p>
+                        </div>
+                    </body>
+                </html>
+                """
+                
+                send_mail(
+                    subject,
+                    welcome_message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    html_message=welcome_message,
+                    fail_silently=True,
+                )
+            except Exception as e:
+                logger.warning(f"Failed to send welcome email: {e}")
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Account created successfully',
+                'redirect_url': reverse('index')
+            })
+    
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid request format'
+        })
+    except User.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'message': 'User not found'
+        })
+    except IntegrityError as e:
+        logger.error(f"IntegrityError: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': 'An account with this information already exists'
+        })
+    except Exception as e:
+        logger.error(f"Error in verify_code: {str(e)}", exc_info=True)
+        return JsonResponse({
+            'success': False,
+            'message': 'An error occurred. Please try again.'
+        })
 
-    return render(request, 'User/index.html', {'currentpage': 'index'})
 
+@csrf_exempt
+@rate_limit_api('resend_code', max_requests=3, time_window=300)
+def resend_verification_code(request):
+    """
+    Resends codes for BOTH signup and login with strict rate limiting
+    3 requests per 5 minutes
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Method not allowed'}, status=405)
+    
+    try:
+        data = json.loads(request.body)
+        context = data.get('context', 'login')
+        
+        if context == 'login':
+            # LOGIN: Get from session
+            email = request.session.get('login_email')
+            school_id = request.session.get('login_school_id')
+            
+            if not email or not school_id:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Session expired. Please try logging in again.'
+                })
+            
+            user = User.objects.get(school_id=school_id, email=email)
+            
+            verification_first_name = 'LOGIN_2FA'
+            verification_last_name = school_id
+            greeting = f"Hi {user.first_name},"
+            subject = 'PauliCode - Login Verification Code (Resent)'
+        
+        else:  # signup
+            email = data.get('email', '').strip()
+            first_name = data.get('first_name', '').strip()
+            last_name = data.get('last_name', '').strip()
+            
+            if not all([email, first_name]):
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Missing required information'
+                })
+            
+            verification_first_name = first_name
+            verification_last_name = last_name
+            greeting = f"Hi {first_name},"
+            subject = 'PauliCode - Email Verification Code (Resent)'
+        
+        # Generate new code
+        code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+        
+        # Delete old codes
+        EmailVerification.objects.filter(
+            email=email,
+            first_name=verification_first_name,
+            is_used=False
+        ).delete()
+        
+        # Create new record
+        expiry_time = timezone.now() + timedelta(minutes=15)
+        EmailVerification.objects.create(
+            email=email,
+            code=code,
+            first_name=verification_first_name,
+            last_name=verification_last_name,
+            expires_at=expiry_time
+        )
+        
+        # Send email
+        message = f"""
+        <html>
+            <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h2 style="color: #4CD964; text-align: center;">Verification Code</h2>
+                    <p>{greeting}</p>
+                    <p>Here is your new verification code:</p>
+                    <div style="background-color: #f0f0f0; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
+                        <h1 style="color: #4CD964; letter-spacing: 5px; margin: 0;">{code}</h1>
+                    </div>
+                    <p>This code will expire in 15 minutes.</p>
+                    <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                    <p style="color: #888; font-size: 12px; text-align: center;">
+                        PauliCode - Interactive Coding Platform<br>
+                        © 2025 All rights reserved.
+                    </p>
+                </div>
+            </body>
+        </html>
+        """
+        
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [email],
+            html_message=message,
+            fail_silently=False,
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'New verification code sent'
+        })
+    
+    except User.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'message': 'User not found'
+        })
+    except Exception as e:
+        logger.error(f"Error resending code: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': 'Failed to send code. Please try again.'
+        })
 
 
 
@@ -362,288 +912,17 @@ def logout_view(request):
 # ---------------- SIGNUP ---------------- #
 
 
+@rate_limit('signup', max_requests=3, time_window=300)
 def signup(request):
-    """Handle user registration - shows signup form"""
+    """Handle user registration with rate limiting - 3 attempts per 5 minutes"""
     if request.method == 'GET':
-        return render(request, 'User/sign-up.html', {'currentpage': 'sign-up'})
+        return render(request, 'Portal/sign-up.html', {'currentpage': 'sign-up'})
     
     # For POST requests, the frontend will handle the two-step process with AJAX
-    return render(request, 'User/sign-up.html', {'currentpage': 'sign-up'})
+    return render(request, 'Portal/sign-up.html', {'currentpage': 'sign-up'})
 
 
-@csrf_exempt
-def send_verification_code(request):
-    """Send verification code to email"""
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'message': 'Method not allowed'}, status=405)
-    
-    try:
-        data = json.loads(request.body)
-        email = data.get('email', '').strip()
-        first_name = data.get('first_name', '').strip()
-        last_name = data.get('last_name', '').strip()
-        
-        # Validate email
-        if not email:
-            return JsonResponse({'success': False, 'message': 'Email is required'})
-        
-        # Check if email already exists
-        if User.objects.filter(email=email).exists():
-            return JsonResponse({'success': False, 'message': 'Email already registered'})
-        
-        # Generate 6-digit verification code
-        import random
-        code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
-        
-        # Delete any existing unverified codes for this email
-        EmailVerification.objects.filter(email=email, is_used=False).delete()
-        
-        # Create new verification record
-        expiry_time = timezone.now() + timedelta(minutes=15)
-        verification = EmailVerification.objects.create(
-            email=email,
-            code=code,
-            first_name=first_name,
-            last_name=last_name,
-            expires_at=expiry_time
-        )
-        
-        # Send email with verification code
-        subject = 'PauliCode - Email Verification Code'
-        message = f"""
-        <html>
-            <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
-                <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                    <h2 style="color: #4CD964; text-align: center;">Welcome to PauliCode</h2>
-                    <p>Hi {first_name},</p>
-                    <p>Thank you for signing up! To complete your registration, please use the verification code below:</p>
-                    <div style="background-color: #f0f0f0; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
-                        <h1 style="color: #4CD964; letter-spacing: 5px; margin: 0;">{code}</h1>
-                    </div>
-                    <p>This code will expire in 15 minutes.</p>
-                    <p>If you didn't request this code, please ignore this email.</p>
-                    <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
-                    <p style="color: #888; font-size: 12px; text-align: center;">
-                        PauliCode - Interactive Coding Platform<br>
-                        © 2025 All rights reserved.
-                    </p>
-                </div>
-            </body>
-        </html>
-        """
-        
-        try:
-            send_mail(
-                subject,
-                message,
-                settings.DEFAULT_FROM_EMAIL,
-                [email],
-                html_message=message,
-                fail_silently=False,
-            )
-            logger.info(f"Verification code {code} sent to {email}")
-        except Exception as e:
-            # Delete the verification record if email fails
-            verification.delete()
-            error_msg = str(e)
-            logger.error(f"Failed to send email to {email}: {error_msg}")
-            return JsonResponse({'success': False, 'message': f'Failed to send email: {error_msg}'})
-        
-        return JsonResponse({'success': True, 'message': 'Verification code sent'})
-    
-    except json.JSONDecodeError as e:
-        logger.error(f"JSON decode error: {str(e)}")
-        return JsonResponse({'success': False, 'message': 'Invalid request format'})
-    except Exception as e:
-        error_msg = str(e)
-        logger.error(f"Error in send_verification_code: {error_msg}")
-        import traceback
-        logger.error(traceback.format_exc())
-        return JsonResponse({'success': False, 'message': f'Error: {error_msg}'})
 
-
-@csrf_exempt
-def verify_code_and_signup(request):
-    """Verify code and create user account"""
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'message': 'Method not allowed'}, status=405)
-    
-    try:
-        # ✅ Get form data and clean it properly
-        email = request.POST.get('email', '').strip()
-        first_name = request.POST.get('first_name', '').strip()
-        last_name = request.POST.get('last_name', '').strip()
-        school = request.POST.get('school', '').strip()
-        school_id = request.POST.get('school_id', '').strip()
-        user_type = request.POST.get('user_type', '').strip()
-        password = request.POST.get('password', '').strip()
-        
-        # ✅ Handle verification code - get first value if duplicate
-        verification_code_raw = request.POST.get('verification_code', '').strip()
-        
-        # ✅ Additional cleaning - remove any whitespace/newlines
-        confirmation_code = ''.join(verification_code_raw.split())
-        
-        # Log for debugging
-        logger.debug(f"POST data received: {dict(request.POST)}")
-        logger.debug(f"Email: {email}")
-        logger.debug(f"Verification code: '{confirmation_code}' (length: {len(confirmation_code)})")
-        
-        # ✅ Validate required fields
-        if not all([email, first_name, last_name, school, school_id, user_type, password, confirmation_code]):
-            missing = []
-            if not email: missing.append('email')
-            if not first_name: missing.append('first_name')
-            if not last_name: missing.append('last_name')
-            if not school: missing.append('school')
-            if not school_id: missing.append('school_id')
-            if not user_type: missing.append('user_type')
-            if not password: missing.append('password')
-            if not confirmation_code: missing.append('verification_code')
-            
-            logger.warning(f"Missing required fields: {missing}")
-            return JsonResponse({
-                'success': False, 
-                'message': f'Missing required fields: {", ".join(missing)}'
-            })
-        
-        # ✅ Validate email format based on school
-        if school == 'spus' and not email.endswith('spus.edu.ph'):
-            return JsonResponse({
-                'success': False, 
-                'message': 'For St. Paul University, email must contain spus.edu.ph'
-            })
-        
-        # ✅ Look up verification record
-        try:
-            # Get most recent unused verification for this email
-            verification = EmailVerification.objects.filter(
-                email=email,
-                is_used=False
-            ).order_by('-created_at').first()
-            
-            if not verification:
-                logger.warning(f"No verification record found for email: {email}")
-                return JsonResponse({
-                    'success': False, 
-                    'message': 'No verification code found. Please request a new code.'
-                })
-            
-            logger.debug(f"Found verification: code='{verification.code}' vs input='{confirmation_code}'")
-            logger.debug(f"Match: {verification.code == confirmation_code}")
-            logger.debug(f"Expired: {verification.is_expired()}, Used: {verification.is_used}")
-            
-            # ✅ Check if codes match (case-sensitive, exact match)
-            if verification.code != confirmation_code:
-                logger.warning(f"Code mismatch: DB='{verification.code}' vs Input='{confirmation_code}'")
-                return JsonResponse({
-                    'success': False, 
-                    'message': 'Invalid verification code'
-                })
-            
-            # ✅ Check if code is still valid
-            if not verification.is_valid():
-                logger.warning(f"Code invalid: expired={verification.is_expired()}, used={verification.is_used}")
-                return JsonResponse({
-                    'success': False, 
-                    'message': 'Verification code has expired or already been used'
-                })
-        
-        except Exception as e:
-            logger.error(f"Error retrieving verification: {str(e)}", exc_info=True)
-            return JsonResponse({
-                'success': False, 
-                'message': 'Error validating verification code'
-            })
-        
-        # ✅ Check if user already exists
-        if User.objects.filter(school_id=school_id).exists():
-            return JsonResponse({
-                'success': False, 
-                'message': 'School ID already exists'
-            })
-        
-        if User.objects.filter(email=email).exists():
-            return JsonResponse({
-                'success': False, 
-                'message': 'Email already registered'
-            })
-        
-        # ✅ Create user account
-        try:
-            user = User.objects.create_user(
-                school_id=school_id,
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-                school=school,
-                password=password,
-                user_type=user_type.capitalize(),
-            )
-            
-            # ✅ Mark verification as used
-            verification.is_used = True
-            verification.save()
-            
-            logger.info(f"User created successfully: {school_id} ({email})")
-            
-            # Send welcome email
-            try:
-                subject = 'Welcome to PauliCode'
-                welcome_message = f"""
-                <html>
-                    <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
-                        <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                            <h2 style="color: #4CD964; text-align: center;">Welcome to PauliCode!</h2>
-                            <p>Hi {first_name} {last_name},</p>
-                            <p>Your account has been successfully created! You can now log in with your credentials.</p>
-                            <p><strong>Your Details:</strong></p>
-                            <ul>
-                                <li>School ID: {school_id}</li>
-                                <li>Email: {email}</li>
-                                <li>User Type: {user_type}</li>
-                            </ul>
-                            <p><a href="{request.build_absolute_uri('/')}" style="display: inline-block; background-color: #4CD964; color: black; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to PauliCode</a></p>
-                            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
-                            <p style="color: #888; font-size: 12px; text-align: center;">
-                                PauliCode - Interactive Coding Platform<br>
-                                © 2025 All rights reserved.
-                            </p>
-                        </div>
-                    </body>
-                </html>
-                """
-                
-                send_mail(
-                    subject,
-                    welcome_message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [email],
-                    html_message=welcome_message,
-                    fail_silently=True,
-                )
-            except Exception as email_error:
-                logger.warning(f"Failed to send welcome email: {email_error}")
-            
-            return JsonResponse({
-                'success': True,
-                'message': 'Account created successfully',
-                'redirect_url': reverse('index')  # Changed from 'login' to 'index'
-            })
-        
-        except IntegrityError as e:
-            logger.error(f"IntegrityError creating user: {str(e)}")
-            return JsonResponse({
-                'success': False, 
-                'message': 'An account with this information already exists'
-            })
-    
-    except Exception as e:
-        logger.error(f"Unexpected error in verify_code_and_signup: {str(e)}", exc_info=True)
-        return JsonResponse({
-            'success': False, 
-            'message': 'An error occurred. Please try again.'
-        })
 
 
 
@@ -844,7 +1123,7 @@ def classDetails(request, class_id):
         'user': teacher,
         'class': class_obj,
         'problems': problems,
-        'students': students,
+        'students': students,-----
         'resources': resources_list,
         'query': query,
         'filter_type': filter_type,

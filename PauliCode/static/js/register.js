@@ -171,47 +171,47 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Send verification code via AJAX
-  function sendVerificationCode(email, firstName, lastName) {
-    signupBtn.disabled = true;
-    signupBtn.textContent = 'Sending code...';
-    
-    fetch(sendCodeUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-      },
-      body: JSON.stringify({
-        email: email,
-        first_name: firstName,
-        last_name: lastName,
-      })
+function sendVerificationCode(email, firstName, lastName) {
+  signupBtn.disabled = true;
+  signupBtn.textContent = 'Sending code...';
+  
+  fetch(sendCodeUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+    },
+    body: JSON.stringify({
+      email: email,
+      first_name: firstName,
+      last_name: lastName,
+      context: 'signup'  // ✅ ADD THIS LINE
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        verificationPending = true;
-        verificationSection.style.display = 'block';
-        verifyBtnContainer.style.display = 'block';
-        
-        // ✅ Use readonly instead of disabled
-        lockFormInputs(true);
-        
-        signupBtn.style.display = 'none';
-        showAlert('Verification code sent to ' + email, 'success');
-      } else {
-        showError('email', '* Failed to send code: ' + (data.message || 'Please try again'));
-        signupBtn.disabled = false;
-        signupBtn.textContent = 'Create Account';
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      showError('email', '* Error sending code. Please try again.');
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      verificationPending = true;
+      verificationSection.style.display = 'block';
+      verifyBtnContainer.style.display = 'block';
+      
+      lockFormInputs(true);
+      
+      signupBtn.style.display = 'none';
+      showAlert('Verification code sent to ' + email, 'success');
+    } else {
+      showError('email', '* Failed to send code: ' + (data.message || 'Please try again'));
       signupBtn.disabled = false;
       signupBtn.textContent = 'Create Account';
-    });
-  }
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showError('email', '* Error sending code. Please try again.');
+    signupBtn.disabled = false;
+    signupBtn.textContent = 'Create Account';
+  });
+}
   
   // ✅ NEW: Lock form inputs using readonly (preserves values in submission)
   function lockFormInputs(lock) {

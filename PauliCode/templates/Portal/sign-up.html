@@ -50,7 +50,7 @@
             <!-- Form -->
                   <form role="form" method="POST" id="signupForm" enctype="multipart/form-data"
                         data-send-code-url="{% url 'send-verification-code' %}"
-                        data-verify-url="{% url 'verify-code-and-signup' %}">
+                        data-verify-url="{% url 'verify-code' %}">
                     {% csrf_token %}
                     
                     <!-- First Name and Last Name -->

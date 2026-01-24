@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+{% load static %}
+<!--index.html with 2FA-->
+{% block content %}
+<style>
+  body {
+    background-color: #242323 !important;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  
+  .main-content {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  @media (max-width: 576px) {
+    .main-content {
+      padding: 15px;
+    }
+  }
+  
+  .page-header {
+    width: 100%;
+  }
+
+  .login-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* Tablet and larger screens */
+  @media (min-width: 768px) {
+    .login-container {
+      max-width: 450px;
+    }
+  }
+
+  /* Small tablets */
+  @media (min-width: 576px) and (max-width: 767px) {
+    .login-container {
+      max-width: 420px;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 575px) {
+    .login-container {
+      max-width: 100%;
+    }
+  }
+
+  .verification-section {
+    background-color: #1a1a1a;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #404040;
+  }
+
+  .verification-info {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .verification-text {
+    color: #9ca3af;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .error-message {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+  }
+
+  .resend-link {
+    color: #4CD964;
+    text-decoration: none;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .resend-link:hover {
+    text-decoration: underline;
+  }
+
+  .card {
+    background-color: #2d2d2d;
+    border: 1px solid #404040;
+    border-radius: 20px;
+  }
+
+  .card-body {
+    padding: 2rem 1.5rem;
+  }
+
+  @media (min-width: 576px) {
+    .card-body {
+      padding: 2.5rem 2rem;
+    }
+  }
+</style>
+
+<main class="main-content">
+  <section class="page-header">
+    <div class="login-container">
+      <!-- Main Sign In Card -->
+      <div class="card">
+        <div class="card-body">
+          <!-- Logo -->
+          <div class="text-center mb-4">
+            <img src="{% static 'img/PCodeLogo.svg' %}" alt="PauliCode Logo" style="max-width: 180px; width: 60%;">
+          </div>
+          
+          <!-- Welcome Text -->
+          <div class="text-center mb-4">
+            <h4 class="text-white font-weight-bolder mb-2">Welcome Back!</h4>
+            <p class="text-muted mb-0 small">Sign in to continue your learning journey</p>
+          </div>
+          
+          <!-- Login Form (Hidden when verification is shown) -->
+          <form role="form" method="POST" action="{% url 'login' %}" id="loginForm" {% if show_verification %}style="display: none;"{% endif %}>
+            {% csrf_token %}
+            
+            <div class="mb-3">
+              <label class="text-white mb-2 small font-weight-bold">School ID</label>
+              <input type="text" 
+                    name="school_id" 
+                    id="school_id"
+                    class="form-control" 
+                    placeholder="Enter your School ID" 
+                    required
+                    style="background-color: #1a1a1a; border: 1px solid #404040; border-radius: 10px; color: white; padding: 0.75rem 1rem;">
+            </div>
+
+            <div class="mb-3">
+              <label class="text-white mb-2 small font-weight-bold">Password</label>
+              <input type="password" 
+                    name="password" 
+                    id="password"
+                    class="form-control" 
+                    placeholder="Enter your password" 
+                    required
+                    style="background-color: #1a1a1a; border: 1px solid #404040; border-radius: 10px; color: white; padding: 0.75rem 1rem;">
+            </div>
+
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="rememberMe">
+              <label class="form-check-label text-white small" for="rememberMe">Remember me</label>
+            </div>
+
+            <div class="text-center">
+              <button type="submit" 
+                      class="btn w-100 mb-3 font-weight-bold" 
+                      style="background-color: #4CD964; border-radius: 10px; border: none; color: black; padding: 0.75rem;">
+                Log In
+              </button>
+            </div>
+
+            <div class="text-center">
+              <a href="#" class="text-decoration-none small" style="color: #4CD964;">Forgot Password?</a>
+            </div>
+          </form>
+
+          <!-- Verification Section (Hidden by default) -->
+          <div id="verification-section" {% if not show_verification %}style="display: none;"{% endif %}>
+            <div class="verification-info">
+              <p class="verification-text">A verification code has been sent to <strong id="user-email">{{ email }}</strong></p>
+            </div>
+            
+            <form id="verifyForm">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label class="text-white mb-2 small font-weight-bold">Verification Code</label>
+                <input type="text" 
+                      name="verification_code" 
+                      id="verification_code"
+                      class="form-control" 
+                      placeholder="Enter 6-digit code" 
+                      maxlength="6"
+                      pattern="[0-9]{6}"
+                      required
+                      style="background-color: #1a1a1a; border: 1px solid #404040; border-radius: 10px; color: white; padding: 0.75rem 1rem;">
+                <span class="error-message" id="verification_code_error"></span>
+              </div>
+
+              <div class="text-center mb-3">
+                <button type="submit" 
+                        class="btn w-100 font-weight-bold" 
+                        id="verify-btn"
+                        style="background-color: #4CD964; border-radius: 10px; border: none; color: black; padding: 0.75rem;">
+                  Verify & Login
+                </button>
+              </div>
+
+              <div class="text-center">
+                <a href="#" class="resend-link" id="resend-code">Didn't receive code? Resend</a>
+              </div>
+
+              <div class="text-center mt-3">
+                <a href="{% url 'index' %}" class="text-decoration-none small" style="color: #4CD964;">← Back to Login</a>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+      
+      <!-- Sign Up Card -->
+      <div class="card mt-3">
+        <div class="card-body text-center" style="padding: 1.5rem;">
+          <p class="text-muted mb-2 small">Don't have an account?</p>
+          <a type="button" class="btn w-100 font-weight-bold" href='{% url 'signup' %}' style="background-color: transparent; border: 2px solid #4CD964; border-radius: 10px; color: #4CD964; padding: 0.75rem;">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+  
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const verifyForm = document.getElementById('verifyForm');
+    const resendLink = document.getElementById('resend-code');
+    const verifyBtn = document.getElementById('verify-btn');
+    const verificationCodeInput = document.getElementById('verification_code');
+    const errorSpan = document.getElementById('verification_code_error');
+
+    // Handle verification form submission
+    if (verifyForm) {
+      verifyForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const code = verificationCodeInput.value.trim();
+        
+        if (code.length !== 6) {
+          errorSpan.textContent = 'Please enter a 6-digit code';
+          return;
+        }
+
+        verifyBtn.disabled = true;
+        verifyBtn.textContent = 'Verifying...';
+        errorSpan.textContent = '';
+
+        try {
+          const response = await fetch('{% url "verify-code" %}', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+              verification_code: code
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            window.location.href = data.redirect_url;
+          } else {
+            errorSpan.textContent = data.message || 'Invalid verification code';
+            verifyBtn.disabled = false;
+            verifyBtn.textContent = 'Verify & Login';
+          }
+        } catch (error) {
+          errorSpan.textContent = 'An error occurred. Please try again.';
+          verifyBtn.disabled = false;
+          verifyBtn.textContent = 'Verify & Login';
+        }
+      });
+    }
+
+    // Handle resend code
+    if (resendLink) {
+      resendLink.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        resendLink.textContent = 'Sending...';
+
+        try {
+          const response = await fetch('{% url "resend-verification-code" %}', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+              context: 'login'
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            alert('New verification code sent to your email!');
+            resendLink.textContent = 'Didn\'t receive code? Resend';
+          } else {
+            alert(data.message || 'Failed to resend code');
+            resendLink.textContent = 'Didn\'t receive code? Resend';
+          }
+        } catch (error) {
+          alert('An error occurred. Please try again.');
+          resendLink.textContent = 'Didn\'t receive code? Resend';
+        }
+      });
+    }
+  });
+</script>
+  
+  <!--   Core JS Files   -->
+  {%include "partials/scripts.html"%}
+{% endblock %}

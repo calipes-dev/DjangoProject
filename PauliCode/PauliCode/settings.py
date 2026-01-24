@@ -15,8 +15,9 @@ pymysql.version_info = (2, 2, 4, "final", 0)
 
 from pathlib import Path
 import os
+from User.rate_limit_config import RATE_LIMIT_CACHE_CONFIG_DEV, RATE_LIMIT_CACHE_CONFIG
 
-
+CACHES = RATE_LIMIT_CACHE_CONFIG_DEV
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -186,6 +187,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # JAZZMIN ADMIN CUSTOMIZATION - FIXED VERSION
 # ============================================
 
+# ============================================
+# JAZZMIN ADMIN CUSTOMIZATION - FIXED VERSION WITH SIDEBAR
+# ============================================
+
 JAZZMIN_SETTINGS = {
     # ============================================
     # SITE BRANDING
@@ -205,7 +210,7 @@ JAZZMIN_SETTINGS = {
     "user_avatar": None,
     "show_sidebar": True,
     "navigation_expanded": True,
-    "hide_apps": ["Announcement"],  # ✅ Hide Announcement from sidebar
+    "hide_apps": [],  # ✅ Don't hide anything - let custom_links control visibility
     "hide_models": [],
     
     # ============================================
@@ -214,56 +219,134 @@ JAZZMIN_SETTINGS = {
     "topmenu_links": [
         {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
         {"name": "View Site", "url": "/", "new_window": True},
-        {"model": "User.User"},
-        {"app": "User"},
-        {"app": "Announcement"},  # ✅ Adds Announcement dropdown to navbar
     ],
     
     # ============================================
-    # SIDE MENU ORDERING - FIXED
-    # ============================================
-    "order_with_respect_to": [
-        "User",
-        "User.user",
-        "User.class",
-        "User.problem",
-        "User.problemtestcase",
-        "User.submission",
-        "User.enrollment",
-        "User.chathistory",
-        "User.problemresource",
-        "User.emailverification",
-        "auth",
-    ],
-    
-    # ============================================
-    # CUSTOM LINKS IN SIDEBAR
+    # SIDE MENU - CUSTOM STRUCTURE (THIS IS THE KEY FIX!)
     # ============================================
     "custom_links": {
         "User": [
             {
-                "name": "View All Students",
+                "name": "👥 All Users",
                 "url": "admin:User_user_changelist",
                 "icon": "fas fa-users",
                 "permissions": ["User.view_user"]
             },
             {
-                "name": "View All Classes",
+                "name": "👨‍🎓 Students Only",
+                "url": "admin:User_user_changelist?user_type__exact=Student",
+                "icon": "fas fa-user-graduate",
+                "permissions": ["User.view_user"]
+            },
+            {
+                "name": "👨‍🏫 Teachers Only",
+                "url": "admin:User_user_changelist?user_type__exact=Teacher",
+                "icon": "fas fa-chalkboard-teacher",
+                "permissions": ["User.view_user"]
+            },
+        ],
+        "Classes": [
+            {
+                "name": "📚 All Classes",
                 "url": "admin:User_class_changelist",
-                "icon": "fas fa-chalkboard",
+                "icon": "fas fa-book",
                 "permissions": ["User.view_class"]
             },
             {
-                "name": "System Reports",
-                "url": "report",
-                "icon": "fas fa-chart-line",
+                "name": "👥 Enrollments",
+                "url": "admin:User_enrollment_changelist",
+                "icon": "fas fa-user-plus",
+                "permissions": ["User.view_enrollment"]
+            },
+        ],
+        "Problems": [
+            {
+                "name": "📝 All Problems",
+                "url": "admin:User_problem_changelist",
+                "icon": "fas fa-tasks",
+                "permissions": ["User.view_problem"]
+            },
+            {
+                "name": "🧪 Test Cases",
+                "url": "admin:User_problemtestcase_changelist",
+                "icon": "fas fa-flask",
+                "permissions": ["User.view_problemtestcase"]
+            },
+            {
+                "name": "📄 Submissions",
+                "url": "admin:User_submission_changelist",
+                "icon": "fas fa-file-code",
                 "permissions": ["User.view_submission"]
+            },
+            {
+                "name": "📎 Resources",
+                "url": "admin:User_problemresource_changelist",
+                "icon": "fas fa-paperclip",
+                "permissions": ["User.view_problemresource"]
+            },
+        ],
+        "Announcements": [
+            {
+                "name": "📢 All Announcements",
+                "url": "admin:Announcement_announcement_changelist",
+                "icon": "fas fa-bullhorn",
+                "permissions": ["Announcement.view_announcement"]
+            },
+            {
+                "name": "📌 Pinned",
+                "url": "admin:Announcement_announcement_changelist?is_pinned__exact=1",
+                "icon": "fas fa-thumbtack",
+                "permissions": ["Announcement.view_announcement"]
+            },
+            {
+                "name": "💬 Comments",
+                "url": "admin:Announcement_announcementcomment_changelist",
+                "icon": "fas fa-comments",
+                "permissions": ["Announcement.view_announcementcomment"]
+            },
+            {
+                "name": "❤️ Reactions",
+                "url": "admin:Announcement_announcementreaction_changelist",
+                "icon": "fas fa-heart",
+                "permissions": ["Announcement.view_announcementreaction"]
+            },
+            {
+                "name": "🚨 Reports",
+                "url": "admin:Announcement_announcementreport_changelist",
+                "icon": "fas fa-flag",
+                "permissions": ["Announcement.view_announcementreport"]
+            },
+            {
+                "name": "📎 Files",
+                "url": "admin:Announcement_announcementfile_changelist",
+                "icon": "fas fa-file-alt",
+                "permissions": ["Announcement.view_announcementfile"]
+            },
+            {
+                "name": "🔗 Links",
+                "url": "admin:Announcement_announcementlink_changelist",
+                "icon": "fas fa-link",
+                "permissions": ["Announcement.view_announcementlink"]
+            },
+        ],
+        "System": [
+            {
+                "name": "💬 Chat History",
+                "url": "admin:User_chathistory_changelist",
+                "icon": "fas fa-comment-dots",
+                "permissions": ["User.view_chathistory"]
+            },
+            {
+                "name": "✉️ Email Verifications",
+                "url": "admin:User_emailverification_changelist",
+                "icon": "fas fa-envelope",
+                "permissions": ["User.view_emailverification"]
             },
         ],
     },
     
     # ============================================
-    # ICONS FOR MODELS
+    # ICONS FOR MODELS (Keep these for detail pages)
     # ============================================
     "icons": {
         "auth": "fas fa-users-cog",
