@@ -114,45 +114,52 @@
     height: 14px;
   }
 
-  /* ========== User Info Card ========== */
-  .user-info-card {
-    position: relative;
+  /* ========== Menu Toggle Button (Burger / X) ========== */
+  .menu-toggle-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.25rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-
-  .user-info-card:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .profile-img {
     width: 36px;
     height: 36px;
-    object-fit: cover;
-    border: 2px solid #3b82f6;
-    transition: transform 0.2s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    flex-shrink: 0;
   }
 
-  .profile-img:hover {
-    transform: scale(1.05);
+  .menu-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #3b82f6;
+  }
+
+  .menu-toggle-btn.is-open {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+
+  .menu-toggle-btn.is-open:hover {
+    background: rgba(239, 68, 68, 0.25);
+    color: #ef4444;
+  }
+
+  .menu-toggle-btn i {
+    transition: transform 0.25s ease, opacity 0.2s ease;
   }
 
   /* ========== Profile Dropdown ========== */
   .profile-dropdown {
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 0;
+    position: fixed;
+    top: 60px;
+    right: 1rem;
     background: #1f2937;
     border: 1px solid #374151;
     border-radius: 0.75rem;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    min-width: 200px;
+    min-width: 210px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
@@ -232,7 +239,7 @@
     }
 
     .mobile-toggle {
-    display: block !important;  /* Explicitly show burger on mobile */
+      display: block !important;
     }
 
     body {
@@ -284,57 +291,54 @@
       height: 12px;
     }
 
-    .user-info-card {
-      padding: 0.2rem;
-    }
-
-    .profile-img {
-      width: 32px !important;
-      height: 32px !important;
+    .menu-toggle-btn {
+      width: 32px;
+      height: 32px;
+      font-size: 1rem;
     }
 
     .profile-dropdown {
       min-width: 180px;
+      right: 0.75rem;
     }
   }
 
   @media (min-width: 769px) {
-  .mobile-toggle {
-    display: none !important;
+    .mobile-toggle {
+      display: none !important;
+    }
   }
-}
 
   @media (max-width: 576px) {
-  /* Hide only text content inside spans, keep icons */
-  .btn-custom span {
-    font-size: 0;
-  }
-  
-  .btn-custom span i {
-    font-size: 14px;
-    margin: 0 !important;  /* Remove all margins from icons */
-  }
-  
-  .btn-custom {
-    padding: 0.4rem;
-    justify-content: center;
-    min-width: 30px;
-    height: 30px;
-  }
+    .btn-custom span {
+      font-size: 0;
+    }
 
-  .btn-custom img {
-    width: 14px;
-    height: 14px;
-  }
+    .btn-custom span i {
+      font-size: 14px;
+      margin: 0 !important;
+    }
 
-  .page-title {
-    font-size: 0.938rem;
-  }
+    .btn-custom {
+      padding: 0.4rem;
+      justify-content: center;
+      min-width: 30px;
+      height: 30px;
+    }
 
-  .search-wrapper {
-    max-width: 160px;
+    .btn-custom img {
+      width: 14px;
+      height: 14px;
+    }
+
+    .page-title {
+      font-size: 0.938rem;
+    }
+
+    .search-wrapper {
+      max-width: 160px;
+    }
   }
-}
 </style>
 
 <!-- Navbar -->
@@ -349,27 +353,23 @@
       <!-- Left Section: Mobile Toggle + Page Title -->
       <div class="d-flex align-items-center gap-2">
         <button class="mobile-toggle d-md-none" 
-        onclick="toggleSidebar()" 
-        aria-label="Toggle sidebar"
-        style="display: none;">
+                onclick="toggleSidebar()" 
+                aria-label="Toggle sidebar"
+                style="display: none;">
           <i class="fas fa-bars"></i>
         </button>
         
         <h6 class="page-title mb-0">
-          
-          
           {% if currentpage == 'dashboard' or currentpage == 'StudentDashboard' %}
             Dashboard
           {% endif %}
 
           {% if currentpage == 'StudentClass' or currentpage == 'MyClasses' %}
-
             {% if nav != 'student_class_details' and nav != 'classDetails' %}
             My Classes
             {% else %}
             Challenges
             {% endif %}
-
           {% endif %}
 
           {% if currentpage == 'report' %}
@@ -384,104 +384,99 @@
             Hall of Fame
           {% endif %}
 
-           {% if currentpage == 'announcement' %}
-           <i class="fas fa-circle-exclamation me-2 text-warning"></i> Heads-up!
+          {% if currentpage == 'announcement' %}
+            <i class="fas fa-circle-exclamation me-2 text-warning"></i> Heads-up!
           {% endif %}
         </h6>
       </div>
 
       <!-- Right Section: Dynamic Content -->
       <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
-  
-  <!-- Search Form - Show on specific pages -->
-  {% if currentpage == 'StudentClass' and nav != 'student_class_details' and nav != 'classDetails' %}
-    <form class="search-wrapper" method="GET">
-      <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
-             type="search" 
-             name="q" 
-             placeholder="Search classes..." 
-             value="{{ request.GET.q|default:'' }}"
-             aria-label="Search classes">
-      <button type="submit" class="border-0 bg-transparent search-icon" aria-label="Search">
-        <img src="{% static 'img/search.png' %}" alt="" style="width: 16px; height: 16px;">
-      </button>
-    </form>
-  {% endif %}
 
-  {% if currentpage == 'MyClasses' and nav != 'student_class_details' and nav != 'classDetails' %}
-    <form class="search-wrapper" method="GET">
-      <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
-             type="search" 
-             name="q" 
-             placeholder="Search classes..." 
-             value="{{ request.GET.q|default:'' }}"
-             aria-label="Search classes">
-      <i class="fa fa-search text-secondary search-icon"></i>
-    </form>
-  {% endif %}
+        <!-- Search Form -->
+        {% if currentpage == 'StudentClass' and nav != 'student_class_details' and nav != 'classDetails' %}
+          <form class="search-wrapper" method="GET">
+            <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
+                   type="search" 
+                   name="q" 
+                   placeholder="Search classes..." 
+                   value="{{ request.GET.q|default:'' }}"
+                   aria-label="Search classes">
+            <button type="submit" class="border-0 bg-transparent search-icon" aria-label="Search">
+              <img src="{% static 'img/search.png' %}" alt="" style="width: 16px; height: 16px;">
+            </button>
+          </form>
+        {% endif %}
 
-  {% if currentpage == 'report' %}
-    <form class="search-wrapper" method="GET" action="{% url 'report' %}">
-      <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
-             type="search" 
-             name="search" 
-             placeholder="Search by class title or code" 
-             value="{{ request.GET.search|default:'' }}"
-             aria-label="Search reports">
-      <i class="fa fa-search text-white search-icon"></i>
-    </form>
-  {% endif %}
+        {% if currentpage == 'MyClasses' and nav != 'student_class_details' and nav != 'classDetails' %}
+          <form class="search-wrapper" method="GET">
+            <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
+                   type="search" 
+                   name="q" 
+                   placeholder="Search classes..." 
+                   value="{{ request.GET.q|default:'' }}"
+                   aria-label="Search classes">
+            <i class="fa fa-search text-secondary search-icon"></i>
+          </form>
+        {% endif %}
 
-  <!-- Action Buttons - Show on specific pages -->
-  {% if currentpage == 'StudentClass' and nav != 'student_class_details' and nav != 'classDetails' %}
-    <button class="btn btn-primary btn-custom"
-            data-bs-toggle="modal" 
-            data-bs-target="#joinClassModal">
-      <i class="fa fa-plus"></i>
-      <span>Join Class</span>
-    </button>
-  {% endif %}
+        {% if currentpage == 'report' %}
+          <form class="search-wrapper" method="GET" action="{% url 'report' %}">
+            <input class="form-control form-control-sm bg-dark text-white border-0 search-input"
+                   type="search" 
+                   name="search" 
+                   placeholder="Search by class title or code" 
+                   value="{{ request.GET.search|default:'' }}"
+                   aria-label="Search reports">
+            <i class="fa fa-search text-white search-icon"></i>
+          </form>
+        {% endif %}
 
-  {% if currentpage == 'MyClasses' and nav != 'student_class_details' and nav != 'classDetails' %}
-    <button class="btn btn-success btn-custom me-4"
-            data-bs-toggle="modal" 
-            data-bs-target="#createClassModal">
-      <span><i class="fa fa-plus me-1"></i> Create Class</span>
-    </button>
-  {% endif %}
-
-  <!-- User Profile - Show on ALL pages -->
-  <div class="user-info-card" id="userInfoCard" onclick="toggleProfileDropdown(event)">
-    {% if user.user_image and user.user_image.url %}
-      <img src="{{ user.user_image.url }}" 
-           alt="Profile Picture" 
-           class="rounded-circle profile-img">
-    {% else %}
-      <img src="{% static 'img/image.png' %}" 
-           alt="Default Profile Picture" 
-           class="rounded-circle profile-img">
-    {% endif %}
-
-    <!-- Dropdown Menu -->
-    <div class="profile-dropdown" id="profileDropdown">
-      <div class="dropdown-header">
-        <p class="user-name">{{ user.first_name }} {{ user.last_name }}</p>
-        <p class="user-id">{{ user.school_id }}</p>
-      </div>
-      <div class="dropdown-menu-custom">
-        <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
-          {% csrf_token %}
-          <button type="submit" class="dropdown-item-custom logout">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
+        <!-- Action Buttons -->
+        {% if currentpage == 'StudentClass' and nav != 'student_class_details' and nav != 'classDetails' %}
+          <button class="btn btn-primary btn-custom"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#joinClassModal">
+            <i class="fa fa-plus"></i>
+            <span>Join Class</span>
           </button>
-        </form>
+        {% endif %}
+
+        {% if currentpage == 'MyClasses' and nav != 'student_class_details' and nav != 'classDetails' %}
+          <button class="btn btn-success btn-custom me-4"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#createClassModal">
+            <span><i class="fa fa-plus me-1"></i> Create Class</span>
+          </button>
+        {% endif %}
+
+        <!-- Burger / X Menu Toggle -->
+        <button class="menu-toggle-btn" 
+                id="menuToggleBtn" 
+                onclick="toggleProfileDropdown(event)" 
+                aria-label="Toggle menu"
+                aria-expanded="false">
+          <i class="fas fa-bars" id="menuToggleIcon"></i>
+        </button>
+
+        <!-- Dropdown Menu (detached from button, anchored via fixed positioning) -->
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="dropdown-header">
+            <p class="user-name">{{ user.first_name }} {{ user.last_name }}</p>
+            <p class="user-id">{{ user.school_id }}</p>
+          </div>
+          <div class="dropdown-menu-custom">
+            <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-item-custom logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
       </div>
-    </div>
-  </div>
-
-</div>
-
     </div>
   </div>
 </nav>
@@ -510,18 +505,41 @@
     });
   })();
 
-  // Toggle Profile Dropdown
+  // Toggle Profile Dropdown + Burger/X icon swap
   function toggleProfileDropdown(event) {
     event.stopPropagation();
     const dropdown = document.getElementById('profileDropdown');
-    dropdown?.classList.toggle('show');
+    const btn = document.getElementById('menuToggleBtn');
+    const icon = document.getElementById('menuToggleIcon');
+    const isOpen = dropdown.classList.contains('show');
+
+    if (isOpen) {
+      closeProfileDropdown();
+    } else {
+      dropdown.classList.add('show');
+      btn.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+      icon.classList.remove('fa-bars');
+      icon.classList.add('fa-times');
+    }
   }
 
-  // Toggle Sidebar
+  function closeProfileDropdown() {
+    const dropdown = document.getElementById('profileDropdown');
+    const btn = document.getElementById('menuToggleBtn');
+    const icon = document.getElementById('menuToggleIcon');
+
+    dropdown.classList.remove('show');
+    btn.classList.remove('is-open');
+    btn.setAttribute('aria-expanded', 'false');
+    icon.classList.remove('fa-times');
+    icon.classList.add('fa-bars');
+  }
+
+  // Toggle Sidebar (mobile)
   function toggleSidebar() {
     const sidebar = document.getElementById('sidenav-main');
     const backdrop = document.getElementById('sidebarBackdrop');
-    
     sidebar?.classList.toggle('show');
     backdrop?.classList.toggle('show');
   }
@@ -530,7 +548,6 @@
   function closeSidebar() {
     const sidebar = document.getElementById('sidenav-main');
     const backdrop = document.getElementById('sidebarBackdrop');
-    
     sidebar?.classList.remove('show');
     backdrop?.classList.remove('show');
   }
@@ -540,11 +557,12 @@
     // Close dropdown when clicking outside
     document.addEventListener('click', function(event) {
       const dropdown = document.getElementById('profileDropdown');
-      const userCard = document.getElementById('userInfoCard');
-      
+      const btn = document.getElementById('menuToggleBtn');
+
       if (dropdown?.classList.contains('show') && 
-          !userCard?.contains(event.target)) {
-        dropdown.classList.remove('show');
+          !btn?.contains(event.target) &&
+          !dropdown.contains(event.target)) {
+        closeProfileDropdown();
       }
     });
 

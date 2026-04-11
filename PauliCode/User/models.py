@@ -68,7 +68,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # User Information
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.EmailField(max_length=254, unique=True, null=True, blank=True)
+    email = models.EmailField(max_length=191, unique=True, null=True, blank=True) 
     school = models.CharField(max_length=20, choices=SCHOOL_CHOICES, default='others')
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
     user_image = models.ImageField(upload_to='profile_pic/', blank=True, null=True, default='profile_pic/default.png')
@@ -196,7 +196,7 @@ class Problem(models.Model):
     problem_id = models.AutoField(primary_key=True)
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='problems')
     teacher_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='problems_created')
-    problem_title = models.CharField(max_length=200)
+    problem_title = models.CharField(max_length=100)
     problem_description = models.TextField()
     problem_type = models.CharField(max_length=20, choices=PROBLEM_TYPE_CHOICES)
     total_score = models.IntegerField(default=100)
@@ -373,10 +373,11 @@ class ProblemResource(models.Model):
 # ============================================
 # Email Verification Model
 # ============================================
+# Email Verification Model
 class EmailVerification(models.Model):
     """Model to store email verification codes"""
     
-    email = models.EmailField()
+    email = models.EmailField(max_length=191)  # <= 191 for utf8mb4 safe index
     code = models.CharField(max_length=6)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -391,9 +392,7 @@ class EmailVerification(models.Model):
         return f"Verification for {self.email}"
     
     def is_expired(self):
-        """Check if verification code has expired (15 minutes)"""
         return timezone.now() > self.expires_at
     
     def is_valid(self):
-        """Check if code is still valid and not used"""
         return not self.is_expired() and not self.is_used

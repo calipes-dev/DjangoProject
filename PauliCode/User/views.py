@@ -1123,7 +1123,7 @@ def classDetails(request, class_id):
         'user': teacher,
         'class': class_obj,
         'problems': problems,
-        'students': students,-----
+        'students': students,
         'resources': resources_list,
         'query': query,
         'filter_type': filter_type,
@@ -1440,113 +1440,124 @@ def get_problem_details(request, problem_id):
 
 #----------------------Problem Deletion------------------------------------#
 
+@login_required(login_url='index')
 def delete_problem(request, problem_id):
+    from .models import Problem
     problem = get_object_or_404(Problem, pk=problem_id)
+ 
+    # Ownership check — teacher can only delete their own problems
+    school_id = request.session.get('school_id')
+    if not school_id or problem.class_id.teacher.school_id != school_id:
+        return JsonResponse({'error': 'Permission denied'}, status=403)
+ 
     class_id = problem.class_id.class_id
     problem.delete()
+    from django.contrib import messages
     messages.success(request, "Problem deleted successfully.")
     return redirect('classDetails', class_id=class_id)
 
 #----------------------Edit Problem-----------------------------------------#
+@login_required(login_url='index')
 def edit_problem(request, problem_id):
+    from .models import Problem, ProblemTestCase
+    from datetime import datetime
+    from django.contrib import messages
+ 
     problem = get_object_or_404(Problem, pk=problem_id)
+ 
+    # Ownership check
+    school_id = request.session.get('school_id')
+    if not school_id or problem.class_id.teacher.school_id != school_id:
+        return JsonResponse({'error': 'Permission denied'}, status=403)
+ 
     class_id = problem.class_id.class_id
-
+ 
     if request.method == "POST":
-        title = request.POST.get("problem_title", "").strip()
-        description = request.POST.get("problem_description", "").strip()
+        title        = request.POST.get("problem_title", "").strip()
+        description  = request.POST.get("problem_description", "").strip()
         problem_type = request.POST.get("problem_type", "").strip()
-        total_score = request.POST.get("total_score", "").strip()
-        time_limit = request.POST.get("time_limit", "").strip()
-        due_date = request.POST.get("due_date", "").strip()
-
+        total_score  = request.POST.get("total_score", "").strip()
+        time_limit   = request.POST.get("time_limit", "").strip()
+        due_date     = request.POST.get("due_date", "").strip()
+ 
         try:
-            problem.problem_title = title
+            problem.problem_title       = title
             problem.problem_description = description
-            problem.problem_type = problem_type
-            problem.total_score = int(total_score)
-            problem.time_limit = int(time_limit)
-            problem.due_date = datetime.fromisoformat(due_date)
+            problem.problem_type        = problem_type
+            problem.total_score         = int(total_score)
+            problem.time_limit          = int(time_limit)
+            problem.due_date            = datetime.fromisoformat(due_date)
             problem.save()
-
-            # Update only this problem's test cases
+ 
             ProblemTestCase.objects.filter(problem_id=problem.problem_id).delete()
             for i in range(3):
-                input_data = request.POST.get(f"input{i+1}", "").strip()
+                input_data  = request.POST.get(f"input{i+1}", "").strip()
                 output_data = request.POST.get(f"output{i+1}", "").strip()
                 if input_data or output_data:
                     ProblemTestCase.objects.create(
                         problem_id=problem,
                         input_data=input_data,
-                        expected_output=output_data
+                        expected_output=output_data,
                     )
-
+ 
             messages.success(request, f"Problem '{problem.problem_title}' updated successfully!")
         except Exception as e:
             messages.error(request, f"Update failed: {e}")
-
+ 
     return redirect('classDetails', class_id=class_id)
 
 
 # ---------- REPORT DASHBOARD ----------
+@login_required(login_url='index')
 def report(request):
-    if not request.session.get('school_id'):
-        messages.warning(request, "Please log in first.")
-        return redirect('index')
-
-    user = User.objects.get(school_id=request.session['school_id'])
+    from .models import User, Class, Problem, Submission, Enrollment
+    from django.db.models import Q
+ 
+    user = request.user   # request.user is reliable after @login_required
     search_query = request.GET.get('search', '').strip()
-
-    # Base classes depending on user type
+ 
     if user.user_type.lower() == 'teacher':
         classes = Class.objects.filter(teacher=user).order_by('class_id')
     else:
-        classes = Class.objects.filter(enrollments__student_id=user).distinct().order_by('class_id')
-
-    # Apply search filtering to classes
+        classes = Class.objects.filter(
+            enrollments__student_id=user
+        ).distinct().order_by('class_id')
+ 
     if search_query:
         classes = classes.filter(
             Q(title__icontains=search_query) |
             Q(class_code__icontains=search_query)
         )
-
-    # Problems related to the shown classes (exclude "Class Resources")
+ 
     problems = Problem.objects.filter(
         class_id__in=classes
     ).exclude(
         problem_title="Class Resources"
     ).select_related('class_id').order_by('problem_id')
-
-    # âœ… Get ALL submissions for these classes
+ 
     submissions = Submission.objects.select_related(
         'student_id', 'problem_id', 'problem_id__class_id'
     ).filter(
         problem_id__class_id__in=classes
     ).order_by('student_id__school_id', '-submitted_at')
-
-    # âœ… Get students enrolled in these classes
+ 
     students = User.objects.filter(
         user_type__iexact='student',
         enrollments__class_id__in=classes
     ).distinct().order_by('school_id')
-
-    # Summary counts
-    total_students = students.count()
-    total_submissions = submissions.count()
-    pending_reviews = submissions.filter(score__isnull=True).count()
-
+ 
     context = {
-        'user': user,
-        'classes': classes,
-        'problems': problems,
-        'students': students,
-        'submissions': submissions,
-        'total_students': total_students,
-        'total_submissions': total_submissions,
-        'pending_reviews': pending_reviews,
-        'currentpage': 'report',
-        'search_query': search_query,
-        'sidebar': 'teacher'
+        'user':              user,
+        'classes':           classes,
+        'problems':          problems,
+        'students':          students,
+        'submissions':       submissions,
+        'total_students':    students.count(),
+        'total_submissions': submissions.count(),
+        'pending_reviews':   submissions.filter(score__isnull=True).count(),
+        'currentpage':       'report',
+        'search_query':      search_query,
+        'sidebar':           'teacher',
     }
     return render(request, 'User/report.html', context)
 
@@ -1592,6 +1603,7 @@ def review_submission(request, submission_id):
 
 
 # ---------- DELETE SUBMISSION ----------
+@login_required(login_url='index')
 def delete_submission(request, submission_id):
     submission = get_object_or_404(Submission, submission_id=submission_id)
     submission.delete()
@@ -1859,6 +1871,7 @@ def student_class_details(request, class_id):
         return render(request, 'Students/student_class_details.html', context)
 
 #------------------Unenroll Function--------------------#
+@login_required(login_url='index')
 def unenroll_class(request, class_id):
     school_id = request.session.get('school_id')
     if not school_id:
@@ -2047,8 +2060,99 @@ def student_pending_tasks_api(request):
     })
 
 # External code runner API
-PISTON_URL = "https://emkc.org/api/v2/piston/execute"
+JUDGE0_URL = "https://judge0-ce.p.rapidapi.com"
 
+JUDGE0_HEADERS = {
+    "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
+    'x-rapidapi-key': "51eff1ec15mshf4256cee0f36011p10093cjsn45272a73fb25",  # <-- Replace this
+    "Content-Type": "application/json",
+}
+
+JUDGE0_LANG_MAP = {
+    "python":  71,   # Python 3.8.1
+    "python3": 71,
+    "c":       50,   # C (GCC 9.2.0)
+    "cpp":     54,   # C++ (GCC 9.2.0)
+    "java":    62,   # Java (OpenJDK 13.0.1)
+}
+
+def judge0_execute(language: str, code: str, stdin: str = "", timeout_sec: int = 5) -> dict:
+    """
+    Submit code to Judge0, poll until complete, return result dict:
+      {
+        "stdout": str,
+        "stderr": str,
+        "compile_error": str,
+        "error": str        # network / unexpected errors
+      }
+    """
+    lang_id = JUDGE0_LANG_MAP.get(language.lower(), 71)  # default Python
+ 
+    # Step 1 — Create submission (async, no wait)
+    payload = {
+        "language_id": lang_id,
+        "source_code": code,
+        "stdin": stdin or "",
+        "cpu_time_limit": timeout_sec,
+        "wall_time_limit": timeout_sec + 2,
+    }
+ 
+    try:
+        create_resp = requests.post(
+            f"{JUDGE0_URL}/submissions?base64_encoded=false&wait=false",
+            json=payload,
+            headers=JUDGE0_HEADERS,
+            timeout=15,
+        )
+        create_resp.raise_for_status()
+        token = create_resp.json().get("token")
+ 
+        if not token:
+            return _err("Judge0 did not return a submission token.")
+ 
+    except requests.RequestException as e:
+        return _err(f"Network error submitting to Judge0: {e}")
+ 
+    # Step 2 — Poll until finished (status id > 2 means done)
+    poll_url = f"{JUDGE0_URL}/submissions/{token}?base64_encoded=false&fields=stdout,stderr,compile_output,status,time,memory"
+    max_polls = 10
+    poll_interval = 0.8  # seconds
+ 
+    for _ in range(max_polls):
+        time.sleep(poll_interval)
+        try:
+            poll_resp = requests.get(poll_url, headers=JUDGE0_HEADERS, timeout=10)
+            poll_resp.raise_for_status()
+            result = poll_resp.json()
+        except requests.RequestException as e:
+            return _err(f"Network error polling Judge0: {e}")
+ 
+        status_id = result.get("status", {}).get("id", 0)
+ 
+        if status_id <= 2:
+            # 1 = In Queue, 2 = Processing — keep waiting
+            continue
+ 
+        # Done
+        stdout        = result.get("stdout") or ""
+        stderr        = result.get("stderr") or ""
+        compile_error = result.get("compile_output") or ""
+ 
+        # status_id 3 = Accepted; others are errors/TLE/MLE etc.
+        if status_id == 5:
+            return _err("Time Limit Exceeded.")
+        if status_id == 6:
+            return {"stdout": "", "stderr": "", "compile_error": compile_error, "error": ""}
+        if status_id in (7, 8, 9, 10, 11, 12):
+            return {"stdout": stdout, "stderr": stderr, "compile_error": compile_error, "error": ""}
+ 
+        return {"stdout": stdout, "stderr": stderr, "compile_error": compile_error, "error": ""}
+ 
+    return _err("Judge0 timed out waiting for result.")
+ 
+ 
+def _err(msg: str) -> dict:
+    return {"stdout": "", "stderr": "", "compile_error": "", "error": msg}
 # ---------------- PLAYGROUND PAGE ---------------- #
 @login_required(login_url='index')
 def playground(request, problem_id):
@@ -2082,63 +2186,45 @@ logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def submit_problem(request, problem_id):
-    """Handles BOTH manual and auto-submit with proper duplicate prevention"""
+    """Handles BOTH manual and auto-submit — Judge0 edition"""
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=400)
-
-    logger.info(f"Submission attempt for problem {problem_id}")
-    logger.info(f"Content-Type: {request.headers.get('Content-Type', 'Not set')}")
-
+ 
     school_id = request.session.get("school_id")
     if not school_id:
-        logger.warning("No school_id in session")
-        return JsonResponse({
-            "error": "Please log in first.",
-            "redirect_url": reverse("index")
-        }, status=401)
-
+        return JsonResponse(
+            {"error": "Please log in first.", "redirect_url": reverse("index")},
+            status=401,
+        )
+ 
     student = get_object_or_404(User, school_id=school_id)
     problem = get_object_or_404(Problem, pk=problem_id)
-
-    # âœ… CRITICAL: Check for existing submission FIRST
-    existing_submission = Submission.objects.filter(
-        problem_id=problem,
-        student_id=student
-    ).first()
-
-    if existing_submission:
-        logger.info(f"Duplicate submission blocked for student {school_id}")
-        return JsonResponse({
-            "success": False,
-            "error": "You have already submitted this problem.",
-            "score": existing_submission.score,
-            "already_submitted": True,
-            "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id])
-        }, status=400)
-
-    # Parse request body
+ 
+    # Block duplicate submissions early
+    existing = Submission.objects.filter(problem_id=problem, student_id=student).first()
+    if existing:
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "You have already submitted this problem.",
+                "score": existing.score,
+                "already_submitted": True,
+                "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id]),
+            },
+            status=400,
+        )
+ 
+    # Parse body
     try:
-        content_type = request.headers.get('Content-Type', '')
-        body_content = request.body.decode('utf-8')
-        logger.info(f"Request body preview: {body_content[:200]}")
-
-        data = json.loads(body_content)
-
-        code = (data.get("code") or "").strip()
-        language = (data.get("language") or "python").lower()
+        data = json.loads(request.body.decode("utf-8"))
+        code           = (data.get("code") or "").strip()
+        language       = (data.get("language") or "python").lower()
         is_auto_submit = data.get("auto_submit", False)
-        reason = data.get("reason", "Manual submission")
-
-        logger.info(f"Parsed - Auto-submit: {is_auto_submit}, Reason: {reason}, Code length: {len(code)}")
-
+        reason         = data.get("reason", "Manual submission")
     except (json.JSONDecodeError, UnicodeDecodeError) as e:
-        logger.error(f"JSON decode error: {str(e)}")
-        return JsonResponse({
-            "error": f"Invalid data format: {str(e)}",
-            "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id])
-        }, status=400)
-
-    # Validate code
+        return JsonResponse({"error": f"Invalid data format: {e}"}, status=400)
+ 
+    # Handle empty code (auto-submit only)
     if not code:
         if is_auto_submit:
             Submission.objects.create(
@@ -2146,313 +2232,214 @@ def submit_problem(request, problem_id):
                 student_id=student,
                 code="// Auto-submitted with no code",
                 score=0,
-                submitted_at=timezone.now()
+                submitted_at=timezone.now(),
             )
-            return JsonResponse({
-                "success": True,
-                "message": f"Auto-submitted ({reason}): No code provided",
-                "score": 0,
-                "passed": 0,
-                "total": 0,
-                "result_summary": "No code was submitted.",
-                "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id])
-            })
-        else:
-            return JsonResponse({
-                "error": "Code cannot be empty.",
-                "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id])
-            }, status=400)
-
-    # Get test cases
+            return JsonResponse(
+                {
+                    "success": True,
+                    "message": f"Auto-submitted ({reason}): No code provided",
+                    "score": 0,
+                    "passed": 0,
+                    "total": 0,
+                    "result_summary": "No code was submitted.",
+                    "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id]),
+                }
+            )
+        return JsonResponse({"error": "Code cannot be empty."}, status=400)
+ 
     test_cases = ProblemTestCase.objects.filter(problem_id=problem)
     if not test_cases.exists():
-        return JsonResponse({
-            "error": "No test cases found for this problem.",
-            "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id])
-        }, status=404)
-
-    # Execute test cases
+        return JsonResponse({"error": "No test cases found for this problem."}, status=404)
+ 
+    # Run each test case through Judge0
     passed = 0
-    total = test_cases.count()
+    total  = test_cases.count()
     result_lines = []
-
-    # Map language to Piston format
-    lang_map = {
-        "python": "python3",
-        "python3": "python3",
-        "c": "c",
-        "cpp": "cpp",
-        "java": "java",
-    }
-    piston_lang = lang_map.get(language, "python3")
-
+ 
     for i, tc in enumerate(test_cases, start=1):
-        payload = {
-            "language": piston_lang,
-            "version": "*",
-            "files": [{"name": "main", "content": code}],
-            "stdin": tc.input_data or "",
-        }
-        try:
-            response = requests.post(
-                "https://emkc.org/api/v2/piston/execute",
-                json=payload,
-                timeout=10
-            )
-            result = response.json()
-
-            run_data = result.get("run", {})
-            output = (run_data.get("output", "") or "").strip()
-            expected = (tc.expected_output or "").strip()
-
-            if output == expected:
-                passed += 1
-                result_lines.append(f"âœ… Test {i}: Passed")
-            else:
-                result_lines.append(f"âŒ Test {i}: Failed")
-
-        except requests.RequestException as e:
-            result_lines.append(f"âŒ Test {i}: Error (Execution failed)")
-
-    # Calculate score
-    score = int((passed / total) * problem.total_score) if total > 0 else 0
+        result = judge0_execute(language, code, stdin=tc.input_data or "")
+ 
+        if result["error"]:
+            result_lines.append(f"❌ Test {i}: Error — {result['error']}")
+            continue
+ 
+        if result["compile_error"]:
+            result_lines.append(f"❌ Test {i}: Compilation Error")
+            continue
+ 
+        output   = (result["stdout"] or "").strip()
+        expected = (tc.expected_output or "").strip()
+ 
+        if output == expected:
+            passed += 1
+            result_lines.append(f"✅ Test {i}: Passed")
+        else:
+            result_lines.append(f"❌ Test {i}: Failed")
+ 
+    score          = int((passed / total) * problem.total_score) if total else 0
     result_summary = "\n".join(result_lines)
-
-    # âœ… Create submission (with double-check to prevent race conditions)
+ 
+    # Save (guard against race condition)
     try:
         submission, created = Submission.objects.get_or_create(
             problem_id=problem,
             student_id=student,
-            defaults={
-                'code': code,
-                'score': score,
-                'submitted_at': timezone.now()
-            }
+            defaults={"code": code, "score": score, "submitted_at": timezone.now()},
         )
-
         if not created:
-            return JsonResponse({
-                "success": False,
-                "error": "Submission already exists (detected race condition)",
-                "score": submission.score,
-                "already_submitted": True,
-                "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id])
-            }, status=400)
-
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Submission already exists (race condition).",
+                    "score": submission.score,
+                    "already_submitted": True,
+                    "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id]),
+                },
+                status=400,
+            )
     except Exception as e:
-        return JsonResponse({
-            "error": f"Database error: {str(e)}",
-            "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id])
-        }, status=500)
-
+        return JsonResponse({"error": f"Database error: {e}"}, status=500)
+ 
     submit_type = "Auto-submitted" if is_auto_submit else "Submitted"
-    return JsonResponse({
-        "success": True,
-        "message": f"{submit_type} successfully. Score: {score}/{problem.total_score}",
-        "score": score,
-        "passed": passed,
-        "total": total,
-        "result_summary": result_summary,
-        "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id])
-    })
-
+    return JsonResponse(
+        {
+            "success": True,
+            "message": f"{submit_type} successfully. Score: {score}/{problem.total_score}",
+            "score": score,
+            "passed": passed,
+            "total": total,
+            "result_summary": result_summary,
+            "redirect_url": reverse("student_class_details", args=[problem.class_id.class_id]),
+        }
+    )
 
 # ---------------- RUN & CHECK CODE (Testing only) ---------------- #
-# Replace the run_playground_code function in views.py with this fixed version
+
 
 @csrf_exempt
 def run_playground_code(request):
-    """For testing code without submitting - FIXED VERSION"""
+    """Test code without submitting — Judge0 edition"""
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=400)
-
+ 
     tmp_dir = None
     try:
-        data = json.loads(request.body)
-        code = data.get("code", "")
-        language = (data.get("language", "python") or "python").lower()
+        data       = json.loads(request.body)
+        code       = data.get("code", "")
+        language   = (data.get("language", "python") or "python").lower()
         check_mode = data.get("check_mode", False)
         problem_id = data.get("problem_id")
         stdin_data = data.get("stdin", "")
-
+ 
         if not code.strip():
             return JsonResponse({"error": "Code cannot be empty."}, status=400)
-
         if not problem_id:
             return JsonResponse({"error": "Problem ID is required."}, status=400)
-
+ 
         problem = get_object_or_404(Problem, pk=problem_id)
+ 
+        # Write to temp file so execute_source can read it (keeps signature compatible)
+        import tempfile, os, shutil
         tmp_dir = tempfile.mkdtemp(prefix="code_run_")
-
         extensions = {"python": "main.py", "c": "main.c", "cpp": "main.cpp", "java": "Main.java"}
         source_path = os.path.join(tmp_dir, extensions.get(language, "main.py"))
-
         with open(source_path, "w", encoding="utf-8") as f:
             f.write(code)
-
-        # âœ… Test case checking mode
+ 
+        # ── CHECK MODE (run against test cases) ──────────────────────────────
         if check_mode:
-            testcases = list(ProblemTestCase.objects.filter(problem_id=problem))
+            testcases   = list(ProblemTestCase.objects.filter(problem_id=problem))
             total_cases = len(testcases)
-
-            if total_cases == 0:
-                return JsonResponse({
-                    "success": False,
-                    "error": "No test cases found for this problem."
-                }, status=404)
-
-            results = []
+ 
+            if not total_cases:
+                return JsonResponse({"success": False, "error": "No test cases found."}, status=404)
+ 
+            results      = []
             passed_count = 0
-
+ 
             for i, tc in enumerate(testcases, start=1):
-                expected = (tc.expected_output or "").strip()
                 raw_input = (tc.input_data or "").strip()
-
-                exec_res = execute_source(language, source_path, stdin_data=raw_input + "\n")
-
+                expected  = (tc.expected_output or "").strip()
+ 
+                exec_res = execute_source(language, source_path, stdin_data=raw_input)
+ 
                 if exec_res.get("error"):
-                    results.append(f"âŒ Test {i}: {exec_res['error']}")
+                    results.append(f"❌ Test {i}: {exec_res['error']}")
                     continue
-
                 if exec_res.get("compile_error"):
-                    results.append(f"âŒ Test {i}: Compilation Error\n{exec_res['compile_error']}")
+                    results.append(f"❌ Test {i}: Compilation Error\n{exec_res['compile_error']}")
                     continue
-
                 if exec_res.get("stderr"):
-                    results.append(f"âŒ Test {i}: Runtime Error\n{exec_res['stderr']}")
+                    results.append(f"❌ Test {i}: Runtime Error\n{exec_res['stderr']}")
                     continue
-
+ 
                 output = (exec_res.get("stdout") or "").strip()
-
-                # Determine if test case is hidden
+ 
                 is_hidden = (
                     (total_cases == 1) or
                     (total_cases == 2 and i == 2) or
                     (total_cases == 3 and i == 3)
                 )
-
-                if is_hidden:
-                    if output == expected:
-                        results.append(f"âœ… Test {i}: Passed (Hidden Case)")
-                        passed_count += 1
-                    else:
-                        results.append(f"âŒ Test {i}: Failed (Hidden Case)")
+ 
+                if output == expected:
+                    passed_count += 1
+                    label = "Passed (Hidden Case)" if is_hidden else "Passed"
+                    results.append(f"✅ Test {i}: {label}")
                 else:
-                    if output == expected:
-                        results.append(f"âœ… Test {i}: Passed")
-                        passed_count += 1
+                    if is_hidden:
+                        results.append(f"❌ Test {i}: Failed (Hidden Case)")
                     else:
                         results.append(
-                            f"âŒ Test {i}: Failed\n"
+                            f"❌ Test {i}: Failed\n"
                             f"Input: {raw_input}\n"
                             f"Expected: {expected}\n"
                             f"Got: {output}"
                         )
-
-            # âœ… CRITICAL FIX: Return success=True
-            return JsonResponse({
-                "success": True,  # â† This was missing!
-                "result_summary": "\n".join(results),
-                "total_score": passed_count * 10,
-                "passed": passed_count,
-                "total": total_cases
-            })
-
-        # Manual Run Mode (not check mode)
-        exec_res = execute_source(language, source_path, stdin_data=stdin_data + "\n")
-
-        return JsonResponse({
-            "success": True,  # â† Also add here for consistency
-            "output": exec_res.get("stdout", "No output."),
-            "stderr": exec_res.get("stderr", ""),
-            "compile_error": exec_res.get("compile_error", ""),
-            "error": exec_res.get("error", "")
-        })
-
+ 
+            return JsonResponse(
+                {
+                    "success": True,
+                    "result_summary": "\n".join(results),
+                    "total_score": passed_count * 10,
+                    "passed": passed_count,
+                    "total": total_cases,
+                }
+            )
+ 
+        # ── MANUAL RUN MODE ───────────────────────────────────────────────────
+        exec_res = execute_source(language, source_path, stdin_data=stdin_data)
+        return JsonResponse(
+            {
+                "success": True,
+                "output": exec_res.get("stdout") or "No output.",
+                "stderr": exec_res.get("stderr", ""),
+                "compile_error": exec_res.get("compile_error", ""),
+                "error": exec_res.get("error", ""),
+            }
+        )
+ 
     except json.JSONDecodeError as e:
-        return JsonResponse({
-            "success": False,
-            "error": f"Invalid JSON data: {str(e)}"
-        }, status=400)
+        return JsonResponse({"success": False, "error": f"Invalid JSON: {e}"}, status=400)
     except Problem.DoesNotExist:
-        return JsonResponse({
-            "success": False,
-            "error": "Problem not found."
-        }, status=404)
+        return JsonResponse({"success": False, "error": "Problem not found."}, status=404)
     except Exception as e:
         import traceback
-        error_trace = traceback.format_exc()
-        print(f"[ERROR] run_playground_code: {str(e)}")
-        print(error_trace)
-        return JsonResponse({
-            "success": False,
-            "error": f"Server error: {str(e)}"
-        }, status=500)
+        traceback.print_exc()
+        return JsonResponse({"success": False, "error": f"Server error: {e}"}, status=500)
     finally:
         if tmp_dir and os.path.exists(tmp_dir):
             shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
 def execute_source(language, source_path, stdin_data="", timeout_sec=5):
-    """Executes code safely via Piston API"""
-    PISTON_URL = "https://emkc.org/api/v2/piston/execute"
-
-    with open(source_path, "r", encoding="utf-8") as f:
-        code = f.read()
-
-    lang_map = {
-        "python": "python3",
-        "python3": "python3",
-        "c": "c",
-        "cpp": "cpp",
-        "java": "java",
-    }
-    lang = lang_map.get(language.lower(), "python3")
-
-    payload = {
-        "language": lang,
-        "version": "*",
-        "files": [{"name": "main", "content": code}],
-        "stdin": stdin_data or "",
-    }
 
     try:
-        res = requests.post(PISTON_URL, json=payload, timeout=timeout_sec + 2)
-
-        if "application/json" not in res.headers.get("Content-Type", ""):
-            return {
-                "stdout": "",
-                "stderr": "",
-                "compile_error": "",
-                "error": f"âš ï¸ Non-JSON from Piston ({res.status_code}): {res.text[:200]}"
-            }
-
-        data = res.json()
-
-        if res.status_code != 200:
-            return {
-                "stdout": "",
-                "stderr": "",
-                "compile_error": "",
-                "error": f"âš ï¸ Piston API error {res.status_code}: {data}"
-            }
-
-        run_data = data.get("run", {})
-        compile_data = data.get("compile", {})
-
-        return {
-            "stdout": run_data.get("stdout", ""),
-            "stderr": run_data.get("stderr", ""),
-            "compile_error": compile_data.get("stderr", ""),
-            "error": "",
-        }
-
-    except requests.Timeout:
-        return {"stdout": "", "stderr": "", "compile_error": "", "error": "â±ï¸ Timed out."}
-    except requests.RequestException as e:
-        return {"stdout": "", "stderr": "", "compile_error": "", "error": f"ðŸŒ Request error: {e}"}
-    except Exception as e:
-        return {"stdout": "", "stderr": "", "compile_error": "", "error": f"âš ï¸ Unexpected: {e}"}
+        with open(source_path, "r", encoding="utf-8") as f:
+            code = f.read()
+    except OSError as e:
+        return _err(f"Could not read source file: {e}")
+ 
+    return judge0_execute(language, code, stdin=stdin_data, timeout_sec=timeout_sec)
 
 
 #----------------------Universal Playground--------------------------#
@@ -2544,90 +2531,57 @@ def get_playground_resources(request):
 
 @csrf_exempt
 def run_test_code(request):
-    """Execute code with CodeChum-style output formatting"""
+    """Universal playground code execution — Judge0 edition"""
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=400)
-
+ 
     try:
-        data = json.loads(request.body)
-        code = data.get("code", "").strip()
-        language = (data.get("language", "python") or "python").lower()
+        data       = json.loads(request.body)
+        code       = data.get("code", "").strip()
+        language   = (data.get("language", "python") or "python").lower()
         stdin_data = data.get("stdin", "")
-
+ 
         if not code:
             return JsonResponse({"error": "Code cannot be empty."}, status=400)
-
-        # Parse input values
-        input_values = []
-        if stdin_data:
-            if '\n' in stdin_data:
-                input_values = [v.strip() for v in stdin_data.split('\n') if v.strip()]
-            else:
-                input_values = [v.strip() for v in stdin_data.split() if v.strip()]
-
-        # Fix Java class name
+ 
+        # Fix Java class name before sending
         if language == "java":
             code = fix_java_class_name(code)
-
-        # Language configurations
-        lang_config = {
-            "python": {"lang": "python", "version": "3.10.0", "file": "main.py"},
-            "c": {"lang": "c", "version": "10.2.0", "file": "main.c"},
-            "cpp": {"lang": "c++", "version": "10.2.0", "file": "main.cpp"},
-            "java": {"lang": "java", "version": "15.0.2", "file": "Main.java"},
-        }
-        config = lang_config.get(language, lang_config["python"])
-
-        # Execute via Piston API
-        payload = {
-            "language": config["lang"],
-            "version": config["version"],
-            "files": [{"name": config["file"], "content": code}],
-            "stdin": stdin_data,
-            "compile_timeout": 10000,
-            "run_timeout": 3000,
-            "compile_memory_limit": -1,
-            "run_memory_limit": -1
-        }
-
-        PISTON_URL = "https://emkc.org/api/v2/piston/execute"
-        response = requests.post(PISTON_URL, json=payload, timeout=15)
-
-        if "application/json" not in response.headers.get("Content-Type", ""):
-            return JsonResponse({
-                "error": f"Non-JSON response ({response.status_code})"
-            }, status=500)
-
-        result = response.json()
-        if response.status_code != 200:
-            return JsonResponse({"error": f"Execution error: {result}"}, status=500)
-
-        run_data = result.get("run", {})
-        compile_data = result.get("compile", {})
-        raw_output = run_data.get("stdout", "")
-
-        # Format output like CodeChum
+ 
+        # Parse input values for CodeChum-style formatting
+        input_values = []
+        if stdin_data:
+            if "\n" in stdin_data:
+                input_values = [v.strip() for v in stdin_data.split("\n") if v.strip()]
+            else:
+                input_values = [v.strip() for v in stdin_data.split() if v.strip()]
+ 
+        result = judge0_execute(language, code, stdin=stdin_data)
+ 
+        if result["error"]:
+            return JsonResponse({"error": result["error"]}, status=500)
+ 
+        raw_output     = result.get("stdout", "")
         formatted_output = format_codechum_style(raw_output, input_values, code, language)
-
-        return JsonResponse({
-            "success": True,
-            "output": formatted_output,
-            "stderr": run_data.get("stderr", ""),
-            "compile_error": compile_data.get("stderr", ""),
-            "exit_code": run_data.get("code", 0)
-        })
-
+ 
+        return JsonResponse(
+            {
+                "success": True,
+                "output": formatted_output,
+                "stderr": result.get("stderr", ""),
+                "compile_error": result.get("compile_error", ""),
+                "exit_code": 0,
+            }
+        )
+ 
     except requests.Timeout:
         return JsonResponse({"error": "Code execution timed out."}, status=408)
-    except requests.RequestException as e:
-        return JsonResponse({"error": f"Network error: {str(e)}"}, status=500)
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON data."}, status=400)
     except Exception as e:
         import traceback
-        print(f"[ERROR] {str(e)}")
-        print(traceback.format_exc())
-        return JsonResponse({"error": f"Server error: {str(e)}"}, status=500)
+        traceback.print_exc()
+        return JsonResponse({"error": f"Server error: {e}"}, status=500)
 
 
 def fix_java_class_name(code):
@@ -2834,20 +2788,20 @@ SYSTEM_PROMPT_OPTIMIZED = """You are Paulibot, an intelligent AI assistant exclu
 
 1. **TOPIC FILTERING:**
 You MUST ONLY answer questions related to:
-âœ… Programming (Python, C, C++, Java, JavaScript, etc.)
-âœ… Computer Science concepts (algorithms, data structures, complexity, etc.)
-âœ… Software development (debugging, testing, version control, etc.)
-âœ… Web development (HTML, CSS, frameworks, databases, etc.)
-âœ… IT concepts (networks, security, systems, DevOps, etc.)
+ Programming (Python, C, C++, Java, JavaScript, etc.),
+ Computer Science concepts (algorithms, data structures, complexity, etc.),
+ Software development (debugging, testing, version control, etc.),
+ Web development (HTML, CSS, frameworks, databases, etc.),
+ IT concepts (networks, security, systems, DevOps, etc.)
 
-âŒ REFUSE to answer questions about:
+ REFUSE to answer questions about:
 - General knowledge, trivia, entertainment, news, health, history, or non-technical topics
 
 **Response when asked off-topic:**
-"I can only help with programming and computer science topics. Please ask me something about coding! ðŸ’»"
+"I can only help with programming and computer science topics. Please ask me something about coding! 💻"
 
 2. **RESPONSE LENGTH (CRITICAL - LOW TOKEN LIMIT):**
-âš ï¸ **KEEP ALL RESPONSES CONCISE** - You have limited tokens
+   **KEEP ALL RESPONSES CONCISE** - You have limited tokens
 - Maximum 200 words per response
 - Use short sentences
 - Get straight to the point

@@ -1,321 +1,512 @@
 {% extends "base.html" %}
 {% load static %}
-<!--index.html with 2FA-->
+<!--index.html with 2FA - Redesigned v2-->
 {% block content %}
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Share+Tech+Mono&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #4CD964;
+    --green-dim: rgba(76, 217, 100, 0.10);
+    --green-glow: rgba(76, 217, 100, 0.22);
+    --green-border: rgba(76, 217, 100, 0.28);
+    --surface-0: #111111;
+    --surface-1: #181818;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.13);
+    --text-primary: #efefef;
+    --text-secondary: #717171;
+    --text-muted: #404040;
+    --radius-md: 12px;
+    --radius-xl: 22px;
+  }
+
   body {
-    background-color: #242323 !important;
-    margin: 0;
-    padding: 0;
+    background-color: var(--surface-0) !important;
+    font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
   }
-  
-  .main-content {
+
+  /* Scanline overlay — techy */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .page-wrap {
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  
-  @media (max-width: 576px) {
-    .main-content {
-      padding: 15px;
-    }
-  }
-  
-  .page-header {
-    width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px 16px;
+    position: relative;
   }
 
-  .login-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
+  .page-wrap::before {
+    content: '';
+    position: fixed; top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(ellipse at center, rgba(76,217,100,0.055) 0%, transparent 65%);
+    pointer-events: none; z-index: 0;
   }
 
-  /* Tablet and larger screens */
-  @media (min-width: 768px) {
-    .login-container {
-      max-width: 450px;
-    }
+  .login-wrapper {
+    width: 100%; max-width: 420px;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.5s cubic-bezier(.22,.68,0,1.2) both;
   }
 
-  /* Small tablets */
-  @media (min-width: 576px) and (max-width: 767px) {
-    .login-container {
-      max-width: 420px;
-    }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* Mobile */
-  @media (max-width: 575px) {
-    .login-container {
-      max-width: 100%;
-    }
+  /* ── SHARED CARD ── */
+  .card-main, .card-signup {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    position: relative; overflow: hidden;
+    transition: border-color 0.35s, box-shadow 0.35s;
   }
 
-  .verification-section {
-    background-color: #1a1a1a;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #404040;
+  .card-main::before, .card-signup::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(76,217,100,0.45), transparent);
+    opacity: 0.55; transition: opacity 0.35s;
   }
 
-  .verification-info {
-    text-align: center;
-    margin-bottom: 15px;
+  .card-main:hover, .card-signup:hover {
+    border-color: var(--green-border);
+    box-shadow: 0 0 0 1px rgba(76,217,100,0.07), 0 8px 40px rgba(76,217,100,0.07);
   }
 
-  .verification-text {
-    color: #9ca3af;
-    font-size: 14px;
-    margin: 0;
+  .card-main:hover::before, .card-signup:hover::before { opacity: 1; }
+
+  /* Cursor glow layer */
+  .card-glow {
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0; transition: opacity 0.4s;
+    z-index: 0;
   }
 
-  .error-message {
-    color: #ef4444;
-    font-size: 12px;
-    margin-top: 5px;
+  .card-main:hover .card-glow,
+  .card-signup:hover .card-glow { opacity: 1; }
+
+  .card-inner { position: relative; z-index: 1; }
+
+  /* ── MAIN CARD ── */
+  .card-main { padding: 32px 32px 36px; margin-bottom: 10px; }
+
+  @media (max-width: 480px) {
+    .card-main  { padding: 26px 20px 30px; }
+    .card-signup { padding: 22px 20px !important; }
+  }
+
+  /* ── LOGO ROW ── */
+  .logo-wrap {
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 26px; padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+    gap: 14px;
+  }
+
+  .logo-wrap img { height: 60px; width: auto; }
+
+  .logo-line {
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(76,217,100,0.18));
+  }
+  .logo-line.right { background: linear-gradient(270deg, transparent, rgba(76,217,100,0.18)); }
+
+  /* ── HEADINGS ── */
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 21px; font-weight: 700;
+    color: var(--text-primary);
+    text-align: center; margin-bottom: 5px;
+    letter-spacing: -0.3px;
+  }
+
+  .card-subtitle {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    text-align: center; margin-bottom: 26px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* ── FIELDS ── */
+  .field { margin-bottom: 16px; }
+
+  .field label {
     display: block;
+    font-size: 10.5px; font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: 'Share Tech Mono', monospace;
   }
 
-  .resend-link {
-    color: #4CD964;
-    text-decoration: none;
-    font-size: 13px;
+  .field input[type="text"],
+  .field input[type="password"] {
+    width: 100%;
+    background: var(--surface-0);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px; padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .field input:focus {
+    border-color: rgba(76,217,100,0.5);
+    box-shadow: 0 0 0 3px rgba(76,217,100,0.08);
+  }
+
+  .field input::placeholder { color: var(--text-muted); }
+
+  .pw-wrap { position: relative; }
+  .pw-wrap input { padding-right: 44px; }
+
+  .pw-toggle {
+    position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    color: var(--text-muted); padding: 4px;
+    display: flex; align-items: center; transition: color 0.15s;
+  }
+  .pw-toggle:hover { color: var(--text-secondary); }
+
+  /* ── ROW ── */
+  .row-between {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 22px; gap: 8px; flex-wrap: wrap;
+  }
+
+  .checkbox-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+
+  .checkbox-wrap input[type="checkbox"] {
+    width: 15px; height: 15px; border-radius: 4px;
+    border: 1px solid var(--border-hover); background: var(--surface-0);
+    cursor: pointer; accent-color: var(--green); flex-shrink: 0;
+  }
+
+  .checkbox-wrap span { font-size: 13px; color: var(--text-secondary); }
+
+  .link-green {
+    font-size: 12px; color: var(--green);
+    text-decoration: none; transition: opacity 0.15s;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .link-green:hover { opacity: 0.7; }
+
+  /* ── BUTTON ── */
+  .btn-primary {
+    width: 100%;
+    background: var(--green); border: none;
+    border-radius: var(--radius-md);
+    color: #071209;
+    font-family: 'Syne', sans-serif;
+    font-size: 14.5px; font-weight: 700;
+    letter-spacing: 0.5px; padding: 13px;
     cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s, box-shadow 0.2s;
+    position: relative; overflow: hidden;
   }
 
-  .resend-link:hover {
-    text-decoration: underline;
+  .btn-primary::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 55%);
+    pointer-events: none;
   }
 
-  .card {
-    background-color: #2d2d2d;
-    border: 1px solid #404040;
-    border-radius: 20px;
+  .btn-primary:hover { opacity: 0.87; box-shadow: 0 4px 24px var(--green-glow); }
+  .btn-primary:active { transform: scale(0.985); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ── SIGNUP CARD ── */
+  .card-signup { padding: 24px 32px; text-align: center; }
+
+  .card-signup p {
+    font-size: 12.5px; color: var(--text-secondary);
+    margin-bottom: 14px;
+    font-family: 'Share Tech Mono', monospace;
   }
 
-  .card-body {
-    padding: 2rem 1.5rem;
+  .btn-outline {
+    display: block; width: 100%;
+    background: transparent;
+    border: 1px solid var(--green-border);
+    border-radius: var(--radius-md);
+    color: var(--green);
+    font-family: 'Syne', sans-serif;
+    font-size: 13.5px; font-weight: 600;
+    padding: 12px; text-decoration: none;
+    cursor: pointer; letter-spacing: 0.3px;
+    transition: background 0.18s, border-color 0.18s, box-shadow 0.18s;
   }
 
-  @media (min-width: 576px) {
-    .card-body {
-      padding: 2.5rem 2rem;
-    }
+  .btn-outline:hover {
+    background: rgba(76,217,100,0.08);
+    border-color: rgba(76,217,100,0.55);
+    box-shadow: 0 0 18px rgba(76,217,100,0.1);
+  }
+
+  /* ── VERIFY ── */
+  .verify-header { text-align: center; margin-bottom: 24px; }
+
+  .verify-icon {
+    width: 52px; height: 52px;
+    background: rgba(76,217,100,0.08);
+    border: 1px solid rgba(76,217,100,0.2);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+  }
+
+  .verify-icon svg { width: 24px; height: 24px; stroke: var(--green); }
+
+  .verify-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 19px; font-weight: 700;
+    color: var(--text-primary); margin-bottom: 6px;
+  }
+
+  .verify-desc {
+    font-size: 12.5px; color: var(--text-secondary);
+    line-height: 1.65; font-family: 'Share Tech Mono', monospace;
+  }
+
+  .verify-desc strong { color: var(--text-primary); font-weight: 500; font-family: 'DM Sans', sans-serif; }
+
+  .error-msg {
+    color: #f87171; font-size: 11.5px;
+    margin-top: 6px; display: block; min-height: 18px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .resend-row { text-align: center; margin-top: 18px; }
+
+  .resend-row a {
+    font-size: 12px; color: var(--text-secondary);
+    text-decoration: none; transition: color 0.15s;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .resend-row a span { color: var(--green); }
+  .resend-row a:hover { color: var(--text-primary); }
+
+  .back-row { text-align: center; margin-top: 14px; }
+
+  .back-row a {
+    font-size: 12px; color: var(--text-muted);
+    text-decoration: none; transition: color 0.15s;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .back-row a:hover { color: var(--text-secondary); }
+
+  #verification_code {
+    letter-spacing: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 20px; text-align: center;
   }
 </style>
 
-<main class="main-content">
-  <section class="page-header">
-    <div class="login-container">
-      <!-- Main Sign In Card -->
-      <div class="card">
-        <div class="card-body">
-          <!-- Logo -->
-          <div class="text-center mb-4">
-            <img src="{% static 'img/PCodeLogo.svg' %}" alt="PauliCode Logo" style="max-width: 180px; width: 60%;">
-          </div>
-          
-          <!-- Welcome Text -->
-          <div class="text-center mb-4">
-            <h4 class="text-white font-weight-bolder mb-2">Welcome Back!</h4>
-            <p class="text-muted mb-0 small">Sign in to continue your learning journey</p>
-          </div>
-          
-          <!-- Login Form (Hidden when verification is shown) -->
-          <form role="form" method="POST" action="{% url 'login' %}" id="loginForm" {% if show_verification %}style="display: none;"{% endif %}>
+<div class="page-wrap">
+  <div class="login-wrapper">
+
+    <!-- MAIN CARD -->
+    <div class="card-main" id="mainCard">
+      <div class="card-glow" id="mainGlow"></div>
+      <div class="card-inner">
+
+        <!-- Logo inside card -->
+        <div class="logo-wrap">
+          <div class="logo-line"></div>
+          <img src="{% static 'img/PCodeLogo.svg' %}" alt="PauliCode">
+          <div class="logo-line right"></div>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div id="loginSection" {% if show_verification %}style="display:none"{% endif %}>
+          <p class="card-title">Welcome back</p>
+          <p class="card-subtitle">// sign in to continue</p>
+
+          <form role="form" method="POST" action="{% url 'login' %}" id="loginForm">
             {% csrf_token %}
-            
-            <div class="mb-3">
-              <label class="text-white mb-2 small font-weight-bold">School ID</label>
-              <input type="text" 
-                    name="school_id" 
-                    id="school_id"
-                    class="form-control" 
-                    placeholder="Enter your School ID" 
-                    required
-                    style="background-color: #1a1a1a; border: 1px solid #404040; border-radius: 10px; color: white; padding: 0.75rem 1rem;">
+
+            <div class="field">
+              <label for="school_id">School ID</label>
+              <input type="text" name="school_id" id="school_id" placeholder="Enter your School ID" required autocomplete="username">
             </div>
 
-            <div class="mb-3">
-              <label class="text-white mb-2 small font-weight-bold">Password</label>
-              <input type="password" 
-                    name="password" 
-                    id="password"
-                    class="form-control" 
-                    placeholder="Enter your password" 
-                    required
-                    style="background-color: #1a1a1a; border: 1px solid #404040; border-radius: 10px; color: white; padding: 0.75rem 1rem;">
-            </div>
-
-            <div class="form-check mb-3">
-              <input class="form-check-input" type="checkbox" id="rememberMe">
-              <label class="form-check-label text-white small" for="rememberMe">Remember me</label>
-            </div>
-
-            <div class="text-center">
-              <button type="submit" 
-                      class="btn w-100 mb-3 font-weight-bold" 
-                      style="background-color: #4CD964; border-radius: 10px; border: none; color: black; padding: 0.75rem;">
-                Log In
-              </button>
-            </div>
-
-            <div class="text-center">
-              <a href="#" class="text-decoration-none small" style="color: #4CD964;">Forgot Password?</a>
-            </div>
-          </form>
-
-          <!-- Verification Section (Hidden by default) -->
-          <div id="verification-section" {% if not show_verification %}style="display: none;"{% endif %}>
-            <div class="verification-info">
-              <p class="verification-text">A verification code has been sent to <strong id="user-email">{{ email }}</strong></p>
-            </div>
-            
-            <form id="verifyForm">
-              {% csrf_token %}
-              <div class="mb-3">
-                <label class="text-white mb-2 small font-weight-bold">Verification Code</label>
-                <input type="text" 
-                      name="verification_code" 
-                      id="verification_code"
-                      class="form-control" 
-                      placeholder="Enter 6-digit code" 
-                      maxlength="6"
-                      pattern="[0-9]{6}"
-                      required
-                      style="background-color: #1a1a1a; border: 1px solid #404040; border-radius: 10px; color: white; padding: 0.75rem 1rem;">
-                <span class="error-message" id="verification_code_error"></span>
-              </div>
-
-              <div class="text-center mb-3">
-                <button type="submit" 
-                        class="btn w-100 font-weight-bold" 
-                        id="verify-btn"
-                        style="background-color: #4CD964; border-radius: 10px; border: none; color: black; padding: 0.75rem;">
-                  Verify & Login
+            <div class="field">
+              <label for="password">Password</label>
+              <div class="pw-wrap">
+                <input type="password" name="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+                <button type="button" class="pw-toggle" id="pwToggle" aria-label="Toggle password visibility">
+                  <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
                 </button>
               </div>
+            </div>
 
-              <div class="text-center">
-                <a href="#" class="resend-link" id="resend-code">Didn't receive code? Resend</a>
-              </div>
+            <div class="row-between">
+              <label class="checkbox-wrap">
+                <input type="checkbox" id="rememberMe">
+                <span>Remember me</span>
+              </label>
+              <a href="#" class="link-green">forgot_password?</a>
+            </div>
 
-              <div class="text-center mt-3">
-                <a href="{% url 'index' %}" class="text-decoration-none small" style="color: #4CD964;">← Back to Login</a>
-              </div>
-            </form>
+            <button type="submit" class="btn-primary">Log In</button>
+          </form>
+        </div>
+
+        <!-- VERIFICATION SECTION -->
+        <div id="verificationSection" {% if not show_verification %}style="display:none"{% endif %}>
+          <div class="verify-header">
+            <div class="verify-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+            </div>
+            <p class="verify-title">Check your email</p>
+            <p class="verify-desc">6-digit code sent to<br><strong id="user-email">{{ email }}</strong></p>
           </div>
 
+          <form id="verifyForm">
+            {% csrf_token %}
+            <div class="field">
+              <label for="verification_code">Verification Code</label>
+              <input type="text" name="verification_code" id="verification_code"
+                     placeholder="000000" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" required>
+              <span class="error-msg" id="verification_code_error"></span>
+            </div>
+            <button type="submit" class="btn-primary" id="verify-btn">Verify &amp; Log In</button>
+          </form>
+
+          <div class="resend-row">
+            <a href="#" id="resend-code">no code? <span>resend →</span></a>
+          </div>
+
+          <div class="back-row">
+            <a href="{% url 'index' %}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+              back_to_login
+            </a>
+          </div>
         </div>
-      </div>
-      
-      <!-- Sign Up Card -->
-      <div class="card mt-3">
-        <div class="card-body text-center" style="padding: 1.5rem;">
-          <p class="text-muted mb-2 small">Don't have an account?</p>
-          <a type="button" class="btn w-100 font-weight-bold" href='{% url 'signup' %}' style="background-color: transparent; border: 2px solid #4CD964; border-radius: 10px; color: #4CD964; padding: 0.75rem;">Sign Up</a>
-        </div>
+
       </div>
     </div>
-  </section>
-</main>
-  
+
+    <!-- SIGNUP CARD -->
+    <div class="card-signup" id="signupCard">
+      <div class="card-glow" id="signupGlow"></div>
+      <div class="card-inner">
+        <p>// no account yet?</p>
+        <a href="{% url 'signup' %}" class="btn-outline">Create Account</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const verifyForm = document.getElementById('verifyForm');
-    const resendLink = document.getElementById('resend-code');
-    const verifyBtn = document.getElementById('verify-btn');
-    const verificationCodeInput = document.getElementById('verification_code');
-    const errorSpan = document.getElementById('verification_code_error');
+  document.addEventListener('DOMContentLoaded', function () {
 
-    // Handle verification form submission
-    if (verifyForm) {
-      verifyForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const code = verificationCodeInput.value.trim();
-        
-        if (code.length !== 6) {
-          errorSpan.textContent = 'Please enter a 6-digit code';
-          return;
-        }
-
-        verifyBtn.disabled = true;
-        verifyBtn.textContent = 'Verifying...';
-        errorSpan.textContent = '';
-
-        try {
-          const response = await fetch('{% url "verify-code" %}', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: JSON.stringify({
-              verification_code: code
-            })
-          });
-
-          const data = await response.json();
-
-          if (data.success) {
-            window.location.href = data.redirect_url;
-          } else {
-            errorSpan.textContent = data.message || 'Invalid verification code';
-            verifyBtn.disabled = false;
-            verifyBtn.textContent = 'Verify & Login';
-          }
-        } catch (error) {
-          errorSpan.textContent = 'An error occurred. Please try again.';
-          verifyBtn.disabled = false;
-          verifyBtn.textContent = 'Verify & Login';
-        }
+    // Cursor-follow green glow
+    function attachGlow(card, glow) {
+      card.addEventListener('mousemove', function (e) {
+        const r = card.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width)  * 100;
+        const y = ((e.clientY - r.top)  / r.height) * 100;
+        glow.style.background = `radial-gradient(500px circle at ${x}% ${y}%, rgba(76,217,100,0.10) 0%, transparent 65%)`;
       });
     }
 
-    // Handle resend code
-    if (resendLink) {
-      resendLink.addEventListener('click', async function(e) {
+    attachGlow(document.getElementById('mainCard'),   document.getElementById('mainGlow'));
+    attachGlow(document.getElementById('signupCard'), document.getElementById('signupGlow'));
+
+    // Password toggle
+    const pwToggle = document.getElementById('pwToggle');
+    const pwInput  = document.getElementById('password');
+    if (pwToggle && pwInput) {
+      pwToggle.addEventListener('click', function () {
+        const isText = pwInput.type === 'text';
+        pwInput.type = isText ? 'password' : 'text';
+        document.getElementById('eyeIcon').innerHTML = isText
+          ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
+          : '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+      });
+    }
+
+    // Verify form
+    const verifyForm = document.getElementById('verifyForm');
+    const verifyBtn  = document.getElementById('verify-btn');
+    const codeInput  = document.getElementById('verification_code');
+    const errorSpan  = document.getElementById('verification_code_error');
+    const resendLink = document.getElementById('resend-code');
+
+    if (verifyForm) {
+      verifyForm.addEventListener('submit', async function (e) {
         e.preventDefault();
-        
-        resendLink.textContent = 'Sending...';
-
+        const code = codeInput.value.trim();
+        if (code.length !== 6) { errorSpan.textContent = 'Please enter the 6-digit code'; return; }
+        verifyBtn.disabled = true; verifyBtn.textContent = 'Verifying…'; errorSpan.textContent = '';
         try {
-          const response = await fetch('{% url "resend-verification-code" %}', {
+          const res  = await fetch('{% url "verify-code" %}', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: JSON.stringify({
-              context: 'login'
-            })
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+            body: JSON.stringify({ verification_code: code })
           });
+          const data = await res.json();
+          if (data.success) { window.location.href = data.redirect_url; }
+          else { errorSpan.textContent = data.message || 'Invalid code. Try again.'; verifyBtn.disabled = false; verifyBtn.textContent = 'Verify & Log In'; }
+        } catch { errorSpan.textContent = 'Something went wrong. Please try again.'; verifyBtn.disabled = false; verifyBtn.textContent = 'Verify & Log In'; }
+      });
+    }
 
-          const data = await response.json();
+    if (resendLink) {
+      resendLink.addEventListener('click', async function (e) {
+        e.preventDefault();
+        resendLink.querySelector('span').textContent = 'sending…';
+        try {
+          const res  = await fetch('{% url "resend-verification-code" %}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+            body: JSON.stringify({ context: 'login' })
+          });
+          const data = await res.json();
+          alert(data.success ? 'New code sent to your email!' : (data.message || 'Failed to resend. Try again.'));
+        } catch { alert('Something went wrong. Please try again.'); }
+        resendLink.querySelector('span').textContent = 'resend →';
+      });
+    }
 
-          if (data.success) {
-            alert('New verification code sent to your email!');
-            resendLink.textContent = 'Didn\'t receive code? Resend';
-          } else {
-            alert(data.message || 'Failed to resend code');
-            resendLink.textContent = 'Didn\'t receive code? Resend';
-          }
-        } catch (error) {
-          alert('An error occurred. Please try again.');
-          resendLink.textContent = 'Didn\'t receive code? Resend';
-        }
+    if (codeInput) {
+      codeInput.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '').slice(0, 6);
       });
     }
   });
 </script>
-  
-  <!--   Core JS Files   -->
-  {%include "partials/scripts.html"%}
+
+{%include "partials/scripts.html"%}
 {% endblock %}

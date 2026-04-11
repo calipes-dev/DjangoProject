@@ -1,209 +1,551 @@
 {% extends "base.html" %}
 {% load static %}
-<!--Register.html - Minimalistic Single Card Design-->
-
+<!-- signup.html - Create Account -->
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/register.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=Share+Tech+Mono&display=swap');
 
-<div>
-  <main class="main-content signup-layout">
-    <section class="signup-container">
-      <!-- Left Panel - Branding -->
-      <div class="signup-left-panel">
-        <div class="brand-content">
-          <div class="brand-logo-container">
-            <img src="{% static 'img/PCodeLogo.svg' %}" alt="PauliCode Logo" class="brand-logo">
-          </div>
-          <h2 class="brand-title">PauliCode</h2>
-          <p class="brand-subtitle">Master Coding Concepts Through Interactive Learning</p>
-          <div class="brand-features">
-            <div class="feature-item">
-              <i class="fas fa-graduation-cap"></i>
-              <span>Learn from Experts</span>
-            </div>
-            <div class="feature-item">
-              <i class="fas fa-code"></i>
-              <span>Write Real Code</span>
-            </div>
-            <div class="feature-item">
-              <i class="fas fa-chart-line"></i>
-              <span>Track Progress</span>
-            </div>
-          </div>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #4CD964;
+    --green-dim: rgba(76,217,100,0.10);
+    --green-glow: rgba(76,217,100,0.22);
+    --green-border: rgba(76,217,100,0.28);
+    --surface-0: #111111;
+    --surface-1: #181818;
+    --surface-2: #1e1e1e;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.13);
+    --text-primary: #efefef;
+    --text-secondary: #717171;
+    --text-muted: #404040;
+    --radius-md: 12px;
+    --radius-xl: 22px;
+  }
+
+  body {
+    background-color: var(--surface-0) !important;
+    min-height: 100vh;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .reg-wrap {
+    min-height: 100vh;
+    padding: 32px 16px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .reg-wrap::before {
+    content: '';
+    position: fixed; top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse at center, rgba(76,217,100,0.05) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .reg-card {
+    width: 100%; max-width: 680px;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    position: relative; overflow: hidden;
+    animation: fadeUp 0.5s cubic-bezier(.22,.68,0,1.2) both;
+    margin-bottom: 10px;
+    z-index: 1;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reg-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(76,217,100,0.5), transparent);
+    opacity: 0.6;
+  }
+
+  .card-glow {
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s;
+    z-index: 0;
+  }
+
+  .reg-card:hover .card-glow { opacity: 1; }
+
+  .card-inner { position: relative; z-index: 1; padding: 32px 32px 36px; }
+
+  /* ── LOADING OVERLAY ── */
+  .loading-overlay {
+    position: absolute; inset: 0;
+    background: rgba(17, 17, 17, 0.80);
+    border-radius: var(--radius-xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 20;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .loading-overlay.hidden { display: none; }
+
+  .loading-spinner-lg {
+    width: 42px; height: 42px;
+    border: 3px solid rgba(76,217,100,0.18);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; color: var(--text-secondary);
+    letter-spacing: 1.2px;
+  }
+
+  .loading-dots::after {
+    content: '';
+    animation: dots 1.4s steps(4, end) infinite;
+  }
+
+  @keyframes dots {
+    0%, 20% { content: '.'; }
+    40%      { content: '..'; }
+    60%, 80% { content: '...'; }
+    100%     { content: ''; }
+  }
+
+  /* ── LOGO ── */
+  .logo-wrap {
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 26px; padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+    gap: 14px;
+  }
+
+  .logo-wrap img { height: 60px; width: auto; }
+
+  .logo-line {
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(76,217,100,0.18));
+  }
+  .logo-line.right { background: linear-gradient(270deg, transparent, rgba(76,217,100,0.18)); }
+
+  /* ── HEADINGS ── */
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 21px; font-weight: 700;
+    color: var(--text-primary);
+    text-align: center; margin-bottom: 5px;
+    letter-spacing: -0.3px;
+  }
+
+  .card-subtitle {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    text-align: center; margin-bottom: 28px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 14px; margin-top: 24px;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: var(--border);
+  }
+
+  /* ── FIELDS ── */
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .field { display: flex; flex-direction: column; }
+
+  .field label {
+    font-size: 10.5px; font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 7px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .field input, .field select {
+    width: 100%;
+    background: var(--surface-0);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; padding: 11px 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .field input:focus, .field select:focus {
+    border-color: rgba(76,217,100,0.5);
+    box-shadow: 0 0 0 3px rgba(76,217,100,0.07);
+  }
+
+  .field input::placeholder { color: var(--text-muted); font-size: 13.5px; }
+
+  .select-wrap { position: relative; }
+
+  .select-wrap::after {
+    content: '';
+    position: absolute; right: 13px; top: 50%;
+    transform: translateY(-50%);
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--text-muted);
+    pointer-events: none;
+  }
+
+  .field select option { background: #1e1e1e; color: var(--text-primary); }
+
+  .pw-wrap { position: relative; }
+  .pw-wrap input { padding-right: 42px; }
+
+  .pw-toggle {
+    position: absolute; right: 12px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    color: var(--text-muted); padding: 4px;
+    display: flex; align-items: center;
+    transition: color 0.15s;
+  }
+  .pw-toggle:hover { color: var(--text-secondary); }
+
+  /* ── VERIFY SECTION ── */
+  .verify-section {
+    background: rgba(76,217,100,0.04);
+    border: 1px solid rgba(76,217,100,0.15);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    margin-top: 20px; margin-bottom: 20px;
+  }
+
+  .verify-hint {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11.5px; color: var(--text-secondary);
+    margin-bottom: 12px; line-height: 1.6;
+  }
+
+  .verify-hint span { color: var(--green); }
+
+  #verification_code {
+    letter-spacing: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 22px; text-align: center;
+  }
+
+  /* ── ERROR MESSAGES ── */
+  .error-msg {
+    color: #f87171; font-size: 11px;
+    margin-top: 5px;
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 16px;
+  }
+
+  /* ── BUTTONS ── */
+  .submit-area { margin-top: 28px; }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--green); border: none;
+    border-radius: var(--radius-md);
+    color: #071209;
+    font-family: 'Syne', sans-serif;
+    font-size: 14.5px; font-weight: 700;
+    letter-spacing: 0.5px; padding: 13px;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  .btn-primary:hover:not(:disabled) { opacity: 0.87; }
+  .btn-primary:active:not(:disabled) { transform: scale(0.985); }
+  .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  /* ── STEPS ── */
+  .steps-indicator {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin-bottom: 26px;
+  }
+
+  .step {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; color: var(--text-muted);
+  }
+
+  .step.active { color: var(--green); }
+  .step.done   { color: var(--text-secondary); }
+
+  .step-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: background 0.2s;
+  }
+
+  .step.active .step-dot { background: var(--green); }
+  .step.done   .step-dot { background: var(--text-secondary); }
+
+  .step-line {
+    flex: 1; height: 1px; max-width: 40px;
+    background: var(--border);
+  }
+
+  /* ── SIGNIN CARD ── */
+  .signin-card {
+    width: 100%; max-width: 680px;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 22px 32px;
+    text-align: center;
+    position: relative; overflow: hidden;
+    z-index: 1;
+  }
+
+  .signin-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(76,217,100,0.3), transparent);
+    opacity: 0.5;
+  }
+
+  .signin-card p {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; color: var(--text-secondary);
+    margin-bottom: 12px;
+  }
+
+  .btn-outline {
+    display: block; width: 100%;
+    background: transparent;
+    border: 1px solid var(--green-border);
+    border-radius: var(--radius-md);
+    color: var(--green);
+    font-family: 'Syne', sans-serif;
+    font-size: 13.5px; font-weight: 600;
+    padding: 12px; text-decoration: none;
+    cursor: pointer; letter-spacing: 0.3px;
+    transition: background 0.18s, border-color 0.18s;
+    text-align: center;
+  }
+
+  .btn-outline:hover {
+    background: rgba(76,217,100,0.08);
+    border-color: rgba(76,217,100,0.55);
+  }
+
+  @media (max-width: 520px) {
+    .field-row { grid-template-columns: 1fr; }
+    .card-inner { padding: 24px 18px 28px; }
+  }
+</style>
+
+<div class="reg-wrap">
+
+  <div class="reg-card" id="regCard">
+    <div class="card-glow" id="regGlow"></div>
+
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+      <div class="loading-spinner-lg"></div>
+      <span class="loading-text">sending verification code<span class="loading-dots"></span></span>
+    </div>
+
+    <div class="card-inner">
+
+      <div class="logo-wrap">
+        <div class="logo-line"></div>
+        <img src="{% static 'img/PCodeLogo.svg' %}" alt="PauliCode">
+        <div class="logo-line right"></div>
+      </div>
+
+      <div class="steps-indicator">
+        <div class="step active" id="step1">
+          <div class="step-dot"></div>
+          <span>01_identity</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step2">
+          <div class="step-dot"></div>
+          <span>02_credentials</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step3">
+          <div class="step-dot"></div>
+          <span>03_verify</span>
         </div>
       </div>
 
-      <!-- Right Panel - Sign Up Form -->
-      <div class="signup-right-panel">
-        <div class="card register-card">
-          <div class="card-body register-card-body">
-            <!-- Welcome Text -->
-            <div class="text-center mb-5">
-              <h4 class="page-title">Create Account</h4>
-              <p class="page-subtitle">Join the Community of IT Learners</p>
+      <p class="card-title">Create Account</p>
+      <p class="card-subtitle">// join the community of IT learners</p>
+
+      <form id="signupForm"
+            data-send-code-url="{% url 'send-verification-code' %}"
+            data-verify-url="{% url 'verify-code' %}">
+        {% csrf_token %}
+
+        <div class="section-label">personal info</div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="first_name">First Name</label>
+            <input type="text" id="first_name" name="first_name" placeholder="e.g. John">
+            <span class="error-msg" id="first_name_error"></span>
+          </div>
+          <div class="field">
+            <label for="last_name">Last Name</label>
+            <input type="text" id="last_name" name="last_name" placeholder="e.g. Dela Cruz">
+            <span class="error-msg" id="last_name_error"></span>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com">
+            <span class="error-msg" id="email_error"></span>
+          </div>
+          <div class="field">
+            <label for="school_id">School ID</label>
+            <input type="text" id="school_id" name="school_id" placeholder="X-XXXX-XXXX">
+            <span class="error-msg" id="school_id_error"></span>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="school">School</label>
+            <div class="select-wrap">
+              <select id="school" name="school">
+                <option value="" disabled selected>Select school</option>
+                <option value="spus">St. Paul University</option>
+                <option value="others">Others</option>
+              </select>
             </div>
-            
-            <!-- Divider After Subtitle -->
-            <div class="subtitle-divider"></div>
-            
-            <!-- Form -->
-                  <form role="form" method="POST" id="signupForm" enctype="multipart/form-data"
-                        data-send-code-url="{% url 'send-verification-code' %}"
-                        data-verify-url="{% url 'verify-code' %}">
-                    {% csrf_token %}
-                    
-                    <!-- First Name and Last Name -->
-                    <div class="row mb-3">
-                      <div class="col-md-6">
-                        <label class="form-label-custom">First Name</label>
-                        <input type="text" 
-                              name="first_name" 
-                              id="first_name"
-                              class="form-control input-field-custom" 
-                              placeholder="Enter your first name" 
-                              value="{{ first_name|default:'' }}">
-                        <span class="error-message" id="first_name_error"></span>
-                      </div>
-                      <div class="col-md-6">
-                        <label class="form-label-custom">Last Name</label>
-                        <input type="text" 
-                              name="last_name" 
-                              id="last_name"
-                              class="form-control input-field-custom" 
-                              placeholder="Enter your last name" 
-                              value="{{ last_name|default:'' }}">
-                        <span class="error-message" id="last_name_error"></span>
-                      </div>
-                    </div>
-
-                    <!-- Email and School -->
-                    <div class="row mb-3">
-                      <div class="col-md-6">
-                        <label class="form-label-custom">Email Address</label>
-                        <input type="email" 
-                              name="email" 
-                              id="email"
-                              class="form-control input-field-custom" 
-                              placeholder="Enter your email" 
-                              value="{{ email|default:'' }}">
-                        <span class="error-message" id="email_error"></span>
-                      </div>
-                      <div class="col-md-6">
-                        <label class="form-label-custom">School</label>
-                        <select name="school" 
-                                id="school"
-                                class="form-select select-field-custom">
-                          <option value="" disabled {% if not school %}selected{% endif %}>Select school</option>
-                          <option value="spus" {% if school == 'spus' %}selected{% endif %}>St. Paul University</option>
-                          <option value="others" {% if school == 'others' %}selected{% endif %}>Others</option>
-                        </select>
-                        <span class="error-message" id="school_error"></span>
-                      </div>
-                    </div>
-
-                    <!-- School ID and User Type -->
-                    <div class="row mb-3">
-                      <div class="col-md-6">
-                        <label class="form-label-custom">School ID</label>
-                        <input type="text" 
-                              name="school_id" 
-                              id="school_id"
-                              class="form-control input-field-custom" 
-                              placeholder="e.g. X-XXXX-XXXX" 
-                              value="{{ school_id|default:'' }}">
-                        <span class="error-message" id="school_id_error"></span>
-                      </div>
-                      <div class="col-md-6">
-                        <label class="form-label-custom">User Type</label>
-                        <select name="user_type" 
-                                id="user_type"
-                                class="form-select select-field-custom">
-                          <option value="" disabled {% if not user_type %}selected{% endif %}>Select user type</option>
-                          <option value="student" {% if user_type == 'student' %}selected{% endif %}>Student</option>
-                          <option value="teacher" {% if user_type == 'teacher' %}selected{% endif %}>Teacher</option>
-                        </select>
-                        <span class="error-message" id="user_type_error"></span>
-                      </div>
-                    </div>
-
-                    <!-- Password and Confirm Password -->
-                    <div class="row mb-4">
-                      <div class="col-md-6">
-                        <label class="form-label-custom">Password</label>
-                        <div class="password-wrapper">
-                          <input type="password" 
-                                name="password" 
-                                id="password"
-                                class="form-control input-field-custom" 
-                                placeholder="Enter password">
-                          <button type="button" class="toggle-password" data-target="password">
-                            <i class="far fa-eye"></i>
-                          </button>
-                        </div>
-                        <span class="error-message" id="password_error"></span>
-                      </div>
-                      <div class="col-md-6">
-                        <label class="form-label-custom">Confirm Password</label>
-                        <div class="password-wrapper">
-                          <input type="password" 
-                                name="confirm_password" 
-                                id="confirm_password"
-                                class="form-control input-field-custom" 
-                                placeholder="Confirm password">
-                          <button type="button" class="toggle-password" data-target="confirm_password">
-                            <i class="far fa-eye"></i>
-                          </button>
-                        </div>
-                        <span class="error-message" id="confirm_password_error"></span>
-                      </div>
-                    </div>
-
-                    <!-- Verification Code Section (Hidden by default) -->
-                    <div id="verification-section" class="verification-section" style="display: none;">
-                      <div class="verification-info">
-                        <p class="verification-text">A verification code has been sent to your email. Please enter it below to complete your registration.</p>
-                      </div>
-                      <div class="row mb-4">
-                        <div class="col-12">
-                          <label class="form-label-custom">Verification Code</label>
-                          <input type="text" 
-                                name="verification_code" 
-                                id="verification_code"
-                                class="form-control input-field-custom" 
-                                placeholder="Enter 6-digit code" 
-                                maxlength="6"
-                                pattern="[0-9]{6}">
-                          <span class="error-message" id="verification_code_error"></span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="text-center mb-4">
-                      <button type="button" class="btn submit-btn-custom" id="signup-btn">
-                        Create Account
-                      </button>
-                    </div>
-
-                    <!-- Verify Button (Hidden by default) -->
-                    <div class="text-center mb-4" id="verify-btn-container" style="display: none;">
-                      <button type="submit" class="btn submit-btn-custom" id="verify-btn">
-                        Verify & Complete
-                      </button>
-                    </div>
-                  </form>
-
-                  <!-- Divider with Sign In Link -->
-                  <div class="divider-section">
-                    <p class="divider-text">Already have an account? <a href="{% url 'login' %}" class="signin-link">Sign in</a></p>
-                  </div>
-                </div>
-              </div>
+            <span class="error-msg" id="school_error"></span>
+          </div>
+          <div class="field">
+            <label for="user_type">User Type</label>
+            <div class="select-wrap">
+              <select id="user_type" name="user_type">
+                <option value="" disabled selected>Select type</option>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+              </select>
             </div>
-        </section>
-      </main>
+            <span class="error-msg" id="user_type_error"></span>
+          </div>
+        </div>
+
+        <div class="section-label">credentials</div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="pw-wrap">
+              <input type="password" id="password" name="password" placeholder="Enter password">
+              <button type="button" class="pw-toggle" data-target="password" aria-label="Toggle password">
+                <svg id="eye1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+            <span class="error-msg" id="password_error"></span>
+          </div>
+          <div class="field">
+            <label for="confirm_password">Confirm Password</label>
+            <div class="pw-wrap">
+              <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password">
+              <button type="button" class="pw-toggle" data-target="confirm_password" aria-label="Toggle confirm password">
+                <svg id="eye2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+            <span class="error-msg" id="confirm_password_error"></span>
+          </div>
+        </div>
+
+        <div class="verify-section" id="verifySection" style="display:none;">
+          <p class="verify-hint">A 6-digit code was sent to <span id="emailDisplay">your email</span>. Enter it below to complete registration.</p>
+          <div class="field">
+            <label for="verification_code">Verification Code</label>
+            <input type="text" id="verification_code" name="verification_code" placeholder="000000" maxlength="6" inputmode="numeric">
+            <span class="error-msg" id="verification_code_error"></span>
+          </div>
+        </div>
+
+        <div class="submit-area">
+          <button type="button" class="btn-primary" id="signupBtn">Create Account</button>
+          <button type="button" class="btn-primary" id="verifyBtn" style="display:none;">Verify &amp; Complete</button>
+        </div>
+
+      </form>
     </div>
+  </div>
 
-    <script src="{% static 'js/register.js' %}"></script>
-    {% endblock %}
+  <div class="signin-card">
+    <p>// already have an account?</p>
+    <a href="{% url 'login' %}" class="btn-outline">Sign In</a>
+  </div>
+
+</div>
+
+<script src="{% static 'js/register.js' %}"></script>
+{% include "partials/scripts.html" %}
+{% endblock %}
