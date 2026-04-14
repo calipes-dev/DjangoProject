@@ -48,6 +48,7 @@ from collections import defaultdict
 # Third-party
 from google import genai
 
+
 #----------------RATE LIMITING IMPORTS----------------#
 
 from .rate_limiter import (
@@ -60,6 +61,7 @@ from .rate_limiter import (
 )
 from .rate_limit_config import RATE_LIMITS
 
+logger = logging.getLogger(__name__)
 
 # ---------------- LOGIN & DASHBOARD ---------------- #
 
@@ -2182,7 +2184,7 @@ def playground(request, problem_id):
 
 
 # ---------------- SUBMIT CODE (UNIFIED) ---------------- #
-logger = logging.getLogger(__name__)
+
 
 @csrf_exempt
 def submit_problem(request, problem_id):
