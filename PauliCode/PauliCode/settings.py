@@ -16,9 +16,12 @@ pymysql.version_info = (2, 2, 4, "final", 0)
 
 from pathlib import Path
 import os
-from User.rate_limit_config import RATE_LIMIT_CACHE_CONFIG_DEV, RATE_LIMIT_CACHE_CONFIG
 
-CACHES = RATE_LIMIT_CACHE_CONFIG_DEV
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
