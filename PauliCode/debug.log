@@ -8007,3 +8007,229 @@ AFC is enabled with max remote calls: 10.
 HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
 "POST /ai-chat-stream/ HTTP/1.1" 200 272
 "GET /get-usage-stats/ HTTP/1.1" 200 242
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 23459
+"GET /signup/ HTTP/1.1" 200 21833
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+"GET /login/ HTTP/1.1" 200 23459
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+"GET /signup/ HTTP/1.1" 200 21833
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+"GET /signup/ HTTP/1.1" 200 21833
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+"GET /login/ HTTP/1.1" 200 23459
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+"GET /signup/ HTTP/1.1" 200 21833
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+"GET /signup/ HTTP/1.1" 200 21833
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+"GET /signup/ HTTP/1.1" 200 21833
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+Too Many Requests: /signup/
+"GET /signup/ HTTP/1.1" 429 83
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 16803
+Watching for file changes with StatReloader
+"GET /signup/ HTTP/1.1" 200 21833
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+"GET /login/ HTTP/1.1" 200 23459
+Failed attempt recorded for 127.0.0.1: 1 attempts
+- Broken pipe from ('127.0.0.1', 58673)
+Too Many Requests: /login/
+"POST /login/ HTTP/1.1" 429 82
+Failed attempt recorded for 127.0.0.1: 2 attempts
+- Broken pipe from ('127.0.0.1', 62090)
+Failed attempt recorded for 127.0.0.1: 3 attempts
+- Broken pipe from ('127.0.0.1', 55505)
+Failed attempt recorded for 127.0.0.1: 4 attempts
+- Broken pipe from ('127.0.0.1', 64617)
+Too Many Requests: /login/
+"POST /login/ HTTP/1.1" 429 82
+Watching for file changes with StatReloader
+Failed attempt recorded for 127.0.0.1: 1 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 23940
+Failed attempt recorded for 127.0.0.1: 2 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 23940
+"GET /signup/ HTTP/1.1" 200 21833
+"GET /signup/ HTTP/1.1" 200 21833
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+"GET /signup/ HTTP/1.1" 200 21833
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+"GET /signup/ HTTP/1.1" 200 21833
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 16914
+"GET /signup/ HTTP/1.1" 200 21833
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 23459
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 200 12486
+"GET /static/img/favicon.ico HTTP/1.1" 200 4286
+"GET /signup/ HTTP/1.1" 200 21833
+"GET /static/js/register.js HTTP/1.1" 200 10525
+Verification code sent to zonefromyt@gmail.com for signup
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"GET /signup/ HTTP/1.1" 200 21833
+User created: C-2022-0463 (zonefromyt@gmail.com)
+"POST /verify-code/ HTTP/1.1" 200 81
+"GET / HTTP/1.1" 200 23459
+Failed attempt recorded for 127.0.0.1: 1 attempts
+"POST /login/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 23940
+"POST /login/ HTTP/1.1" 200 23955
+"POST /verify-code/ HTTP/1.1" 200 86
+"GET /StudentDashboard/ HTTP/1.1" 200 41584
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/css/StudentDashboard.css HTTP/1.1" 200 15531
+"GET /static/img/studenthaticon.png HTTP/1.1" 200 8381
+"GET /static/js/StudentDashboard.js HTTP/1.1" 200 17118
+"GET /media/profile_pic/default.png HTTP/1.1" 200 298184
+"GET /api/student/total-exp/ HTTP/1.1" 200 83
+"GET /api/leaderboard-data/ HTTP/1.1" 200 110
+"GET /announcements/ HTTP/1.1" 200 33981
+"GET /static/css/announcement.css HTTP/1.1" 200 21490
+"GET /static/js/announcement.js HTTP/1.1" 200 41067
+"GET /classes/ HTTP/1.1" 200 34219
+"GET /static/img/search.png HTTP/1.1" 200 30429
+"GET /leaderboard/ HTTP/1.1" 200 47812
+"GET /api/leaderboard-data/? HTTP/1.1" 200 110
+"GET /code-playground/ HTTP/1.1" 200 91724
+"GET /api/playground-resources/ HTTP/1.1" 200 46
+"GET /get-usage-stats/ HTTP/1.1" 200 246
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 23927
+"GET /signup/ HTTP/1.1" 200 21833
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 304 0
+"GET /static/js/register.js HTTP/1.1" 304 0
+Verification code sent to kingkharl.calasang@students.spus.edu.ph for signup
+"POST /send-verification-code/ HTTP/1.1" 200 54
+"GET /signup/ HTTP/1.1" 200 21833
+"GET /static/js/register.js HTTP/1.1" 304 0
+"GET /static/img/favicon.ico HTTP/1.1" 304 0
+Verification code sent to zoneandzoni@gmail.com for signup
+"POST /send-verification-code/ HTTP/1.1" 200 54
+User created: C-0000-0000 (zoneandzoni@gmail.com)
+"POST /verify-code/ HTTP/1.1" 200 81
+"GET / HTTP/1.1" 200 23459
+"POST /login/ HTTP/1.1" 200 23957
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 304 0
+"POST /verify-code/ HTTP/1.1" 200 79
+"GET /dashboard/ HTTP/1.1" 200 68870
+"GET /static/img/loadingIcon.webp HTTP/1.1" 304 0
+"GET /static/img/teacherwand.png HTTP/1.1" 200 16015
+"GET /media/profile_pic/default.png HTTP/1.1" 304 0
+"GET /dashboard/ HTTP/1.1" 200 68870
+"POST /create-class/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 73459
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /dashboard/ HTTP/1.1" 200 72964
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"POST /create-class/ HTTP/1.1" 302 0
+"GET /dashboard/ HTTP/1.1" 200 77675
+"GET /dashboard/ HTTP/1.1" 200 77179
+"GET /MyClasses/ HTTP/1.1" 200 46637
+"GET /MyClasses/ HTTP/1.1" 200 46637
+"GET /class/2/ HTTP/1.1" 200 99201
+"POST /class/2/add-cybersecurity-challenge/ HTTP/1.1" 302 0
+"GET /class/2/ HTTP/1.1" 200 102102
+"GET /announcements/ HTTP/1.1" 200 43470
+"GET /static/js/announcement.js HTTP/1.1" 304 0
+"GET /static/css/announcement.css HTTP/1.1" 304 0
+"GET /MyClasses/ HTTP/1.1" 200 46637
+"GET /MyClasses/ HTTP/1.1" 200 46637
+"GET /class/1/ HTTP/1.1" 200 91511
+"POST /class/1/add-problem/ HTTP/1.1" 302 0
+"GET /class/1/ HTTP/1.1" 200 93051
+"POST /class/1/add-problem/ HTTP/1.1" 302 0
+"GET /class/1/ HTTP/1.1" 200 94369
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 304 0
+"POST /class/1/add-resources/ HTTP/1.1" 302 0
+"GET /class/1/ HTTP/1.1" 200 98317
+"GET /static/img/loadingIcon.webp HTTP/1.1" 304 0
+"GET /media/profile_pic/default.png HTTP/1.1" 304 0
+"GET /problem/2/details/ HTTP/1.1" 200 225
+"GET /problem/3/details/ HTTP/1.1" 200 308
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 23927
+"POST /login/ HTTP/1.1" 200 23955
+"POST /verify-code/ HTTP/1.1" 200 86
+"GET /StudentDashboard/ HTTP/1.1" 200 41584
+"GET /static/css/StudentDashboard.css HTTP/1.1" 304 0
+"GET /static/js/StudentDashboard.js HTTP/1.1" 304 0
+"GET /static/img/studenthaticon.png HTTP/1.1" 304 0
+"GET /api/student/total-exp/ HTTP/1.1" 200 83
+"GET /api/leaderboard-data/ HTTP/1.1" 200 110
+"POST /student/join-class/ HTTP/1.1" 302 0
+"GET /classes/ HTTP/1.1" 200 37063
+"GET /static/img/search.png HTTP/1.1" 304 0
+"GET /static/img/classroom.png HTTP/1.1" 304 0
+"POST /student/join-class/ HTTP/1.1" 302 0
+"GET /classes/ HTTP/1.1" 200 39563
+"GET /student/class/1/ HTTP/1.1" 200 64956
+"GET /problem/3/details/ HTTP/1.1" 200 308
+"GET /playground/3/ HTTP/1.1" 200 16106
+"GET /static/css/StudentPlayground.css HTTP/1.1" 200 21780
+"GET /static/js/StudentPlayground.js HTTP/1.1" 200 41937
+Internal Server Error: /run-test-code/
+"POST /run-test-code/ HTTP/1.1" 500 239
+Internal Server Error: /run-test-code/
+"POST /run-test-code/ HTTP/1.1" 500 239
+"POST /run_playground_code/ HTTP/1.1" 200 809
+"GET /student/class/1/ HTTP/1.1" 200 64956
+"POST /submit_problem/3/ HTTP/1.1" 200 934
+"GET /problem/3/details/ HTTP/1.1" 200 307
+"GET /problem/2/details/ HTTP/1.1" 200 225
+"GET /playground/2/ HTTP/1.1" 200 15486
+"POST /run-test-code/ HTTP/1.1" 200 95
+"POST /run_playground_code/ HTTP/1.1" 200 118
+"POST /submit_problem/2/ HTTP/1.1" 200 186
+"GET /student/class/1/ HTTP/1.1" 200 65527
+"GET /static/img/PCodeLogo.svg HTTP/1.1" 304 0
+"GET /problem/2/details/ HTTP/1.1" 200 224
+"GET / HTTP/1.1" 200 23459
+"POST /login/ HTTP/1.1" 200 23957
+"POST /verify-code/ HTTP/1.1" 200 79
+"GET /dashboard/ HTTP/1.1" 200 77346
+"GET /static/img/teacherwand.png HTTP/1.1" 200 16015
+"GET /static/img/loadingIcon.webp HTTP/1.1" 200 42646
+"GET /static/img/star.png HTTP/1.1" 200 22289
+"GET /static/img/classroom.png HTTP/1.1" 200 4079
+"GET /media/profile_pic/default.png HTTP/1.1" 200 298184
+"GET /static/img/1stCup.svg HTTP/1.1" 200 650077
+"GET /dashboard/ HTTP/1.1" 200 77346
+"GET /leaderboard/ HTTP/1.1" 200 48271
+"GET /api/leaderboard-data/? HTTP/1.1" 200 306
+"GET /report/ HTTP/1.1" 200 102689
+"GET /MyClasses/ HTTP/1.1" 200 46637
+"GET /MyClasses/ HTTP/1.1" 200 46637
+"GET /class/1/ HTTP/1.1" 200 98552
+"POST /class/1/add-problem/ HTTP/1.1" 302 0
+"GET /class/1/ HTTP/1.1" 200 100347
+"POST /class/1/add-problem/ HTTP/1.1" 302 0
+"GET /class/1/ HTTP/1.1" 200 101665
+"GET /code-playground/ HTTP/1.1" 200 91841
+"GET /api/playground-resources/ HTTP/1.1" 200 530
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+"POST /run-test-code/ HTTP/1.1" 200 297
+"GET /load-chat-history/ HTTP/1.1" 200 16
+"GET /get-usage-stats/ HTTP/1.1" 200 242
+AFC is enabled with max remote calls: 10.
+HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 403 Forbidden"
+"POST /ai-chat-stream/ HTTP/1.1" 200 191
+"GET /get-usage-stats/ HTTP/1.1" 200 242

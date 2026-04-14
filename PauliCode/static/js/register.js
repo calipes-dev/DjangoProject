@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── Password toggles ──
   document.querySelectorAll('.pw-toggle').forEach(btn => {
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
       const target = this.dataset.target;
       const input  = document.getElementById(target);
       const eyeId  = target === 'password' ? 'eye1' : 'eye2';
@@ -169,7 +170,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ── Create Account button → send verification code ──
-  signupBtn.addEventListener('click', function () {
+  signupBtn.addEventListener('click', function (e) {
+    e.preventDefault();
     if (!validateForm()) return;
 
     const email = emailInput.value.trim();
@@ -228,7 +230,8 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ── Verify & Complete button ──
-  verifyBtn.addEventListener('click', function () {
+  verifyBtn.addEventListener('click', function (e) {
+    e.preventDefault();
     clearError('verification_code');
 
     const code = codeInput.value.trim();

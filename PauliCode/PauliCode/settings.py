@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'PauliCode.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'djangoPauliCode',
+        'NAME': 'paulicode',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
