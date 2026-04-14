@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import dj_database_url
 import pymysql
 pymysql.install_as_MySQLdb()
 pymysql.version_info = (2, 2, 4, "final", 0)
@@ -89,17 +90,9 @@ WSGI_APPLICATION = 'PauliCode.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'djangoPauliCode',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'charset': 'utf8',
-        }
-    }
+    'default': dj_database_url.parse(
+        'postgresql://djangoproject_2mwx_user:Juk6vpdu4GJNfDel3eeQIwnxNfqjvOyh@dpg-d7f177gsfn5c738k669g-a/djangoproject_2mwx'
+    )
 }
 
 
