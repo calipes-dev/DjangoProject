@@ -37,8 +37,10 @@ SECRET_KEY = 'django-insecure-*e7y)ze6r)abbf6l=kq6@&np+n_ryrws0q!q-=4$l&(3^gb2h4
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'https://pauiicode.onrender.com',
+    'paulicode.pythonanywhere.com',
     '*',
-    'paulicode.pythonanywhere.com'
+    
                  ]
 
 
@@ -460,7 +462,7 @@ JAZZMIN_UI_TWEAKS = {
 CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to read CSRF token
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_TRUSTED_ORIGINS = [
-    '*',
+    'https://pauiicode.onrender.com',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
     'https://paulicode.pythonanywhere.com',
