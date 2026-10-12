@@ -1,400 +1,278 @@
 {% extends "base.html" %}
 {% load static %}
-<!--cybersecurity_student_class_details.html (Student View) - FIXED-->
+<!--cybersecurity_student_class_details.html (Student View) - MINIMAL CANDY-CRUSH REDESIGN-->
 {% block content %}
 
-<body class="g-sidenav-show text-white" style="background-color: #111827; margin-left: 90px; padding-right: 90px;">
+<body class="g-sidenav-show text-white" style="background-color: #0a0e17; margin-left: 90px; padding-right: 90px;">
   <div class="min-height-300 position-absolute w-100"></div>
 
   <main class="main-content position-relative border-radius-lg p-4" style="max-width: 100%; width: 100%;">
-    
-    <!-- CLASS HEADER -->
-    <div class="cyber-header card border-0 shadow-lg rounded-4 p-4 mb-4" 
-         style="margin-top: -5px;  background: linear-gradient(135deg, #462323 0%, rgba(134, 5, 5, 0.15) 100%); border-left: 4px solid #fb7185 !important; border-right: 1px solid #f87171 !important;">
-      <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
-        <div class="flex-grow-1">
-          <div class="d-flex align-items-center mb-2">
-            <i class="fa fa-shield-alt text-white me-2" style="font-size: 1.5rem;"></i>
-            <h3 class="fw-bold text-white mb-0">{{ class.title }}</h3>
-          </div>
-          <p class="text-white small mb-0 ms-5 opacity-75">{{ class.description }}</p>
-        </div>
 
-        <div class="mt-2 mt-md-0 unenroll-btn-container">
-          <a href="{% url 'unenroll_class' class.class_id %}" 
-             class="btn btn-outline-light fw-bold d-flex align-items-center"
+    <!-- SLIM TOP BAR (replaces the big class-info card) -->
+    <div class="cyber-topbar">
+      <div class="cyber-topbar-title">
+        <i class="fa fa-shield-alt"></i>
+        <span>{{ class.title }}</span>
+      </div>
+      <div class="cyber-topbar-actions">
+        <button type="button" class="icon-btn" data-bs-toggle="modal" data-bs-target="#classInfoModal" title="Class Info">
+          <i class="fa fa-info-circle"></i>
+        </button>
+        <button type="button" class="icon-btn" data-bs-toggle="modal" data-bs-target="#resourcesModal" title="Class Resources">
+          <i class="fa fa-folder-open"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- CHALLENGES SEARCH / FILTER BAR (minimal, no card wrapper) -->
+    <div class="cyber-challenges-bar">
+      <form method="GET" class="d-flex align-items-center gap-2 flex-wrap">
+        <div class="position-relative flex-grow-1" style="min-width: 180px;">
+          <i class="fa fa-search cyber-search-icon"></i>
+          <input type="text" name="q" value="{{ query }}" class="form-control cyber-input" placeholder="Search challenges...">
+        </div>
+        <div class="d-flex gap-2">
+          <button type="submit" name="filter" value="Assignment" class="cyber-filter-btn {% if filter_type == 'Assignment' %}active{% endif %}" title="CTF">
+            <i class="fa fa-flag"></i>
+          </button>
+          <button type="submit" name="filter" value="Quiz" class="cyber-filter-btn {% if filter_type == 'Quiz' %}active{% endif %}" title="Tests">
+            <i class="fa fa-clipboard-check"></i>
+          </button>
+          <button type="submit" name="filter" value="" class="cyber-filter-btn {% if not filter_type %}active{% endif %}" title="All">
+            <i class="fa fa-list"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- CANDY-CRUSH STYLE LEVEL MAP -->
+    {% if problems %}
+    <div class="level-map-wrapper">
+      <div class="level-map-container" id="levelMapContainer">
+        <svg id="levelPathSvg" class="level-path-svg" xmlns="http://www.w3.org/2000/svg">
+          <path id="levelPathBg" class="level-path-bg"></path>
+          <path id="levelPathProgress" class="level-path-progress"></path>
+        </svg>
+        <div class="level-nodes" id="levelNodes">
+          {% for problem in problems %}
+          <div class="level-node problem-card {% if problem.answered %}level-completed{% endif %}"
+               data-problem-id="{{ problem.problem.problem_id }}"
+               data-index="{{ forloop.counter0 }}">
+            <div class="level-circle {% if problem.problem.total_score >= 30 %}level-boss{% endif %}">
+              {% if problem.answered %}
+                <i class="fa fa-check"></i>
+              {% elif problem.problem.total_score >= 30 %}
+                <i class="fa fa-skull"></i>
+              {% else %}
+                <span class="level-number">{{ forloop.counter }}</span>
+              {% endif %}
+              <i class="fa fa-lock level-lock-icon"></i>
+            </div>
+            <div class="level-meta">
+              <span class="level-title" title="{{ problem.problem.problem_title }}">{{ problem.problem.problem_title }}</span>
+              <div class="level-submeta">
+                <i class="fa {% if problem.problem.problem_type == 'Quiz' %}fa-clipboard-check{% else %}fa-flag{% endif %}"></i>
+                {% if problem.score is not None %}
+                <span class="level-stars-inline">
+                  {% if problem.score >= problem.problem.total_score %}
+                    <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+                  {% elif problem.score >= problem.half_score %}
+                    <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star inactive"></i>
+                  {% else %}
+                    <i class="fa fa-star"></i><i class="fa fa-star inactive"></i><i class="fa fa-star inactive"></i>
+                  {% endif %}
+                </span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="cyber-empty">
+      <i class="fa fa-shield-alt"></i>
+      <p>No security challenges available yet.</p>
+    </div>
+    {% endif %}
+
+  </main>
+
+  <!-- CLASS INFO MODAL -->
+  <div class="modal fade" id="classInfoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content cyber-modal">
+        <div class="modal-header cyber-modal-header">
+          <h5 class="fw-bold text-white mb-0 d-flex align-items-center gap-2">
+            <i class="fa fa-shield-alt" style="color:#f87171;"></i>Class Info
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body cyber-modal-body">
+          <h4 class="text-white fw-bold mb-2">{{ class.title }}</h4>
+          <p class="text-white-50 mb-3" style="font-size: 0.9rem;">{{ class.description }}</p>
+          <div class="d-flex gap-2 flex-wrap mb-4">
+            <span class="cyber-tag"><i class="fa fa-key me-1"></i>{{ class.class_code }}</span>
+            <span class="cyber-tag"><i class="fa fa-user-shield me-1"></i>{{ class.teacher }}</span>
+          </div>
+          <a href="{% url 'unenroll_class' class.class_id %}"
+             class="cyber-btn-outline-danger w-100"
              onclick="return confirm('Are you sure you want to unenroll from this class?');">
-            <i class="fa fa-sign-out-alt me-2"></i>
-            <span class="btn-text">Unenroll</span>
+            <i class="fa fa-sign-out-alt me-2"></i>Unenroll from Class
           </a>
         </div>
       </div>
-
-      <div class="d-flex gap-2 flex-wrap mt-3">
-        <span class="badge px-3 py-2" style="background-color: rgba(255, 255, 255, 0.2);">
-          <i class="fa fa-key me-1"></i>{{ class.class_code }}
-        </span>
-        <span class="badge bg-dark px-3 py-2">
-          <i class="fa fa-user-shield me-1"></i>{{ class.teacher }}
-        </span>
-        <span class="badge bg-white px-3 py-2" style="color: #be123c;">
-          <i class="fa fa-lock me-1"></i>Cybersecurity Class
-        </span>
-      </div>
     </div>
+  </div>
 
-    <!-- RESOURCES SECTION -->
-    <div class="card border-0 shadow-sm text-white rounded-4 p-4 mt-4" style="background-color: #1f2937;">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-white d-flex align-items-center mb-0">
-          <i class="fa fa-folder-open me-2" style="color: #f87171;"></i>
-          Class Resources
-        </h5>
-        <span class="badge px-3 py-2" style="background-color: rgba(248, 113, 113, 0.2); color: #fb7185;">
-          <i class="fa fa-file me-1"></i>{{ resources|length }} Resources
-        </span>
-      </div>
-
-      <!-- Resources Search -->
-      <div class="mb-3 position-relative">
-        <i class="fa fa-search position-absolute text-white-50" 
-          style="left: 12px; top: 50%; transform: translateY(-50%); z-index: 10;"></i>
-        <input type="text" id="resourceSearch" 
-              class="form-control text-white"
-              placeholder="Search resources..."
-              style="background-color: #111827; border: 1px solid #f87171; height: 44px; padding-left: 40px;">
-      </div>
-
-      <!-- Resources Grid -->
-      <div class="resources-container rounded-3 p-3" style="background-color: #111827; min-height: 200px; max-height: 400px; overflow-y: auto;">
-        {% if resources %}
-          <div class="row g-3" id="resourcesGrid">
-            {% for resource_group in resources %}
-              <div class="col-12 col-md-6 col-lg-4 resource-item" 
-                  data-title="{{ resource_group.title|lower }}" 
-                  data-description="{{ resource_group.description|lower }}">
-                <div class="resource-card card text-white rounded-3 p-3 h-100 resource-card-clickable"
-                  style="background: linear-gradient(135deg, #2d1818 0%, rgba(139, 0, 0, 0.15) 100%); 
-                          border: 1px solid #f87171; 
-                          transition: all 0.3s ease; 
-                          cursor: pointer;"
-                  data-resource-title="{{ resource_group.title|escapejs }}"
-                  data-resource-files='{{ resource_group.files|safe }}'>
-
-                  <div class="d-flex align-items-start mb-2">
-                    <!-- Multiple files indicator -->
-                    <div class="flex-shrink-0 me-3 position-relative">
-                      {% if resource_group.files|length > 1 %}
-                        <div class="file-stack">
-                          <i class="fa fa-file fa-2x" style="color: #f87171;"></i>
-                          <span class="badge position-absolute top-0 start-100 translate-middle rounded-pill" style="background-color: #be123c;">
-                          {{ resource_group.file_count }}
-                          </span>
-                        </div>
-                      {% else %}
-                        {% with resource=resource_group.files.0 %}
-                          {% if resource.file_extension == 'pdf' %}
-                            <i class="fa fa-file-pdf fa-2x text-danger"></i>
-                          {% elif resource.file_extension in 'png,jpg,jpeg' %}
-                            <i class="fa fa-file-image fa-2x text-info"></i>
-                          {% elif resource.file_extension in 'docx,doc' %}
-                            <i class="fa fa-file-word fa-2x text-primary"></i>
-                          {% elif resource.file_extension in 'pptx,ppt' %}
-                            <i class="fa fa-file-powerpoint fa-2x text-warning"></i>
-                          {% elif resource.file_extension == 'zip' %}
-                            <i class="fa fa-file-archive fa-2x text-secondary"></i>
-                          {% elif resource.file_extension == 'txt' %}
-                            <i class="fa fa-file-alt fa-2x text-muted"></i>
-                          {% elif resource.file_extension in 'mp4,mov,avi' %}
-                            <i class="fa fa-file-video fa-2x text-danger"></i>
-                          {% elif resource.file_extension in 'mp3,wav' %}
-                            <i class="fa fa-file-audio fa-2x text-info"></i>
-                          {% elif resource.file_extension in 'xls,xlsx' %}
-                            <i class="fa fa-file-excel fa-2x text-success"></i>
-                          {% else %}
-                            <i class="fa fa-file fa-2x" style="color: #f87171;"></i>
-                          {% endif %}
-                        {% endwith %}
-                      {% endif %}
-                    </div>
-
-                    <div class="flex-grow-1 overflow-hidden">
-                      <h6 class="fw-bold mb-1 text-white text-truncate" title="{{ resource_group.title }}">
-                        {{ resource_group.title }}
-                      </h6>
-                      <small class="text-white-50 d-block mb-1" title="{{ resource_group.description|default:'No description' }}">
-                        {{ resource_group.description|default:'No description'|truncatewords:3 }}
-                      </small>
-                      <div class="d-flex gap-2">
-                        <span class="badge small" style="background-color: rgba(248, 113, 113, 0.3);">
-                          <i class="fa fa-copy me-1"></i>{{ resource_group.file_count }} file{{ resource_group.file_count|pluralize }}
-                        </span>
-                        <span class="badge small" style="background-color: rgba(248, 113, 113, 0.3);">
-                          <i class="far fa-calendar me-1"></i>{{ resource_group.uploaded_at|date:"M d, Y" }}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Action Buttons -->
-                  <div class="d-flex gap-2 mt-2">
-                    <button type="button" class="btn btn-sm btn-outline-rose flex-grow-1" onclick="event.stopPropagation(); downloadResourceGroup('{{ resource_group.title|escapejs }}', {{ resource_group.files|safe }})">
-                      <i class="fa fa-download me-1"></i>Download All
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-info flex-grow-1" onclick="event.stopPropagation(); viewResourceGroupDetails('{{ resource_group.title|escapejs }}', {{ resource_group.files|safe }})">
-                      <i class="fa fa-eye me-1"></i>View Files
-                    </button>
-                  </div>
-                </div>
-              </div>
-            {% endfor %}
-          </div>
-        {% else %}
-          <div class="text-center text-muted p-5 rounded-3" style="border: 1px dashed #f87171;">
-            <i class="fa fa-folder-open fa-3x mb-3 opacity-50" style="color: #f87171;"></i>
-            <p class="mb-0">No resources uploaded yet.</p>
-            <small class="text-muted">Your teacher will upload resources here.</small>
-          </div>
-        {% endif %}
-      </div>
-    </div>
-
-    <!-- MAIN CONTENT AREA -->
-    <div class="row g-4 mt-2">
-      <div class="col-12">
-        <div class="card border-0 shadow-sm text-white rounded-4 p-4" 
-             style="background-color: #1f2937;">
-
-          <!-- FIXED: Search and Filter in Same Line with Title -->
-          <form method="GET" class="mb-4">
-            <div class="row g-3 align-items-center">
-              
-              <!-- Title -->
-              <div class="col-12 col-md-auto">
-                <h5 class="fw-bold text-white mb-0 d-flex align-items-center">
-                  <i class="fa fa-flag me-2" style="color: #f87171;"></i>
-                  Security Challenges
-                </h5>
-              </div>
-
-              <!-- Search Bar -->
-              <div class="col-12 col-md position-relative">
-                <i class="fa fa-search position-absolute text-white-50 ms-3" 
-                  style="left: 12px; top: 50%; transform: translateY(-50%); z-index: 10;"></i>
-                <input type="text" name="q" value="{{ query }}"
-                      class="form-control text-muted w-100 ms-2"
-                      placeholder="Search challenges..."
-                      style="background-color: #111827; border: 1px solid #f87171; height: 42px; padding-left: 40px;">
-              </div>
-
-              <!-- Filter Label (Desktop only) -->
-              <div class="col-auto d-none d-lg-block">
-                <span class="text-white fw-semibold">Filter:</span>
-              </div>
-
-              <!-- Filter Buttons -->
-              <div class="col-12 col-md-auto">
-                <div class="d-flex gap-2 flex-wrap justify-content-md-end">
-                  <button type="submit" name="filter" value="Assignment"
-                          class="btn fw-bold {% if filter_type == 'Assignment' %}btn-rose{% else %}btn-outline-rose{% endif %}"
-                          style="height: 42px; padding: 0 1rem;">
-                    <i class="fa fa-flag me-1"></i>
-                    <span class="d-none d-sm-inline">CTF</span>
-                  </button>
-                  
-                  <button type="submit" name="filter" value="Quiz"
-                          class="btn fw-bold {% if filter_type == 'Quiz' %}btn-rose{% else %}btn-outline-rose{% endif %}"
-                          style="height: 42px; padding: 0 1rem;">
-                    <i class="fa fa-clipboard-check me-1"></i>
-                    <span class="d-none d-sm-inline">Tests</span>
-                  </button>
-                  
-                  <button type="submit" name="filter" value=""
-                          class="btn fw-bold {% if not filter_type %}btn-rose{% else %}btn-outline-rose{% endif %}"
-                          style="height: 42px; padding: 0 1rem;">
-                    <i class="fa fa-list me-1"></i>
-                    <span class="d-none d-sm-inline">All</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
-
-          <!-- Challenges List -->
-          {% if problems %}
-          <div class="row g-3">
-            {% for problem in problems %}
-            <div class="col-12 col-sm-6 col-md-6 col-lg-4">
-              <div class="cyber-challenge-card card text-white rounded-3 p-3 shadow-sm h-100 problem-card"
-                   data-problem-id="{{ problem.problem.problem_id }}"
-                   style="cursor: pointer; 
-                          background: linear-gradient(135deg, #2d1818 0%, rgba(139, 0, 0, 0.15) 100%); 
-                          position: relative; 
-                          transition: all 0.3s ease; 
-                          border: 1px solid #f87171;">
-                
-                <!-- Score Badge -->
-                {% if problem.score is not None %}
-                <div class="position-absolute top-0 end-0 mt-2 me-2">
-                  {% if problem.score >= problem.half_score %}
-                  <span class="badge px-2 py-1" style="background-color: #198754;">
-                    <i class="fa fa-check-circle me-1"></i>{{ problem.score }}/{{ problem.problem.total_score }}
-                  </span>
-                  {% else %}
-                  <span class="badge px-2 py-1" style="background-color: #be123c;">
-                    <i class="fa fa-exclamation-circle me-1"></i>{{ problem.score }}/{{ problem.problem.total_score }}
-                  </span>
-                  {% endif %}
-                </div>
-                {% endif %}
-
-                <!-- Challenge Info -->
-                <div class="mb-3">
-                  <div class="d-flex align-items-center mb-2">
-                    <i class="fa fa-skull me-2" style="color: #f87171;"></i>
-                    <h6 class="fw-bold mb-0 text-white text-truncate">{{ problem.problem.problem_title }}</h6>
-                  </div>
-                </div>
-
-                <!-- Challenge Meta -->
-                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 flex-wrap gap-2" 
-                     style="border-top: 1px solid rgba(248, 113, 113, 0.3);">
-                  <span class="badge small" style="{% if problem.problem.problem_type == 'Quiz' %}background-color: #be123c;{% else %}background-color: #17a2b8;{% endif %}">
-                    <i class="fa fa-clock me-1"></i>{{ problem.problem.due_date|date:"M d, H:i" }}
-                  </span>
-                  <span class="badge bg-dark small">
-                    <i class="fa fa-star me-1"></i>{{ problem.problem.total_score }} pts
-                  </span>
-                </div>
-
-                <!-- Completion Status -->
-                {% if problem.answered %}
-                <div class="mt-2">
-                  <span class="badge text-white small w-100" style="background-color: #198754;">
-                    <i class="fa fa-check-double me-1"></i>Submitted
-                  </span>
-                </div>
-                {% else %}
-                <div class="mt-2">
-                  <span class="badge small w-100" style="background-color: #be123c; color: white;">
-                    <i class="fa fa-hourglass-half me-1"></i>Not Submitted
-                  </span>
-                </div>
-                {% endif %}
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-          {% else %}
-          <div class="text-center text-muted p-5 rounded-3" style="background-color: #111827; border: 1px dashed #f87171;">
-            <i class="fa fa-shield-alt fa-3x mb-3 opacity-50" style="color: #f87171;"></i>
-            <p class="mb-0">No security challenges available yet.</p>
-          </div>
-          {% endif %}
+  <!-- RESOURCES MODAL (list view + detail view in one modal) -->
+  <div class="modal fade" id="resourcesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content cyber-modal">
+        <div class="modal-header cyber-modal-header">
+          <h5 class="fw-bold text-white mb-0 d-flex align-items-center gap-2">
+            <i class="fa fa-folder-open" style="color:#f87171;"></i>Class Resources
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
-      </div>
-    </div>
+        <div class="modal-body cyber-modal-body">
 
-    
-
-    <!-- RESOURCE GROUP DETAILS MODAL -->
-    <div class="modal fade" id="resourceGroupDetailsModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content text-white" style="background-color: #1f2937; border: 2px solid #f87171; border-radius: 15px;">
-          <div class="modal-header" style="border-bottom: 1px solid rgba(248, 113, 113, 0.3); background: linear-gradient(135deg, rgba(190, 18, 60, 0.2), rgba(139, 0, 0, 0.1));">
-            <h4 class="fw-bold text-white d-flex align-items-center">
-              <i class="fa fa-folder-open me-2" style="color: #f87171;"></i>
-              <span id="resourceGroupTitle"></span>
-            </h4>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-          </div>
-
-          <div class="modal-body px-4">
-            <div class="resource-group-info mb-4">
-              <h5 class="text-white mb-3">Files in this resource group:</h5>
-              <div id="resourceGroupFilesList" class="files-list">
-                <!-- Files will be populated here -->
-              </div>
+          <!-- LIST VIEW -->
+          <div id="resourcesListView">
+            <div class="position-relative mb-3">
+              <i class="fa fa-search cyber-search-icon"></i>
+              <input type="text" id="resourceSearch" class="form-control cyber-input" placeholder="Search resources...">
+            </div>
+            <div id="resourcesGrid" class="resource-list">
+              {% for resource_group in resources %}
+                <div class="resource-row resource-item"
+                     data-title="{{ resource_group.title|lower }}"
+                     data-description="{{ resource_group.description|lower }}"
+                     data-resource-title="{{ resource_group.title|escapejs }}"
+                     data-resource-files='{{ resource_group.files|safe }}'>
+                  <div class="resource-row-icon">
+                    {% if resource_group.files|length > 1 %}
+                      <i class="fa fa-copy"></i>
+                    {% else %}
+                      {% with resource=resource_group.files.0 %}
+                        {% if resource.file_extension == 'pdf' %}
+                          <i class="fa fa-file-pdf"></i>
+                        {% elif resource.file_extension in 'png,jpg,jpeg' %}
+                          <i class="fa fa-file-image"></i>
+                        {% elif resource.file_extension in 'docx,doc' %}
+                          <i class="fa fa-file-word"></i>
+                        {% elif resource.file_extension in 'pptx,ppt' %}
+                          <i class="fa fa-file-powerpoint"></i>
+                        {% elif resource.file_extension == 'zip' %}
+                          <i class="fa fa-file-archive"></i>
+                        {% elif resource.file_extension == 'txt' %}
+                          <i class="fa fa-file-alt"></i>
+                        {% elif resource.file_extension in 'mp4,mov,avi' %}
+                          <i class="fa fa-file-video"></i>
+                        {% elif resource.file_extension in 'mp3,wav' %}
+                          <i class="fa fa-file-audio"></i>
+                        {% elif resource.file_extension in 'xls,xlsx' %}
+                          <i class="fa fa-file-excel"></i>
+                        {% elif resource.file_extension in 'html,htm' %}
+                          <i class="fa fa-code"></i>
+                        {% else %}
+                          <i class="fa fa-file"></i>
+                        {% endif %}
+                      {% endwith %}
+                    {% endif %}
+                  </div>
+                  <div class="resource-row-info">
+                    <div class="resource-row-title">{{ resource_group.title }}</div>
+                    <div class="resource-row-meta">{{ resource_group.file_count }} file{{ resource_group.file_count|pluralize }} &middot; {{ resource_group.uploaded_at|date:"M d, Y" }}</div>
+                  </div>
+                  <button type="button" class="icon-btn-sm" onclick="event.stopPropagation(); downloadResourceGroup('{{ resource_group.title|escapejs }}', {{ resource_group.files|safe }})" title="Download all">
+                    <i class="fa fa-download"></i>
+                  </button>
+                </div>
+              {% empty %}
+                <div class="cyber-empty">
+                  <i class="fa fa-folder-open"></i>
+                  <p>No resources uploaded yet.</p>
+                </div>
+              {% endfor %}
             </div>
           </div>
 
-          <div class="modal-footer" style="border-top: 1px solid rgba(248, 113, 113, 0.3);">
-            <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-rose px-4" onclick="downloadAllFilesInGroup()">
+          <!-- DETAIL VIEW -->
+          <div id="resourcesDetailView" class="d-none">
+            <button type="button" class="cyber-back-btn mb-3" onclick="showResourcesListView()">
+              <i class="fa fa-arrow-left me-1"></i>Back to Resources
+            </button>
+            <h6 class="text-white fw-bold mb-3" id="resourceGroupTitle"></h6>
+            <div id="resourceGroupFilesList" class="resource-list"></div>
+            <button type="button" class="cyber-btn-primary w-100 mt-3" onclick="downloadAllFilesInGroup()">
               <i class="fa fa-download me-2"></i>Download All Files
             </button>
           </div>
+
         </div>
       </div>
     </div>
-
-
-  </main>
+  </div>
 
   <!-- CHALLENGE DETAILS & SUBMIT MODAL -->
   <div class="modal fade" id="problemDetailsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content text-white" 
-           style="background-color: #1f2937; border: 2px solid #f87171; border-radius: 15px;">
-        
-        <div class="modal-header" style="border-bottom: 1px solid rgba(248, 113, 113, 0.3); background: linear-gradient(135deg, rgba(190, 18, 60, 0.2), rgba(139, 0, 0, 0.1));">
+      <div class="modal-content cyber-modal">
+
+        <div class="modal-header cyber-modal-header">
           <div class="w-100">
             <div class="d-flex align-items-center mb-2">
               <i class="fa fa-skull me-2" style="color: #f87171;"></i>
-              <h4 class="fw-bold text-white mb-0" id="problem_title"></h4>
+              <h5 class="fw-bold text-white mb-0" id="problem_title"></h5>
             </div>
             <div class="d-flex gap-2 flex-wrap">
-              <span class="badge" style="background-color: #be123c;" id="problem_type"></span>
-              <span class="badge bg-secondary" id="due_date"></span>
+              <span class="cyber-tag" id="problem_type"></span>
+              <span class="cyber-tag" id="due_date"></span>
             </div>
           </div>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
 
-        <div class="modal-body px-4">
+        <div class="modal-body cyber-modal-body">
           <div class="container-fluid">
-            
+
             <!-- Challenge Brief -->
             <div class="row g-3 mb-3">
               <div class="col-12">
-                <label class="fw-semibold mb-2 text-white">
+                <label class="fw-semibold mb-2 text-white-50" style="font-size:0.8rem;">
                   <i class="fa fa-file-alt me-1"></i>Challenge Brief
                 </label>
-                <div id="problem_description" 
-                     class="p-3 rounded text-white" 
-                     style="background-color: #111827; border: 1px solid #f87171; min-height: 120px; white-space: pre-line; font-size: 0.9rem;"></div>
+                <div id="problem_description" class="cyber-field-box" style="min-height: 120px; white-space: pre-line;"></div>
               </div>
             </div>
 
             <!-- Points and File Display -->
             <div class="row g-3 mb-3">
               <div class="col-12 col-md-6">
-                <label class="fw-semibold mb-2 text-white">
+                <label class="fw-semibold mb-2 text-white-50" style="font-size:0.8rem;">
                   <i class="fa fa-star me-1"></i>Points
                 </label>
-                <div id="total_score" class="p-2 rounded text-white" style="background-color: #111827; border: 1px solid #f87171;"></div>
+                <div id="total_score" class="cyber-field-box"></div>
               </div>
               <div class="col-12 col-md-6">
-                <label class="fw-semibold mb-2 text-white">
+                <label class="fw-semibold mb-2 text-white-50" style="font-size:0.8rem;">
                   <i class="fa fa-file me-1"></i>Challenge File
                 </label>
-                <div id="challenge_file_container" class="p-2 rounded text-white" style="background-color: #111827; border: 1px solid #f87171;"></div>
+                <div id="challenge_file_container" class="cyber-field-box"></div>
               </div>
             </div>
 
             <!-- Answer Submission Form -->
             <div id="submission_form" class="row g-3 mt-3">
               <div class="col-12">
-                <label class="fw-semibold mb-2 text-white">
+                <label class="fw-semibold mb-2 text-white-50" style="font-size:0.8rem;">
                   <i class="fa fa-pencil-alt me-1"></i>Your Answer
                 </label>
-                <textarea id="answer_text" 
-                         class="form-control text-white" 
-                         rows="2"
-                         placeholder="Write your answer here..."
-                         style="background-color: #111827; border: 1px solid #f87171;"></textarea>
+                <textarea id="answer_text" class="form-control cyber-textarea" rows="2" placeholder="Write your answer here..."></textarea>
               </div>
-              
+
               <!-- Feedback Card -->
               <div class="col-12">
                 <div id="feedback_card" class="alert d-none" role="alert" style="border-radius: 8px;">
@@ -408,11 +286,11 @@
           </div>
         </div>
 
-        <div class="modal-footer" style="border-top: 1px solid rgba(248, 113, 113, 0.3);">
-          <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">
+        <div class="modal-footer cyber-modal-header" style="border-top:1px solid rgba(248,113,113,0.15); border-bottom:none;">
+          <button type="button" class="cyber-btn-outline-danger px-4" data-bs-dismiss="modal" style="flex:none;">
             <i class="fa fa-times me-2"></i>Cancel
           </button>
-          <button type="button" class="btn btn-rose px-4 fw-bold" id="submitButton">
+          <button type="button" class="cyber-btn-primary px-4" id="submitButton" style="flex:none;">
             <i class="fa fa-paper-plane me-2"></i>Submit Answer
           </button>
         </div>
@@ -424,17 +302,11 @@
 
   <script>
   let currentProblemId = null;
+  let currentResourceGroup = null;
   const successMessages = [
-    "🎉 All right!",
-    "✨ You got it!",
-    "🎊 Congratulations, you cracked it!",
-    "🌟 Perfect! Well done!",
-    "🏆 Excellent work!",
-    "💯 Spot on!",
-    "🎯 Bullseye!",
-    "⭐ Amazing job!",
-    "🔥 You nailed it!",
-    "👍 Outstanding!"
+    "\ud83c\udf89 All right!", "\u2728 You got it!", "\ud83c\udf8a Congratulations, you cracked it!",
+    "\ud83c\udf1f Perfect! Well done!", "\ud83c\udfc6 Excellent work!", "\ud83d\udcaf Spot on!",
+    "\ud83c\udfaf Bullseye!", "\u2b50 Amazing job!", "\ud83d\udd25 You nailed it!", "\ud83d\udc4d Outstanding!"
   ];
 
   function getRandomSuccessMessage() {
@@ -442,10 +314,95 @@
   }
 
   // ============================================
-  // CHALLENGE CARD CLICK HANDLER - WITH HTML FILE SUPPORT
+  // LEVEL MAP LAYOUT (Candy-Crush style path)
+  // ============================================
+  document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('levelMapContainer');
+    if (!container) return;
+
+    const nodes = Array.from(document.querySelectorAll('.level-node'));
+    const svg = document.getElementById('levelPathSvg');
+    const bgPath = document.getElementById('levelPathBg');
+    const progressPath = document.getElementById('levelPathProgress');
+    if (nodes.length === 0) return;
+
+    // Assumption: challenges unlock in order, like a level map — the next
+    // level opens once the previous one is completed. Set this to false to
+    // have every level open from the start.
+    const SEQUENTIAL_LOCK = true;
+
+    if (SEQUENTIAL_LOCK) {
+      let unlockedSoFar = true;
+      nodes.forEach((node) => {
+        const isCompleted = node.classList.contains('level-completed');
+        if (!unlockedSoFar) {
+          node.classList.add('level-locked');
+        } else if (!isCompleted) {
+          node.classList.add('level-current');
+        }
+        if (!isCompleted) unlockedSoFar = false;
+      });
+    }
+
+    function layout() {
+      const width = container.clientWidth || 600;
+      const spacingY = window.innerWidth < 576 ? 95 : 125;
+      const nodeRadius = 40; // keeps circles fully on-screen at the swing extremes
+      const leftPad = nodeRadius + 20;
+      const rightPad = width - nodeRadius - 20;
+      const rangeWidth = Math.max(rightPad - leftPad, 40);
+      const topPad = 45;
+      const positions = [];
+
+      // Level 1 starts pinned to the left corner, then the path snakes
+      // left-to-right and back down the page (classic level-map layout).
+      nodes.forEach((node, i) => {
+        const x = leftPad + (rangeWidth / 2) * (1 - Math.cos(i * 0.8));
+        const y = topPad + i * spacingY;
+        positions.push({ x, y });
+        node.style.left = x + 'px';
+        node.style.top = y + 'px';
+      });
+
+      const totalHeight = topPad + (nodes.length - 1) * spacingY + 65;
+      container.style.height = totalHeight + 'px';
+      svg.setAttribute('viewBox', `0 0 ${width} ${totalHeight}`);
+      svg.setAttribute('width', width);
+      svg.setAttribute('height', totalHeight);
+
+      let d = `M ${positions[0].x} ${positions[0].y}`;
+      for (let i = 1; i < positions.length; i++) {
+        const prev = positions[i - 1];
+        const curr = positions[i];
+        const midY = (prev.y + curr.y) / 2;
+        d += ` C ${prev.x} ${midY}, ${curr.x} ${midY}, ${curr.x} ${curr.y}`;
+      }
+      bgPath.setAttribute('d', d);
+      progressPath.setAttribute('d', d);
+
+      const totalLength = progressPath.getTotalLength();
+      let completedCount = 0;
+      for (const node of nodes) {
+        if (node.classList.contains('level-completed')) completedCount++;
+        else break;
+      }
+      const progressRatio = nodes.length > 1
+        ? completedCount / (nodes.length - 1)
+        : (completedCount > 0 ? 1 : 0);
+      progressPath.style.strokeDasharray = totalLength;
+      progressPath.style.strokeDashoffset = totalLength - totalLength * Math.min(progressRatio, 1);
+    }
+
+    layout();
+    window.addEventListener('resize', layout);
+  });
+
+  // ============================================
+  // CHALLENGE LEVEL CLICK HANDLER - WITH HTML FILE SUPPORT
   // ============================================
   document.querySelectorAll('.problem-card').forEach(card => {
     card.addEventListener('click', function() {
+      if (this.classList.contains('level-locked')) return;
       currentProblemId = this.dataset.problemId;
 
       fetch(`/problem/${currentProblemId}/details/`)
@@ -457,84 +414,55 @@
           document.getElementById('total_score').textContent = data.score + ' points';
           document.getElementById('due_date').textContent = 'Due: ' + data.due_date;
 
-          // ✅ UPDATED: Handle challenge files including HTML
           const fileContainer = document.getElementById('challenge_file_container');
           if (data.challenge_file) {
             const fileName = data.challenge_file_name || data.challenge_file.split('/').pop();
             const fileExt = fileName.split('.').pop().toLowerCase();
-            
-            // Determine file icon and color
+
             let fileIcon = 'fa-file';
-            let fileColor = '#be123c';
             let buttonText = 'Download';
             let buttonIcon = 'fa-download';
-            let showBadge = true; // Control whether to show the badge
-            
+            let showBadge = true;
+
             if (fileExt === 'html' || fileExt === 'htm') {
               fileIcon = 'fa-code';
-              fileColor = '#f97316';
-              buttonText = fileName; // Use filename as button text for HTML
+              buttonText = fileName;
               buttonIcon = 'fa-external-link-alt';
-              showBadge = false; // Don't show badge for HTML files
+              showBadge = false;
             } else if (fileExt === 'pdf') {
-              fileIcon = 'fa-file-pdf';
-              fileColor = '#ef4444';
-              buttonText = 'View PDF';
-              buttonIcon = 'fa-eye';
+              fileIcon = 'fa-file-pdf'; buttonText = 'View PDF'; buttonIcon = 'fa-eye';
             } else if (fileExt === 'zip') {
               fileIcon = 'fa-file-archive';
-              fileColor = '#6366f1';
             } else if (['png', 'jpg', 'jpeg'].includes(fileExt)) {
-              fileIcon = 'fa-file-image';
-              fileColor = '#06b6d4';
-              buttonText = 'View Image';
-              buttonIcon = 'fa-eye';
+              fileIcon = 'fa-file-image'; buttonText = 'View Image'; buttonIcon = 'fa-eye';
             } else if (['doc', 'docx'].includes(fileExt)) {
               fileIcon = 'fa-file-word';
-              fileColor = '#2b579a';
             } else if (['ppt', 'pptx'].includes(fileExt)) {
               fileIcon = 'fa-file-powerpoint';
-              fileColor = '#d24726';
             } else if (fileExt === 'txt') {
-              fileIcon = 'fa-file-alt';
-              fileColor = '#6b7280';
-              buttonText = 'View Text';
-              buttonIcon = 'fa-eye';
+              fileIcon = 'fa-file-alt'; buttonText = 'View Text'; buttonIcon = 'fa-eye';
             }
-            
-            // Build HTML - conditionally show badge
+
             let fileHTML = '<div class="d-flex align-items-center gap-2 flex-wrap">';
-            
             if (showBadge) {
-              fileHTML += `
-                <span class="badge px-2 py-1 d-flex align-items-center" style="background-color: ${fileColor};">
-                  <i class="fa ${fileIcon} me-1"></i>${fileName}
-                </span>
-              `;
+              fileHTML += `<span class="cyber-tag"><i class="fa ${fileIcon} me-1"></i>${fileName}</span>`;
             }
-            
             fileHTML += `
-              <a href="${data.challenge_file}" 
-                target="_blank" 
-                class="btn btn-sm btn-outline-rose d-flex align-items-center"
-                title="${buttonText}">
-                <i class="fa ${buttonIcon} me-1"></i>${buttonText}
+              <a href="${data.challenge_file}" target="_blank" class="icon-btn-sm" style="width:auto;padding:0 10px;gap:6px;display:inline-flex;" title="${buttonText}">
+                <i class="fa ${buttonIcon}"></i><span style="font-size:0.75rem;">${buttonText}</span>
               </a>
-            </div>
-            `;
-            
+            </div>`;
             fileContainer.innerHTML = fileHTML;
           } else {
-            fileContainer.innerHTML = '<span class="text-white opacity-75">No file uploaded</span>';
+            fileContainer.innerHTML = '<span class="text-white-50">No file uploaded</span>';
           }
 
-          // Reset answer field
           document.getElementById('answer_text').value = '';
           document.getElementById('feedback_card').classList.add('d-none');
 
           const answerField = document.getElementById('answer_text');
           const submitButton = document.getElementById('submitButton');
-          
+
           if (data.answered) {
             answerField.disabled = true;
             answerField.placeholder = 'You have already solved this challenge correctly!';
@@ -577,13 +505,8 @@
 
     fetch(`/cybersecurity/submit/${currentProblemId}/`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': '{{ csrf_token }}'
-      },
-      body: JSON.stringify({
-        answer: answerText
-      })
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+      body: JSON.stringify({ answer: answerText })
     })
     .then(res => res.json())
     .then(data => {
@@ -594,7 +517,7 @@
           feedbackCard.style.border = '1px solid #4CD964';
           feedbackIcon.className = 'fa fa-check-circle me-2';
           feedbackMessage.textContent = `${getRandomSuccessMessage()} Your score: ${data.score}/${data.total_score}`;
-          
+
           const answerField = document.getElementById('answer_text');
           const submitButton = document.getElementById('submitButton');
           answerField.disabled = true;
@@ -610,13 +533,9 @@
           feedbackIcon.className = 'fa fa-times-circle me-2';
           feedbackMessage.textContent = `Incorrect. Your score: ${data.score}/${data.total_score}. Try again!`;
         }
-        
+
         feedbackCard.classList.remove('d-none');
-        
-        if (!data.is_correct) {
-          document.getElementById('answer_text').value = '';
-        }
-        
+        if (!data.is_correct) document.getElementById('answer_text').value = '';
         setTimeout(() => location.reload(), 2000);
       } else {
         feedbackCard.className = 'alert alert-danger d-flex align-items-center';
@@ -635,98 +554,53 @@
   });
 
   // ============================================
-  // RESOURCES FUNCTIONALITY
+  // RESOURCES: list view <-> detail view (single modal, no nested modal)
   // ============================================
-
-  // Global variable for resources
-  let currentResourceGroup = null;
-
-  // View Resource Group Details
-  function viewResourceGroupDetails(title, files) {
-    try {
-      currentResourceGroup = { title, files };
-      
-      document.getElementById('resourceGroupTitle').textContent = title;
-      
-      const filesList = document.getElementById('resourceGroupFilesList');
-      if (!filesList) {
-        console.error('Files list container not found!');
-        return;
-      }
-      
-      filesList.innerHTML = '';
-      
-      if (!files || !Array.isArray(files) || files.length === 0) {
-        filesList.innerHTML = '<div class="text-white-50 text-center p-4">No files available</div>';
-      } else {
-        files.forEach(file => {
-          const fileItem = document.createElement('div');
-          fileItem.className = 'file-item d-flex align-items-center justify-content-between p-3 rounded-2 mb-2';
-          fileItem.style.backgroundColor = '#111827';
-          
-          const ext = file.file_extension || '';
-          const iconMap = {
-            'pdf': 'fa-file-pdf text-danger',
-            'png': 'fa-file-image text-info',
-            'jpg': 'fa-file-image text-info',
-            'jpeg': 'fa-file-image text-info',
-            'docx': 'fa-file-word text-primary',
-            'doc': 'fa-file-word text-primary',
-            'pptx': 'fa-file-powerpoint text-warning',
-            'ppt': 'fa-file-powerpoint text-warning',
-            'zip': 'fa-file-archive text-secondary',
-            'txt': 'fa-file-alt text-muted',
-            'mp4': 'fa-file-video text-danger',
-            'mp3': 'fa-file-audio text-info',
-            'xls': 'fa-file-excel text-success',
-            'xlsx': 'fa-file-excel text-success',
-            'html': 'fa-code text-warning',
-            'htm': 'fa-code text-warning'
-          };
-          
-          const iconClass = iconMap[ext] || 'fa-file';
-          
-          fileItem.innerHTML = `
-            <div class="d-flex align-items-center gap-3">
-              <i class="fa ${iconClass} fa-lg"></i>
-              <div>
-                <div class="text-white fw-semibold">${file.original_filename || 'Unknown file'}</div>
-                <small class="text-white-50">${file.file_size || 'Unknown size'} • ${file.uploaded_at || 'Unknown date'}</small>
-              </div>
-            </div>
-            <div class="d-flex gap-2">
-              <a href="${file.file_url || '#'}" target="_blank" class="btn btn-sm btn-outline-rose" download title="Download">
-                <i class="fa fa-download"></i>
-              </a>
-              <a href="${file.file_url || '#'}" target="_blank" class="btn btn-sm btn-outline-info" title="View">
-                <i class="fa fa-eye"></i>
-              </a>
-            </div>
-          `;
-          
-          filesList.appendChild(fileItem);
-        });
-      }
-      
-      const modalElement = document.getElementById('resourceGroupDetailsModal');
-      if (!modalElement) {
-        console.error('Modal element not found!');
-        return;
-      }
-      
-      const modal = new bootstrap.Modal(modalElement);
-      modal.show();
-      
-    } catch (error) {
-      console.error('Error in viewResourceGroupDetails:', error);
-      alert('Error opening resource details: ' + error.message);
-    }
+  function showResourcesListView() {
+    document.getElementById('resourcesDetailView').classList.add('d-none');
+    document.getElementById('resourcesListView').classList.remove('d-none');
   }
 
-  // Download all files in group
+  function viewResourceGroupDetails(title, files) {
+    currentResourceGroup = { title, files };
+    document.getElementById('resourceGroupTitle').textContent = title;
+
+    const filesList = document.getElementById('resourceGroupFilesList');
+    filesList.innerHTML = '';
+
+    if (!files || !Array.isArray(files) || files.length === 0) {
+      filesList.innerHTML = '<div class="cyber-empty"><i class="fa fa-folder-open"></i><p>No files available</p></div>';
+    } else {
+      const iconMap = {
+        'pdf': 'fa-file-pdf', 'png': 'fa-file-image', 'jpg': 'fa-file-image', 'jpeg': 'fa-file-image',
+        'docx': 'fa-file-word', 'doc': 'fa-file-word', 'pptx': 'fa-file-powerpoint', 'ppt': 'fa-file-powerpoint',
+        'zip': 'fa-file-archive', 'txt': 'fa-file-alt', 'mp4': 'fa-file-video', 'mp3': 'fa-file-audio',
+        'xls': 'fa-file-excel', 'xlsx': 'fa-file-excel', 'html': 'fa-code', 'htm': 'fa-code'
+      };
+      files.forEach(file => {
+        const row = document.createElement('div');
+        row.className = 'resource-row';
+        const iconClass = iconMap[file.file_extension] || 'fa-file';
+        row.innerHTML = `
+          <div class="resource-row-icon"><i class="fa ${iconClass}"></i></div>
+          <div class="resource-row-info">
+            <div class="resource-row-title">${file.original_filename || 'Unknown file'}</div>
+            <div class="resource-row-meta">${file.file_size || 'Unknown size'} &middot; ${file.uploaded_at || 'Unknown date'}</div>
+          </div>
+          <a href="${file.file_url || '#'}" target="_blank" class="icon-btn-sm" download title="Download">
+            <i class="fa fa-download"></i>
+          </a>
+        `;
+        filesList.appendChild(row);
+      });
+    }
+
+    document.getElementById('resourcesListView').classList.add('d-none');
+    document.getElementById('resourcesDetailView').classList.remove('d-none');
+  }
+
   function downloadAllFilesInGroup() {
     if (!currentResourceGroup || !currentResourceGroup.files) return;
-    
     currentResourceGroup.files.forEach((file, index) => {
       setTimeout(() => {
         const link = document.createElement('a');
@@ -738,13 +612,11 @@
     });
   }
 
-  // Download resource group (alternative)
   function downloadResourceGroup(title, files) {
     if (!files || !Array.isArray(files) || files.length === 0) {
       alert('No files to download');
       return;
     }
-    
     files.forEach((file, index) => {
       setTimeout(() => {
         const link = document.createElement('a');
@@ -756,795 +628,281 @@
     });
   }
 
-  // ============================================
-  // RESOURCE SEARCH AND CARD CLICKS
-  // ============================================
   document.addEventListener('DOMContentLoaded', function() {
+    // reset resources modal to list view whenever it's reopened
+    const resourcesModalEl = document.getElementById('resourcesModal');
+    if (resourcesModalEl) {
+      resourcesModalEl.addEventListener('hidden.bs.modal', showResourcesListView);
+    }
+
     const searchInput = document.getElementById('resourceSearch');
     if (searchInput) {
       searchInput.addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
-        const resourceItems = document.querySelectorAll('.resource-item');
-        
-        resourceItems.forEach(item => {
-          const title = item.dataset.title;
-          const description = item.dataset.description;
-          
-          if (title.includes(searchTerm) || description.includes(searchTerm)) {
-            item.style.display = 'block';
-          } else {
-            item.style.display = 'none';
-          }
+        document.querySelectorAll('.resource-item').forEach(item => {
+          const match = item.dataset.title.includes(searchTerm) || item.dataset.description.includes(searchTerm);
+          item.style.display = match ? 'flex' : 'none';
         });
       });
     }
 
-    // Handle resource card clicks
     document.addEventListener('click', function(e) {
-      const card = e.target.closest('.resource-card-clickable');
-      if (card) {
+      const row = e.target.closest('.resource-row');
+      if (row) {
         e.preventDefault();
         e.stopPropagation();
-        
         try {
-          const title = card.dataset.resourceTitle;
-          const filesJson = card.dataset.resourceFiles;
-          
-          if (!filesJson || filesJson === '') {
-            alert('No files available for this resource');
-            return;
-          }
-          
-          let files;
-          try {
-            files = JSON.parse(filesJson);
-          } catch (parseError) {
-            console.error('JSON parse error:', parseError);
-            alert('Error loading resource files');
-            return;
-          }
-          
+          const title = row.dataset.resourceTitle;
+          const filesJson = row.dataset.resourceFiles;
+          if (!filesJson) { return; }
+          const files = JSON.parse(filesJson);
           viewResourceGroupDetails(title, files);
-          
         } catch (error) {
           console.error('Resource click error:', error);
-          alert('Error opening resource: ' + error.message);
         }
       }
     });
   });
-
-  document.addEventListener('DOMContentLoaded', function() {
-  const itemsPerPage = 6;
-  let currentPage = 1;
-  
-  const challengeItems = document.querySelectorAll('.col-12.col-sm-6.col-md-6.col-lg-4');
-  const totalItems = challengeItems.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  
-  // Find the challenges row container (inside Security Challenges card)
-  // Target the row that contains problem cards specifically
-  const allRows = document.querySelectorAll('.row.g-3');
-  let challengesRow = null;
-  
-  // Find the row that contains elements with class 'problem-card'
-  allRows.forEach(row => {
-    if (row.querySelector('.problem-card')) {
-      challengesRow = row;
-    }
-  });
-  
-  if (challengesRow && totalItems > itemsPerPage) {
-    // Create pagination controls container
-    const paginationDiv = document.createElement('div');
-    paginationDiv.className = 'd-flex justify-content-center align-items-center gap-3 mt-4 w-100';
-    paginationDiv.style.gridColumn = '1 / -1'; // Make it span full width
-    paginationDiv.innerHTML = `
-      <button id="prevBtn" class="btn btn-outline-rose" style="width: 40px; height: 40px; padding: 0;" disabled>
-        <i class="fa fa-chevron-left"></i>
-      </button>
-      <span class="text-white" id="pageInfo">Page <span id="currentPage">1</span> of <span id="totalPages">${totalPages}</span></span>
-      <button id="nextBtn" class="btn btn-outline-rose" style="width: 40px; height: 40px; padding: 0;">
-        <i class="fa fa-chevron-right"></i>
-      </button>
-    `;
-    
-    // Insert pagination after the challenges row, but inside the same card
-    challengesRow.parentElement.appendChild(paginationDiv);
-    
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const currentPageSpan = document.getElementById('currentPage');
-    
-    // Add data-index to challenge items for easier management
-    challengeItems.forEach((item, index) => {
-      item.classList.add('challenge-item');
-      item.setAttribute('data-index', index);
-    });
-    
-    function showPage(page) {
-      const startIndex = (page - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-      
-      challengeItems.forEach((item, index) => {
-        if (index >= startIndex && index < endIndex) {
-          item.style.display = 'block';
-        } else {
-          item.style.display = 'none';
-        }
-      });
-      
-      currentPage = page;
-      currentPageSpan.textContent = currentPage;
-      
-      // Update button states
-      prevBtn.disabled = currentPage === 1;
-      nextBtn.disabled = currentPage === totalPages;
-      
-      // Scroll to top of challenges section
-      challengesRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-    
-    // Event listeners
-    prevBtn.addEventListener('click', function() {
-      if (currentPage > 1) {
-        showPage(currentPage - 1);
-      }
-    });
-    
-    nextBtn.addEventListener('click', function() {
-      if (currentPage < totalPages) {
-        showPage(currentPage + 1);
-      }
-    });
-    
-    // Show first page
-    showPage(1);
-  }
-});
   </script>
 
   <style>
+    /* ============================================ */
+    /* PREVENT LAYOUT JUMP WHEN A MODAL OPENS/CLOSES */
+    /* ============================================ */
+    html { overflow-y: scroll; }
+    body.modal-open {
+      margin-left: 90px !important;
+      padding-right: 90px !important;
+      overflow: hidden;
+    }
 
-    .btn-outline-rose:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
+    /* ============================================ */
+    /* BASE / TOPBAR */
+    /* ============================================ */
+    .cyber-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 4px; margin-bottom: 18px;
+      border-bottom: 1px solid rgba(248, 113, 113, 0.15);
+    }
+    .cyber-topbar-title {
+      display: flex; align-items: center; gap: 10px;
+      color: #fff; font-weight: 700; font-size: 1.05rem;
+    }
+    .cyber-topbar-title i { color: #f87171; }
+    .cyber-topbar-actions { display: flex; gap: 8px; }
+
+    .icon-btn {
+      width: 38px; height: 38px; border-radius: 8px;
+      background: transparent; border: 1px solid rgba(248, 113, 113, 0.3);
+      color: #f87171; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease; cursor: pointer;
+    }
+    .icon-btn:hover { background: rgba(248, 113, 113, 0.12); border-color: #f87171; }
+
+    .icon-btn-sm {
+      width: 30px; height: 30px; border-radius: 6px;
+      border: 1px solid rgba(248, 113, 113, 0.25); background: transparent;
+      color: #f87171; display: flex; align-items: center; justify-content: center;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .icon-btn-sm:hover { background: rgba(248, 113, 113, 0.12); color: #f87171; }
+
+    /* ============================================ */
+    /* CHALLENGES BAR */
+    /* ============================================ */
+    .cyber-challenges-bar { margin-bottom: 22px; }
+    .cyber-input {
+      background: #0f172a !important; border: 1px solid rgba(248, 113, 113, 0.25) !important;
+      color: #fff !important; height: 42px; padding-left: 38px; border-radius: 8px;
+    }
+    .cyber-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+    .cyber-input:focus { border-color: #f87171 !important; box-shadow: none; }
+    .cyber-search-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.3); z-index: 2; font-size: 0.85rem;
+    }
+    .cyber-filter-btn {
+      width: 42px; height: 42px; border-radius: 8px; border: 1px solid rgba(248, 113, 113, 0.25);
+      background: transparent; color: rgba(255, 255, 255, 0.5);
+      display: flex; align-items: center; justify-content: center; transition: 0.2s;
+    }
+    .cyber-filter-btn.active { background: #be123c; border-color: #be123c; color: #fff; }
+    .cyber-filter-btn:hover { border-color: #f87171; color: #fff; }
+
+    /* ============================================ */
+    /* LEVEL MAP */
+    /* ============================================ */
+    .level-map-wrapper {
+      position: relative;
+      padding: 25px 0 50px;
+      background-image: radial-gradient(rgba(248, 113, 113, 0.08) 1px, transparent 1px);
+      background-size: 26px 26px;
+      border-top: 1px solid rgba(248, 113, 113, 0.12);
+      border-radius: 4px;
+    }
+    .level-map-container { position: relative; width: 100%; min-height: 300px; }
+    .level-path-svg { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 1; }
+    .level-path-bg { stroke: rgba(255, 255, 255, 0.08); stroke-width: 3; fill: none; stroke-linecap: round; }
+    .level-path-progress { stroke: #f87171; stroke-width: 3; fill: none; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+
+    .level-nodes { position: relative; width: 100%; height: 100%; }
+    .level-node {
+      position: absolute; transform: translate(-50%, -50%);
+      display: flex; flex-direction: column; align-items: center;
+      cursor: pointer; z-index: 2; transition: transform 0.15s ease;
+    }
+    .level-node:hover { transform: translate(-50%, -50%) scale(1.06); }
+
+    .level-circle {
+      width: 56px; height: 56px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: #0f172a; border: 2px solid rgba(248, 113, 113, 0.35);
+      color: #fff; font-weight: 700; font-size: 1.05rem;
+    }
+    .level-node.level-completed .level-circle { background: #16a34a; border-color: #16a34a; }
+    .level-node.level-current .level-circle {
       border-color: #f87171;
-      color: #f87171;
+      animation: levelPulseMin 1.8s infinite;
+    }
+    @keyframes levelPulseMin {
+      0% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.35); }
+      70% { box-shadow: 0 0 0 10px rgba(248, 113, 113, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0); }
+    }
+    .level-node.level-locked .level-circle {
+      background: #0f172a; border-color: rgba(255, 255, 255, 0.12); color: rgba(255, 255, 255, 0.25);
+    }
+    .level-node.level-locked { cursor: not-allowed; }
+    .level-node.level-locked:hover { transform: translate(-50%, -50%); }
+    .level-node.level-locked .level-meta { opacity: 0.35; }
+    .level-lock-icon { display: none; font-size: 0.85rem; }
+    .level-node.level-locked .level-number,
+    .level-node.level-locked .fa-check,
+    .level-node.level-locked .fa-skull { display: none; }
+    .level-node.level-locked .level-lock-icon { display: block; }
+
+    /* Boss items: worth 30+ points, marked with a skull */
+    .level-circle.level-boss {
+      width: 64px; height: 64px;
+      border-color: #a855f7;
+      background: #1e1030;
+    }
+    .level-node.level-completed .level-circle.level-boss { background: #16a34a; border-color: #16a34a; }
+    .level-node.level-current .level-circle.level-boss { animation: levelPulseBoss 1.8s infinite; }
+    @keyframes levelPulseBoss {
+      0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4); }
+      70% { box-shadow: 0 0 0 12px rgba(168, 85, 247, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
     }
 
-    .btn-outline-rose:disabled:hover {
-      background-color: transparent;
-      transform: none;
+    /* Solid backdrop so the connecting path never overlaps/hides the label */
+    .level-meta {
+      margin-top: 8px; text-align: center; max-width: 108px;
+      background: rgba(10, 14, 23, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px; padding: 3px 7px;
+      position: relative; z-index: 3;
+    }
+    .level-title {
+      display: block; font-size: 0.66rem; color: #fff; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .level-submeta {
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      margin-top: 3px; color: rgba(255, 255, 255, 0.4); font-size: 0.62rem;
+    }
+    .level-stars-inline i { font-size: 0.58rem; color: #fbbf24; }
+    .level-stars-inline i.inactive { color: rgba(255, 255, 255, 0.15); }
+
+    .cyber-empty { text-align: center; padding: 50px 10px; color: rgba(255, 255, 255, 0.35); }
+    .cyber-empty i { font-size: 2rem; margin-bottom: 10px; display: block; color: rgba(248, 113, 113, 0.3); }
+    .cyber-empty p { margin: 0; font-size: 0.85rem; }
+
+    /* ============================================ */
+    /* MODALS (shared minimal style) */
+    /* ============================================ */
+    .cyber-modal { background: #0f172a; border: 1px solid rgba(248, 113, 113, 0.25); border-radius: 12px; }
+    .cyber-modal-header { border-bottom: 1px solid rgba(248, 113, 113, 0.15); padding: 16px 20px; }
+    .cyber-modal-body { padding: 20px; }
+
+    .cyber-tag {
+      background: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.25);
+      color: #fca5a5; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; display: inline-block;
     }
 
-    .btn-outline-rose:not(:disabled):hover {
-      transform: scale(1.1);
+    .cyber-btn-primary {
+      background: #be123c; border: none; color: #fff; padding: 10px 16px;
+      border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;
+      transition: 0.2s;
     }
+    .cyber-btn-primary:hover { background: #9f1239; color: #fff; }
+    .cyber-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    #pageInfo {
-      font-size: 0.9rem;
-      font-weight: 500;
+    .cyber-btn-outline-danger {
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(248, 113, 113, 0.4); color: #f87171;
+      padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; background: transparent;
+      transition: 0.2s;
     }
+    .cyber-btn-outline-danger:hover { background: rgba(248, 113, 113, 0.1); color: #fff; }
 
+    .cyber-back-btn { background: transparent; border: none; color: #f87171; font-size: 0.85rem; padding: 0; }
+    .cyber-back-btn:hover { color: #fca5a5; }
+
+    .cyber-field-box {
+      background: #0b1120; border: 1px solid rgba(248, 113, 113, 0.2);
+      border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 0.85rem;
+    }
+    .cyber-textarea {
+      background: #0b1120 !important; border: 1px solid rgba(248, 113, 113, 0.2) !important;
+      color: #fff !important; border-radius: 8px;
+    }
+    .cyber-textarea:focus { border-color: #f87171 !important; box-shadow: none; }
+    textarea:disabled { cursor: not-allowed !important; opacity: 0.6; }
+
+    /* ============================================ */
+    /* RESOURCE LIST (flat rows, no cards) */
+    /* ============================================ */
+    .resource-list { display: flex; flex-direction: column; gap: 8px; max-height: 360px; overflow-y: auto; padding-right: 2px; }
+    .resource-row {
+      display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06);
+      cursor: pointer; transition: 0.2s;
+    }
+    .resource-row:hover { background: rgba(248, 113, 113, 0.06); border-color: rgba(248, 113, 113, 0.25); }
+    .resource-row-icon { width: 30px; text-align: center; color: #f87171; font-size: 1rem; flex-shrink: 0; }
+    .resource-row-info { flex: 1; overflow: hidden; }
+    .resource-row-title {
+      color: #fff; font-size: 0.82rem; font-weight: 600;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .resource-row-meta { color: rgba(255, 255, 255, 0.4); font-size: 0.68rem; }
+
+    .resource-list::-webkit-scrollbar { width: 6px; }
+    .resource-list::-webkit-scrollbar-track { background: transparent; }
+    .resource-list::-webkit-scrollbar-thumb { background: rgba(248, 113, 113, 0.3); border-radius: 3px; }
+    .resource-list::-webkit-scrollbar-thumb:hover { background: rgba(248, 113, 113, 0.5); }
+
+    /* ============================================ */
+    /* RESPONSIVE */
+    /* ============================================ */
+    @media (max-width: 991.98px) {
+      body { margin-left: 0 !important; padding-right: 0 !important; }
+      .main-content { padding: 1rem !important; max-width: 100% !important; }
+    }
     @media (max-width: 575.98px) {
-      #pageInfo {
-        font-size: 0.85rem;
-      }
+      .level-circle { width: 46px; height: 46px; font-size: 0.9rem; }
+      .level-meta { max-width: 84px; }
+      .cyber-topbar-title { font-size: 0.9rem; }
+      .modal-dialog { margin: 0.5rem; max-width: calc(100% - 1rem); }
     }
-    .btn-rose {
-      background-color: #be123c;
-      border: none;
-      color: white;
-      transition: all 0.3s ease;
-    }
-
-    .btn-rose:hover {
-      background-color: #9f1239;
-      color: white;
-    }
-
-    .btn-rose:disabled {
-      background-color: #be123c;
-      cursor: not-allowed !important;
-    }
-
-    .btn-outline-rose {
-      border-color: #f87171;
-      color: #f87171;
-      background-color: transparent;
-      transition: all 0.3s ease;
-    }
-
-    .btn-outline-rose:hover {
-      background-color: #be123c;
-      border-color: #be123c;
-      color: white;
-      transform: translateY(-1px);
-    }
-    .cyber-challenge-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(248, 113, 113, 0.4);
-      border-color: #fb7185 !important;
-    }
-
-    #challenge_file_container .badge {
-      font-size: 0.8rem;
-      font-weight: 500;
-      max-width: 200px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    #challenge_file_container .btn-sm {
-      font-size: 0.8rem;
-      padding: 0.35rem 0.75rem;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-
-    #challenge_file_container .btn-sm:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(248, 113, 113, 0.3);
-    }
-
-    .badge {
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    textarea:disabled {
-      cursor: not-allowed !important;
-      opacity: 0.6;
-    }
-
-    .text-truncate {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    /* Ultra Small Devices (less than 360px - small phones) */
-    @media (max-width: 359.98px) {
-      body {
-        font-size: 13px;
-        margin-left: 0 !important;
-        padding-right: 0 !important;
-      }
-
-      .main-content {
-        padding: 0.25rem !important;
-        max-width: 100% !important;
-      }
-
-      .cyber-header {
-        padding: 0.75rem !important;
-        margin-top: 0 !important;
-      }
-
-      .cyber-header h3 {
-        font-size: 0.85rem !important;
-      }
-
-      .cyber-header p {
-        font-size: 0.7rem !important;
-        margin-left: 0 !important;
-      }
-
-      .cyber-header .badge {
-        font-size: 0.55rem;
-        padding: 0.2rem 0.35rem !important;
-      }
-
-      .unenroll-btn-container .btn {
-        font-size: 0.7rem;
-        padding: 0.35rem 0.7rem;
-      }
-
-      .card {
-        padding: 0.5rem !important;
-      }
-
-      h5 {
-        font-size: 0.85rem !important;
-      }
-
-      .form-control {
-        font-size: 0.75rem;
-        height: 36px !important;
-      }
-
-      .btn {
-        font-size: 0.65rem;
-        padding: 0.3rem 0.5rem !important;
-        height: 36px !important;
-      }
-
-      .cyber-challenge-card {
-        padding: 0.5rem !important;
-        min-height: auto !important;
-      }
-
-      .cyber-challenge-card h6 {
-        font-size: 0.75rem;
-      }
-
-      .cyber-challenge-card .badge {
-        font-size: 0.55rem;
-        padding: 0.15rem 0.3rem !important;
-      }
-
-      .modal-dialog {
-        margin: 0.125rem !important;
-        max-width: calc(100% - 0.25rem) !important;
-      }
-
-      .modal-header h4 {
-        font-size: 0.85rem;
-      }
-
-      .modal-body {
-        padding: 0.75rem !important;
-      }
-
-      .modal-body label {
-        font-size: 0.75rem;
-      }
-
-      .modal-body textarea,
-      .modal-body input {
-        font-size: 0.75rem;
-      }
-
-      .modal-footer .btn {
-        font-size: 0.7rem;
-        padding: 0.35rem 0.7rem !important;
-      }
-
-      .col-12 {
-        padding-left: 0.25rem;
-        padding-right: 0.25rem;
-      }
-    }
-
-    /* Extra Small Devices (360px to 575px - most phones) */
-    @media (min-width: 360px) and (max-width: 575.98px) {
-      body {
-        margin-left: 0 !important;
-        padding-right: 0 !important;
-      }
-      
-      .main-content {
-        padding: 0.5rem !important;
-        max-width: 100% !important;
-      }
-
-      .cyber-header {
-        padding: 0.85rem !important;
-        margin-top: 0 !important;
-      }
-
-      .cyber-header h3 {
-        font-size: 0.95rem !important;
-      }
-
-      .cyber-header p {
-        font-size: 0.75rem !important;
-        margin-left: 0 !important;
-      }
-
-      .unenroll-btn-container {
-        width: 100%;
-      }
-
-      .unenroll-btn-container .btn {
-        width: 100%;
-        font-size: 0.8rem;
-        padding: 0.5rem 1rem;
-      }
-
-      .cyber-header .badge {
-        font-size: 0.65rem;
-        padding: 0.25rem 0.5rem !important;
-      }
-
-      .form-control {
-        font-size: 0.85rem;
-        padding: 0.5rem;
-      }
-
-      .btn {
-        font-size: 0.75rem;
-        padding: 0.5rem 0.75rem !important;
-      }
-
-      .cyber-challenge-card {
-        padding: 0.75rem !important;
-        min-height: auto !important;
-      }
-
-      .cyber-challenge-card h6 {
-        font-size: 0.85rem;
-      }
-
-      .cyber-challenge-card .badge {
-        font-size: 0.65rem;
-      }
-
-      .modal-dialog {
-        margin: 0.25rem !important;
-        max-width: calc(100% - 0.5rem) !important;
-      }
-
-      .modal-content {
-        border-radius: 10px !important;
-      }
-
-      .modal-header h4 {
-        font-size: 0.95rem;
-      }
-
-      .modal-body {
-        padding: 1rem !important;
-      }
-
-      .modal-body label {
-        font-size: 0.85rem;
-      }
-
-      .modal-body textarea,
-      .modal-body input {
-        font-size: 0.85rem;
-      }
-
-      .modal-footer {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
-
-      .modal-footer .btn {
-        font-size: 0.8rem;
-        padding: 0.5rem 1rem !important;
-        width: 100%;
-      }
-
-      .row.g-3 {
-        gap: 0.75rem !important;
-      }
-    }
-
-    /* Small Devices (576px to 767px - large phones, small tablets) */
-    @media (min-width: 576px) and (max-width: 767.98px) {
-      body {
-        margin-left: 0 !important;
-        padding-right: 0 !important;
-      }
-      
-      .main-content {
-        padding: 1rem !important;
-        max-width: 100% !important;
-      }
-
-      .cyber-header {
-        padding: 1.25rem !important;
-      }
-
-      .cyber-header h3 {
-        font-size: 1.05rem;
-      }
-
-      .cyber-challenge-card {
-        padding: 0.9rem !important;
-        min-height: auto !important;
-      }
-
-      .modal-dialog {
-        margin: 0.5rem;
-        max-width: calc(100% - 1rem);
-      }
-
-      .modal-body {
-        padding: 1.5rem !important;
-      }
-
-      .modal-footer .btn {
-        width: 48%;
-      }
-    }
-
-    /* Medium Devices (768px to 991px - tablets) */
-    @media (min-width: 768px) and (max-width: 991.98px) {
-      .main-content {
-        padding: 1.5rem !important;
-        max-width: 100%;
-      }
-    }
-
-      .cyber-header h3 {
-        font-size: 1.15rem;
-      }
-
-      .cyber-challenge-card {
-        min-height: 160px;
-      }
-
-      .modal-dialog {
-        max-width: 85%;
-      }
-
-      .modal-footer .btn {
-        width: auto;
-      }
-    
-
-    /* Large Devices (992px to 1199px - small desktops) */
-    @media (min-width: 992px) and (max-width: 1199.98px) {
-      .cyber-challenge-card {
-        min-height: 180px;
-      }
-
-      .modal-dialog {
-        max-width: 750px;
-      }
-      
-      .main-content {
-        max-width: 100%;
-      }
-    }
-
-    /* Extra Large Devices (1200px to 1399px - desktops) */
-    @media (min-width: 1200px) and (max-width: 1399.98px) {
-      .modal-dialog {
-        max-width: 850px;
-      }
-
-      .cyber-challenge-card {
-        min-height: 180px;
-      }
-      
-      .main-content {
-        max-width: 100%;
-        padding-left: 2rem;
-        padding-right: 2rem;
-      }
-    }
-
-    /* XXL Devices (1400px and up - large desktops) */
-    @media (min-width: 1400px) {
-      .modal-dialog {
-        max-width: 950px;
-      }
-
-      .main-content {
-        max-width: 100%;
-        padding-left: 3rem;
-        padding-right: 3rem;
-      }
-    }
-
-    /* Landscape Orientation - Very Short Screens */
-    @media (max-height: 450px) and (orientation: landscape) {
-      .modal-dialog {
-        margin-top: 0.25rem;
-        margin-bottom: 0.25rem;
-      }
-
-      .modal-body {
-        max-height: 55vh;
-        overflow-y: auto;
-      }
-
-      .cyber-header {
-        padding: 0.6rem !important;
-      }
-
-      .cyber-header h3 {
-        font-size: 0.85rem !important;
-      }
-    }
-
-    @media (min-height: 450px) and (max-height: 600px) and (orientation: landscape) {
-      .modal-dialog {
-        margin-top: 0.5rem;
-        margin-bottom: 0.5rem;
-      }
-
-      .modal-body {
-        max-height: 65vh;
-        overflow-y: auto;
-      }
-
-      .cyber-header {
-        padding: 0.85rem !important;
-      }
-    }
-
-    /* Touch Device Optimizations */
     @media (hover: none) and (pointer: coarse) {
-      .cyber-challenge-card {
-        padding: 0.9rem !important;
-      }
-
-      .btn {
-        min-height: 44px;
-        padding: 0.75rem 1rem !important;
-      }
-
-      .form-control {
-        min-height: 44px;
-        font-size: 16px !important;
-      }
-
-      input, select, textarea, button {
-        font-size: 16px !important;
-      }
+      .icon-btn, .cyber-filter-btn { min-height: 44px; }
+      input, select, textarea, button { font-size: 16px !important; }
     }
 
-    /* Foldable Phones - Unfolded */
-    @media (min-width: 768px) and (max-width: 884px) and (orientation: portrait) {
-      .cyber-challenge-card {
-        min-height: 150px;
-      }
-    }
-
-    /* High DPI / Retina Displays */
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-      .cyber-challenge-card {
-        box-shadow: 0 2px 8px rgba(248, 113, 113, 0.2);
-      }
-    }
-
-    /* Prevent horizontal scroll and ensure proper spacing */
-    * {
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-
-    .row {
-      margin-left: 0;
-      margin-right: 0;
-      width: 100%;
-    }
-
-    .container-fluid {
-      padding-left: 0;
-      padding-right: 0;
-      width: 100%;
-    }
-
-    /* Ensure cards don't overflow */
-    .col-12, .col-sm-6, .col-md-6, .col-lg-4 {
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
-    }
-
-    /* Make sure long text wraps properly */
-    h6, .text-truncate {
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
-
-    /* Ensure badges wrap on small screens */
-    .badge {
-      display: inline-block;
-      white-space: normal;
-      word-break: break-word;
-    }
-
-@media (max-width: 575.98px) {
-  #challenge_file_container .d-flex {
-    flex-direction: column;
-    align-items: stretch !important;
-  }
-  
-  #challenge_file_container .badge {
-    max-width: 100%;
-    justify-content: center;
-  }
-  
-  #challenge_file_container .btn {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-    /* Resource Styles for Cybersecurity Theme */
-.resource-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(248, 113, 113, 0.4);
-  border-color: #fb7185 !important;
-}
-
-.btn-outline-rose {
-  border-color: #f87171;
-  color: #f87171;
-  background-color: transparent;
-}
-
-.btn-outline-rose:hover {
-  background-color: #be123c;
-  border-color: #be123c;
-  color: white;
-}
-
-.file-stack {
-  position: relative;
-  display: inline-block;
-}
-
-.file-stack .badge {
-  font-size: 0.7rem;
-  min-width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.file-item {
-  transition: all 0.2s ease;
-}
-
-.file-item:hover {
-  background-color: #1f2937 !important;
-}
-
-.files-list::-webkit-scrollbar,
-.resources-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.files-list::-webkit-scrollbar-track,
-.resources-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.files-list::-webkit-scrollbar-thumb,
-.resources-container::-webkit-scrollbar-thumb {
-  background: rgba(248, 113, 113, 0.3);
-  border-radius: 3px;
-}
-
-.files-list::-webkit-scrollbar-thumb:hover,
-.resources-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(248, 113, 113, 0.5);
-}
-
-.file-item .fa-code,
-#challenge_file_container .fa-code,
-.resource-card .fa-code {
-  color: #f97316 !important;
-}
-
-.fa-file-pdf {
-  color: #ef4444 !important;
-}
-
-.fa-file-archive {
-  color: #6366f1 !important;
-}
-
-.fa-file-image {
-  color: #06b6d4 !important;
-}
-
-.fa-file-word {
-  color: #2b579a !important;
-}
-
-.fa-file-powerpoint {
-  color: #d24726 !important;
-}
-
-.fa-file-alt {
-  color: #6b7280 !important;
-}
-
-/* Add HTML icon to resources if needed */
-.file-item .fa-code {
-  color: #f97316 !important;
-}
+    * { max-width: 100%; box-sizing: border-box; }
+    .row { margin-left: 0; margin-right: 0; width: 100%; }
   </style>
 
 </body>
